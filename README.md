@@ -162,9 +162,39 @@ This tool lets you see events, add and organize notes from daily to yearly on th
 همچنین میتوانید با انتخاب کردن عبارت‌های فوق را به روزنوشت‌ها لینک کنید. مثلا اگر فردا را انتخاب کنید و انتخاب دستور مرتبط یادداشت‌ها را لینک کنید. فیلم زیر را برای درک بهتر این موضوع ببینید. در نظر داشته باشید به صورت پیش‌فرض این افزونه فایل‌ها را نمی‌سازد و خودتان باید فایل‌ها را ازطریق افزونه بسازید.
 ![suggester](Instructions/suggester.webp)
 
-## امکان نامگذاری یادداشت‌ها بر اساس تقویم میلادی
+## امکان استفاده از APIهای اختصاصی
+این پلاگین یک API داخلی در اختیار شما قرار می‌دهد تا بتوانید داخل اسکریپت‌های Obsidian (مثل dataviewjs، templater و …) از قابلیت‌های تبدیل عدد و تاریخ استفاده کنید.
+```javascript
+const pcApi = app.plugins.plugins["persian-calendar"].api;
 
-بسیاری از افزونه‌های ابسیدین بر اساس تاریخ میلادی فعالیت می‌کنند. در تنظیمات می‌توانید مشخص کنید که یادداشت‌ها به صورت میلادی نام‌گذاری شوند و با استفاده از `{{عبارت‌های معنادار}}` تقویم شمسی را به آن‌ها اضافه کنید. می‌توانید با انتخاب این موضوع تمامی قابلیت‌های افزونه را هماهنگ با افزونه‌های مختلف ابسیدین که با روزنوشت‌ها کار می‌کنند داشته باشید.
+// for numbers
+pcApi.toEnNumber("۱۲۳ تست test"); // "123 تست test"
+pcApi.toFaNumber("123 تست test"); // "۱۲۳ تست test"
+
+// for Jalali/Shamsi/Khorshidi
+pcApi.jalaliToDate(1405, 9, 13) // jalali to Date
+pcApi.jalaliToGregorian(1405, 9, 13) // {gy: 2026, gm: 12, gd: 4}
+pcApi.jalaliToHijri(1405, 9, 13) // {hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliMonthName(9) // آذر
+pcApi.jalaliMonthName(9, "en") // Azar
+pcApi.seasonName(3) // پاییز
+pcApi.seasonName(3, "en") // Autumn
+
+// for Gregorian/Miladi
+pcApi.dateToGregorian(new Date()) // (Tehran){gy, gm, gd}
+pcApi.gregorianToDate(2026, 12, 4) // gregorian to Date
+pcApi.gregorianToJalali(2026, 12, 4) // {jy: 1405, jm: 9, jd: 13}
+pcApi.gregorianToHijri(2026, 12, 4) // {hy: 1448, hm: 6, hd: 24}
+
+// for Hijri-ir
+pcApi.hijriToDate(1448, 6, 24) // hijri to Date
+pcApi.hijriToGregorian(1448, 6, 24) // {gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24) // {jy: 1405, jm: 9, jd: 13}
+
+// for all events
+pcApi.checkHoliday(new Date()) // (Tehran)(is holiday?)true|false
+pcApi.dateToEvents(new Date()) // (Tehran)[{holiday, base, title},...]
+```
 
 ## دستورات تعریف شده در افزونه
 
