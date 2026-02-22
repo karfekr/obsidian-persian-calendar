@@ -7,13 +7,12 @@ import {
 import {
 	dateToGregorian,
 	getWeekdayTehran,
-	getJalaliMonthName,
+	jalaliMonthName,
 	jalaliToSeason,
 	weekStartNumber,
-	getSeasonName,
+	seasonName,
 } from "..";
 import type { TJalali, TGregorian, TWeekStart, TGetDayOfWeek } from "src/types";
-
 
 //? --- Core ---
 const persian = new PersianCalendar();
@@ -159,12 +158,12 @@ export function jalaliToEndDayOfWeek(
 
 export function dateToMonthName(date: Date) {
 	const { jm } = dateToJalali(date);
-	return getJalaliMonthName(jm);
+	return jalaliMonthName(jm);
 }
 
 export function dateToSeasonName(date: Date) {
 	const { jm } = dateToJalali(date);
-	return getSeasonName(jalaliToSeason(jm));
+	return seasonName(jalaliToSeason(jm));
 }
 
 export function dateToStartDayOfJMonthDate(date: Date): Date {

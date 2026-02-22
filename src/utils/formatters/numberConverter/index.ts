@@ -1,13 +1,17 @@
-export function toFaNumber(number: number): string {
-	const strNumber = String(number);
-
-	const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-	return strNumber.replace(/\d/g, (d) => FA_DIGITS[parseInt(d, 10)]);
+export function toFaNumber(input: number | string) {
+	return String(input)
+		.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632))
+		.replace(/\d/g, (d) => String.fromCharCode(d.charCodeAt(0) + 1728));
 }
 
-export function toArNumber(number: number): string {
-	const strNumber = String(number);
+export function toArNumber(input: number | string) {
+	return String(input)
+		.replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 1776))
+		.replace(/\d/g, (d) => String.fromCharCode(d.charCodeAt(0) + 1584));
+}
 
-	const AR_DIGITS = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
-	return strNumber.replace(/\d/g, (d) => AR_DIGITS[parseInt(d, 10)]);
+export function toEnNumber(input: string) {
+	return input
+		.replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 1776))
+		.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632));
 }

@@ -11,4 +11,4 @@ export {
 	extractYearFormat,
 	isYearFormat,
 } from "./formatExtractor";
-export { toArNumber, toFaNumber } from "./numberConverter";
+export { toArNumber, toFaNumber, toEnNumber } from "./numberConverter";

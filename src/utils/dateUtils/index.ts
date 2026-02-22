@@ -29,8 +29,8 @@ export {
 export {
 	gregorianToDate, // (gy, gm, gd) => (Is it a valid Gregorian date?)Date|null
 	weekStartNumber, // ("sat" | "sun" | "mon") => Number(JS_weekday_number)
-	getJalaliMonthName, // exp: (12) => "اسفند"
-	getSeasonName, // exp: (3) => "پاییز"
+	jalaliMonthName, // exp: (12) => "اسفند"
+	seasonName, // exp: (3) => "پاییز"
 	dateToGregorian, // (Date) => {gy, gm, gd}
 	dateToWeekdayName, // (Date) => Number(weekday_name)
 	addDayDate, // (date, days) => (with days added)Date

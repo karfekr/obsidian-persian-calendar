@@ -3,7 +3,7 @@ import { toFaNumber } from "src/utils/formatters";
 import CalendarState from "src/templates/CalendarView/CalendarState";
 import { NoteService } from "src/services";
 import CalendarNavigation from "../CalendarNavigation";
-import { getJalaliMonthName } from "src/utils/dateUtils";
+import { jalaliMonthName } from "src/utils/dateUtils";
 import type { TSetting } from "src/types";
 
 export default class CalendarHeaderRender {
@@ -57,7 +57,7 @@ export default class CalendarHeaderRender {
 			this.notesService.openOrCreateYearlyNote(jYearState);
 		});
 
-		const monthName = getJalaliMonthName(jMonthState);
+		const monthName = jalaliMonthName(jMonthState);
 		monthEl.textContent = monthName;
 		monthEl.addEventListener("click", (e) => {
 			e.stopPropagation();

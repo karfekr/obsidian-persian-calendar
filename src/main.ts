@@ -14,6 +14,7 @@ import { dateToJalali, todayTehran } from "./utils/dateUtils";
 import type { TSetting } from "./types";
 import RTLNotice from "./components/RTLNotice";
 import Suggestion from "./services/Suggestion";
+import ApiService from "./services/ApiService";
 
 export default class PersianCalendarPlugin extends Plugin {
 	// Core properties
@@ -21,11 +22,14 @@ export default class PersianCalendarPlugin extends Plugin {
 	noteService!: NoteService;
 	placeholder: Placeholder;
 	dateSuggester?: SmartDateLinker;
+	api!: ReturnType<ApiService["build"]>;
 
 	// Managers
 	commandRegistry!: CommandRegistry;
 	eventManager!: EventManager;
 	versionChecker!: VersionChecker;
+
+	private apiService!: ApiService;
 
 	constructor(app: App, manifest: PluginManifest) {
 		super(app, manifest);
@@ -38,6 +42,9 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		// Load settings
 		await this.loadSettings();
+
+		// Initialize api service
+		this.apiService = new ApiService();
 
 		// Initialize note service
 		this.noteService = new NoteService(this.app, this);
@@ -75,6 +82,11 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		// Check for version updates
 		await this.versionChecker.checkForVersionUpdate();
+
+		this.api = this.apiService.build();
+
+		// @ts-ignore
+		this.app.plugins.plugins[this.manifest.id].api = this.api;
 	}
 
 	private initializeServices() {

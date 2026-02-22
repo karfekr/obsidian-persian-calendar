@@ -9,21 +9,8 @@ export function todayTehran(): Date {
 	return new Date(Date.UTC(zdt.year, zdt.month - 1, zdt.day, 12, 0, 0));
 }
 
-export function gregorianToDate(gy: number, gm: number, gd: number): Date | null {
-	const utcDate = new Date(Date.UTC(gy, gm - 1, gd, 12, 0, 0));
-
-	const parts = new Intl.DateTimeFormat("en-US", {
-		timeZone: TEHRAN_TZ,
-		year: "numeric",
-		month: "numeric",
-		day: "numeric",
-	}).formatToParts(utcDate);
-
-	const get = (t: string) => Number(parts.find((p) => p.type === t)?.value);
-
-	if (get("year") !== gy || get("month") !== gm || get("day") !== gd) return null;
-
-	return utcDate;
+export function gregorianToDate(gy: number, gm: number, gd: number) {
+	return new Date(Date.UTC(gy, gm - 1, gd, 12, 0, 0));
 }
 
 export function dateToGregorian(date: Date): TGregorian {
@@ -69,11 +56,17 @@ export const weekStartNumber = (weekStart: TWeekStart): number =>
 		mon: 1,
 	})[weekStart];
 
-export function getJalaliMonthName(month: number, local: TLocal = "fa") {
+export function jalaliMonthName(month: number, local: TLocal = "fa") {
+	if (month > 12 || month < 1) {
+		throw Error("month number is not currect!");
+	}
 	return JALALI_MONTHS_NAME[local][month];
 }
 
-export function getSeasonName(season: number, local: TLocal = "fa") {
+export function seasonName(season: number, local: TLocal = "fa") {
+	if (season > 4 || season < 1) {
+		throw Error("season number is not currect!");
+	}
 	return SEASONS_NAME[local][season];
 }
 

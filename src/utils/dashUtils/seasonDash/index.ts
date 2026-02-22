@@ -11,7 +11,7 @@ import {
 	dateToJalali,
 	dateToSeasonName,
 	dateToStartDayOfSeasonDate,
-	getSeasonName,
+	seasonName,
 	jalaliToDate,
 	jalaliToSeason,
 } from "src/utils/dateUtils";
@@ -40,14 +40,14 @@ export function dashToSeasonName(dashDate: string, dateFormat: TDateFormat) {
 		if (!monthProps) return null;
 
 		const season = jalaliToSeason(monthProps.month);
-		return getSeasonName(season);
+		return seasonName(season);
 	}
 
 	if (isSeasonFormat(dashDate)) {
 		const seasonProps = extractSeasonFormat(dashDate);
 		if (!seasonProps) return null;
 
-		return getSeasonName(seasonProps.season);
+		return seasonName(seasonProps.season);
 	}
 
 	return null;

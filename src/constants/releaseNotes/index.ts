@@ -2,7 +2,13 @@ import type { TReleaseNote } from "src/types";
 
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
-		{
+	{
+		version: "4.5.0",
+		changes: [
+			"حالا کاربران میتوانند از api اختصاصی پلاگین تقویم فارسی در اسکریپت‌نویسی‌ها استفاده کنند.",
+		],
+	},
+	{
 		version: "4.4.0",
 		changes: [
 			"حالا شما می‌توانید از امکان پیشنهاد(suggestion) عبارات معنادار استفاده کنید.",
