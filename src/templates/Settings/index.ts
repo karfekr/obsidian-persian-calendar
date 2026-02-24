@@ -145,12 +145,12 @@ export default class CalendarSettings extends SettingsBase {
 
 		containerEl.createEl("h2", { text: "نمایش مناسبت‌ها" });
 		this.addToggleSetting(containerEl, {
-			name: "نمایش مناسبت‌های سیاسی ایران",
-			desc: "آیا مایلید مناسبت‌های سیاسی رسمی ایران نمایش داده شود؟",
+			name: "نمایش مناسبت‌های رسمی ایران",
+			desc: "آیا مایلید مناسبت‌های رسمی ایران نمایش داده شود؟",
 			key: "showIROfficialEvents",
 		});
 		this.addToggleSetting(containerEl, {
-			name: "نمایش مناسبت‌های تاریخی ایران",
+			name: "نمایش مناسبت‌های تاریخ ایران",
 			desc: "آیا مایلید مناسبت‌های تاریخ ایران نمایش داده شود؟",
 			key: "showIRHistoricalEvents",
 		});
