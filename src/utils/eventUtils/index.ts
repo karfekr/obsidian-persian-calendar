@@ -22,12 +22,12 @@ export function dateToEvents(date: Date, option: TShowEvents = {}): TEventObject
 	const { gm, gd } = dateToGregorian(date);
 	const { hm, hd } = dateToHijri(date);
 
-	const jalaliEvents = getEventsFromRecord(JALALI_EVENTS, jm, jd).filter((event) => {
-		if (event.categories.includes("official")) return showIROfficialEvents;
-		if (event.categories.includes("historical")) return showIRHistoricalEvents;
-		if (event.categories.includes("ancient")) return showIRAncientEvents;
-		return false;
-	});
+	const jalaliEvents = getEventsFromRecord(JALALI_EVENTS, jm, jd).filter(
+		(event) =>
+			(event.categories.includes("official") && showIROfficialEvents) ||
+			(event.categories.includes("historical") && showIRHistoricalEvents) ||
+			(event.categories.includes("ancient") && showIRAncientEvents),
+	);
 
 	const gregorianEvents = getEventsFromRecord(GREGORIAN_EVENTS, gm, gd).filter(
 		(event) => event.categories.includes("global") && showGlobalEvents,
