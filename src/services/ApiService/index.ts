@@ -9,11 +9,13 @@ import {
 	gregorianToJalali,
 	hijriToGregorian,
 	hijriToJalali,
+	hijriToDate,
 	jalaliToDate,
 	jalaliToGregorian,
 	jalaliToHijri,
+	jalaliMonthLength,
+	hijriMonthLength,
 } from "src/utils/dateUtils";
-import { hijriToDate } from "src/utils/dateUtils/hijriUtils";
 import { checkHoliday, dateToEvents } from "src/utils/eventUtils";
 import { toEnNumber, toFaNumber } from "src/utils/formatters";
 
@@ -30,10 +32,12 @@ export default class ApiService {
 			jalaliToDate,
 			jalaliToGregorian,
 			jalaliToHijri,
+			jalaliMonthLength,
 			dateToHijri,
 			hijriToDate,
 			hijriToGregorian,
 			hijriToJalali,
+			hijriMonthLength,
 			jalaliMonthName,
 			seasonName,
 			checkHoliday,
@@ -42,9 +46,9 @@ export default class ApiService {
 					showIROfficialEvents: true,
 					showIRHistoricalEvents: true,
 					showIRAncientEvents: true,
+					showGlobalEvents: true,
 					showShiaEvents: true,
 					showSunniEvents: true,
-					showGlobalEvents: true,
 				}),
 		});
 	}

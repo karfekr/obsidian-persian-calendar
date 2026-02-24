@@ -4,11 +4,8 @@ import {
 	jalaliToGregorian,
 	jalaliMonthLength,
 	dateToJWeekNumber,
-	gregorianToHijri,
 	todayTehran,
 } from "src/utils/dateUtils";
-import { toFaNumber } from "src/utils/formatters";
-import { GREGORIAN_MONTHS_NAME, HIJRI_MONTHS_NAME } from "src/constants";
 
 export default class CalendarState {
 	public jYearState: number;
@@ -118,66 +115,5 @@ export default class CalendarState {
 		}
 
 		return weekNumbers;
-	}
-
-	//TODO: move to dateUtils
-	public isToday(jy: number, jm: number, jd: number): boolean {
-		const today = dateToJalali(todayTehran());
-		return today.jy === jy && today.jm === jm && today.jd === jd;
-	}
-
-	//TODO: move to dateUtils
-	public getGeorgianMonthRange(jy: number, jm: number): string {
-		const firstDayOfMonthGeorgian = jalaliToGregorian(jy, jm, 1);
-		const lastDayOfMonthJalali = jalaliMonthLength(jy, jm);
-		const lastDayOfMonthGeorgian = jalaliToGregorian(jy, jm, lastDayOfMonthJalali!);
-
-		const startMonthName =
-			GREGORIAN_MONTHS_NAME["en"][
-				firstDayOfMonthGeorgian.gm as keyof (typeof GREGORIAN_MONTHS_NAME)["en"]
-			];
-		const endMonthName =
-			GREGORIAN_MONTHS_NAME["en"][
-				lastDayOfMonthGeorgian.gm as keyof (typeof GREGORIAN_MONTHS_NAME)["en"]
-			];
-
-		if (firstDayOfMonthGeorgian.gm === lastDayOfMonthGeorgian.gm) {
-			return `${startMonthName} ${firstDayOfMonthGeorgian.gy}`;
-		} else {
-			return `${startMonthName} - ${endMonthName} ${lastDayOfMonthGeorgian.gy}`;
-		}
-	}
-
-	//TODO: move to dateUtils
-	public getHijriMonthRange(jy: number, jm: number): string {
-		const lastDayOfMonthJalali = jalaliMonthLength(jy, jm);
-		const firstDayOfMonthGeorgian = jalaliToGregorian(jy, jm, 1);
-		const lastDayOfMonthGeorgian = jalaliToGregorian(jy, jm, lastDayOfMonthJalali!);
-
-		const startHijriDate = gregorianToHijri(
-			firstDayOfMonthGeorgian.gy,
-			firstDayOfMonthGeorgian.gm,
-			firstDayOfMonthGeorgian.gd,
-		);
-
-		const endHijriDate = gregorianToHijri(
-			lastDayOfMonthGeorgian.gy,
-			lastDayOfMonthGeorgian.gm,
-			lastDayOfMonthGeorgian.gd,
-		);
-
-		const startHijriMonth =
-			HIJRI_MONTHS_NAME["fa"][startHijriDate.hm as keyof (typeof HIJRI_MONTHS_NAME)["fa"]];
-		const startHijriYear = toFaNumber(startHijriDate.hy);
-
-		const endHijriMonth =
-			HIJRI_MONTHS_NAME["fa"][endHijriDate.hm as keyof (typeof HIJRI_MONTHS_NAME)["fa"]];
-		const endHijriYear = toFaNumber(endHijriDate.hy);
-
-		if (startHijriDate.hm === endHijriDate.hm) {
-			return `${startHijriMonth} ${startHijriYear}`;
-		} else {
-			return `${startHijriMonth} - ${endHijriMonth} ${endHijriYear}`;
-		}
 	}
 }

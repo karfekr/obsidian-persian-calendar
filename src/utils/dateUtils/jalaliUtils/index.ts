@@ -11,8 +11,9 @@ import {
 	jalaliToSeason,
 	weekStartNumber,
 	seasonName,
+	jalaliToHijri,
 } from "..";
-import type { TJalali, TGregorian, TWeekStart, TGetDayOfWeek } from "src/types";
+import type { TJalali, TGregorian, TWeekStart, TGetDayOfWeek, THijriBase } from "src/types";
 
 //? --- Core ---
 const persian = new PersianCalendar();
@@ -237,4 +238,26 @@ export function dateToDaysPassedJMonth(date: Date): number {
 export function dateToDaysRemainingJMonth(date: Date): number {
 	const { jy, jm, jd } = dateToJalali(date);
 	return jalaliMonthLength(jy, jm) - jd;
+}
+
+export function jalaliMonthToGregorianRange(jYear: number, jMonth: number) {
+	const firstGDayOfJMonth = jalaliToGregorian(jYear, jMonth, 1);
+	const lastGDayOfJMonth = jalaliToGregorian(jYear, jMonth, jalaliMonthLength(jYear, jMonth));
+
+	return { firstDay: firstGDayOfJMonth, lastDay: lastGDayOfJMonth };
+}
+
+export function jalaliMonthToHijriRange(
+	jYear: number,
+	jMonth: number,
+	options?: {
+		base?: THijriBase;
+	},
+) {
+	const base = options?.base ?? "iran";
+
+	const firstGDayOfJMonth = jalaliToHijri(jYear, jMonth, 1, { base });
+	const lastGDayOfJMonth = jalaliToHijri(jYear, jMonth, jalaliMonthLength(jYear, jMonth), { base });
+
+	return { firstDay: firstGDayOfJMonth, lastDay: lastGDayOfJMonth };
 }

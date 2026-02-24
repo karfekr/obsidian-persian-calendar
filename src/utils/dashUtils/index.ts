@@ -22,6 +22,7 @@ export {
 	dashToEndDayOfJMonthDash,
 	dashToJMonthDash,
 	dashToJMonthName,
+	jalaliMonthToRangeDash,
 } from "./monthDash";
 export {
 	dateToJWeekDash,

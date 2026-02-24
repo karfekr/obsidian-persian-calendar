@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting as ObsidianSettings } from "obsidian";
 import PersianCalendarPlugin from "src/main";
 import PathSuggest from "./PathSuggest";
-import type { TDateFormat, TSetting, TBoolSettingKeys } from "src/types";
+import type { TSetting, TBoolSettingKeys } from "src/types";
 
 export abstract class SettingsBase extends PluginSettingTab {
 	plugin: PersianCalendarPlugin;
@@ -62,9 +62,9 @@ export abstract class SettingsBase extends PluginSettingTab {
 		opts: {
 			name: string;
 			desc?: string;
-			key: Extract<keyof TSetting, "dateFormat" | "weekendDays">;
+			key: Extract<keyof TSetting, "dateFormat" | "weekendDays" | "hijriBase">;
 			options: Record<string, string>;
-			defaultValue: Omit<TDateFormat, "hijri">;
+			defaultValue: string;
 			refresh?: boolean;
 		},
 	) {

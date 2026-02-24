@@ -12,9 +12,9 @@ import Settings from "./templates/Settings";
 import { DEFAULT_SETTING } from "./constants";
 import { dateToJalali, todayTehran } from "./utils/dateUtils";
 import type { TSetting } from "./types";
-import RTLNotice from "./components/RTLNotice";
 import Suggestion from "./services/Suggestion";
 import ApiService from "./services/ApiService";
+import RTLNotice from "./components/RTLNotice";
 
 export default class PersianCalendarPlugin extends Plugin {
 	// Core properties
@@ -121,34 +121,20 @@ export default class PersianCalendarPlugin extends Plugin {
 			return existingLeaves[0];
 		}
 
-		try {
-			const rightLeaf = this.app.workspace.getRightLeaf(false);
-			if (rightLeaf) {
-				await rightLeaf.setViewState({
-					type: "persian-calendar",
-					active: true,
-				});
-				this.app.workspace.revealLeaf(rightLeaf);
-				return rightLeaf;
-			}
-		} catch (e) {
-			RTLNotice("خطا در باز کردن نمای تقویم.");
+		const rightLeaf = this.app.workspace.getRightLeaf(false);
+		if (rightLeaf) {
+			await rightLeaf.setViewState({
+				type: "persian-calendar",
+				active: true,
+			});
+			return rightLeaf;
 		}
 
-		const leaf = this.app.workspace.getLeaf("split", "vertical");
-
-		await leaf.setViewState({
-			type: "persian-calendar",
-			active: true,
-		});
-
-		this.app.workspace.revealLeaf(leaf);
-		return leaf;
+		return null;
 	}
 
 	refreshViews() {
 		const leaves = this.app.workspace.getLeavesOfType("persian-calendar");
-
 		leaves.forEach((leaf) => {
 			if (leaf.view instanceof CalendarView) {
 				leaf.view.render();

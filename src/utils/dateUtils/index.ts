@@ -25,6 +25,8 @@ export {
 	dateToStartDayOfJMonthDate,
 	dateToEndDayOfSeasonDate,
 	dateToStartDayOfSeasonDate,
+	jalaliMonthToGregorianRange,
+	jalaliMonthToHijriRange,
 } from "./jalaliUtils";
 export {
 	gregorianToDate, // (gy, gm, gd) => (Is it a valid Gregorian date?)Date|null
@@ -44,4 +46,6 @@ export {
 	hijriToJalali, // (hy, hm , hd) => {jy, jm, jd}
 	jalaliToHijri, // (jy, jm, jd) => {hy, hm, hd}
 	dateToHijri, // (Date) => {hy, hm, hd}
+	hijriMonthLength,
+	hijriToDate,
 } from "./hijriUtils";

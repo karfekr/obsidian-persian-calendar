@@ -1,134 +1,48 @@
-import { IRAN_HIJRI_ANCHORS, IRAN_HIJRI_MONTHS } from "src/constants";
-import type { THijri, TGregorian, TSupportedHijriYear } from "src/types";
+import {
+	CalendarDate,
+	IslamicUmalquraCalendar,
+	toCalendar,
+	GregorianCalendar,
+} from "@internationalized/date";
+import type { THijri, TGregorian, THijriBase } from "src/types";
+import { IRAN_HIJRI_MONTHS, IRAN_HIJRI_ANCHOR } from "src/constants";
 
-//? --- Core ---
-const HIJRI_MONTH_MAP: Map<number, Map<number, 29 | 30>> = buildHijriMonthMap(IRAN_HIJRI_MONTHS);
+const HIJRI_MONTH_MAP = buildHijriMonthMap(IRAN_HIJRI_MONTHS);
+function buildHijriMonthMap(raw: Record<number, readonly number[]>) {
+	const map = new Map<number, Map<number, 29 | 30>>();
 
-function buildHijriMonthMap(
-	raw: Record<number, readonly number[]>,
-): Map<number, Map<number, 29 | 30>> {
-	const monthMap = new Map<number, Map<number, 29 | 30>>();
-	const years = Object.keys(raw).map(Number);
-	const minYear = Math.min(...years);
-	const maxYear = Math.max(...years);
+	for (const [yearStr, months] of Object.entries(raw)) {
+		const year = Number(yearStr);
+		const sub = new Map<number, 29 | 30>();
 
-	for (let hy = minYear - 20; hy <= maxYear + 20; hy++) {
-		const monthSubMap = new Map<number, 29 | 30>();
+		months.forEach((len, i) => {
+			sub.set(i + 1, len as 29 | 30);
+		});
 
-		for (let hm = 1; hm <= 12; hm++) {
-			let length: 29 | 30;
-
-			const yearData = raw[hy as TSupportedHijriYear];
-			if (yearData && hm <= yearData.length) {
-				length = yearData[hm - 1] as 29 | 30;
-			} else {
-				length = computedMonthLength(hy, hm);
-			}
-
-			monthSubMap.set(hm, length);
-		}
-
-		monthMap.set(hy, monthSubMap);
+		map.set(year, sub);
 	}
 
-	return monthMap;
+	return map;
 }
 
-function isHijriLeapYear(hy: number): boolean {
-	const y = ((hy - 1) % 30) + 1;
-	return [2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29].includes(y);
-}
+//? Iran conversions
+function gregorianToHijriIran(gy: number, gm: number, gd: number): THijri {
+	const target = new CalendarDate(gy, gm, gd);
 
-function computedMonthLength(hy: number, hm: number): 29 | 30 {
-	if (hm === 12) return isHijriLeapYear(hy) ? 30 : 29;
-	return hm % 2 === 1 ? 30 : 29;
-}
-
-function getMonthLength(hy: number, hm: number): 29 | 30 {
-	const known = HIJRI_MONTH_MAP.get(hy)?.get(hm);
-	if (known) return known;
-
-	return computedMonthLength(hy, hm);
-}
-
-function gregorianToJulian(year: number, month: number, day: number): number {
-	if (month < 3) {
-		year -= 1;
-		month += 12;
-	}
-
-	const a = Math.floor(year / 100);
-	const b =
-		year === 1582 && (month > 10 || (month === 10 && day > 4))
-			? -10
-			: year > 1582
-				? 2 - a + Math.floor(a / 4)
-				: 0;
-
-	return Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + b - 1524;
-}
-
-function julianToGregorian(julianDay: number): TGregorian {
-	let b = 0;
-
-	if (julianDay > 2299160) {
-		const a = Math.floor((julianDay - 1867216.25) / 36524.25);
-		b = 1 + a - Math.floor(a / 4);
-	}
-
-	const julday = julianDay + b + 1524;
-	let c = Math.floor((julday - 122.1) / 365.25);
-	const d = Math.floor(365.25 * c);
-	const e = Math.floor((julday - d) / 30.6001);
-
-	const gd = julday - d - Math.floor(30.6001 * e);
-	const gm = e > 13 ? e - 13 : e - 1;
-	const gy = gm > 2 ? c - 4716 : c - 4715;
-
-	return { gy, gm, gd };
-}
-
-function pickNearestAnchorByJulian(jd: number) {
-	let best = IRAN_HIJRI_ANCHORS.first;
-	let minDelta = Math.abs(
-		jd - gregorianToJulian(best.gregorian.gy, best.gregorian.gm, best.gregorian.gd),
+	const anchorG = new CalendarDate(
+		IRAN_HIJRI_ANCHOR.gy,
+		IRAN_HIJRI_ANCHOR.gm,
+		IRAN_HIJRI_ANCHOR.gd,
 	);
 
-	for (const a of [IRAN_HIJRI_ANCHORS.last]) {
-		const ajd = gregorianToJulian(a.gregorian.gy, a.gregorian.gm, a.gregorian.gd);
-		const d = Math.abs(jd - ajd);
-		if (d < minDelta) {
-			best = a;
-			minDelta = d;
-		}
-	}
+	let delta = target.compare(anchorG);
 
-	return best;
-}
-
-function pickNearestAnchorByHijri(hy: number, hm: number) {
-	const first = IRAN_HIJRI_ANCHORS.first;
-	const last = IRAN_HIJRI_ANCHORS.last;
-
-	const d1 = Math.abs(hy - first.hijri.hy) * 12 + Math.abs(hm - first.hijri.hm);
-	const d2 = Math.abs(hy - last.hijri.hy) * 12 + Math.abs(hm - last.hijri.hm);
-
-	return d1 <= d2 ? first : last;
-}
-
-//? --- Main ---
-export function gregorianToHijri(gy: number, gm: number, gd: number): THijri {
-	const jd = gregorianToJulian(gy, gm, gd);
-	const anchor = pickNearestAnchorByJulian(jd);
-
-	let { hy, hm, hd } = anchor.hijri;
-	let ajd = gregorianToJulian(anchor.gregorian.gy, anchor.gregorian.gm, anchor.gregorian.gd);
-
-	let delta = jd - ajd;
+	let { hy, hm, hd } = IRAN_HIJRI_ANCHOR;
 
 	while (delta !== 0) {
+		const ml = hijriMonthLength(hy, hm);
+
 		if (delta > 0) {
-			const ml = getMonthLength(hy, hm);
 			const remaining = ml - hd;
 
 			if (delta > remaining) {
@@ -141,7 +55,7 @@ export function gregorianToHijri(gy: number, gm: number, gd: number): THijri {
 				}
 			} else {
 				hd += delta;
-				delta = 0;
+				break;
 			}
 		} else {
 			if (-delta >= hd) {
@@ -151,10 +65,10 @@ export function gregorianToHijri(gy: number, gm: number, gd: number): THijri {
 					hm = 12;
 					hy--;
 				}
-				hd = getMonthLength(hy, hm);
+				hd = hijriMonthLength(hy, hm);
 			} else {
 				hd += delta;
-				delta = 0;
+				break;
 			}
 		}
 	}
@@ -162,20 +76,22 @@ export function gregorianToHijri(gy: number, gm: number, gd: number): THijri {
 	return { hy, hm, hd };
 }
 
-export function hijriToGregorian(hy: number, hm: number, hd: number): TGregorian {
-	const anchor = pickNearestAnchorByHijri(hy, hm);
+function hijriIranToGregorian(hy: number, hm: number, hd: number): TGregorian {
+	const anchorG = new CalendarDate(
+		IRAN_HIJRI_ANCHOR.gy,
+		IRAN_HIJRI_ANCHOR.gm,
+		IRAN_HIJRI_ANCHOR.gd,
+	);
 
-	let jd = gregorianToJulian(anchor.gregorian.gy, anchor.gregorian.gm, anchor.gregorian.gd);
-
-	let ay = anchor.hijri.hy;
-	let am = anchor.hijri.hm;
-	let ad = anchor.hijri.hd;
+	let ay = IRAN_HIJRI_ANCHOR.hy;
+	let am = IRAN_HIJRI_ANCHOR.hm;
+	let ad = IRAN_HIJRI_ANCHOR.hd;
 
 	let delta = 0;
 
 	if (hy > ay || (hy === ay && hm > am) || (hy === ay && hm === am && hd > ad)) {
 		while (ay < hy || (ay === hy && am < hm)) {
-			delta += getMonthLength(ay, am) - ad + 1;
+			delta += hijriMonthLength(ay, am);
 			ad = 1;
 			am++;
 			if (am > 12) {
@@ -191,12 +107,69 @@ export function hijriToGregorian(hy: number, hm: number, hd: number): TGregorian
 				am = 12;
 				ay--;
 			}
-			delta -= getMonthLength(ay, am);
+			delta -= hijriMonthLength(ay, am);
 		}
 		delta += hd - ad;
 	}
 
-	jd += delta;
+	const result = anchorG.add({ days: delta });
 
-	return julianToGregorian(jd);
+	return {
+		gy: result.year,
+		gm: result.month,
+		gd: result.day,
+	};
+}
+
+//? Umalqura conversions
+function gregorianToHijriUmalqura(gy: number, gm: number, gd: number): THijri {
+	const g = new CalendarDate(gy, gm, gd);
+	const h = toCalendar(g, new IslamicUmalquraCalendar());
+
+	return { hy: h.year, hm: h.month, hd: h.day };
+}
+
+function hijriUmalquraToGregorian(hy: number, hm: number, hd: number): TGregorian {
+	const h = new CalendarDate(new IslamicUmalquraCalendar(), hy, hm, hd);
+	const g = toCalendar(h, new GregorianCalendar());
+
+	return { gy: g.year, gm: g.month, gd: g.day };
+}
+
+//? Public Functions
+export function hijriMonthLength(hy: number, hm: number, options?: { base?: THijriBase }): number {
+	const base = options?.base ?? "iran";
+
+	const iranMonthLength = HIJRI_MONTH_MAP.get(hy)?.get(hm);
+
+	const d = new CalendarDate(new IslamicUmalquraCalendar(), hy, hm, 1);
+	const umalquraMonthLength = d.calendar.getDaysInMonth(d);
+
+	return base === "umalqura" ? umalquraMonthLength : (iranMonthLength ?? umalquraMonthLength);
+}
+
+export function gregorianToHijri(
+	gy: number,
+	gm: number,
+	gd: number,
+	options?: { base?: THijriBase },
+): THijri {
+	const base = options?.base ?? "iran";
+
+	return base === "umalqura"
+		? gregorianToHijriUmalqura(gy, gm, gd)
+		: gregorianToHijriIran(gy, gm, gd);
+}
+
+export function hijriToGregorian(
+	hy: number,
+	hm: number,
+	hd: number,
+	options?: { base?: THijriBase },
+): TGregorian {
+	const base = options?.base ?? "iran";
+
+	return base === "umalqura"
+		? hijriUmalquraToGregorian(hy, hm, hd)
+		: hijriIranToGregorian(hy, hm, hd);
 }

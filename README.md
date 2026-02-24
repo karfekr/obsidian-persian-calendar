@@ -165,7 +165,7 @@ This tool lets you see events, add and organize notes from daily to yearly on th
 ## امکان استفاده از API اختصاصی
 این پلاگین یک API اختصاصی در اختیار شما قرار می‌دهد تا بتوانید داخل اسکریپت‌های Obsidian(مانند dataviewjs ،templater و…) از قابلیت‌های تبدیل عدد و تاریخ استفاده کنید.
 ```javascript
-const pcApi = app.plugins.getPlugin("persian-calendar")?.api;
+const pcApi = app.plugins.getPlugin("persian-calendar").api;
 
 // for numbers
 pcApi.toEnNumber("۱۲۳ تست test"); // "123 تست test"
@@ -193,7 +193,18 @@ pcApi.hijriToJalali(1448, 6, 24) // {jy: 1405, jm: 9, jd: 13}
 
 // for all events
 pcApi.checkHoliday(new Date()) // (Tehran)(is holiday?)true|false
-pcApi.dateToEvents(new Date()) // (Tehran)[{holiday, base, title},...]
+
+pcApi.dateToEvents(new Date())
+/*
+	{
+		isHoliday,
+		title: {
+			fa,
+			en,
+		}
+		categories[],
+	}[]
+*/
 ```
 
 ## دستورات تعریف شده در افزونه
@@ -222,7 +233,8 @@ pcApi.dateToEvents(new Date()) // (Tehran)[{holiday, base, title},...]
 
 - مناسبت‌های تقویم رسمی: این مناسبت‌ها به صورت رسمی در کشور تصویب شده‌اند
 - مناسبت‌های باستانی:‌ مناسبت‌های که در تقویم باستانی ایران وجود دارد
-- مناسبت‌های شیعی: مناسبت‌هایی که در تقویم شیعیان درج شده است و با تقویم هجری تنظیم شده است. تقویم رسمی ایران با برخی از مناسبت‌های شیعی تقارن دارد. بنابراین اگر مایلید مناسبت‌های تقویم رسمی ایران را داشته باشید همزمان مناسبت‌های شیعی را فعال کنید.
+- مناسبت‌های جهانی: دارای بیش از ۱۳۰ مناسبت جهانی
+- مناسبت‌های اسلامی: مناسبت‌های اهل تشیع و اهل تسنن را می‌توانید در کنار تنظیم پایه‌ی تقویم هجری قمری بر اساس ستاد استهلال ایران یا ام‌القری عربستان به کار بگیرید
 
 ![نمایش مناسبت‌های تقویم شمسی](Instructions/calendar-event.png)
 

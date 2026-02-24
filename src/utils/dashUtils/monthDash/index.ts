@@ -2,6 +2,7 @@ import {
 	extractMonthFormat,
 	isDayFormat,
 	isMonthFormat,
+	toArNumber,
 	toMonthFormat,
 } from "src/utils/formatters";
 import {
@@ -10,10 +11,13 @@ import {
 	dateToMonthName,
 	dateToStartDayOfJMonthDate,
 	jalaliMonthLength,
+	jalaliMonthToGregorianRange,
+	jalaliMonthToHijriRange,
 	jalaliToDate,
 } from "src/utils/dateUtils";
 import { dashToDate, dateToDash } from "src/utils/dashUtils";
-import type { TDateFormat } from "src/types";
+import type { TDateFormat, THijriBase, TLocal } from "src/types";
+import { GREGORIAN_MONTHS_NAME, HIJRI_MONTHS_NAME } from "src/constants";
 
 export function dateToJMonthDash(date: Date, option?: { separator?: string }) {
 	const separator = option?.separator ?? "-";
@@ -99,4 +103,60 @@ export function dashToEndDayOfJMonthDash(dashDate: string, dateFormat: TDateForm
 	}
 
 	return null;
+}
+
+export function jalaliMonthToRangeDash(
+	jy: number,
+	jm: number,
+	option: { dateFormat: Exclude<TDateFormat, "jalali">; local: TLocal; hijriBase?: THijriBase },
+) {
+	const { dateFormat, local, hijriBase } = option;
+
+	let first: {
+		year: number | string;
+		month: number;
+		monthName: string;
+	};
+
+	let last: {
+		year: number | string;
+		month: number;
+		monthName: string;
+	};
+
+	if (dateFormat === "hijri") {
+		const { firstDay, lastDay } = jalaliMonthToHijriRange(jy, jm, { base: hijriBase });
+
+		first = {
+			year: toArNumber(firstDay.hy),
+			month: firstDay.hm,
+			monthName: HIJRI_MONTHS_NAME[local][firstDay.hm],
+		};
+
+		last = {
+			year: toArNumber(firstDay.hy),
+			month: lastDay.hm,
+			monthName: HIJRI_MONTHS_NAME[local][lastDay.hm],
+		};
+	} else {
+		const { firstDay, lastDay } = jalaliMonthToGregorianRange(jy, jm);
+
+		first = {
+			year: firstDay.gy,
+			month: firstDay.gm,
+			monthName: GREGORIAN_MONTHS_NAME[local][firstDay.gm],
+		};
+
+		last = {
+			year: lastDay.gy,
+			month: lastDay.gm,
+			monthName: GREGORIAN_MONTHS_NAME[local][lastDay.gm],
+		};
+	}
+
+	if (first.month === last.month) {
+		return `${first.monthName} ${first.year}`;
+	} else {
+		return `${first.monthName} - ${last.monthName} ${last.year}`;
+	}
 }

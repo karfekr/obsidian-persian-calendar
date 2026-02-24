@@ -111,6 +111,17 @@ export default class CalendarSettings extends SettingsBase {
 			key: "showHijriDates",
 			refresh: true,
 		});
+		this.addDropdownSetting(containerEl, {
+			name: "پایه‌ی تقویم هجری قمری",
+			desc: "بر پایه‌ی مرجع انتخابی، تاریخ هجری قمری ممکن است متفاوت نمایش داده شود.",
+			key: "hijriBase",
+			options: {
+				iran: "ستاد استهلال ایران",
+				umalqura: "ام‌القری عربستان",
+			},
+			defaultValue: "iran",
+			refresh: true,
+		});
 
 		containerEl.createEl("h2", { text: "نمایش تعطیلات" });
 		this.addToggleSetting(containerEl, {
@@ -149,6 +160,11 @@ export default class CalendarSettings extends SettingsBase {
 			key: "showIRAncientEvents",
 		});
 		this.addToggleSetting(containerEl, {
+			name: "نمایش مناسبت‌های جهانی",
+			desc: "آیا مایلید مناسبت‌های جهانی نمایش داده شود؟",
+			key: "showGlobalEvents",
+		});
+		this.addToggleSetting(containerEl, {
 			name: "نمایش مناسبت‌های اهل تشیع",
 			desc: "آیا مایلید مناسبت‌های اهل تشیع نمایش داده شود؟",
 			key: "showShiaEvents",
@@ -157,11 +173,6 @@ export default class CalendarSettings extends SettingsBase {
 			name: "نمایش مناسبت‌های اهل تسنن",
 			desc: "آیا مایلید مناسبت‌های اهل تسنن نمایش داده شود؟",
 			key: "showSunniEvents",
-		});
-		this.addToggleSetting(containerEl, {
-			name: "نمایش مناسبت‌های جهانی",
-			desc: "آیا مایلید مناسبت‌های جهانی نمایش داده شود؟",
-			key: "showGlobalEvents",
 		});
 	}
 }

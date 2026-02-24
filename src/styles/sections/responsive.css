@@ -1,4 +1,4 @@
-@container persian-calendar (max-width: 290px) {
+@container persian-calendar (max-width: 300px) {
 	.persian-calendar__gmonth-gyear,
 	.persian-calendar__gregorian-day--center,
 	.persian-calendar__gregorian-day--corner,

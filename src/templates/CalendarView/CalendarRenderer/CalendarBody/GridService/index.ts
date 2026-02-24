@@ -1,9 +1,11 @@
 import CalendarState from "src/templates/CalendarView/CalendarState";
 import {
+	dateToJalali,
 	jalaliMonthLength,
 	jalaliToDate,
 	jalaliToGregorian,
 	jalaliToHijri,
+	todayTehran,
 } from "src/utils/dateUtils";
 import { checkHoliday } from "src/utils/eventUtils";
 import type { TSetting, TMonthGridCell } from "src/types";
@@ -98,7 +100,7 @@ export default class GridService {
 		for (let index = 0; index < totalCells; index++) {
 			const {
 				dayIndex,
-				dayNumber: jd,
+				dayNumber: cellJd,
 				cellJy,
 				cellJm,
 				isInCurrentMonth,
@@ -112,9 +114,9 @@ export default class GridService {
 				firstDayOfWeekIndex,
 			});
 
-			const date = jalaliToDate(cellJy, cellJm, jd);
-			const gregorian = jalaliToGregorian(cellJy, cellJm, jd);
-			const hijri = jalaliToHijri(cellJy, cellJm, jd);
+			const date = jalaliToDate(cellJy, cellJm, cellJd);
+			const gregorian = jalaliToGregorian(cellJy, cellJm, cellJd);
+			const hijri = jalaliToHijri(cellJy, cellJm, cellJd, { base: this.settings.hijriBase });
 
 			let isHoliday = false;
 			let isWeekendFlag = false;
@@ -128,7 +130,8 @@ export default class GridService {
 				}
 			}
 
-			const isToday = isInCurrentMonth && this.calendarState.isToday(cellJy, cellJm, jd);
+			const today = dateToJalali(todayTehran());
+			const isToday = isInCurrentMonth && today.jy === jy && today.jm === jm && today.jd === cellJd;
 
 			const row = Math.floor(index / 7);
 			const column = index % 7;
@@ -139,7 +142,7 @@ export default class GridService {
 				column,
 				jy: cellJy,
 				jm: cellJm,
-				jd,
+				jd: cellJd,
 				isInCurrentMonth,
 				isToday,
 				isWeekend: isWeekendFlag,

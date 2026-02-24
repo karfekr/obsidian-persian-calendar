@@ -45,6 +45,9 @@ export type TGetDayOfWeek = { jYear: number; jWeekNumber: number };
 export type TSupportedHijriYear = keyof typeof IRAN_HIJRI_MONTHS;
 
 export type TDateFormat = "jalali" | "gregorian" | "hijri";
+export type THijriBase = "iran" | "umalqura";
+
+export type TDateFormatWithoutHijri = Exclude<TDateFormat, "hijri">;
 
 export type TShowEvents = {
 	showIROfficialEvents?: boolean;
@@ -55,16 +58,7 @@ export type TShowEvents = {
 	showGlobalEvents?: boolean;
 };
 
-export type THijriAnchor = {
-	first: {
-		gregorian: { gy: number; gm: number; gd: number };
-		hijri: { hy: number; hm: number; hd: number };
-	};
-	last: {
-		gregorian: { gy: number; gm: number; gd: number };
-		hijri: { hy: number; hm: number; hd: number };
-	};
-};
+export type THijriAnchor = TGregorian & THijri;
 
 export type TBoolSettingKeys = Extract<
 	keyof TSetting,
@@ -87,12 +81,13 @@ export type TSetting = {
 	versionUpdate: boolean;
 	askForCreateNote: boolean;
 	openDailyNoteOnStartup: boolean;
-	dateFormat: TDateFormat;
+	dateFormat: TDateFormatWithoutHijri;
 	showSeasonalNotes: boolean;
 	// show holidays
 	showHolidays: boolean;
 	weekendDays: "thursday-friday" | "friday" | "friday-saturday";
 	// show dates
+	hijriBase: THijriBase;
 	showGeorgianDates: boolean;
 	showHijriDates: boolean;
 	// notes folder path

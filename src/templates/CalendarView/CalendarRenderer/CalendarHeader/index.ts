@@ -5,6 +5,7 @@ import { NoteService } from "src/services";
 import CalendarNavigation from "../CalendarNavigation";
 import { jalaliMonthName } from "src/utils/dateUtils";
 import type { TSetting } from "src/types";
+import { jalaliMonthToRangeDash } from "src/utils/dashUtils";
 
 export default class CalendarHeaderRender {
 	constructor(
@@ -31,12 +32,19 @@ export default class CalendarHeaderRender {
 		});
 
 		if (this.settings.showGeorgianDates) {
-			const georgianMonthRange = this.calendarState.getGeorgianMonthRange(jYearState, jMonthState);
+			const georgianMonthRange = jalaliMonthToRangeDash(jYearState, jMonthState, {
+				local: "en",
+				dateFormat: "gregorian",
+			});
 			georgianMonthYearEl.textContent = georgianMonthRange;
 		}
 
 		if (this.settings.showHijriDates) {
-			const hijriMonthRange = this.calendarState.getHijriMonthRange(jYearState, jMonthState);
+			const hijriMonthRange = jalaliMonthToRangeDash(jYearState, jMonthState, {
+				local: "fa",
+				dateFormat: "hijri",
+				hijriBase: this.settings.hijriBase,
+			});
 			hijriMonthYearEl.textContent = hijriMonthRange;
 		}
 

@@ -113,14 +113,11 @@ export const IRAN_HIJRI_MONTHS = {
 	1448: [30, 29, 30, 29, 30, 30, 30, 29, 30, 29],
 } as const;
 
-//! https://www.time.ir/convert-date
-export const IRAN_HIJRI_ANCHORS: THijriAnchor = {
-	first: {
-		gregorian: { gy: 1921, gm: 9, gd: 4 },
-		hijri: { hy: 1340, hm: 1, hd: 1 },
-	},
-	last: {
-		gregorian: { gy: 2026, gm: 3, gd: 20 },
-		hijri: { hy: 1447, hm: 9, hd: 30 },
-	},
+export const IRAN_HIJRI_ANCHOR: THijriAnchor = {
+	gy: 2026,
+	gm: 3,
+	gd: 20,
+	hy: 1447,
+	hm: 9,
+	hd: 30,
 };

@@ -8,6 +8,7 @@ export const DEFAULT_SETTING: TSetting = {
 	showSeasonalNotes: true,
 	showHolidays: true,
 	weekendDays: "friday",
+	hijriBase: "iran",
 	showGeorgianDates: true,
 	showHijriDates: true,
 	dailyNotesPath: "Journal/jYYYY/روزنوشت",
@@ -22,8 +23,8 @@ export const DEFAULT_SETTING: TSetting = {
 	yearlyTemplatePath: "",
 	showIROfficialEvents: true,
 	showIRHistoricalEvents: true,
-	showIRAncientEvents: false,
+	showIRAncientEvents: true,
+	showGlobalEvents: true,
 	showShiaEvents: false,
 	showSunniEvents: false,
-	showGlobalEvents: false,
 };

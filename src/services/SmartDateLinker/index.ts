@@ -8,11 +8,11 @@ import {
 	dateToDash,
 } from "src/utils/dashUtils";
 import { SMART_DATE_LINKS, WEEKDAYS_NAME } from "src/constants";
-import type { TDateFormat, TLocal, TSuggestProvider } from "src/types";
+import type { TDateFormatWithoutHijri, TLocal, TSuggestProvider } from "src/types";
 
 export default class SmartDateLinker {
 	plugin: PersianCalendarPlugin;
-	dateFormat: Omit<TDateFormat, "hijri">;
+	dateFormat: TDateFormatWithoutHijri;
 
 	constructor(plugin: PersianCalendarPlugin) {
 		this.plugin = plugin;
