@@ -1,44 +1,20 @@
 import { JALALI_EVENTS, HIJRI_EVENTS, GREGORIAN_EVENTS } from "src/constants";
-import type {
-	TMonthMap,
-	TEventObject,
-	TDateFormat,
-	TShowEvents,
-	TEventObjectWithoutDate,
-} from "src/types";
+import type { TEventObject, TDateFormat, TShowEvents, TEventRecord, TLocal } from "src/types";
 import { dateToGregorian, dateToHijri, dateToJalali } from "src/utils/dateUtils";
 import { dashToDate } from "src/utils/dashUtils";
 
-const JALALI_EVENT_MAP: TMonthMap = buildEventMap(JALALI_EVENTS);
-const HIJRI_EVENT_MAP: TMonthMap = buildEventMap(HIJRI_EVENTS);
-const GREGORIAN_EVENT_MAP: TMonthMap = buildEventMap(GREGORIAN_EVENTS);
-
-function buildEventMap(events: TEventObject[]): TMonthMap {
-	const monthMap: TMonthMap = new Map();
-
-	for (const event of events) {
-		if (!monthMap.has(event.month)) {
-			monthMap.set(event.month, new Map());
-		}
-
-		const dayMap = monthMap.get(event.month)!;
-
-		if (!dayMap.has(event.day)) {
-			dayMap.set(event.day, []);
-		}
-
-		dayMap.get(event.day)!.push(event);
-	}
-
-	return monthMap;
+function getEventsFromRecord(record: TEventRecord, month: number, day: number): TEventObject[] {
+	return record[month]?.[day] ?? [];
 }
 
 // (Date) => Events[]
-export function dateToEvents(date: Date, option: TShowEvents = {}): TEventObjectWithoutDate[] {
+export function dateToEvents(date: Date, option: TShowEvents = {}): TEventObject[] {
 	const {
-		showIRGovernmentEvents = false,
+		showIROfficialEvents = false,
+		showIRHistoricalEvents = false,
 		showIRAncientEvents = false,
-		showIRIslamEvents = false,
+		showShiaEvents = false,
+		showSunniEvents = false,
 		showGlobalEvents = false,
 	} = option;
 
@@ -46,42 +22,41 @@ export function dateToEvents(date: Date, option: TShowEvents = {}): TEventObject
 	const { gm, gd } = dateToGregorian(date);
 	const { hm, hd } = dateToHijri(date);
 
-	const jalaliEventsRaw = JALALI_EVENT_MAP.get(jm)?.get(jd) ?? [];
-	const gregorianEventsRaw = GREGORIAN_EVENT_MAP.get(gm)?.get(gd) ?? [];
-	const hijriEventsRaw = HIJRI_EVENT_MAP.get(hm)?.get(hd) ?? [];
-
-	const jalaliEvents = jalaliEventsRaw.filter((event) => {
-		if (event.base === "IR Government") return showIRGovernmentEvents;
-		if (event.base === "IR Ancient") return showIRAncientEvents;
+	const jalaliEvents = getEventsFromRecord(JALALI_EVENTS, jm, jd).filter((event) => {
+		if (event.categories.includes("official")) return showIROfficialEvents;
+		if (event.categories.includes("historical")) return showIRHistoricalEvents;
+		if (event.categories.includes("ancient")) return showIRAncientEvents;
 		return false;
 	});
 
-	const gregorianEvents = gregorianEventsRaw.filter(
-		(event) => event.base === "Global" && showGlobalEvents,
+	const gregorianEvents = getEventsFromRecord(GREGORIAN_EVENTS, gm, gd).filter(
+		(event) => event.categories.includes("global") && showGlobalEvents,
 	);
 
-	const hijriEvents = hijriEventsRaw.filter(
-		(event) => event.base === "IR Islam" && showIRIslamEvents,
+	const hijriEvents = getEventsFromRecord(HIJRI_EVENTS, hm, hd).filter(
+		(event) =>
+			(event.categories.includes("official") && showIROfficialEvents) ||
+			(event.categories.includes("historical") && showIRHistoricalEvents) ||
+			(event.categories.includes("shia") && showShiaEvents) ||
+			(event.categories.includes("sunni") && showSunniEvents),
 	);
 
-	const events = [];
-	events.push(...jalaliEvents, ...gregorianEvents, ...hijriEvents);
-
-	return events.map(({ month, day, ...rest }: TEventObject) => rest);
+	return [...jalaliEvents, ...gregorianEvents, ...hijriEvents];
 }
 
 // (Date) => (is holiday?)true|false
 export function checkHoliday(date: Date): boolean {
-	// برای چک کردن تعطیلی، لازمه همه‌اشون بررسی بشه
-	const option = {
-		showIRGovernmentEvents: true,
+	const option: TShowEvents = {
+		showIROfficialEvents: true,
+		showIRHistoricalEvents: true,
 		showIRAncientEvents: true,
-		showIRIslamEvents: true,
+		showShiaEvents: true,
+		showSunniEvents: true,
 		showGlobalEvents: true,
 	};
 
 	const events = dateToEvents(date, option);
-	return events.some((event) => event.holiday === true);
+	return events.some((event) => event.isHoliday === true);
 }
 
 // ("jy-jm-jd"|"jyjmjd"|"gy-gm-gd"|"gygmgd") => Events[]
@@ -89,7 +64,7 @@ export function dashToEvents(
 	dashDate: string,
 	dateFormat: TDateFormat,
 	option: TShowEvents,
-): TEventObjectWithoutDate[] | null {
+): TEventObject[] | null {
 	const date = dashToDate(dashDate, dateFormat);
 	if (!date) return null;
 
@@ -97,10 +72,12 @@ export function dashToEvents(
 }
 
 // (Events[]) => String(Events[])
-export function eventsToString(events: TEventObjectWithoutDate[] | null) {
-	if (!events) {
+export function eventsToString(events: TEventObject[] | null, local: TLocal = "fa"): string {
+	if (!events || events.length === 0) {
 		return "هیچ مناسبتی برای این روز ثبت نشده است.";
 	}
 
-	return events.map(({ title, holiday }) => "- " + title + (holiday ? " (تعطیل)" : "")).join("\n");
+	return events
+		.map((event) => "- " + event.title[local] + (event.isHoliday ? " (تعطیل)" : ""))
+		.join("\n");
 }

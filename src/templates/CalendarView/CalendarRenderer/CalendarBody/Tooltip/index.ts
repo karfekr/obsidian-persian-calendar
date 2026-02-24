@@ -1,4 +1,4 @@
-import type { TEventObjectWithoutDate } from "src/types";
+import type { TEventObject, TLocal } from "src/types";
 
 export default class Tooltip {
 	private tooltipWrapperSelector = ".persian-calendar--tooltip-wrapper";
@@ -31,15 +31,15 @@ export default class Tooltip {
 		return { wrapper, tooltip: tooltip! };
 	}
 
-	public showTooltip(e: MouseEvent | TouchEvent, events: TEventObjectWithoutDate[]) {
+	public showTooltip(e: MouseEvent | TouchEvent, events: TEventObject[], local: TLocal = "fa") {
 		const { tooltip } = this.getOrCreateTooltip();
 
 		tooltip.innerHTML = events
 			.map(
-				({ title, holiday }) =>
+				({ title, isHoliday }) =>
 					`<div class="persian-calendar__tooltip-event${
-						holiday ? " persian-calendar__day--holiday" : ""
-					}">${title}</div>`,
+						isHoliday ? " persian-calendar__day--holiday" : ""
+					}">${title[local]}</div>`,
 			)
 			.join("");
 

@@ -134,22 +134,32 @@ export default class CalendarSettings extends SettingsBase {
 
 		containerEl.createEl("h2", { text: "نمایش مناسبت‌ها" });
 		this.addToggleSetting(containerEl, {
-			name: "نمایش مناسبت‌های رسمی ایران(هجری شمسی)",
-			desc: "آیا مایلید مناسبت‌های رسمی ایران نمایش داده شود؟",
-			key: "showIRGovernmentEvents",
+			name: "نمایش مناسبت‌های سیاسی ایران",
+			desc: "آیا مایلید مناسبت‌های سیاسی رسمی ایران نمایش داده شود؟",
+			key: "showIROfficialEvents",
 		});
 		this.addToggleSetting(containerEl, {
-			name: "نمایش مناسبت‌های باستانی(هجری شمسی)",
+			name: "نمایش مناسبت‌های تاریخی ایران",
+			desc: "آیا مایلید مناسبت‌های تاریخ ایران نمایش داده شود؟",
+			key: "showIRHistoricalEvents",
+		});
+		this.addToggleSetting(containerEl, {
+			name: "نمایش مناسبت‌های باستانی",
 			desc: "آیا مایلید مناسبت‌های ایران باستان نمایش داده شود؟",
 			key: "showIRAncientEvents",
 		});
 		this.addToggleSetting(containerEl, {
-			name: "نمایش مناسبت‌های شیعی(هجری قمری)",
-			desc: "آیا مایلید مناسبت‌های شیعی نمایش داده شود؟",
-			key: "showIRIslamEvents",
+			name: "نمایش مناسبت‌های اهل تشیع",
+			desc: "آیا مایلید مناسبت‌های اهل تشیع نمایش داده شود؟",
+			key: "showShiaEvents",
 		});
 		this.addToggleSetting(containerEl, {
-			name: "نمایش مناسبت‌های جهانی(میلادی)",
+			name: "نمایش مناسبت‌های اهل تسنن",
+			desc: "آیا مایلید مناسبت‌های اهل تسنن نمایش داده شود؟",
+			key: "showSunniEvents",
+		});
+		this.addToggleSetting(containerEl, {
+			name: "نمایش مناسبت‌های جهانی",
 			desc: "آیا مایلید مناسبت‌های جهانی نمایش داده شود؟",
 			key: "showGlobalEvents",
 		});

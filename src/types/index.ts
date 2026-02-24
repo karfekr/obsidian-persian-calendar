@@ -1,5 +1,5 @@
 import type { EditorSuggestContext } from "obsidian";
-import type { HIJRI_MONTHS_LENGTH } from "src/constants";
+import type { IRAN_HIJRI_MONTHS } from "src/constants";
 
 // jalali = هجری شمسی/خورشیدی
 export type TJalali = {
@@ -24,31 +24,34 @@ export type THijri = {
 
 export type TWeekStart = "sat" | "sun" | "mon";
 
-export type TEventBase = "IR Government" | "IR Islam" | "IR Ancient" | "Global";
+export type TEventRecord = Record<number, Record<number, TEventObject[]>>;
+
+export type TEventCategory = "official" | "historical" | "ancient" | "shia" | "sunni" | "global";
 
 export type TEventObject = {
-	holiday: boolean;
-	month: number;
-	day: number;
-	base: TEventBase;
-	title: string;
+	isHoliday: boolean;
+	categories: TEventCategory[];
+	title: {
+		fa: string;
+		en: string;
+	};
 };
-
-export type TEventObjectWithoutDate = Omit<TEventObject, "month" | "day">;
 
 export type TDayMap = Map<number, TEventObject[]>;
 export type TMonthMap = Map<number, TDayMap>;
 
 export type TGetDayOfWeek = { jYear: number; jWeekNumber: number };
 
-export type TSupportedHijriYear = keyof typeof HIJRI_MONTHS_LENGTH;
+export type TSupportedHijriYear = keyof typeof IRAN_HIJRI_MONTHS;
 
 export type TDateFormat = "jalali" | "gregorian" | "hijri";
 
 export type TShowEvents = {
-	showIRGovernmentEvents?: boolean;
+	showIROfficialEvents?: boolean;
+	showIRHistoricalEvents?: boolean;
 	showIRAncientEvents?: boolean;
-	showIRIslamEvents?: boolean;
+	showShiaEvents?: boolean;
+	showSunniEvents?: boolean;
 	showGlobalEvents?: boolean;
 };
 
@@ -69,9 +72,11 @@ export type TBoolSettingKeys = Extract<
 	| "showGeorgianDates"
 	| "showHijriDates"
 	| "showHolidays"
-	| "showIRGovernmentEvents"
+	| "showIROfficialEvents"
+	| "showIRHistoricalEvents"
 	| "showIRAncientEvents"
-	| "showIRIslamEvents"
+	| "showShiaEvents"
+	| "showSunniEvents"
 	| "showGlobalEvents"
 	| "askForCreateNote"
 	| "openDailyNoteOnStartup"
@@ -103,9 +108,11 @@ export type TSetting = {
 	seasonalTemplatePath: string;
 	yearlyTemplatePath: string;
 	// show events
-	showIRGovernmentEvents: boolean;
+	showIROfficialEvents: boolean;
+	showIRHistoricalEvents: boolean;
 	showIRAncientEvents: boolean;
-	showIRIslamEvents: boolean;
+	showShiaEvents: boolean;
+	showSunniEvents: boolean;
 	showGlobalEvents: boolean;
 };
 

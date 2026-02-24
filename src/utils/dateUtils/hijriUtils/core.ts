@@ -1,8 +1,8 @@
-import { HIJRI_ANCHORS, HIJRI_MONTHS_LENGTH } from "src/constants";
+import { IRAN_HIJRI_ANCHORS, IRAN_HIJRI_MONTHS } from "src/constants";
 import type { THijri, TGregorian, TSupportedHijriYear } from "src/types";
 
 //? --- Core ---
-const HIJRI_MONTH_MAP: Map<number, Map<number, 29 | 30>> = buildHijriMonthMap(HIJRI_MONTHS_LENGTH);
+const HIJRI_MONTH_MAP: Map<number, Map<number, 29 | 30>> = buildHijriMonthMap(IRAN_HIJRI_MONTHS);
 
 function buildHijriMonthMap(
 	raw: Record<number, readonly number[]>,
@@ -89,12 +89,12 @@ function julianToGregorian(julianDay: number): TGregorian {
 }
 
 function pickNearestAnchorByJulian(jd: number) {
-	let best = HIJRI_ANCHORS.first;
+	let best = IRAN_HIJRI_ANCHORS.first;
 	let minDelta = Math.abs(
 		jd - gregorianToJulian(best.gregorian.gy, best.gregorian.gm, best.gregorian.gd),
 	);
 
-	for (const a of [HIJRI_ANCHORS.last]) {
+	for (const a of [IRAN_HIJRI_ANCHORS.last]) {
 		const ajd = gregorianToJulian(a.gregorian.gy, a.gregorian.gm, a.gregorian.gd);
 		const d = Math.abs(jd - ajd);
 		if (d < minDelta) {
@@ -107,8 +107,8 @@ function pickNearestAnchorByJulian(jd: number) {
 }
 
 function pickNearestAnchorByHijri(hy: number, hm: number) {
-	const first = HIJRI_ANCHORS.first;
-	const last = HIJRI_ANCHORS.last;
+	const first = IRAN_HIJRI_ANCHORS.first;
+	const last = IRAN_HIJRI_ANCHORS.last;
 
 	const d1 = Math.abs(hy - first.hijri.hy) * 12 + Math.abs(hm - first.hijri.hm);
 	const d2 = Math.abs(hy - last.hijri.hy) * 12 + Math.abs(hm - last.hijri.hm);

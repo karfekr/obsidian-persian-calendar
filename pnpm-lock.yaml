@@ -12,9 +12,6 @@ importers:
         specifier: ^3.11.0
         version: 3.11.0
     devDependencies:
-      '@types/jalaali-js':
-        specifier: ^1.2.0
-        version: 1.2.0
       '@types/node':
         specifier: ^25.0.3
         version: 25.0.3
@@ -434,9 +431,6 @@ packages:
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
-
-  '@types/jalaali-js@1.2.0':
-    resolution: {integrity: sha512-DRQKjbfFe0/v3siCou9eFzYjDxJItkJpxbU+/CSptvoRqq2/VmTA6y8QvqK/VELKW6xX3qb174nLZlrFV9OT3Q==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -1606,8 +1600,6 @@ snapshots:
   '@types/deep-eql@4.0.2': {}
 
   '@types/estree@1.0.8': {}
-
-  '@types/jalaali-js@1.2.0': {}
 
   '@types/json-schema@7.0.15': {}
 

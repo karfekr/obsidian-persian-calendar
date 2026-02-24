@@ -39,9 +39,11 @@ export default class ApiService {
 			checkHoliday,
 			dateToEvents: (date: Date) =>
 				dateToEvents(date, {
-					showIRGovernmentEvents: true,
+					showIROfficialEvents: true,
+					showIRHistoricalEvents: true,
 					showIRAncientEvents: true,
-					showIRIslamEvents: true,
+					showShiaEvents: true,
+					showSunniEvents: true,
 					showGlobalEvents: true,
 				}),
 		});

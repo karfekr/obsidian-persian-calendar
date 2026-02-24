@@ -14,5 +14,3 @@ pnpm-lock.yaml
 *.ico
 *.svg
 *.pdf
-
-src/constants/eventDays/*

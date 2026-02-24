@@ -165,7 +165,7 @@ This tool lets you see events, add and organize notes from daily to yearly on th
 ## امکان استفاده از API اختصاصی
 این پلاگین یک API اختصاصی در اختیار شما قرار می‌دهد تا بتوانید داخل اسکریپت‌های Obsidian(مانند dataviewjs ،templater و…) از قابلیت‌های تبدیل عدد و تاریخ استفاده کنید.
 ```javascript
-const pcApi = app.plugins.plugins["persian-calendar"].api;
+const pcApi = app.plugins.getPlugin("persian-calendar")?.api;
 
 // for numbers
 pcApi.toEnNumber("۱۲۳ تست test"); // "123 تست test"
