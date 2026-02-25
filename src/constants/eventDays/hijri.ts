@@ -92,7 +92,15 @@ export const HIJRI_EVENTS: TEventRecord = {
 		28: [
 			{
 				isHoliday: true,
-				categories: ["shia", "sunni", "official"],
+				categories: ["shia", "official"],
+				title: {
+					fa: "رحلت پیامبر(ص)",
+					en: "Passing of Prophet Muhammad",
+				},
+			},
+			{
+				isHoliday: false,
+				categories: ["sunni"],
 				title: {
 					fa: "رحلت پیامبر(ص)",
 					en: "Passing of Prophet Muhammad",
@@ -433,7 +441,15 @@ export const HIJRI_EVENTS: TEventRecord = {
 		27: [
 			{
 				isHoliday: true,
-				categories: ["shia", "sunni", "official"],
+				categories: ["shia", "official"],
+				title: {
+					fa: "مبعث پیامبر(ص)، شب معراج",
+					en: "Mab'ath of Prophet Muhammad, Isra and Mi'raj",
+				},
+			},
+			{
+				isHoliday: false,
+				categories: ["sunni"],
 				title: {
 					fa: "مبعث پیامبر(ص)، شب معراج",
 					en: "Mab'ath of Prophet Muhammad, Isra and Mi'raj",
@@ -583,14 +599,12 @@ export const HIJRI_EVENTS: TEventRecord = {
 		1: [
 			{
 				isHoliday: true,
-				categories: ["shia", "sunni", "official"],
+				categories: ["shia", "official"],
 				title: { fa: "عید سعید فطر", en: "Eid al-Fitr" },
 			},
-		],
-		2: [
 			{
-				isHoliday: true,
-				categories: ["shia", "sunni"],
+				isHoliday: false,
+				categories: ["sunni"],
 				title: { fa: "عید سعید فطر", en: "Eid al-Fitr" },
 			},
 		],
@@ -695,7 +709,12 @@ export const HIJRI_EVENTS: TEventRecord = {
 		10: [
 			{
 				isHoliday: true,
-				categories: ["shia", "sunni", "official"],
+				categories: ["shia", "official"],
+				title: { fa: "عید سعید قربان", en: "Eid al-Adha" },
+			},
+			{
+				isHoliday: false,
+				categories: ["sunni"],
 				title: { fa: "عید سعید قربان", en: "Eid al-Adha" },
 			},
 		],

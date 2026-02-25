@@ -128,13 +128,13 @@ export function jalaliMonthToRangeDash(
 		const { firstDay, lastDay } = jalaliMonthToHijriRange(jy, jm, { base: hijriBase });
 
 		first = {
-			year: toArNumber(firstDay.hy),
+			year: local === "fa" ? toArNumber(firstDay.hy) : firstDay.hy,
 			month: firstDay.hm,
 			monthName: HIJRI_MONTHS_NAME[local][firstDay.hm],
 		};
 
 		last = {
-			year: toArNumber(firstDay.hy),
+			year: local === "fa" ? toArNumber(firstDay.hy) : firstDay.hy,
 			month: lastDay.hm,
 			monthName: HIJRI_MONTHS_NAME[local][lastDay.hm],
 		};

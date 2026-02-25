@@ -6,33 +6,31 @@ export default class Tooltip {
 	private offsetX = 10;
 	private offsetY = 10;
 
-	private getOrCreateTooltip(): { wrapper: HTMLElement; tooltip: HTMLElement } {
+	private getOrCreateTooltip(local: TLocal): { wrapper: HTMLElement; tooltip: HTMLElement } {
 		let wrapper = document.querySelector(this.tooltipWrapperSelector) as HTMLElement | null;
 		let tooltip: HTMLElement | null = null;
 
 		if (!wrapper) {
 			wrapper = document.createElement("div");
 			wrapper.className = "persian-calendar persian-calendar--tooltip-wrapper";
+			document.body.appendChild(wrapper);
+		}
 
+		const dir = local === "fa" ? "rtl" : "ltr";
+		wrapper.setAttribute("dir", dir);
+
+		tooltip = wrapper.querySelector(this.tooltipSelector) as HTMLElement | null;
+		if (!tooltip) {
 			tooltip = document.createElement("div");
 			tooltip.className = "persian-calendar__tooltip";
-
 			wrapper.appendChild(tooltip);
-			document.body.appendChild(wrapper);
-		} else {
-			tooltip = wrapper.querySelector(this.tooltipSelector) as HTMLElement | null;
-			if (!tooltip) {
-				tooltip = document.createElement("div");
-				tooltip.className = "persian-calendar__tooltip";
-				wrapper.appendChild(tooltip);
-			}
 		}
 
 		return { wrapper, tooltip: tooltip! };
 	}
 
-	public showTooltip(e: MouseEvent | TouchEvent, events: TEventObject[], local: TLocal = "fa") {
-		const { tooltip } = this.getOrCreateTooltip();
+	public showTooltip(e: MouseEvent | TouchEvent, events: TEventObject[], local: TLocal) {
+		const { tooltip } = this.getOrCreateTooltip(local);
 
 		tooltip.innerHTML = events
 			.map(

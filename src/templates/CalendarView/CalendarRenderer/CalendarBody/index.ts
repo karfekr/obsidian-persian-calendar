@@ -9,7 +9,8 @@ import { NoteService } from "src/services";
 import CalendarNavigation from "../CalendarNavigation";
 import Tooltip from "./Tooltip";
 import GridService from "./GridService";
-import RTLNotice from "src/components/RTLNotice";
+import Notice from "src/components/Notice";
+import { getDirection, t } from "src/i18n";
 
 export default class CalendarBodyRender {
 	private readonly tooltip: Tooltip;
@@ -18,18 +19,18 @@ export default class CalendarBodyRender {
 	constructor(
 		private readonly calendarState: CalendarState,
 		private readonly notesService: NoteService,
-		private readonly settings: TSetting,
+		private readonly setting: TSetting,
 		private readonly onRefresh: () => Promise<void> | void,
 		private readonly navigation: CalendarNavigation,
 	) {
 		this.tooltip = new Tooltip();
-		this.gridService = new GridService(calendarState, settings);
+		this.gridService = new GridService(calendarState, setting);
 	}
 
 	public async renderContent(contentEl: HTMLElement, local: TLocal = "fa") {
 		const { jYearState, jMonthState } = this.calendarState.getJState();
 		await this.renderWeekNumbers(contentEl, { jy: jYearState, jm: jMonthState });
-		await this.renderDaysGrid(contentEl, { jy: jYearState, jm: jMonthState }, local);
+		await this.renderDaysGrid(contentEl, { jy: jYearState, jm: jMonthState });
 	}
 
 	public async renderSeasonalNotesRow(containerEl: HTMLElement, local: TLocal = "fa") {
@@ -79,7 +80,7 @@ export default class CalendarBodyRender {
 		iconEl?.addEventListener("click", async (e) => {
 			e.stopPropagation();
 			await this.onRefresh();
-			RTLNotice("نمایش تقویم بروزرسانی شد.");
+			Notice(t("notice.success.refreshView"), getDirection());
 		});
 
 		const { jy, jm } = jalaliDate;
@@ -108,18 +109,14 @@ export default class CalendarBodyRender {
 		}
 	}
 
-	private async renderDaysGrid(
-		contentEl: HTMLElement,
-		jalaliDate: { jy: number; jm: number },
-		local: TLocal = "fa",
-	) {
+	private async renderDaysGrid(contentEl: HTMLElement, jalaliDate: { jy: number; jm: number }) {
 		const weekdaysHeader = contentEl.createEl("div", {
 			cls: "persian-calendar__weekday--container",
 		});
 
 		const { jy, jm } = jalaliDate;
 
-		const weekdays_name = WEEKDAYS_NAME[local];
+		const weekdays_name = WEEKDAYS_NAME[this.setting.language];
 		for (let i = 1; i <= 7; i++) {
 			const fullName = weekdays_name[i];
 			const shortName = fullName.charAt(0);
@@ -135,9 +132,12 @@ export default class CalendarBodyRender {
 
 		const attachTooltipListeners = (dayEl: HTMLElement, date: Date) => {
 			const handler = (e: MouseEvent | TouchEvent) => {
-				const events = dateToEvents(date, this.settings);
+				const events = dateToEvents(date, {
+					showEvents: this.setting,
+					hijriBase: this.setting.hijriBase,
+				});
 				if (events.length > 0) {
-					this.tooltip.showTooltip(e, events);
+					this.tooltip.showTooltip(e, events, this.setting.language);
 				}
 			};
 
@@ -173,7 +173,7 @@ export default class CalendarBodyRender {
 				dayEl.addClass("persian-calendar__no-note");
 			}
 
-			const { showGeorgianDates, showHijriDates } = this.settings;
+			const { showGeorgianDates, showHijriDates } = this.setting;
 			const showBothCalendars = showGeorgianDates && showHijriDates;
 
 			if (cell.isInCurrentMonth) {

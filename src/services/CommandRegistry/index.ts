@@ -8,7 +8,8 @@ import {
 	todayTehran,
 } from "src/utils/dateUtils";
 import { gregorianDashToJalaliDash, jalaliDashToGregorianDash } from "src/utils/dashUtils";
-import RTLNotice from "src/components/RTLNotice";
+import Notice from "src/components/Notice";
+import { getDirection, t } from "src/i18n";
 
 export default class CommandRegistry {
 	constructor(private plugin: PersianCalendarPlugin) {}
@@ -28,7 +29,7 @@ export default class CommandRegistry {
 			editorCallback: async (editor, view) => {
 				if (view.file) {
 					await this.plugin.placeholder.insertPersianDate(view.file);
-					RTLNotice("جایگزینی با موفقیت انجام شد.");
+					Notice(t("notice.success.placeholder"), getDirection());
 				}
 			},
 		});
@@ -121,7 +122,7 @@ export default class CommandRegistry {
 				const text = editor.getLine(line);
 
 				if (!/\b(\d{4})-(\d{2})-(\d{2})\b/.test(text)) {
-					RTLNotice("خط فعلی شامل تاریخ با الگوی YYYY-MM-DD نیست.");
+					Notice("خط فعلی شامل تاریخ با الگوی YYYY-MM-DD نیست.");
 					return;
 				}
 

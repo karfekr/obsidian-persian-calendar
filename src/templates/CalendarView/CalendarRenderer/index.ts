@@ -14,21 +14,21 @@ export default class CalendarRenderer {
 		private readonly containerEl: HTMLElement,
 		private readonly calendarState: CalendarState,
 		private readonly notesService: NoteService,
-		private readonly settings: TSetting,
+		private readonly setting: TSetting,
 	) {
 		this.navigation = new CalendarNavigation(this.calendarState, () => this.render());
 
 		this.headerRenderer = new CalendarHeaderRender(
 			this.calendarState,
 			this.notesService,
-			this.settings,
+			this.setting,
 			this.navigation,
 		);
 
 		this.bodyRenderer = new CalendarBodyRender(
 			this.calendarState,
 			this.notesService,
-			this.settings,
+			this.setting,
 			() => this.render(),
 			this.navigation,
 		);
@@ -39,14 +39,15 @@ export default class CalendarRenderer {
 		containerEl.empty();
 
 		containerEl.addClass("persian-calendar", "persian-calendar__calendar");
+		containerEl.setAttr("dir", "rtl");
 
 		await this.headerRenderer.render(containerEl);
 
-		if (this.settings.showSeasonalNotes) {
-			await this.bodyRenderer.renderSeasonalNotesRow(containerEl);
+		if (this.setting.showSeasonalNotes) {
+			await this.bodyRenderer.renderSeasonalNotesRow(containerEl, this.setting.language);
 		}
 
 		const contentDiv = containerEl.createDiv({ cls: "persian-calendar__content" });
-		await this.bodyRenderer.renderContent(contentDiv);
+		await this.bodyRenderer.renderContent(contentDiv, this.setting.language);
 	}
 }

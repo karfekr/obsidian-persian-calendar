@@ -55,9 +55,9 @@ This tool lets you see events, add and organize notes from daily to yearly on th
 | `jM`    | 9           | شماره‌ی ماه شمسی |
 
 
-![تنظیمات افزونه](Instructions/settings-1.png)
+![تنظیمات افزونه](Instructions/setting-1.png)
 
-![تنظیمات افزونه](Instructions/settings-2.png)
+![تنظیمات افزونه](Instructions/setting-2.png)
 
 می‌توانید یا از طریق مسیردهی قالب درون تنظیمات یا از طریق افزونه [Templater](https://github.com/SilentVoid13/Templater) برای یادداشت‌های تقویم قالب تعیین کنید.
 

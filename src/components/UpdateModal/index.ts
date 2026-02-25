@@ -1,14 +1,16 @@
 import { Modal, App, setIcon } from "obsidian";
 import { SocialLinks } from "src/components/SocialLinks";
-import type { TReleaseNote } from "src/types";
+import type { TReleaseNote, TSetting } from "src/types";
 
 export class UpdateModal extends Modal {
 	private notes: TReleaseNote[];
+	private setting: TSetting;
 	private onCloseCallback?: () => void;
 
-	constructor(app: App, notes: TReleaseNote[], onCloseCallback?: () => void) {
+	constructor(app: App, setting: TSetting, notes: TReleaseNote[], onCloseCallback?: () => void) {
 		super(app);
 		this.notes = notes;
+		this.setting = setting;
 		this.onCloseCallback = onCloseCallback;
 	}
 
@@ -24,7 +26,7 @@ export class UpdateModal extends Modal {
 			text: "Persian Calendar",
 		});
 
-		SocialLinks(contentEl);
+		SocialLinks(contentEl, this.setting.language);
 
 		this.notes.forEach((note) => {
 			const section = contentEl.createEl("div");

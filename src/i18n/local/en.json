@@ -1,0 +1,151 @@
+{
+	"setting": {
+		"banner": {
+			"title": "Use the links below to view the documentation, report issues, or send feedback"
+		},
+
+		"sections": {
+			"general": "General Settings",
+			"paths": "Calendar Note Paths",
+			"templates": "Calendar Note Templates",
+			"extraCalendars": "Additional Calendars",
+			"holidays": "Holiday Display",
+			"events": "Event Display"
+		},
+
+		"general": {
+			"language": {
+				"name": "Language",
+				"desc": "Choose the Calendar interface language.",
+				"options": {
+					"fa": "Fa",
+					"en": "En"
+				}
+			},
+			"dateFormat": {
+				"name": "Date Format for Natural Dates and Daily Notes",
+				"desc": "For better compatibility with other plugins, using the Gregorian format is recommended.",
+				"options": {
+					"jalali": "Jalali",
+					"gregorian": "Gregorian"
+				}
+			},
+			"askBeforeCreate": {
+				"name": "Confirm Before Creating Notes",
+				"desc": "When enabled, a confirmation dialog will appear before creating any note."
+			},
+			"openDailyOnStartup": {
+				"name": "Open Today's Daily Note on Startup",
+				"desc": "When enabled, Obsidian will automatically open today's daily note on launch."
+			},
+			"showSeasons": {
+				"name": "Show Seasons in Calendar",
+				"desc": "Display seasonal divisions within the calendar view."
+			}
+		},
+
+		"paths": {
+			"daily": {
+				"name": "Daily Notes Folder",
+				"desc": "Daily notes will be created in this folder."
+			},
+			"weekly": {
+				"name": "Weekly Notes Folder",
+				"desc": "Weekly notes will be created in this folder."
+			},
+			"monthly": {
+				"name": "Monthly Notes Folder",
+				"desc": "Monthly notes will be created in this folder."
+			},
+			"seasonal": {
+				"name": "Seasonal Notes Folder",
+				"desc": "Seasonal notes will be created in this folder."
+			},
+			"yearly": {
+				"name": "Yearly Notes Folder",
+				"desc": "Yearly notes will be created in this folder."
+			}
+		},
+
+		"templates": {
+			"daily": {
+				"name": "Daily Note Template",
+				"desc": "Template used when creating daily notes."
+			},
+			"weekly": {
+				"name": "Weekly Note Template",
+				"desc": "Template used when creating weekly notes."
+			},
+			"monthly": {
+				"name": "Monthly Note Template",
+				"desc": "Template used when creating monthly notes."
+			},
+			"seasonal": {
+				"name": "Seasonal Note Template",
+				"desc": "Template used when creating seasonal notes."
+			},
+			"yearly": {
+				"name": "Yearly Note Template",
+				"desc": "Template used when creating yearly notes."
+			}
+		},
+
+		"extraCalendars": {
+			"showGregorian": {
+				"name": "Show Gregorian Calendar",
+				"desc": "Display Gregorian dates alongside the main calendar."
+			},
+			"showHijri": {
+				"name": "Show Hijri Calendar",
+				"desc": "Display Hijri dates alongside the main calendar."
+			},
+			"hijriBase": {
+				"name": "Hijri Calendar Base",
+				"desc": "Hijri dates may vary depending on the selected reference.",
+				"options": {
+					"iran": "Iran",
+					"umalqura": "Umm al-Qura"
+				}
+			}
+		},
+
+		"holidays": {
+			"showOfficial": {
+				"name": "Show Official Iranian Holidays",
+				"desc": "Display official Iranian holidays in red within the calendar."
+			},
+			"weekendDays": {
+				"name": "Weekend Days",
+				"desc": "Select which days should be marked as weekly holidays.",
+				"options": {
+					"friday": "Friday",
+					"thursdayFriday": "Thursday & Friday",
+					"fridaySaturday": "Friday & Saturday"
+				}
+			}
+		},
+
+		"events": {
+			"official": { "name": "Show Official Iranian Events" },
+			"historical": { "name": "Show Historical Events" },
+			"ancient": { "name": "Show Ancient Iranian Events" },
+			"global": { "name": "Show Global Events" },
+			"shia": { "name": "Show Shia Events" },
+			"sunni": { "name": "Show Sunni Events" }
+		}
+	},
+	"modals": {
+		"confirmModal": {
+			"title": "Confirm Note Creation",
+			"message": "Do you want to create this note?",
+			"cancelBtn": "Cancel",
+			"confirmBtn": "Confirm"
+		}
+	},
+	"notice": {
+		"success": {
+			"placeholder": "Meaningful phrases replaced successfully",
+			"refreshView": "Calendar view updated"
+		}
+	}
+}

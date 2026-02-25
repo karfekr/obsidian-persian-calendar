@@ -11,7 +11,7 @@ export default class CalendarView extends View {
 	dailyCheckInterval: number | undefined;
 	lastCheckedDate: TJalali = dateToJalali(todayTehran());
 	plugin: PersianCalendarPlugin;
-	settings: TSetting;
+	setting: TSetting;
 	private calendarNavigation: CalendarNavigation;
 	private calendarState: CalendarState;
 	private notesService: NoteService;
@@ -20,7 +20,7 @@ export default class CalendarView extends View {
 	constructor(leaf: WorkspaceLeaf, app: App, plugin: PersianCalendarPlugin) {
 		super(leaf);
 		this.app = app;
-		this.settings = plugin.settings;
+		this.setting = plugin.setting;
 		this.plugin = plugin;
 		this.calendarState = new CalendarState();
 		this.notesService = new NoteService(this.app, this.plugin);
@@ -28,7 +28,7 @@ export default class CalendarView extends View {
 			this.containerEl,
 			this.calendarState,
 			this.notesService,
-			this.settings,
+			this.setting,
 		);
 		this.calendarNavigation = new CalendarNavigation(
 			this.calendarState,

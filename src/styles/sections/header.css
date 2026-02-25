@@ -44,20 +44,32 @@
 
 .persian-calendar__jalali-state {
 	padding-top: 5px;
+	display: flex;
+	flex-direction: row-reverse;
+	gap: 5px;
 }
 
 .persian-calendar__jmonth,
 .persian-calendar__jyear {
 	cursor: pointer;
-	font-size: var(--persian-calendar-fontSize-jmonth);
-	font-weight: 900;
 	opacity: 1;
 	transition: opacity var(--persian-calendar-duration);
 }
 
+.persian-calendar__jmonth--fa,
+.persian-calendar__jyear--fa {
+	font-size: 24px;
+	font-weight: 900;
+}
+
+.persian-calendar__jmonth--en,
+.persian-calendar__jyear--en {
+	font-size: 20px;
+	font-weight: 800;
+}
+
 .persian-calendar__jmonth {
 	color: var(--persian-calendar-color-primary);
-	padding-left: 5px;
 }
 
 .persian-calendar__additional-calendar-state {
@@ -71,7 +83,7 @@
 
 .persian-calendar__gmonth-gyear,
 .persian-calendar__hmonth-hyear {
-	color: var(--persian-calendar-color-additional-calendar);
+	color: var(--persian-calendar-color-base-2);
 	flex-direction: row-reverse;
 	font-size: 14px;
 	width: 100%;
@@ -88,7 +100,9 @@
 	cursor: pointer;
 	font-size: 16px;
 	padding: 5px 10px;
-	border-bottom: solid var(--persian-calendar-color-base);
+	border-bottom: solid var(--persian-calendar-color-base-1);
+	color: var(--persian-calendar-color-base-3);
+	font-weight: 600;
 	transition:
 		opacity var(--persian-calendar-duration) ease,
 		border var(--persian-calendar-duration) ease;
@@ -104,12 +118,11 @@
 .persian-calendar__season--current {
 	color: var(--persian-calendar-color-primary);
 	border-color: var(--persian-calendar-color-primary);
-	font-weight: 800;
 }
 
 .persian-calendar__seasons-row {
 	align-items: center;
-	border-top: 1px dashed var(--persian-calendar-color-base);
+	border-top: 1px dashed var(--persian-calendar-color-base-1);
 	display: flex;
 	grid-column: 1 / span 2;
 	grid-row: 2;

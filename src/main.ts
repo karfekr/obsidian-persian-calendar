@@ -8,17 +8,17 @@ import {
 	VersionChecker,
 } from "./services";
 import CalendarView from "./templates/CalendarView";
-import Settings from "./templates/Settings";
+import Setting from "./templates/Setting";
 import { DEFAULT_SETTING } from "./constants";
 import { dateToJalali, todayTehran } from "./utils/dateUtils";
-import type { TSetting } from "./types";
+import type { TLocal, TSetting } from "./types";
 import Suggestion from "./services/Suggestion";
 import ApiService from "./services/ApiService";
-import RTLNotice from "./components/RTLNotice";
+import { setLocal } from "./i18n";
 
 export default class PersianCalendarPlugin extends Plugin {
 	// Core properties
-	settings: TSetting = DEFAULT_SETTING;
+	setting: TSetting = DEFAULT_SETTING;
 	noteService!: NoteService;
 	placeholder: Placeholder;
 	dateSuggester?: SmartDateLinker;
@@ -40,8 +40,10 @@ export default class PersianCalendarPlugin extends Plugin {
 		// Initialize services
 		this.initializeServices();
 
-		// Load settings
-		await this.loadSettings();
+		// Load setting
+		await this.loadSetting();
+
+		setLocal(this.setting.language);
 
 		// Initialize api service
 		this.apiService = new ApiService();
@@ -74,8 +76,8 @@ export default class PersianCalendarPlugin extends Plugin {
 		// Register events
 		this.eventManager.registerEvents();
 
-		// Register settings tab
-		this.addSettingTab(new Settings(this.app, this));
+		// Register setting tab
+		this.addSettingTab(new Setting(this.app, this));
 
 		// Register commands
 		this.commandRegistry.registerAllCommands();
@@ -97,7 +99,7 @@ export default class PersianCalendarPlugin extends Plugin {
 
 	private handleStartup() {
 		this.app.workspace.onLayoutReady(async () => {
-			if (this.settings.openDailyNoteOnStartup) {
+			if (this.setting.openDailyNoteOnStartup) {
 				const now = todayTehran();
 				const { jy, jm, jd } = dateToJalali(now);
 				await this.noteService.openOrCreateDailyNote(jy, jm, jd);
@@ -105,12 +107,12 @@ export default class PersianCalendarPlugin extends Plugin {
 		});
 	}
 
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTING, await this.loadData());
+	async loadSetting() {
+		this.setting = Object.assign({}, DEFAULT_SETTING, await this.loadData());
 	}
 
-	async saveSettings() {
-		await this.saveData(this.settings);
+	async saveSetting() {
+		await this.saveData(this.setting);
 	}
 
 	async activateView(): Promise<WorkspaceLeaf | null> {
@@ -131,6 +133,14 @@ export default class PersianCalendarPlugin extends Plugin {
 		}
 
 		return null;
+	}
+
+	changeLanguage(lang: TLocal) {
+		setLocal(lang);
+		this.setting.language = lang;
+		this.saveSetting();
+
+		this.refreshViews();
 	}
 
 	refreshViews() {

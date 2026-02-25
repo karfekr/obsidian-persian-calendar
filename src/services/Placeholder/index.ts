@@ -13,11 +13,7 @@ import {
 	dateToDaysRemainingJMonth,
 	todayTehran,
 } from "src/utils/dateUtils";
-import {
-	dashToEvents,
-	eventsToString,
-	dateToEvents,
-} from "src/utils/eventUtils";
+import { dashToEvents, eventsToString, dateToEvents } from "src/utils/eventUtils";
 import {
 	dateToJWeekDash,
 	dateToJMonthDash,
@@ -40,8 +36,9 @@ import {
 	dashToStartDayOfYearDash,
 } from "src/utils/dashUtils";
 import type { TBuildContext, TDateFormat, TSuggestProvider } from "src/types";
-import RTLNotice from "src/components/RTLNotice";
+import Notice from "src/components/Notice";
 import { extractYearFormat } from "src/utils/formatters";
+import { getDirection, t } from "src/i18n";
 
 export default class Placeholder {
 	plugin: PersianCalendarPlugin;
@@ -80,7 +77,7 @@ export default class Placeholder {
 
 		if (updatedContent !== fileContent) {
 			await this.plugin.app.vault.modify(file, updatedContent);
-			RTLNotice("عبارات معنادار با موفقیت جایگزین شد.");
+			Notice(t("notice.success.placeholder"), getDirection());
 		}
 	}
 
@@ -111,7 +108,7 @@ export default class Placeholder {
 
 	private buildContext(file: TFile): TBuildContext {
 		const fileName = file.basename;
-		const baseDate = this.plugin.settings.dateFormat;
+		const baseDate = this.plugin.setting.dateFormat;
 
 		return {
 			currentDate: todayTehran(),
@@ -141,7 +138,15 @@ export default class Placeholder {
 			["{{نام فصل جاری}}", dateToSeasonName(currentDate)],
 			["{{روز ماه جاری}}", dateToDayOfMonth(currentDate)],
 			["{{فصل جاری}}", dateToSeasonDash(currentDate)],
-			["{{مناسبت جاری}}", eventsToString(dateToEvents(currentDate, this.plugin.settings))],
+			[
+				"{{مناسبت جاری}}",
+				eventsToString(
+					dateToEvents(currentDate, {
+						showEvents: this.plugin.setting,
+						hijriBase: this.plugin.setting.hijriBase,
+					}),
+				),
+			],
 			["{{سال جاری}}", dateToJYearDash(currentDate)],
 
 			["{{روز ماه یادداشت}}", fromFile(dateToDayOfMonth)],
@@ -150,10 +155,7 @@ export default class Placeholder {
 			["{{تاریخ قمری یادداشت}}", fromFile((d) => dateToDash(d, "hijri"))],
 			["{{روز هفته یادداشت}}", fromFile(dateToWeekdayName)],
 			["{{سال یادداشت}}", fileDate ? dateToJYearDash(fileDate) : extractYearFormat(fileName)],
-			[
-				"{{مناسبت یادداشت}}",
-				eventsToString(dashToEvents(fileName, baseDate, this.plugin.settings)),
-			],
+			["{{مناسبت یادداشت}}", eventsToString(dashToEvents(fileName, baseDate, this.plugin.setting))],
 			["{{نام ماه یادداشت}}", dashToJMonthName(fileName, baseDate)],
 			["{{ماه یادداشت}}", dashToJMonthDash(fileName, baseDate)],
 			["{{نام فصل یادداشت}}", dashToSeasonName(fileName, baseDate)],

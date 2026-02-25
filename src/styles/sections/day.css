@@ -27,7 +27,7 @@
 		opacity var(--persian-calendar-duration);
 }
 .persian-calendar__day:hover {
-	background-color: var(--persian-calendar-color-base);
+	background-color: var(--persian-calendar-color-base-1);
 }
 
 .persian-calendar__day-grid {
@@ -66,7 +66,7 @@
 
 .persian-calendar__gregorian-day--center,
 .persian-calendar__hijri-day--center {
-	color: var(--persian-calendar-color-additional-calendar);
+	color: var(--persian-calendar-color-base-2);
 	font-size: 10px;
 	position: absolute;
 }
@@ -84,7 +84,7 @@
 .persian-calendar__gregorian-day--corner,
 .persian-calendar__hijri-day--corner {
 	bottom: 0;
-	color: var(--persian-calendar-color-additional-calendar);
+	color: var(--persian-calendar-color-base-2);
 	font-size: 10px;
 	opacity: 0.75;
 	position: absolute;

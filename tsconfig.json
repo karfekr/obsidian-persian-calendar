@@ -5,6 +5,7 @@
 			"src/*": ["src/*"]
 		},
 		"inlineSourceMap": true,
+		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
 		"inlineSources": true,
 		"module": "ESNext",

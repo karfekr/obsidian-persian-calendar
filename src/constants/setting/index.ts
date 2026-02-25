@@ -2,6 +2,7 @@ import type { TSetting } from "src/types";
 
 export const DEFAULT_SETTING: TSetting = {
 	versionUpdate: true,
+	language: "en",
 	dateFormat: "gregorian",
 	askForCreateNote: true,
 	openDailyNoteOnStartup: false,

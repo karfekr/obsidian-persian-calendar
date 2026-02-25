@@ -1,4 +1,5 @@
 import { App, Modal } from "obsidian";
+import { getDirection, t } from "src/i18n";
 
 class ConfirmModal extends Modal {
 	private titleText: string;
@@ -15,32 +16,36 @@ class ConfirmModal extends Modal {
 	onOpen() {
 		const { contentEl } = this;
 		contentEl.empty();
-		contentEl.addClass("persian-calendar");
+
+		this.modalEl.addClass("persian-calendar");
+		this.modalEl.setAttr("dir", getDirection());
 
 		contentEl.createEl("h2", { text: this.titleText });
-
 		contentEl.createEl("p", { text: this.messageText });
 
-		const buttons = contentEl.createDiv({ cls: "persian-calendar__cmodal-container" });
+		const buttons = contentEl.createDiv({
+			cls: "persian-calendar__cmodal-container",
+		});
 
 		const cancelBtn = buttons.createEl("button", {
-			text: "انصراف",
+			text: t("modals.confirmModal.cancelBtn"),
 			cls: "persian-calendar__cmodal-cancel",
 		});
+
 		const confirmBtn = buttons.createEl("button", {
-			text: "تایید",
+			text: t("modals.confirmModal.confirmBtn"),
 			cls: "persian-calendar__cmodal-confirm",
 		});
 
-		confirmBtn.addEventListener("click", () => {
+		confirmBtn.onclick = () => {
 			this.resolve(true);
 			this.close();
-		});
+		};
 
-		cancelBtn.addEventListener("click", () => {
+		cancelBtn.onclick = () => {
 			this.resolve(false);
 			this.close();
-		});
+		};
 	}
 
 	onClose() {
@@ -50,10 +55,10 @@ class ConfirmModal extends Modal {
 
 export function createNoteModal(
 	app: App,
-	options: { title: string; message: string },
+	options?: { title?: string; message?: string },
 ): Promise<boolean> {
-	const { title = "تایید ایجاد یادداشت", message = "آیا می‌خواهید این یادداشت ایجاد شود؟" } =
-		options;
+	const title = options?.title ?? t("modals.confirmModal.title");
+	const message = options?.message ?? t("modals.confirmModal.message");
 
 	return new Promise((resolve) => {
 		new ConfirmModal(app, title, message, resolve).open();

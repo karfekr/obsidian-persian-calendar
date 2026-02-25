@@ -16,7 +16,7 @@ export default class SmartDateLinker {
 
 	constructor(plugin: PersianCalendarPlugin) {
 		this.plugin = plugin;
-		this.dateFormat = plugin.settings.dateFormat;
+		this.dateFormat = plugin.setting.dateFormat;
 	}
 
 	private makeLink(dash: string | null, label: string): string {

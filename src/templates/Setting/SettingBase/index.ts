@@ -1,14 +1,17 @@
 import { App, PluginSettingTab, Setting as ObsidianSettings } from "obsidian";
 import PersianCalendarPlugin from "src/main";
 import PathSuggest from "./PathSuggest";
-import type { TSetting, TBoolSettingKeys } from "src/types";
+import type { TSetting, TBoolSettingKeys, TLocal } from "src/types";
+import { onLocalChange, setLocal } from "src/i18n";
 
-export abstract class SettingsBase extends PluginSettingTab {
+export abstract class SettingBase extends PluginSettingTab {
 	plugin: PersianCalendarPlugin;
 
 	constructor(app: App, plugin: PersianCalendarPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+
+		onLocalChange(() => this.display());
 	}
 
 	protected addPathSetting(
@@ -26,10 +29,10 @@ export abstract class SettingsBase extends PluginSettingTab {
 			.addText((text) => {
 				text
 					.setPlaceholder("")
-					.setValue(this.plugin.settings[settingKey] as string)
+					.setValue(this.plugin.setting[settingKey] as string)
 					.onChange(async (value) => {
-						(this.plugin.settings[settingKey] as string) = value;
-						await this.plugin.saveSettings();
+						(this.plugin.setting[settingKey] as string) = value;
+						await this.plugin.saveSetting();
 					});
 
 				new PathSuggest(this.app, text.inputEl, opts?.mode ?? "folder");
@@ -49,9 +52,9 @@ export abstract class SettingsBase extends PluginSettingTab {
 			.setName(opts.name)
 			.setDesc(opts.desc ?? "")
 			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.settings[opts.key]).onChange(async (value) => {
-					this.plugin.settings[opts.key] = value;
-					await this.plugin.saveSettings();
+				toggle.setValue(this.plugin.setting[opts.key]).onChange(async (value) => {
+					this.plugin.setting[opts.key] = value;
+					await this.plugin.saveSetting();
 					if (opts.refresh) this.plugin.refreshViews();
 				}),
 			);
@@ -62,7 +65,7 @@ export abstract class SettingsBase extends PluginSettingTab {
 		opts: {
 			name: string;
 			desc?: string;
-			key: Extract<keyof TSetting, "dateFormat" | "weekendDays" | "hijriBase">;
+			key: Extract<keyof TSetting, "dateFormat" | "weekendDays" | "hijriBase" | "language">;
 			options: Record<string, string>;
 			defaultValue: string;
 			refresh?: boolean;
@@ -77,11 +80,18 @@ export abstract class SettingsBase extends PluginSettingTab {
 				);
 
 				dropdown
-					.setValue(this.plugin.settings[opts.key] ?? opts.defaultValue)
+					.setValue(this.plugin.setting[opts.key] ?? opts.defaultValue)
 					.onChange(async (value) => {
-						(this.plugin.settings[opts.key] as any) = value as T;
-						await this.plugin.saveSettings();
-						if (opts.refresh) this.plugin.refreshViews();
+						(this.plugin.setting[opts.key] as any) = value as T;
+						await this.plugin.saveSetting();
+
+						if (opts.key === "language") {
+							setLocal(value as TLocal);
+						}
+
+						if (opts.refresh || opts.key === "language") {
+							this.plugin.refreshViews();
+						}
 					});
 			});
 	}

@@ -11,7 +11,7 @@ export default class CalendarHeaderRender {
 	constructor(
 		private readonly calendarState: CalendarState,
 		private readonly notesService: NoteService,
-		private readonly settings: TSetting,
+		private readonly setting: TSetting,
 		private readonly navigation: CalendarNavigation,
 	) {}
 
@@ -31,7 +31,7 @@ export default class CalendarHeaderRender {
 			cls: "persian-calendar__gmonth-gyear",
 		});
 
-		if (this.settings.showGeorgianDates) {
+		if (this.setting.showGeorgianDates) {
 			const georgianMonthRange = jalaliMonthToRangeDash(jYearState, jMonthState, {
 				local: "en",
 				dateFormat: "gregorian",
@@ -39,11 +39,11 @@ export default class CalendarHeaderRender {
 			georgianMonthYearEl.textContent = georgianMonthRange;
 		}
 
-		if (this.settings.showHijriDates) {
+		if (this.setting.showHijriDates) {
 			const hijriMonthRange = jalaliMonthToRangeDash(jYearState, jMonthState, {
 				local: "fa",
 				dateFormat: "hijri",
-				hijriBase: this.settings.hijriBase,
+				hijriBase: this.setting.hijriBase,
 			});
 			hijriMonthYearEl.textContent = hijriMonthRange;
 		}
@@ -57,15 +57,23 @@ export default class CalendarHeaderRender {
 		});
 
 		const monthEl = jalaliStateEl.createEl("span", { cls: "persian-calendar__jmonth" });
-		const yearEl = jalaliStateEl.createEl("span", { cls: "persian-calendar__jyear" });
+		this.setting.language === "fa"
+			? monthEl.addClass("persian-calendar__jmonth--fa")
+			: monthEl.addClass("persian-calendar__jmonth--en");
 
-		yearEl.textContent = toFaNumber(jYearState);
+		const yearEl = jalaliStateEl.createEl("span", { cls: "persian-calendar__jyear" });
+		this.setting.language === "fa"
+			? yearEl.addClass("persian-calendar__jyear--fa")
+			: yearEl.addClass("persian-calendar__jyear--en");
+
+		yearEl.textContent =
+			this.setting.language === "fa" ? toFaNumber(jYearState) : String(jYearState);
 		yearEl.addEventListener("click", (e) => {
 			e.stopPropagation();
 			this.notesService.openOrCreateYearlyNote(jYearState);
 		});
 
-		const monthName = jalaliMonthName(jMonthState);
+		const monthName = jalaliMonthName(jMonthState, this.setting.language);
 		monthEl.textContent = monthName;
 		monthEl.addEventListener("click", (e) => {
 			e.stopPropagation();
@@ -83,7 +91,7 @@ export default class CalendarHeaderRender {
 		prevMonthArrow.addEventListener("click", () => this.navigation.changeMonth("prev"));
 
 		const todayButton = navContainerEl.createEl("span", { cls: "persian-calendar__go-today" });
-		todayButton.textContent = "امروز";
+		todayButton.textContent = this.setting.language === "fa" ? "امروز" : "Today";
 		todayButton.addEventListener("click", () => {
 			this.navigation.goToToday();
 		});

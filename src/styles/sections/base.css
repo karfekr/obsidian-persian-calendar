@@ -16,9 +16,9 @@
 	--persian-calendar-color-primary: var(--color-accent);
 	--persian-calendar-color-primary-text: var(--color-base-100);
 	--persian-calendar-color-holiday: var(--color-red);
-	--persian-calendar-color-base: var(--color-base-30);
-	--persian-calendar-color-additional-calendar: var(--color-base-60);
-	--persian-calendar-fontSize-jmonth: 24px;
+	--persian-calendar-color-base-1: var(--color-base-30);
+	--persian-calendar-color-base-2: var(--color-base-60);
+	--persian-calendar-color-base-3: var(--color-base-70);
 	--persian-calendar-duration: 0.2s;
 	--persian-calendar-gap-x-days: 5px;
 	--persian-calendar-gap-y-days: 7px;
@@ -31,6 +31,5 @@
 .persian-calendar {
 	container-name: persian-calendar;
 	container-type: inline-size;
-	direction: rtl;
 	font-family: var(--persian-calendar-font);
 }

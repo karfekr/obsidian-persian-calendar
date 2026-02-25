@@ -5,9 +5,9 @@ export default class VersionChecker {
 
 	async checkForVersionUpdate() {
 		const currentVersion = this.plugin.manifest.version;
-		const lastSeenVersion = this.plugin.settings.lastSeenVersion;
+		const lastSeenVersion = this.plugin.setting.lastSeenVersion;
 
-		if (this.plugin.settings.versionUpdate === false) {
+		if (this.plugin.setting.versionUpdate === false) {
 			await this.updateVersionIfChanged(currentVersion, lastSeenVersion);
 			return;
 		}
@@ -29,8 +29,8 @@ export default class VersionChecker {
 		lastSeenVersion: string | undefined,
 	) {
 		if (lastSeenVersion !== currentVersion) {
-			this.plugin.settings.lastSeenVersion = currentVersion;
-			await this.plugin.saveSettings();
+			this.plugin.setting.lastSeenVersion = currentVersion;
+			await this.plugin.saveSetting();
 		}
 	}
 
@@ -38,17 +38,17 @@ export default class VersionChecker {
 		const { getReleaseNotesForVersion, isReleaseNote } = await import("src/utils/release");
 
 		if (!isReleaseNote(currentVersion)) {
-			this.plugin.settings.lastSeenVersion = currentVersion;
-			await this.plugin.saveSettings();
+			this.plugin.setting.lastSeenVersion = currentVersion;
+			await this.plugin.saveSetting();
 			return;
 		}
 
 		const { UpdateModal } = await import("src/components/UpdateModal");
 		const releaseNotes = getReleaseNotesForVersion(currentVersion);
 
-		new UpdateModal(this.plugin.app, releaseNotes, () => {
-			this.plugin.settings.lastSeenVersion = currentVersion;
-			this.plugin.saveSettings().catch(console.error);
+		new UpdateModal(this.plugin.app, this.plugin.setting, releaseNotes, () => {
+			this.plugin.setting.lastSeenVersion = currentVersion;
+			this.plugin.saveSetting().catch(console.error);
 		}).open();
 	}
 
@@ -61,8 +61,8 @@ export default class VersionChecker {
 		} = await import("src/utils/release");
 
 		if (!isReleaseNote(currentVersion)) {
-			this.plugin.settings.lastSeenVersion = currentVersion;
-			await this.plugin.saveSettings();
+			this.plugin.setting.lastSeenVersion = currentVersion;
+			await this.plugin.saveSetting();
 			return;
 		}
 
@@ -75,9 +75,9 @@ export default class VersionChecker {
 			releaseNotes = getLatestReleaseNotes();
 		}
 
-		new UpdateModal(this.plugin.app, releaseNotes, () => {
-			this.plugin.settings.lastSeenVersion = currentVersion;
-			this.plugin.saveSettings().catch(console.error);
+		new UpdateModal(this.plugin.app, this.plugin.setting, releaseNotes, () => {
+			this.plugin.setting.lastSeenVersion = currentVersion;
+			this.plugin.saveSetting().catch(console.error);
 		}).open();
 	}
 }

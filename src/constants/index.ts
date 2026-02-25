@@ -10,7 +10,7 @@ export {
 	WEEKDAYS_NAME,
 	SMART_DATE_LINKS,
 } from "./dateNames";
-export { DEFAULT_SETTING } from "./settings";
+export { DEFAULT_SETTING } from "./setting";
 export { RELEASE_NOTES } from "./releaseNotes";
 export { DEFAULT_SOCIAL_LINKS } from "./socialLinks";
 export {

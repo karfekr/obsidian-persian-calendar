@@ -9,7 +9,7 @@
 	position: absolute;
 	background-color: var(--color-base-20);
 	color: var(--color-base-100);
-	border: 1px solid var(--persian-calendar-color-base);
+	border: 1px solid var(--persian-calendar-color-base-1);
 	border-radius: 5px;
 	padding: 6px 8px;
 	z-index: 1;
@@ -23,7 +23,7 @@
 
 .persian-calendar__tooltip-event {
 	padding: 4px 0;
-	border-bottom: 1px dashed var(--persian-calendar-color-base);
+	border-bottom: 1px dashed var(--persian-calendar-color-base-1);
 }
 
 .persian-calendar__tooltip-event:last-child {

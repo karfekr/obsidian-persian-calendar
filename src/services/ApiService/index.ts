@@ -1,3 +1,4 @@
+import type { THijriBase } from "src/types";
 import {
 	dateToGregorian,
 	dateToHijri,
@@ -41,14 +42,17 @@ export default class ApiService {
 			jalaliMonthName,
 			seasonName,
 			checkHoliday,
-			dateToEvents: (date: Date) =>
+			dateToEvents: (date: Date, hijriBase: THijriBase) =>
 				dateToEvents(date, {
-					showIROfficialEvents: true,
-					showIRHistoricalEvents: true,
-					showIRAncientEvents: true,
-					showGlobalEvents: true,
-					showShiaEvents: true,
-					showSunniEvents: true,
+					showEvents: {
+						showIROfficialEvents: true,
+						showIRHistoricalEvents: true,
+						showIRAncientEvents: true,
+						showGlobalEvents: true,
+						showShiaEvents: true,
+						showSunniEvents: true,
+					},
+					hijriBase,
 				}),
 		});
 	}

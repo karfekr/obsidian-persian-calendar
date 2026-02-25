@@ -13,11 +13,11 @@ import type { TSetting, TMonthGridCell } from "src/types";
 export default class GridService {
 	constructor(
 		private readonly calendarState: CalendarState,
-		private readonly settings: TSetting,
+		private readonly setting: TSetting,
 	) {}
 
 	private isWeekend(dayOfWeek: number): boolean {
-		const weekend = this.settings.weekendDays;
+		const weekend = this.setting.weekendDays;
 		if (weekend === "thursday-friday") return dayOfWeek === 5 || dayOfWeek === 6;
 		if (weekend === "friday") return dayOfWeek === 6;
 		if (weekend === "friday-saturday") return dayOfWeek === 6 || dayOfWeek === 0;
@@ -69,7 +69,7 @@ export default class GridService {
 	}
 
 	public buildMonthGrid(jy: number, jm: number): TMonthGridCell[] {
-		const { showHolidays } = this.settings;
+		const { showHolidays } = this.setting;
 
 		const daysInMonth = jalaliMonthLength(jy, jm);
 		if (daysInMonth === null) {
@@ -116,7 +116,7 @@ export default class GridService {
 
 			const date = jalaliToDate(cellJy, cellJm, cellJd);
 			const gregorian = jalaliToGregorian(cellJy, cellJm, cellJd);
-			const hijri = jalaliToHijri(cellJy, cellJm, cellJd, { base: this.settings.hijriBase });
+			const hijri = jalaliToHijri(cellJy, cellJm, cellJd, { base: this.setting.hijriBase });
 
 			let isHoliday = false;
 			let isWeekendFlag = false;

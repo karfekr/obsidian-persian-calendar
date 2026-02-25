@@ -28,13 +28,15 @@ export type TEventRecord = Record<number, Record<number, TEventObject[]>>;
 
 export type TEventCategory = "official" | "historical" | "ancient" | "shia" | "sunni" | "global";
 
+type Ttitle = {
+	fa: string;
+	en: string;
+};
+
 export type TEventObject = {
 	isHoliday: boolean;
 	categories: TEventCategory[];
-	title: {
-		fa: string;
-		en: string;
-	};
+	title: Ttitle;
 };
 
 export type TDayMap = Map<number, TEventObject[]>;
@@ -78,6 +80,7 @@ export type TBoolSettingKeys = Extract<
 
 export type TSetting = {
 	lastSeenVersion?: string;
+	language: TLocal;
 	versionUpdate: boolean;
 	askForCreateNote: boolean;
 	openDailyNoteOnStartup: boolean;
@@ -112,6 +115,7 @@ export type TSetting = {
 };
 
 export type TLocal = "fa" | "en";
+export type TDirection = "rtl" | "ltr";
 
 export type TBuildContext = {
 	currentDate: Date;
@@ -146,7 +150,7 @@ export type TReleaseNote = {
 
 export type TSocialLink = {
 	href: string;
-	title: string;
+	title: Ttitle;
 	icon: string;
 };
 
