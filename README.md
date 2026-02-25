@@ -185,6 +185,7 @@ pcApi.dateToGregorian(new Date()) // (Tehran){gy, gm, gd}
 pcApi.gregorianToDate(2026, 12, 4) // gregorian to Date
 pcApi.gregorianToJalali(2026, 12, 4) // {jy: 1405, jm: 9, jd: 13}
 pcApi.gregorianToHijri(2026, 12, 4) // {hy: 1448, hm: 6, hd: 24}
+pcApi.gregorianToHijri(2026, 12, 4, { base: "umalqura" }) // {hy: 1448, hm: 6, hd: 24}
 
 // for Hijri-ir
 pcApi.hijriToDate(1448, 6, 24) // hijri to Date
