@@ -195,16 +195,7 @@ pcApi.hijriToJalali(1448, 6, 24) // {jy: 1405, jm: 9, jd: 13}
 pcApi.checkHoliday(new Date()) // (Tehran)(is holiday?)true|false
 
 pcApi.dateToEvents(new Date())
-/*
-	{
-		isHoliday,
-		title: {
-			fa,
-			en,
-		}
-		categories[],
-	}[]
-*/
+pcApi.dateToEvents(new Date(), "umalqura") // hijri based on umalqura
 ```
 
 ## دستورات تعریف شده در افزونه
