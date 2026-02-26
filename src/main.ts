@@ -6,15 +6,16 @@ import {
 	CommandRegistry,
 	EventManager,
 	VersionChecker,
+	ApiService,
+	Suggestion,
 } from "./services";
 import CalendarView from "./templates/CalendarView";
 import Setting from "./templates/Setting";
 import { DEFAULT_SETTING } from "./constants";
 import { dateToJalali, todayTehran } from "./utils/dateUtils";
-import type { TLocal, TSetting } from "./types";
-import Suggestion from "./services/Suggestion";
-import ApiService from "./services/ApiService";
-import { setLocal } from "./i18n";
+import type { TSetting } from "./types";
+import { onLocalChange, setLocal, t } from "./i18n";
+import { DatePicker } from "src/components";
 
 export default class PersianCalendarPlugin extends Plugin {
 	// Core properties
@@ -22,6 +23,7 @@ export default class PersianCalendarPlugin extends Plugin {
 	noteService!: NoteService;
 	placeholder: Placeholder;
 	dateSuggester?: SmartDateLinker;
+	datePicker!: DatePicker;
 	api!: ReturnType<ApiService["build"]>;
 
 	// Managers
@@ -63,6 +65,18 @@ export default class PersianCalendarPlugin extends Plugin {
 				await this.activateView();
 			}
 		});
+
+		// inject DatePicker button for Jalali
+		const observer = new MutationObserver(() => {
+			this.injectDatePickerButton(document.body);
+		});
+
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true,
+		});
+
+		this.register(() => observer.disconnect());
 
 		// Call parent onload
 		super.onload();
@@ -107,6 +121,47 @@ export default class PersianCalendarPlugin extends Plugin {
 		});
 	}
 
+	private injectDatePickerButton(root: HTMLElement) {
+		const fields = root.querySelectorAll<HTMLDivElement>(
+			'.metadata-property-value[data-property-type="date"]',
+		);
+
+		fields.forEach((field) => {
+			if (field.dataset.jalaliInjected === "1") return;
+			field.dataset.jalaliInjected = "1";
+
+			const input = field.querySelector<HTMLInputElement>('input[type="date"]');
+			if (!input) return;
+
+			field.style.display = "flex";
+			field.style.alignItems = "center";
+			field.style.gap = "6px";
+
+			const btn = document.createElement("button");
+			btn.className = "jalali-flag-btn";
+			btn.type = "button";
+
+			const refresh = () => {
+				btn.title = t("modals.datePicker.tooltip");
+			};
+
+			refresh();
+			onLocalChange(refresh);
+
+			btn.onclick = () => {
+				const val = input.value || null;
+
+				new DatePicker(this.app, this.setting, val, (out) => {
+					input.value = out;
+					input.dispatchEvent(new Event("input", { bubbles: true }));
+					input.dispatchEvent(new Event("change", { bubbles: true }));
+				}).open();
+			};
+
+			field.appendChild(btn);
+		});
+	}
+
 	async loadSetting() {
 		this.setting = Object.assign({}, DEFAULT_SETTING, await this.loadData());
 	}
@@ -133,14 +188,6 @@ export default class PersianCalendarPlugin extends Plugin {
 		}
 
 		return null;
-	}
-
-	changeLanguage(lang: TLocal) {
-		setLocal(lang);
-		this.setting.language = lang;
-		this.saveSetting();
-
-		this.refreshViews();
 	}
 
 	refreshViews() {

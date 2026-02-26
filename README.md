@@ -174,29 +174,35 @@ pcApi.toFaNumber("123 تست test"); // "۱۲۳ تست test"
 // for Jalali/Shamsi/Khorshidi
 pcApi.jalaliToDate(1405, 9, 13) // jalali to Date
 pcApi.jalaliToGregorian(1405, 9, 13) // {gy: 2026, gm: 12, gd: 4}
-pcApi.jalaliToHijri(1405, 9, 13) // {hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliToHijri(1405, 9, 13) // (iran){hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" }) // (umalqura){hy: 1448, hm: 6, hd: 24}
 pcApi.jalaliMonthName(9) // آذر
 pcApi.jalaliMonthName(9, "en") // Azar
 pcApi.seasonName(3) // پاییز
 pcApi.seasonName(3, "en") // Autumn
 
 // for Gregorian/Miladi
-pcApi.dateToGregorian(new Date()) // (Tehran){gy, gm, gd}
+pcApi.dateToGregorian(new Date()) // {gy, gm, gd}
 pcApi.gregorianToDate(2026, 12, 4) // gregorian to Date
 pcApi.gregorianToJalali(2026, 12, 4) // {jy: 1405, jm: 9, jd: 13}
-pcApi.gregorianToHijri(2026, 12, 4) // {hy: 1448, hm: 6, hd: 24}
-pcApi.gregorianToHijri(2026, 12, 4, { base: "umalqura" }) // {hy: 1448, hm: 6, hd: 24}
+pcApi.gregorianToHijri(2026, 12, 4) // (iran){hy: 1448, hm: 6, hd: 24}
+pcApi.gregorianToHijri(2026, 12, 4, { base: "umalqura" }) // (umalqura){hy: 1448, hm: 6, hd: 24}
 
-// for Hijri-ir
-pcApi.hijriToDate(1448, 6, 24) // hijri to Date
-pcApi.hijriToGregorian(1448, 6, 24) // {gy: 2026, gm: 12, gd: 4}
-pcApi.hijriToJalali(1448, 6, 24) // {jy: 1405, jm: 9, jd: 13}
+// for Hijri-iran
+pcApi.hijriToDate(1448, 6, 24) // (iran)hijri to Date
+pcApi.hijriToGregorian(1448, 6, 24) // (iran){gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24) // (iran){jy: 1405, jm: 9, jd: 13}
+
+// for Hijri-umalqura
+pcApi.hijriToDate(1448, 6, 24, { base: "umalqura" }) // (umalqura)hijri to Date
+pcApi.hijriToGregorian(1448, 6, 24, { base: "umalqura" }) // (umalqura){gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24, { base: "umalqura" }) // (umalqura){jy: 1405, jm: 9, jd: 13}
 
 // for all events
-pcApi.checkHoliday(new Date()) // (Tehran)(is holiday?)true|false
+pcApi.checkHoliday(new Date()) // (is holiday?)true|false
 
-pcApi.dateToEvents(new Date())
-pcApi.dateToEvents(new Date(), "umalqura") // hijri based on umalqura
+pcApi.dateToEvents(new Date()) // [{(fa & en)title, categories, isHoliday},...]
+pcApi.dateToEvents(new Date(), "umalqura") // (hijri based on umalqura)[{(fa & en)title, categories, isHoliday},...]
 ```
 
 ## دستورات تعریف شده در افزونه
@@ -205,7 +211,7 @@ pcApi.dateToEvents(new Date(), "umalqura") // hijri based on umalqura
 
 - دسترسی به روزنوشت، هفته‌نوشت، ماه‌نوشت، فصل‌نوشت و سال‌نوشت جاری
 - ارجاع متن انتخاب شده به یادداشت مرتبط
-- تبدیل تاریخ بین شمسی و میلادی به صورت خودکار و با فرمت `YYYY-MM-DD` . (سال بیشتر از 1600 میلادی و کمتر از آن شمسی است. این حرکت اشتباه اما کار راه‌اندازتر است!)
+- تبدیل تاریخ بین شمسی و میلادی به صورت خودکار و با فرمت `YYYY-MM-DD` . (سال بیشتر از 1700 میلادی و کمتر از آن شمسی است. این حرکت اشتباه اما کار راه‌اندازتر است!)
 
 ![دستورات تعریف شده در تقویم](Instructions/commands.png)
 

@@ -2,6 +2,7 @@
 	align-items: center;
 	display: flex;
 	flex-direction: column;
+	gap: 2px;
 	padding: 5px;
 	width: 100%;
 }
@@ -43,7 +44,6 @@
 }
 
 .persian-calendar__jalali-state {
-	padding-top: 5px;
 	display: flex;
 	flex-direction: row-reverse;
 	gap: 5px;
@@ -64,7 +64,7 @@
 
 .persian-calendar__jmonth--en,
 .persian-calendar__jyear--en {
-	font-size: 20px;
+	font-size: 19px;
 	font-weight: 800;
 }
 

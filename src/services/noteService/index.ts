@@ -1,7 +1,7 @@
 import { App, TFile, MarkdownView } from "obsidian";
 import type { TLocal, TPathTokenContext } from "src/types";
 import { jalaliToGregorian, jalaliMonthLength, jalaliToSeason } from "src/utils/dateUtils";
-import { createNoteModal } from "src/components/ConfirmModal";
+import { createNoteModal } from "src/components";
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
 

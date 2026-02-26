@@ -2,7 +2,7 @@ import { setIcon } from "obsidian";
 import { DEFAULT_SOCIAL_LINKS } from "src/constants";
 import type { TLocal } from "src/types";
 
-export function SocialLinks(
+export default function SocialLinks(
 	container: HTMLElement,
 	local: TLocal,
 	options: {

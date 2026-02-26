@@ -102,7 +102,7 @@ export const HIJRI_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["sunni"],
 				title: {
-					fa: "رحلت پیامبر(ص)",
+					fa: "رحلت پیامبر(ص) اهل تسنن",
 					en: "Passing of Prophet Muhammad",
 				},
 			},
@@ -154,7 +154,7 @@ export const HIJRI_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["sunni"],
 				title: {
-					fa: "ولادت پیامبر(ص)",
+					fa: "ولادت پیامبر(ص) به باور اهل تسنن",
 					en: "Birth of Prophet Muhammad",
 				},
 			},
@@ -191,7 +191,7 @@ export const HIJRI_EVENTS: TEventRecord = {
 				isHoliday: true,
 				categories: ["shia", "official"],
 				title: {
-					fa: "ولادت پیامبر(ص)",
+					fa: "ولادت پیامبر(ص) به باور اهل تشیع",
 					en: "Birth of Prophet Muhammad",
 				},
 			},
@@ -443,7 +443,7 @@ export const HIJRI_EVENTS: TEventRecord = {
 				isHoliday: true,
 				categories: ["shia", "official"],
 				title: {
-					fa: "مبعث پیامبر(ص)، شب معراج",
+					fa: "مبعث پیامبر(ص)، شب معراج ایران",
 					en: "Mab'ath of Prophet Muhammad, Isra and Mi'raj",
 				},
 			},
@@ -600,12 +600,12 @@ export const HIJRI_EVENTS: TEventRecord = {
 			{
 				isHoliday: true,
 				categories: ["shia", "official"],
-				title: { fa: "عید سعید فطر", en: "Eid al-Fitr" },
+				title: { fa: "عید فطر ایران", en: "Eid al-Fitr" },
 			},
 			{
 				isHoliday: false,
 				categories: ["sunni"],
-				title: { fa: "عید سعید فطر", en: "Eid al-Fitr" },
+				title: { fa: "عید فطر", en: "Eid al-Fitr" },
 			},
 		],
 		17: [

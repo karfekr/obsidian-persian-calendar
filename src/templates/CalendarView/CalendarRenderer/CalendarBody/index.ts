@@ -9,7 +9,7 @@ import { NoteService } from "src/services";
 import CalendarNavigation from "../CalendarNavigation";
 import Tooltip from "./Tooltip";
 import GridService from "./GridService";
-import Notice from "src/components/Notice";
+import { Notice } from "src/components";
 import { getDirection, t } from "src/i18n";
 
 export default class CalendarBodyRender {

@@ -1,7 +1,7 @@
 {
 	"setting": {
 		"banner": {
-			"title": "Use the links below to view the documentation, report issues, or send feedback"
+			"title": "Use the links below to view the documentation, report issues or send feedback"
 		},
 
 		"sections": {
@@ -15,8 +15,7 @@
 
 		"general": {
 			"language": {
-				"name": "Language",
-				"desc": "Choose the Calendar interface language.",
+				"name": "Language | زبان",
 				"options": {
 					"fa": "Fa",
 					"en": "En"
@@ -24,7 +23,7 @@
 			},
 			"dateFormat": {
 				"name": "Date Format for Natural Dates and Daily Notes",
-				"desc": "For better compatibility with other plugins, using the Gregorian format is recommended.",
+				"desc": "* For better compatibility with other plugins, using the Gregorian format is recommended.",
 				"options": {
 					"jalali": "Jalali",
 					"gregorian": "Gregorian"
@@ -140,6 +139,9 @@
 			"message": "Do you want to create this note?",
 			"cancelBtn": "Cancel",
 			"confirmBtn": "Confirm"
+		},
+		"datePicker": {
+			"tooltip": "Choose Jalali Date"
 		}
 	},
 	"notice": {

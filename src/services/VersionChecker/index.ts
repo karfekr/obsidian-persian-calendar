@@ -43,7 +43,7 @@ export default class VersionChecker {
 			return;
 		}
 
-		const { UpdateModal } = await import("src/components/UpdateModal");
+		const { UpdateModal } = await import("src/components");
 		const releaseNotes = getReleaseNotesForVersion(currentVersion);
 
 		new UpdateModal(this.plugin.app, this.plugin.setting, releaseNotes, () => {
@@ -66,7 +66,7 @@ export default class VersionChecker {
 			return;
 		}
 
-		const { UpdateModal } = await import("src/components/UpdateModal");
+		const { UpdateModal } = await import("src/components");
 
 		let releaseNotes;
 		if (compareVersions(currentVersion, lastSeenVersion) > 0) {

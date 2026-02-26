@@ -1,6 +1,6 @@
 import type { App } from "obsidian";
 import type PersianCalendarPlugin from "src/main";
-import { SocialLinks } from "src/components/SocialLinks";
+import { SocialLinks } from "src/components";
 import { SettingBase } from "./SettingBase";
 import { t } from "src/i18n";
 
@@ -30,7 +30,6 @@ export default class CalendarSetting extends SettingBase {
 
 		this.addDropdownSetting(containerEl, {
 			name: t("setting.general.language.name"),
-			desc: t("setting.general.language.desc"),
 			key: "language",
 			options: {
 				fa: t("setting.general.language.options.fa"),
@@ -176,16 +175,16 @@ export default class CalendarSetting extends SettingBase {
 			key: "showIROfficialEvents",
 		});
 		this.addToggleSetting(containerEl, {
+			name: t("setting.events.global.name"),
+			key: "showGlobalEvents",
+		});
+		this.addToggleSetting(containerEl, {
 			name: t("setting.events.historical.name"),
 			key: "showIRHistoricalEvents",
 		});
 		this.addToggleSetting(containerEl, {
 			name: t("setting.events.ancient.name"),
 			key: "showIRAncientEvents",
-		});
-		this.addToggleSetting(containerEl, {
-			name: t("setting.events.global.name"),
-			key: "showGlobalEvents",
 		});
 		this.addToggleSetting(containerEl, {
 			name: t("setting.events.shia.name"),

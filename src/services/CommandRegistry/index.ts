@@ -8,8 +8,9 @@ import {
 	todayTehran,
 } from "src/utils/dateUtils";
 import { gregorianDashToJalaliDash, jalaliDashToGregorianDash } from "src/utils/dashUtils";
-import Notice from "src/components/Notice";
+import { Notice, DatePicker } from "src/components";
 import { getDirection, t } from "src/i18n";
+import { dailyInTextRegex } from "src/constants";
 
 export default class CommandRegistry {
 	constructor(private plugin: PersianCalendarPlugin) {}
@@ -20,6 +21,7 @@ export default class CommandRegistry {
 		this.registerPeriodicNoteCommands();
 		this.registerCalendarViewCommand();
 		this.registerDateConversionCommand();
+		this.registerInsertDatePicker();
 	}
 
 	private registerReplacePlaceholders() {
@@ -121,12 +123,39 @@ export default class CommandRegistry {
 				const { line } = editor.getCursor();
 				const text = editor.getLine(line);
 
-				if (!/\b(\d{4})-(\d{2})-(\d{2})\b/.test(text)) {
+				if (!dailyInTextRegex.test(text)) {
 					Notice("خط فعلی شامل تاریخ با الگوی YYYY-MM-DD نیست.");
 					return;
 				}
 
 				this.convertDate(editor, line, text);
+			},
+		});
+	}
+
+	private registerInsertDatePicker() {
+		this.plugin.addCommand({
+			id: "insert-date-picker",
+			name: "Select Date - انتخاب تاریخ",
+			editorCallback: (editor) => {
+				const cursor = editor.getCursor();
+				const line = editor.getLine(cursor.line) ?? "";
+
+				const match = line.match(dailyInTextRegex);
+				const initial = match?.[0] ?? null;
+
+				new DatePicker(this.plugin.app, this.plugin.setting, initial, (val) => {
+					if (match) {
+						const start = line.indexOf(match[0]);
+						editor.replaceRange(
+							val,
+							{ line: cursor.line, ch: start },
+							{ line: cursor.line, ch: start + match[0].length },
+						);
+					} else {
+						editor.replaceSelection(val);
+					}
+				}).open();
 			},
 		});
 	}
@@ -137,11 +166,9 @@ export default class CommandRegistry {
 	}
 
 	private convertDate(editor: Editor, lineIndex: number, textLine: string) {
-		const dateRegex = /\b(\d{4})-(\d{2})-(\d{2})\b/g;
-
-		const newLine = textLine.replace(dateRegex, (full, y, m, d) => {
+		const newLine = textLine.replace(dailyInTextRegex, (full, y, m, d) => {
 			const date = `${y}-${m}-${d}`;
-			const convert = +y > 1600 ? gregorianDashToJalaliDash : jalaliDashToGregorianDash;
+			const convert = +y > 1700 ? gregorianDashToJalaliDash : jalaliDashToGregorianDash;
 			return convert(date) ?? full;
 		});
 

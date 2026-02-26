@@ -19,4 +19,5 @@ export {
 	isMonthlyRegex,
 	isSeasonalRegex,
 	isYearlyRegex,
+	dailyInTextRegex,
 } from "./regex";

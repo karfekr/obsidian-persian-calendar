@@ -15,18 +15,18 @@ export {
 	dateToMonthName, // (Date) => String(jalali_month_name)
 	dateToSeasonName, // (Date) => String(season_name)
 	dateToDayOfMonth, // (Date) => Number(day_of_month)
-	dateToDaysPassedJYear, // Date => Number(days_passed_in_jy)
-	dateToDaysRemainingJYear, // Date => Number(days_remaining_in_jy)
-	dateToDaysPassedSeason, // Date => Number(days_passed_in_season)
-	dateToDaysRemainingSeason, // Date => Number(days_remaining_in_season)
-	dateToDaysPassedJMonth, // Date => Number(days_passed_in_jm)
-	dateToDaysRemainingJMonth, // Date => Number(days_remaining_in_jm)
-	dateToEndDayOfJMonthDate,
-	dateToStartDayOfJMonthDate,
-	dateToEndDayOfSeasonDate,
-	dateToStartDayOfSeasonDate,
-	jalaliMonthToGregorianRange,
-	jalaliMonthToHijriRange,
+	dateToDaysPassedJYear, // (Date) => Number(days_passed_in_jy)
+	dateToDaysRemainingJYear, // (Date) => Number(days_remaining_in_jy)
+	dateToDaysPassedSeason, // (Date) => Number(days_passed_in_season)
+	dateToDaysRemainingSeason, // (Date) => Number(days_remaining_in_season)
+	dateToDaysPassedJMonth, // (Date) => Number(days_passed_in_jm)
+	dateToDaysRemainingJMonth, // (Date) => Number(days_remaining_in_jm)
+	dateToStartDayOfJMonthDate, // (Date) => (start day of jalali month)Date
+	dateToEndDayOfJMonthDate, // (Date) => (end day of jalali month)Date
+	dateToStartDayOfSeasonDate, // (Date) => (start day of season)Date
+	dateToEndDayOfSeasonDate, // (Date) => (end day of season)Date
+	jalaliMonthToGregorianRange, // (jYear, jMonth) => { firstDay: {gy, gm, gd}, lastDay: {gy, gm, gd} }
+	jalaliMonthToHijriRange, // (jYear, jMonth) => { firstDay: {gy, gm, gd}, lastDay: {gy, gm, gd} }
 } from "./jalaliUtils";
 export {
 	gregorianToDate, // (gy, gm, gd) => (Is it a valid Gregorian date?)Date|null

@@ -53,7 +53,7 @@ class ConfirmModal extends Modal {
 	}
 }
 
-export function createNoteModal(
+export default function createNoteModal(
 	app: App,
 	options?: { title?: string; message?: string },
 ): Promise<boolean> {

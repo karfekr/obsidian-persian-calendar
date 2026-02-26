@@ -36,7 +36,7 @@ import {
 	dashToStartDayOfYearDash,
 } from "src/utils/dashUtils";
 import type { TBuildContext, TDateFormat, TSuggestProvider } from "src/types";
-import Notice from "src/components/Notice";
+import { Notice } from "src/components";
 import { extractYearFormat } from "src/utils/formatters";
 import { getDirection, t } from "src/i18n";
 

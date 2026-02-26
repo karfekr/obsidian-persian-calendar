@@ -1,8 +1,8 @@
 import { Modal, App, setIcon } from "obsidian";
-import { SocialLinks } from "src/components/SocialLinks";
+import { SocialLinks } from "src/components";
 import type { TReleaseNote, TSetting } from "src/types";
 
-export class UpdateModal extends Modal {
+export default class UpdateModal extends Modal {
 	private notes: TReleaseNote[];
 	private setting: TSetting;
 	private onCloseCallback?: () => void;
