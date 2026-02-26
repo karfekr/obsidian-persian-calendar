@@ -19,7 +19,6 @@ export default class CommandRegistry {
 		this.registerReplacePlaceholders();
 		this.registerDailyNoteCommands();
 		this.registerPeriodicNoteCommands();
-		this.registerCalendarViewCommand();
 		this.registerDateConversionCommand();
 		this.registerInsertDatePicker();
 	}
@@ -105,16 +104,6 @@ export default class CommandRegistry {
 		});
 	}
 
-	private registerCalendarViewCommand() {
-		this.plugin.addCommand({
-			id: "open-persian-calendar-view",
-			name: "Open Persian Calendar View - باز کردن تقویم فارسی",
-			callback: async () => {
-				await this.plugin.activateView();
-			},
-		});
-	}
-
 	private registerDateConversionCommand() {
 		this.plugin.addCommand({
 			id: "convert-date",
@@ -136,7 +125,7 @@ export default class CommandRegistry {
 	private registerInsertDatePicker() {
 		this.plugin.addCommand({
 			id: "insert-date-picker",
-			name: "Select Date - انتخاب تاریخ",
+			name: "DatePicker - انتخابگر تاریخ",
 			editorCallback: (editor) => {
 				const cursor = editor.getCursor();
 				const line = editor.getLine(cursor.line) ?? "";

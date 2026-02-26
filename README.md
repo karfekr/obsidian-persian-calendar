@@ -171,9 +171,6 @@ const pcApi = app.plugins.getPlugin("persian-calendar").api;
 pcApi.toEnNumber("۱۲۳ تست test"); // "123 تست test"
 pcApi.toFaNumber("123 تست test"); // "۱۲۳ تست test"
 
-// Without depending on time zone
-pcApi.todayTehran(); // (Tehran)new Date()
-
 // for Jalali/Shamsi/Khorshidi
 pcApi.jalaliToDate(1405, 9, 13); // jalali to Date
 pcApi.jalaliToGregorian(1405, 9, 13); // {gy: 2026, gm: 12, gd: 4}
