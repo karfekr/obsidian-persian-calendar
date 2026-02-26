@@ -68,7 +68,7 @@ export default class DatePicker extends Modal {
 	}
 
 	onOpen() {
-		this.containerEl.addClass("persian-calendar__datepicker-container");
+		this.containerEl.addClass("persian-calendar__datepicker-container", "persian-calendar");
 		this.render();
 	}
 
@@ -99,7 +99,7 @@ export default class DatePicker extends Modal {
 		contentEl.empty();
 
 		const rootContainer = contentEl.createDiv({
-			cls: "persian-calendar__datepicker persian-calendar",
+			cls: "persian-calendar__datepicker",
 			attr: { dir: "rtl" },
 		});
 
@@ -185,12 +185,11 @@ export default class DatePicker extends Modal {
 		// Render previous month's trailing days
 		for (let i = previousMonthCells - 1; i >= 0; i--) {
 			const dayNumber = previousMonthLength - i;
-			const button = grid.createEl("button", {
+			const button = grid.createEl("div", {
 				text: toFaNumber(dayNumber),
 				cls: "persian-calendar__datepicker-day persian-calendar__datepicker-no-current-month",
 			});
 			button.tabIndex = -1;
-			button.disabled = true;
 		}
 
 		// Render current month's days
@@ -207,7 +206,7 @@ export default class DatePicker extends Modal {
 			if (isSelected) classList.push("persian-calendar__datepicker-day--selected");
 			if (isToday) classList.push("persian-calendar__datepicker-day--current");
 
-			const dayButton = grid.createEl("button", {
+			const dayButton = grid.createEl("div", {
 				text: toFaNumber(day),
 				cls: classList.join(" "),
 			});
@@ -216,17 +215,16 @@ export default class DatePicker extends Modal {
 
 		// Render next month's leading days
 		for (let day = 1; day <= nextMonthCells; day++) {
-			const button = grid.createEl("button", {
+			const button = grid.createEl("div", {
 				text: toFaNumber(day),
 				cls: "persian-calendar__datepicker-day persian-calendar__datepicker-no-current-month",
 			});
 			button.tabIndex = -1;
-			button.disabled = true;
 		}
 	}
 
 	private renderFooter(container: HTMLElement) {
-		const footer = container.createDiv({ cls: "footer" });
+		const footer = container.createDiv();
 
 		// Empty space on the right
 		footer.createSpan();

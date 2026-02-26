@@ -152,9 +152,23 @@ export default class PersianCalendarPlugin extends Plugin {
 				const val = input.value || null;
 
 				new DatePicker(this.app, this.setting, val, (out) => {
+					input.focus();
+
 					input.value = out;
-					input.dispatchEvent(new Event("input", { bubbles: true }));
-					input.dispatchEvent(new Event("change", { bubbles: true }));
+
+					input.dispatchEvent(
+						new InputEvent("input", {
+							bubbles: true,
+							cancelable: true,
+						}),
+					);
+
+					input.dispatchEvent(
+						new Event("change", {
+							bubbles: true,
+							cancelable: true,
+						}),
+					);
 				}).open();
 			};
 

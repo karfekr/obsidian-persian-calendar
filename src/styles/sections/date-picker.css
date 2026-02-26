@@ -5,14 +5,13 @@
 .persian-calendar__datepicker {
 	display: flex;
 	flex-direction: column;
-	font-family: var(--font-interface);
 	margin-top: 10px;
 	direction: rtl;
 }
 
 .persian-calendar__datepicker-header {
 	display: grid;
-	grid-template-columns: 32px 32px 1fr 32px 32px; /* prev year | prev month | title | next month | next year */
+	grid-template-columns: 32px 32px 1fr 32px 32px;
 	align-items: center;
 	gap: 6px;
 }
@@ -30,11 +29,6 @@
 	justify-content: center;
 }
 
-.persian-calendar__datepicker-arrow:hover {
-	background: var(--background-modifier-hover);
-}
-
-/* Grid */
 .persian-calendar__datepicker-days {
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
@@ -43,6 +37,7 @@
 	text-align: center;
 	user-select: none;
 	overflow: hidden;
+	margin-bottom: 10px;
 }
 
 .persian-calendar__datepicker-weekday {
@@ -52,9 +47,8 @@
 	margin-bottom: 2px;
 }
 
-/* Day buttons */
 .persian-calendar__datepicker-day {
-	background: none;
+	background-color: none;
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
@@ -62,27 +56,22 @@
 	line-height: 32px;
 }
 
-.persian-calendar__datepicker-day:hover:not(.adjacent) {
-	background: var(--background-modifier-hover);
+.persian-calendar__datepicker-day:hover {
+	background-color: var(--persian-calendar-color-base-1);
+	opacity: 0.8;
 }
 
-/* Selected & Today */
 .persian-calendar__datepicker-day--selected {
-	background: var(--persian-calendar-color-base-1);
+	border: 1px solid var(--persian-calendar-color-base-2);
 }
 
 .persian-calendar__datepicker-day--current {
-	border: 2px solid var(--interactive-accent);
+	border: 2px solid var(--persian-calendar-color-primary);
 }
 
-/* Adjacent-month days */
 .persian-calendar__datepicker-no-current-month {
-	color: var(--text-faint);
+	opacity: 0.4;
 	pointer-events: none;
-}
-
-.persian-calendar__datepicker button:not(.clickable-icon) {
-	box-shadow: none;
 }
 
 .persian-calendar__datepicker .persian-calendar__go-today {
