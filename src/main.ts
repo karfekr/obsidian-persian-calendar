@@ -138,7 +138,7 @@ export default class PersianCalendarPlugin extends Plugin {
 			field.style.gap = "6px";
 
 			const btn = document.createElement("button");
-			btn.className = "jalali-flag-btn";
+			btn.className = "persian-calendar__datepicker-flag";
 			btn.type = "button";
 
 			const refresh = () => {

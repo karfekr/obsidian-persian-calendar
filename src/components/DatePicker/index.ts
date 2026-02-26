@@ -1,5 +1,6 @@
-import { App, Modal } from "obsidian";
+import { App, Modal, setIcon } from "obsidian";
 import { JALALI_MONTHS_NAME, WEEKDAYS_NAME } from "src/constants";
+import { t } from "src/i18n";
 import type { TDateFormat, TJalali, TSetting } from "src/types";
 import {
 	gregorianToJalali,
@@ -13,7 +14,7 @@ import { extractDayFormat, toDayFormat, toFaNumber } from "src/utils/formatters"
 
 export default class DatePicker extends Modal {
 	private setting: TSetting;
-	private date: TJalali;
+	private currentJalali: TJalali;
 	private onSelect: (val: string) => void;
 	private outputMode: TDateFormat;
 
@@ -24,31 +25,42 @@ export default class DatePicker extends Modal {
 		this.outputMode = "gregorian";
 
 		if (initial) {
-			const p = extractDayFormat(initial);
-			if (p) {
-				if (p.year > 1700) {
-					// میلادی ورودی است
-					const dt = gregorianToDate(p.year, p.month, p.day);
-					if (!Number.isNaN(dt.getTime())) {
-						const j = gregorianToJalali(dt.getFullYear(), dt.getMonth() + 1, dt.getDate());
-						this.date = { jy: j.jy, jm: j.jm, jd: j.jd };
+			const parsedDate = extractDayFormat(initial);
+			if (parsedDate) {
+				if (parsedDate.year > 1700) {
+					const gregorianDate = gregorianToDate(parsedDate.year, parsedDate.month, parsedDate.day);
+					if (!Number.isNaN(gregorianDate.getTime())) {
+						const jalaliDate = gregorianToJalali(
+							gregorianDate.getFullYear(),
+							gregorianDate.getMonth() + 1,
+							gregorianDate.getDate(),
+						);
+						this.currentJalali = {
+							jy: jalaliDate.jy,
+							jm: jalaliDate.jm,
+							jd: jalaliDate.jd,
+						};
 						this.outputMode = "gregorian";
 					} else {
-						this.date = dateToJalali(todayTehran());
+						this.currentJalali = dateToJalali(todayTehran());
 					}
 				} else {
-					const jm = Math.min(Math.max(1, p.month), 12);
-					const maxd = jalaliMonthLength(p.year, jm);
-					const jd = Math.min(Math.max(1, p.day), maxd);
-					this.date = { jy: p.year, jm, jd };
+					const jalaliMonth = Math.min(Math.max(1, parsedDate.month), 12);
+					const maxDaysInMonth = jalaliMonthLength(parsedDate.year, jalaliMonth);
+					const jalaliDay = Math.min(Math.max(1, parsedDate.day), maxDaysInMonth);
+					this.currentJalali = {
+						jy: parsedDate.year,
+						jm: jalaliMonth,
+						jd: jalaliDay,
+					};
 					this.outputMode = "jalali";
 				}
 			} else {
-				this.date = dateToJalali(todayTehran());
+				this.currentJalali = dateToJalali(todayTehran());
 				this.outputMode = "gregorian";
 			}
 		} else {
-			this.date = dateToJalali(todayTehran());
+			this.currentJalali = dateToJalali(todayTehran());
 			this.outputMode = "gregorian";
 		}
 
@@ -56,23 +68,29 @@ export default class DatePicker extends Modal {
 	}
 
 	onOpen() {
-		this.containerEl.addClass("persian-modal-custom");
+		this.containerEl.addClass("persian-calendar__datepicker-container");
 		this.render();
 	}
 
-	private getMonthName(month: number) {
-		const lang = (this.setting?.language ?? "fa") as keyof typeof JALALI_MONTHS_NAME;
-		return (JALALI_MONTHS_NAME[lang] as any)[month];
+	private getYear(year: number) {
+		return this.setting.language === "fa" ? toFaNumber(year) : year;
 	}
 
-	private getWeekdayLetters() {
-		const lang = (this.setting?.language ?? "fa") as keyof typeof WEEKDAYS_NAME;
-		const map = WEEKDAYS_NAME[lang] as Record<number, string>;
+	private getMonthName(month: number): string {
+		const language = (this.setting?.language ?? "fa") as keyof typeof JALALI_MONTHS_NAME;
+		return (JALALI_MONTHS_NAME[language] as any)[month];
+	}
+
+	private getWeekdayLetters(): string[] {
+		const language = (this.setting?.language ?? "fa") as keyof typeof WEEKDAYS_NAME;
+		const weekdaysMap = WEEKDAYS_NAME[language] as Record<number, string>;
 		const letters: string[] = [];
-		for (let i = 1; i <= 7; i++) {
-			const name = map[i as keyof typeof map] ?? "";
-			letters.push(name.charAt(0));
+
+		for (let dayIndex = 1; dayIndex <= 7; dayIndex++) {
+			const dayName = weekdaysMap[dayIndex as keyof typeof weekdaysMap] ?? "";
+			letters.push(dayName.charAt(0));
 		}
+
 		return letters;
 	}
 
@@ -80,121 +98,228 @@ export default class DatePicker extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		const root = contentEl.createDiv({
-			cls: "persian-datepicker obsidian-calendar",
+		const rootContainer = contentEl.createDiv({
+			cls: "persian-calendar__datepicker persian-calendar",
 			attr: { dir: "rtl" },
 		});
 
-		// Header
-		const header = root.createDiv({ cls: "header" });
-		header.createEl("button", { text: "‹", cls: "cal-btn nav" }).onclick = () =>
-			this.shiftMonth(-1);
+		// Header with navigation buttons
+		this.renderHeader(rootContainer);
 
-		header.createSpan({
-			text: `${this.getMonthName(this.date.jm)} ${toFaNumber(this.date.jy)}`,
-			cls: "month-title",
-		});
-		header.createEl("button", { text: "›", cls: "cal-btn nav" }).onclick = () => this.shiftMonth(1);
+		// Calendar grid
+		this.renderCalendarGrid(rootContainer);
 
-		// Grid
-		const grid = root.createDiv({ cls: "grid", attr: { role: "grid" } });
-		this.getWeekdayLetters().forEach((w) =>
-			grid.createSpan({ text: w, cls: "dow", attr: { role: "columnheader" } }),
-		);
-
-		const gFirst = jalaliToGregorian(this.date.jy, this.date.jm, 1);
-		const jsDay = new Date(gFirst.gy, gFirst.gm - 1, gFirst.gd).getDay();
-		const offset = (jsDay + 1) % 7;
-
-		const prev = this.prevMonth(this.date);
-		const prevLen = jalaliMonthLength(prev.jy, prev.jm);
-		for (let i = offset - 1; i >= 0; i--) {
-			const b = grid.createEl("button", { text: toFaNumber(prevLen - i), cls: "day adjacent" });
-			b.tabIndex = -1;
-			b.disabled = true;
-		}
-
-		const dim = jalaliMonthLength(this.date.jy, this.date.jm);
-		for (let d = 1; d <= dim; d++) {
-			const isSel = d === this.date.jd;
-			const today = dateToJalali(todayTehran());
-			const isTod = today.jy === this.date.jy && today.jm === this.date.jm && today.jd === d;
-			const btn = grid.createEl("button", {
-				text: toFaNumber(d),
-				cls: `day${isSel ? " selected" : ""}${isTod ? " today" : ""}`,
-			});
-			btn.onclick = () => this.pickDay(d);
-		}
-
-		const filled = offset + dim;
-		const trail = (7 - (filled % 7)) % 7;
-		for (let d = 1; d <= trail; d++) {
-			const b = grid.createEl("button", { text: toFaNumber(d), cls: "day adjacent" });
-			b.tabIndex = -1;
-			b.disabled = true;
-		}
-
-		const jump = root.createDiv({ cls: "jump-row" });
-		jump.createSpan({ text: "برو به (مثال: 140302):", cls: "jump-label" });
-		const input = jump.createEl("input", {
-			type: "text",
-			placeholder: "مثال: 140302",
-			cls: "jump-input",
-			attr: { maxlength: "6", inputmode: "numeric" },
-		});
-		input.value = `${this.date.jy}${String(this.date.jm).padStart(2, "0")}`;
-		const go = jump.createEl("button", { text: "برو", cls: "jump-btn" });
-		const doJump = () => {
-			const v = (input.value || "").trim();
-			if (/^\d{6}$/.test(v)) {
-				const jy = +v.slice(0, 4),
-					jm = +v.slice(4, 6);
-				if (jm >= 1 && jm <= 12) {
-					this.date = { jy, jm, jd: 1 };
-					this.render();
-				}
-			}
-		};
-		go.onclick = doJump;
-		input.onkeydown = (e) => {
-			if ((e as KeyboardEvent).key === "Enter") doJump();
-		};
+		// Footer with today button
+		this.renderFooter(rootContainer);
 	}
 
-	private pickDay(d: number) {
-		this.date.jd = d;
-		const g = jalaliToGregorian(this.date.jy, this.date.jm, d);
-		const out =
+	private renderHeader(container: HTMLElement) {
+		const header = container.createDiv({ cls: "persian-calendar__datepicker-header" });
+
+		// Previous year button
+		const prevYearButton = header.createEl("button", { cls: "persian-calendar__datepicker-arrow" });
+		setIcon(prevYearButton, "chevrons-right");
+		prevYearButton.onclick = () => this.shiftYear(-1);
+
+		// Previous month button
+		const prevMonthButton = header.createEl("button", {
+			cls: "persian-calendar__datepicker-arrow",
+		});
+		setIcon(prevMonthButton, "chevron-right");
+		prevMonthButton.onclick = () => this.shiftMonth(-1);
+
+		// Month and year title
+		header.createSpan({
+			text: `${this.getMonthName(this.currentJalali.jm)} ${this.getYear(this.currentJalali.jy)}`,
+			cls: "persian-calendar__datepicker-jmonth",
+		});
+
+		// Next month button
+		const nextMonthButton = header.createEl("button", {
+			cls: "persian-calendar__datepicker-arrow",
+		});
+		setIcon(nextMonthButton, "chevron-left");
+		nextMonthButton.onclick = () => this.shiftMonth(1);
+
+		// Next year button
+		const nextYearButton = header.createEl("button", { cls: "persian-calendar__datepicker-arrow" });
+		setIcon(nextYearButton, "chevrons-left");
+		nextYearButton.onclick = () => this.shiftYear(1);
+	}
+
+	private renderCalendarGrid(container: HTMLElement) {
+		const grid = container.createDiv({
+			cls: "persian-calendar__datepicker-days",
+			attr: { role: "grid" },
+		});
+
+		// Render weekday headers
+		this.getWeekdayLetters().forEach((weekdayLetter) =>
+			grid.createSpan({
+				text: weekdayLetter,
+				cls: "persian-calendar__datepicker-weekday",
+				attr: { role: "columnheader" },
+			}),
+		);
+
+		// Calculate offset for first day of month
+		const firstDayGregorian = jalaliToGregorian(this.currentJalali.jy, this.currentJalali.jm, 1);
+		const firstDayJavascript = new Date(
+			firstDayGregorian.gy,
+			firstDayGregorian.gm - 1,
+			firstDayGregorian.gd,
+		).getDay();
+		const startDayOffset = (firstDayJavascript + 1) % 7;
+
+		// Get previous and next month info
+		const previousMonth = this.getPreviousMonth(this.currentJalali);
+		const previousMonthLength = jalaliMonthLength(previousMonth.jy, previousMonth.jm);
+		const currentMonthLength = jalaliMonthLength(this.currentJalali.jy, this.currentJalali.jm);
+
+		// Total cells needed: 6 weeks × 7 days = 42 cells
+		const totalCells = 42;
+		const currentMonthCells = currentMonthLength;
+		const previousMonthCells = startDayOffset;
+		const nextMonthCells = totalCells - previousMonthCells - currentMonthCells;
+
+		// Render previous month's trailing days
+		for (let i = previousMonthCells - 1; i >= 0; i--) {
+			const dayNumber = previousMonthLength - i;
+			const button = grid.createEl("button", {
+				text: toFaNumber(dayNumber),
+				cls: "persian-calendar__datepicker-day persian-calendar__datepicker-no-current-month",
+			});
+			button.tabIndex = -1;
+			button.disabled = true;
+		}
+
+		// Render current month's days
+		const today = dateToJalali(todayTehran());
+
+		for (let day = 1; day <= currentMonthLength; day++) {
+			const isSelected = day === this.currentJalali.jd;
+			const isToday =
+				today.jy === this.currentJalali.jy &&
+				today.jm === this.currentJalali.jm &&
+				today.jd === day;
+
+			const classList = ["persian-calendar__datepicker-day"];
+			if (isSelected) classList.push("persian-calendar__datepicker-day--selected");
+			if (isToday) classList.push("persian-calendar__datepicker-day--current");
+
+			const dayButton = grid.createEl("button", {
+				text: toFaNumber(day),
+				cls: classList.join(" "),
+			});
+			dayButton.onclick = () => this.selectDay(day);
+		}
+
+		// Render next month's leading days
+		for (let day = 1; day <= nextMonthCells; day++) {
+			const button = grid.createEl("button", {
+				text: toFaNumber(day),
+				cls: "persian-calendar__datepicker-day persian-calendar__datepicker-no-current-month",
+			});
+			button.tabIndex = -1;
+			button.disabled = true;
+		}
+	}
+
+	private renderFooter(container: HTMLElement) {
+		const footer = container.createDiv({ cls: "footer" });
+
+		// Empty space on the right
+		footer.createSpan();
+
+		// Today button in the center
+		const todayButton = footer.createEl("button", {
+			text: t("today"),
+			cls: "persian-calendar__go-today",
+		});
+		todayButton.onclick = () => this.goToToday();
+
+		// Empty space on the left
+		footer.createSpan();
+	}
+
+	private selectDay(day: number) {
+		this.currentJalali.jd = day;
+		const gregorianDate = jalaliToGregorian(this.currentJalali.jy, this.currentJalali.jm, day);
+
+		const formattedOutput =
 			this.outputMode === "gregorian"
-				? toDayFormat(g.gy, g.gm, g.gd)
-				: toDayFormat(this.date.jy, this.date.jm, d);
-		this.onSelect(out);
+				? toDayFormat(gregorianDate.gy, gregorianDate.gm, gregorianDate.gd)
+				: toDayFormat(this.currentJalali.jy, this.currentJalali.jm, day);
+
+		this.onSelect(formattedOutput);
 		this.close();
 	}
 
-	private shiftMonth(delta: number) {
-		let { jy, jm, jd } = this.date;
-		jm += delta;
-		if (jm < 1) {
-			jm = 12;
-			jy--;
-		}
-		if (jm > 12) {
-			jm = 1;
-			jy++;
-		}
-		jd = Math.min(jd, jalaliMonthLength(jy, jm));
-		this.date = { jy, jm, jd };
+	private goToToday() {
+		const today = dateToJalali(todayTehran());
+		this.currentJalali = { jy: today.jy, jm: today.jm, jd: today.jd };
 		this.render();
 	}
 
-	private prevMonth({ jy, jm, jd }: TJalali) {
-		jm--;
-		if (jm < 1) {
-			jm = 12;
-			jy--;
+	private shiftMonth(delta: number) {
+		let { jy: year, jm: month, jd: day } = this.currentJalali;
+
+		month += delta;
+
+		if (month < 1) {
+			month = 12;
+			year--;
+		} else if (month > 12) {
+			month = 1;
+			year++;
 		}
-		jd = Math.min(jd, jalaliMonthLength(jy, jm));
-		return { jy, jm, jd };
+
+		// Adjust day if it exceeds the maximum for the new month
+		const maxDaysInMonth = jalaliMonthLength(year, month);
+		day = Math.min(day, maxDaysInMonth);
+
+		this.currentJalali = { jy: year, jm: month, jd: day };
+		this.render();
+	}
+
+	private shiftYear(delta: number) {
+		let { jy: year, jm: month, jd: day } = this.currentJalali;
+
+		year += delta;
+
+		// Adjust day if it exceeds the maximum for the new month in the new year
+		const maxDaysInMonth = jalaliMonthLength(year, month);
+		day = Math.min(day, maxDaysInMonth);
+
+		this.currentJalali = { jy: year, jm: month, jd: day };
+		this.render();
+	}
+
+	private getPreviousMonth({ jy: year, jm: month, jd: day }: TJalali): TJalali {
+		month--;
+
+		if (month < 1) {
+			month = 12;
+			year--;
+		}
+
+		const maxDaysInMonth = jalaliMonthLength(year, month);
+		day = Math.min(day, maxDaysInMonth);
+
+		return { jy: year, jm: month, jd: day };
+	}
+
+	private getNextMonth({ jy: year, jm: month, jd: day }: TJalali): TJalali {
+		month++;
+
+		if (month > 12) {
+			month = 1;
+			year++;
+		}
+
+		const maxDaysInMonth = jalaliMonthLength(year, month);
+		day = Math.min(day, maxDaysInMonth);
+
+		return { jy: year, jm: month, jd: day };
 	}
 }

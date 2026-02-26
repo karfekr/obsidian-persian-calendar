@@ -1,176 +1,101 @@
-.persian-datepicker {
+.persian-calendar__datepicker-container > .modal {
+	width: 320px;
+}
+
+.persian-calendar__datepicker {
 	display: flex;
 	flex-direction: column;
 	font-family: var(--font-interface);
+	margin-top: 10px;
 	direction: rtl;
 }
 
-.persian-datepicker .header {
+.persian-calendar__datepicker-header {
 	display: grid;
-	grid-template-columns: 32px 1fr 32px; /* prev | title | next */
+	grid-template-columns: 32px 32px 1fr 32px 32px; /* prev year | prev month | title | next month | next year */
 	align-items: center;
 	gap: 6px;
-	margin-bottom: 8px;
 }
-.persian-datepicker .month-title {
+
+.persian-calendar__datepicker-jmonth {
 	text-align: center;
 	font-weight: 600;
 }
-.persian-datepicker .cal-btn {
-	background: none;
-	border: 1px solid var(--interactive-accent);
-	border-radius: 6px;
+
+.persian-calendar__datepicker-arrow {
 	padding: 4px 0;
 	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.persian-calendar__datepicker-arrow:hover {
+	background: var(--background-modifier-hover);
 }
 
 /* Grid */
-.persian-datepicker .grid {
+.persian-calendar__datepicker-days {
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
 	grid-auto-rows: 32px;
+	gap: 1px 2px;
 	text-align: center;
 	user-select: none;
 	overflow: hidden;
 }
-.persian-datepicker .grid .dow {
+
+.persian-calendar__datepicker-weekday {
 	font-weight: 600;
-	padding-top: 4px;
+	padding-top: 7px;
+	border-bottom: 1px dashed var(--persian-calendar-color-base-1);
+	margin-bottom: 2px;
 }
 
 /* Day buttons */
-.persian-datepicker .grid .day {
+.persian-calendar__datepicker-day {
 	background: none;
 	border: none;
-	border-radius: 6px;
+	border-radius: 5px;
 	cursor: pointer;
 	appearance: none;
 	line-height: 32px;
 }
-.persian-datepicker .grid .day:hover:not(.adjacent) {
+
+.persian-calendar__datepicker-day:hover:not(.adjacent) {
 	background: var(--background-modifier-hover);
 }
 
 /* Selected & Today */
-.persian-datepicker .grid .selected {
-	background: var(--interactive-accent);
-	color: var(--text-on-accent);
+.persian-calendar__datepicker-day--selected {
+	background: var(--persian-calendar-color-base-1);
 }
-.persian-datepicker .grid .today {
-	outline: 2px solid var(--interactive-accent);
-	outline-offset: 1px;
+
+.persian-calendar__datepicker-day--current {
+	border: 2px solid var(--interactive-accent);
 }
 
 /* Adjacent-month days */
-.persian-datepicker .grid .adjacent {
+.persian-calendar__datepicker-no-current-month {
 	color: var(--text-faint);
 	pointer-events: none;
 }
 
-/* Footer: [حذف] [toggle] [امروز] */
-.persian-datepicker .footer {
-	display: grid;
-	grid-template-columns: auto 1fr auto; /* clear | toggle | today */
-	align-items: center;
-	margin-top: 8px;
-	gap: 8px;
-}
-
-/* Toggle in footer */
-.persian-datepicker .output-toggle {
-	justify-self: center;
-	display: inline-flex;
-	border: 1px solid var(--background-modifier-border);
-	border-radius: 8px;
-	overflow: hidden;
-}
-.persian-datepicker .output-toggle .seg-btn {
-	background: none;
-	border: none;
-	padding: 4px 10px;
-	font-size: 12px;
-	cursor: pointer;
-}
-.persian-datepicker .output-toggle .seg-btn.active {
-	background: var(--interactive-accent);
-	color: var(--text-on-accent);
-}
-
-/* Footer links */
-.persian-datepicker .link {
-	background: none;
-	border: none;
-	cursor: pointer;
-	font-size: 12px;
-	padding: 2px 4px;
-	border-radius: 4px;
-}
-.persian-datepicker .link.clear-link {
-	color: var(--text-muted);
-}
-.persian-datepicker .link.today-link {
-	color: var(--interactive-accent);
-}
-.persian-datepicker .link:hover {
-	background: var(--background-modifier-hover);
-	text-decoration: underline;
-}
-
-/* فقط داخل دیت‌پیکر: حذف پس‌زمینه و شَدو دکمه‌ها */
-.persian-datepicker button:not(.clickable-icon) {
-	background-color: transparent;
+.persian-calendar__datepicker button:not(.clickable-icon) {
 	box-shadow: none;
 }
 
-/* Jump row */
-.persian-datepicker .jump-row {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	margin-top: 8px;
-}
-.persian-datepicker .jump-label {
-	font-size: 12px;
-	color: var(--text-muted);
-	white-space: nowrap;
-}
-.persian-datepicker .jump-input {
-	flex: 1 1 auto;
-	min-width: 96px;
-	padding: 2px 6px;
-	border: 1px solid var(--background-modifier-border);
-	border-radius: 6px;
-	font-size: 12px;
-	text-align: center;
-}
-.persian-datepicker .jump-btn {
-	border: 1px solid var(--interactive-accent);
-	border-radius: 6px;
-	padding: 2px 8px;
-	font-size: 12px;
-	cursor: pointer;
+.persian-calendar__datepicker .persian-calendar__go-today {
+	width: 100%;
+	color: var(--persian-calendar-color-primary);
 }
 
-/* Modal size override */
-.persian-modal-custom > .modal {
-	width: 320px;
-	max-width: 90vw;
-	height: auto;
+.persian-calendar__datepicker .persian-calendar__go-today:hover {
+	background-color: var(--persian-calendar-color-primary);
+	color: var(--persian-calendar-color-static);
 }
 
-.jalali-date-wrap {
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	padding-inline: 2px;
-	border-radius: 4px;
-}
-.jalali-date-text {
-	line-height: 1.2;
-}
-
-/* دکمه پرچم کوچک */
-.jalali-flag-btn {
+.persian-calendar__datepicker-flag {
 	width: 18px;
 	height: 14px;
 	min-width: 18px;
@@ -184,7 +109,4 @@
 	cursor: pointer;
 	padding: 0;
 	outline: none;
-}
-.jalali-flag-btn:hover {
-	box-shadow: 0 0 0 2px var(--background-modifier-hover) inset;
 }

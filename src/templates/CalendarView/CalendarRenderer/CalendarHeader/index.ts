@@ -6,6 +6,7 @@ import CalendarNavigation from "../CalendarNavigation";
 import { jalaliMonthName } from "src/utils/dateUtils";
 import type { TSetting } from "src/types";
 import { jalaliMonthToRangeDash } from "src/utils/dashUtils";
+import { t } from "src/i18n";
 
 export default class CalendarHeaderRender {
 	constructor(
@@ -91,7 +92,7 @@ export default class CalendarHeaderRender {
 		prevMonthArrow.addEventListener("click", () => this.navigation.changeMonth("prev"));
 
 		const todayButton = navContainerEl.createEl("span", { cls: "persian-calendar__go-today" });
-		todayButton.textContent = this.setting.language === "fa" ? "امروز" : "Today";
+		todayButton.textContent = t("today");
 		todayButton.addEventListener("click", () => {
 			this.navigation.goToToday();
 		});

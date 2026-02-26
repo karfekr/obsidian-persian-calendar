@@ -18,6 +18,7 @@ export default class UpdateModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 		contentEl.addClass("persian-calendar");
+		contentEl.setAttr("dir", "rtl");
 
 		const headerEl = contentEl.createEl("div", { cls: "persian-calendar__update-header" });
 		setIcon(headerEl, "calendar-heart");
