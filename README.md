@@ -171,38 +171,41 @@ const pcApi = app.plugins.getPlugin("persian-calendar").api;
 pcApi.toEnNumber("۱۲۳ تست test"); // "123 تست test"
 pcApi.toFaNumber("123 تست test"); // "۱۲۳ تست test"
 
+// Without depending on time zone
+pcApi.todayTehran(); // (Tehran)new Date()
+
 // for Jalali/Shamsi/Khorshidi
-pcApi.jalaliToDate(1405, 9, 13) // jalali to Date
-pcApi.jalaliToGregorian(1405, 9, 13) // {gy: 2026, gm: 12, gd: 4}
-pcApi.jalaliToHijri(1405, 9, 13) // (iran){hy: 1448, hm: 6, hd: 24}
-pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" }) // (umalqura){hy: 1448, hm: 6, hd: 24}
-pcApi.jalaliMonthName(9) // آذر
-pcApi.jalaliMonthName(9, "en") // Azar
-pcApi.seasonName(3) // پاییز
-pcApi.seasonName(3, "en") // Autumn
+pcApi.jalaliToDate(1405, 9, 13); // jalali to Date
+pcApi.jalaliToGregorian(1405, 9, 13); // {gy: 2026, gm: 12, gd: 4}
+pcApi.jalaliToHijri(1405, 9, 13); // (iran){hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" }); // (umalqura){hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliMonthName(9); // آذر
+pcApi.jalaliMonthName(9, "en"); // Azar
+pcApi.seasonName(3); // پاییز
+pcApi.seasonName(3, "en"); // Autumn
 
 // for Gregorian/Miladi
-pcApi.dateToGregorian(new Date()) // {gy, gm, gd}
-pcApi.gregorianToDate(2026, 12, 4) // gregorian to Date
-pcApi.gregorianToJalali(2026, 12, 4) // {jy: 1405, jm: 9, jd: 13}
-pcApi.gregorianToHijri(2026, 12, 4) // (iran){hy: 1448, hm: 6, hd: 24}
-pcApi.gregorianToHijri(2026, 12, 4, { base: "umalqura" }) // (umalqura){hy: 1448, hm: 6, hd: 24}
+pcApi.dateToGregorian(new Date()); // {gy, gm, gd}
+pcApi.gregorianToDate(2026, 12, 4); // gregorian to Date
+pcApi.gregorianToJalali(2026, 12, 4); // {jy: 1405, jm: 9, jd: 13}
+pcApi.gregorianToHijri(2026, 12, 4); // (iran){hy: 1448, hm: 6, hd: 24}
+pcApi.gregorianToHijri(2026, 12, 4, { base: "umalqura" }); // (umalqura){hy: 1448, hm: 6, hd: 24}
 
 // for Hijri-iran
-pcApi.hijriToDate(1448, 6, 24) // (iran)hijri to Date
-pcApi.hijriToGregorian(1448, 6, 24) // (iran){gy: 2026, gm: 12, gd: 4}
-pcApi.hijriToJalali(1448, 6, 24) // (iran){jy: 1405, jm: 9, jd: 13}
+pcApi.hijriToDate(1448, 6, 24); // (iran)hijri to Date
+pcApi.hijriToGregorian(1448, 6, 24); // (iran){gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24); // (iran){jy: 1405, jm: 9, jd: 13}
 
 // for Hijri-umalqura
-pcApi.hijriToDate(1448, 6, 24, { base: "umalqura" }) // (umalqura)hijri to Date
-pcApi.hijriToGregorian(1448, 6, 24, { base: "umalqura" }) // (umalqura){gy: 2026, gm: 12, gd: 4}
-pcApi.hijriToJalali(1448, 6, 24, { base: "umalqura" }) // (umalqura){jy: 1405, jm: 9, jd: 13}
+pcApi.hijriToDate(1448, 6, 24, { base: "umalqura" }); // (umalqura)hijri to Date
+pcApi.hijriToGregorian(1448, 6, 24, { base: "umalqura" }); // (umalqura){gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24, { base: "umalqura" }); // (umalqura){jy: 1405, jm: 9, jd: 13}
 
 // for all events
-pcApi.checkHoliday(new Date()) // (is holiday?)true|false
+pcApi.checkHoliday(new Date()); // (is holiday?)true|false
 
-pcApi.dateToEvents(new Date()) // [{(fa & en)title, categories, isHoliday},...]
-pcApi.dateToEvents(new Date(), "umalqura") // (hijri based on umalqura)[{(fa & en)title, categories, isHoliday},...]
+pcApi.dateToEvents(new Date()); // [{(fa & en)title, categories, isHoliday},...]
+pcApi.dateToEvents(new Date(), "umalqura"); // (hijri based on umalqura)[{(fa & en)title, categories, isHoliday},...]
 ```
 
 ## دستورات تعریف شده در افزونه
