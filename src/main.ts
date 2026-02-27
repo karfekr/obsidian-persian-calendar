@@ -127,7 +127,9 @@ export default class PersianCalendarPlugin extends Plugin {
 		);
 
 		fields.forEach((field) => {
-			if (field.dataset.jalaliInjected === "1") return;
+			const existingButton = field.querySelector(".persian-calendar__datepicker-flag");
+			if (existingButton) return;
+
 			field.dataset.jalaliInjected = "1";
 
 			const input = field.querySelector<HTMLInputElement>('input[type="date"]');
