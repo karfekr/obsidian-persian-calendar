@@ -8,7 +8,7 @@ const translations = {
 } as const;
 
 let currentLocal: TLocal = "en";
-let listeners: (() => void)[] = [];
+let listeners = new Set<() => void>();
 
 function resolvePath(obj: any, path: string): string | undefined {
 	return path.split(".").reduce((acc, part) => {
@@ -34,7 +34,8 @@ export function getLocal() {
 }
 
 export function onLocalChange(cb: () => void) {
-	listeners.push(cb);
+	listeners.add(cb);
+	return () => listeners.delete(cb);
 }
 
 export function t(key: string): string {

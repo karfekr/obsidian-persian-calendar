@@ -172,7 +172,7 @@ export default class DatePicker extends Modal {
 		const startDayOffset = (firstDayJavascript + 1) % 7;
 
 		// Get previous and next month info
-		const previousMonth = this.getPreviousMonth(this.currentJalali);
+		const previousMonth = this.currentJalali;
 		const previousMonthLength = jalaliMonthLength(previousMonth.jy, previousMonth.jm);
 		const currentMonthLength = jalaliMonthLength(this.currentJalali.jy, this.currentJalali.jm);
 
@@ -224,20 +224,32 @@ export default class DatePicker extends Modal {
 	}
 
 	private renderFooter(container: HTMLElement) {
-		const footer = container.createDiv();
+		const footer = container.createDiv({ cls: "persian-calendar__datepicker-footer" });
 
-		// Empty space on the right
-		footer.createSpan();
+		const toggle = footer.createDiv({ cls: "persian-calendar__output-toggle" });
 
-		// Today button in the center
+		const jalaliOption = toggle.createDiv({
+			cls: `persian-calendar__output-option ${this.outputMode === "jalali" ? "active" : ""}`,
+			text: "شمسی",
+		});
+		jalaliOption.onclick = () => this.setOutputMode("jalali");
+
+		const gregorianOption = toggle.createDiv({
+			cls: `persian-calendar__output-option ${this.outputMode === "gregorian" ? "active" : ""}`,
+			text: "میلادی",
+		});
+		gregorianOption.onclick = () => this.setOutputMode("gregorian");
+
 		const todayButton = footer.createEl("button", {
 			text: t("today"),
 			cls: "persian-calendar__go-today",
 		});
 		todayButton.onclick = () => this.goToToday();
+	}
 
-		// Empty space on the left
-		footer.createSpan();
+	private setOutputMode(mode: TDateFormat) {
+		this.outputMode = mode;
+		this.render();
 	}
 
 	private selectDay(day: number) {
@@ -291,33 +303,5 @@ export default class DatePicker extends Modal {
 
 		this.currentJalali = { jy: year, jm: month, jd: day };
 		this.render();
-	}
-
-	private getPreviousMonth({ jy: year, jm: month, jd: day }: TJalali): TJalali {
-		month--;
-
-		if (month < 1) {
-			month = 12;
-			year--;
-		}
-
-		const maxDaysInMonth = jalaliMonthLength(year, month);
-		day = Math.min(day, maxDaysInMonth);
-
-		return { jy: year, jm: month, jd: day };
-	}
-
-	private getNextMonth({ jy: year, jm: month, jd: day }: TJalali): TJalali {
-		month++;
-
-		if (month > 12) {
-			month = 1;
-			year++;
-		}
-
-		const maxDaysInMonth = jalaliMonthLength(year, month);
-		day = Math.min(day, maxDaysInMonth);
-
-		return { jy: year, jm: month, jd: day };
 	}
 }

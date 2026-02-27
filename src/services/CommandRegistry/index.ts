@@ -1,4 +1,3 @@
-import { Editor } from "obsidian";
 import type PersianCalendarPlugin from "src/main";
 import {
 	dateToJalali,
@@ -7,26 +6,59 @@ import {
 	jalaliToSeason,
 	todayTehran,
 } from "src/utils/dateUtils";
-import { gregorianDashToJalaliDash, jalaliDashToGregorianDash } from "src/utils/dashUtils";
 import { Notice, DatePicker } from "src/components";
-import { getDirection, t } from "src/i18n";
+import { getDirection, t, onLocalChange } from "src/i18n";
 import { dailyInTextRegex } from "src/constants";
 
 export default class CommandRegistry {
+	private unregisterCallbacks: (() => void)[] = [];
+	private unsubscribeLocale?: () => void;
+
 	constructor(private plugin: PersianCalendarPlugin) {}
 
-	registerAllCommands() {
+	init() {
+		this.registerAllCommands();
+
+		// listen language change
+		this.unsubscribeLocale = onLocalChange(() => {
+			this.reloadCommands();
+		});
+	}
+
+	destroy() {
+		this.unregisterAll();
+		this.unsubscribeLocale?.();
+	}
+
+	private register(cmd: Parameters<typeof this.plugin.addCommand>[0]) {
+		const command = this.plugin.addCommand(cmd);
+
+		this.unregisterCallbacks.push(() => {
+			(this.plugin.app as any).commands.removeCommand(command.id);
+		});
+	}
+
+	private unregisterAll() {
+		this.unregisterCallbacks.forEach((fn) => fn());
+		this.unregisterCallbacks = [];
+	}
+
+	private reloadCommands() {
+		this.unregisterAll();
+		this.registerAllCommands();
+	}
+
+	private registerAllCommands() {
 		this.registerReplacePlaceholders();
 		this.registerDailyNoteCommands();
 		this.registerPeriodicNoteCommands();
-		this.registerDateConversionCommand();
 		this.registerInsertDatePicker();
 	}
 
 	private registerReplacePlaceholders() {
-		this.plugin.addCommand({
+		this.register({
 			id: "replace-persian-placeholders",
-			name: "Replace Placeholders - جایگزینی عبارات معنادار در این یادداشت",
+			name: t("command.replace"),
 			editorCallback: async (editor, view) => {
 				if (view.file) {
 					await this.plugin.placeholder.insertPersianDate(view.file);
@@ -37,25 +69,25 @@ export default class CommandRegistry {
 	}
 
 	private registerDailyNoteCommands() {
-		this.plugin.addCommand({
+		this.register({
 			id: "open-todays-daily-note",
-			name: "Today - باز کردن روزنوشت امروز",
+			name: t("command.today"),
 			callback: async () => {
 				await this.openNoteForDate(todayTehran());
 			},
 		});
 
-		this.plugin.addCommand({
+		this.register({
 			id: "open-tomorrow-daily-note",
-			name: "Tomorrow - باز کردن روزنوشت فردا",
+			name: t("command.tomorrow"),
 			callback: async () => {
 				await this.openNoteForDate(addDayDate(todayTehran(), 1));
 			},
 		});
 
-		this.plugin.addCommand({
+		this.register({
 			id: "open-yesterday-daily-note",
-			name: "Yesterday - باز کردن روزنوشت دیروز",
+			name: t("command.yesterday"),
 			callback: async () => {
 				await this.openNoteForDate(addDayDate(todayTehran(), -1));
 			},
@@ -63,9 +95,9 @@ export default class CommandRegistry {
 	}
 
 	private registerPeriodicNoteCommands() {
-		this.plugin.addCommand({
+		this.register({
 			id: "open-this-weeks-note",
-			name: "Weekly - باز کردن هفته‌نوشت این هفته",
+			name: t("command.weekly"),
 			callback: async () => {
 				const now = todayTehran();
 				const { jy } = dateToJalali(now);
@@ -74,9 +106,9 @@ export default class CommandRegistry {
 			},
 		});
 
-		this.plugin.addCommand({
+		this.register({
 			id: "open-current-seasonal-note",
-			name: "seasonal - باز کردن فصل نوشت این فصل",
+			name: t("command.seasonal"),
 			callback: async () => {
 				const now = todayTehran();
 				const { jy, jm } = dateToJalali(now);
@@ -85,18 +117,18 @@ export default class CommandRegistry {
 			},
 		});
 
-		this.plugin.addCommand({
+		this.register({
 			id: "open-current-months-note",
-			name: "Monthly - بازکردن ماه‌نوشت این ماه",
+			name: t("command.monthly"),
 			callback: async () => {
 				const { jy, jm } = dateToJalali(todayTehran());
 				await this.plugin.noteService.openOrCreateMonthlyNote(jy, jm);
 			},
 		});
 
-		this.plugin.addCommand({
+		this.register({
 			id: "open-current-years-note",
-			name: "Yearly - باز کردن سال‌نوشت امسال",
+			name: t("command.yearly"),
 			callback: async () => {
 				const { jy } = dateToJalali(todayTehran());
 				await this.plugin.noteService.openOrCreateYearlyNote(jy);
@@ -104,28 +136,10 @@ export default class CommandRegistry {
 		});
 	}
 
-	private registerDateConversionCommand() {
-		this.plugin.addCommand({
-			id: "convert-date",
-			name: "Convert Date Format - تبدیل تاریخ در این خط از یادداشت",
-			editorCallback: (editor: Editor) => {
-				const { line } = editor.getCursor();
-				const text = editor.getLine(line);
-
-				if (!dailyInTextRegex.test(text)) {
-					Notice("خط فعلی شامل تاریخ با الگوی YYYY-MM-DD نیست.");
-					return;
-				}
-
-				this.convertDate(editor, line, text);
-			},
-		});
-	}
-
 	private registerInsertDatePicker() {
-		this.plugin.addCommand({
+		this.register({
 			id: "insert-date-picker",
-			name: "DatePicker - انتخابگر تاریخ",
+			name: t("command.insert"),
 			editorCallback: (editor) => {
 				const cursor = editor.getCursor();
 				const line = editor.getLine(cursor.line) ?? "";
@@ -152,21 +166,5 @@ export default class CommandRegistry {
 	private async openNoteForDate(date: Date) {
 		const { jy, jm, jd } = dateToJalali(date);
 		await this.plugin.noteService.openOrCreateDailyNote(jy, jm, jd);
-	}
-
-	private convertDate(editor: Editor, lineIndex: number, textLine: string) {
-		const newLine = textLine.replace(dailyInTextRegex, (full, y, m, d) => {
-			const date = `${y}-${m}-${d}`;
-			const convert = +y > 1700 ? gregorianDashToJalaliDash : jalaliDashToGregorianDash;
-			return convert(date) ?? full;
-		});
-
-		if (newLine !== textLine) {
-			editor.replaceRange(
-				newLine,
-				{ line: lineIndex, ch: 0 },
-				{ line: lineIndex, ch: textLine.length },
-			);
-		}
 	}
 }

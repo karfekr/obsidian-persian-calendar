@@ -28,12 +28,12 @@ class ConfirmModal extends Modal {
 		});
 
 		const cancelBtn = buttons.createEl("button", {
-			text: t("modals.confirmModal.cancelBtn"),
+			text: t("modal.confirmModal.cancelBtn"),
 			cls: "persian-calendar__cmodal-cancel",
 		});
 
 		const confirmBtn = buttons.createEl("button", {
-			text: t("modals.confirmModal.confirmBtn"),
+			text: t("modal.confirmModal.confirmBtn"),
 			cls: "persian-calendar__cmodal-confirm",
 		});
 
@@ -57,8 +57,8 @@ export default function createNoteModal(
 	app: App,
 	options?: { title?: string; message?: string },
 ): Promise<boolean> {
-	const title = options?.title ?? t("modals.confirmModal.title");
-	const message = options?.message ?? t("modals.confirmModal.message");
+	const title = options?.title ?? t("modal.confirmModal.title");
+	const message = options?.message ?? t("modal.confirmModal.message");
 
 	return new Promise((resolve) => {
 		new ConfirmModal(app, title, message, resolve).open();

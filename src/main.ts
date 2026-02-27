@@ -94,7 +94,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		this.addSettingTab(new Setting(this.app, this));
 
 		// Register commands
-		this.commandRegistry.registerAllCommands();
+		this.commandRegistry.init();
 
 		// Check for version updates
 		await this.versionChecker.checkForVersionUpdate();
@@ -127,7 +127,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		);
 
 		fields.forEach((field) => {
-			const existingButton = field.querySelector(".persian-calendar__datepicker-flag");
+			const existingButton = field.querySelector(".persian-calendar__datepicker-button");
 			if (existingButton) return;
 
 			field.dataset.jalaliInjected = "1";
@@ -140,13 +140,13 @@ export default class PersianCalendarPlugin extends Plugin {
 			field.style.gap = "6px";
 
 			const btn = document.createElement("button");
-			btn.className = "persian-calendar__datepicker-flag persian-calendar";
+			btn.className = "persian-calendar__datepicker-button persian-calendar";
 			btn.type = "button";
 
 			setIcon(btn, "calendar-heart");
 
 			const refresh = () => {
-				btn.title = t("modals.datePicker.tooltip");
+				btn.title = t("modal.datePicker.tooltip");
 			};
 
 			refresh();

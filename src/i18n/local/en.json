@@ -1,5 +1,16 @@
 {
 	"today": "Today",
+	"command": {
+		"replace": "Replace Placeholders",
+		"insert": "Insert & Convert Date",
+		"today": "Open Today Note",
+		"tomorrow": "Open Tomorrow Note",
+		"yesterday": "Open Yesterday Note",
+		"weekly": "Open Weekly Note",
+		"monthly": "Open Monthly Note",
+		"seasonal": "Open Seasonal Note",
+		"yearly": "Open Yearly Note"
+	},
 	"setting": {
 		"banner": {
 			"title": "Use the links below to view the documentation, report issues or send feedback"
@@ -134,7 +145,7 @@
 			"sunni": { "name": "Show Sunni Events" }
 		}
 	},
-	"modals": {
+	"modal": {
 		"confirmModal": {
 			"title": "Confirm Note Creation",
 			"message": "Do you want to create this note?",
