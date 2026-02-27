@@ -43,7 +43,10 @@ function weekNumber(targetDate: Date, firstDayOfYear: Date, weekStart: TWeekStar
 
 //? --- Main ---
 export function checkValidJalali(jy: number, jm: number, jd: number): boolean {
+	if (jy < 1) return false;
+
 	if (jm < 1 || jm > 12 || jd < 1) return false;
+
 	try {
 		const maxDays = persian.getDaysInMonth(new CalendarDate(persian, jy, jm, 1));
 		return jd <= maxDays;
