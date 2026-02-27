@@ -1,4 +1,4 @@
-import { Plugin, App, type PluginManifest, WorkspaceLeaf } from "obsidian";
+import { Plugin, App, type PluginManifest, WorkspaceLeaf, setIcon } from "obsidian";
 import {
 	SmartDateLinker,
 	Placeholder,
@@ -140,8 +140,10 @@ export default class PersianCalendarPlugin extends Plugin {
 			field.style.gap = "6px";
 
 			const btn = document.createElement("button");
-			btn.className = "persian-calendar__datepicker-flag";
+			btn.className = "persian-calendar__datepicker-flag persian-calendar";
 			btn.type = "button";
+
+			setIcon(btn, "calendar-heart");
 
 			const refresh = () => {
 				btn.title = t("modals.datePicker.tooltip");
