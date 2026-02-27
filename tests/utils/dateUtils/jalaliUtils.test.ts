@@ -96,6 +96,7 @@ describe("Conversions", () => {
 	});
 });
 
+// TODO: improve this
 describe("dateToJWeekNumber", () => {
 	it.each(jalaliTestDates)(
 		"should correctly convert Gregorian %i/%i/%i to Jalali week number",
@@ -126,6 +127,7 @@ describe("dateToJWeekNumber", () => {
 	});
 });
 
+// TODO: improve this
 describe("jalaliToJWeekNumber", () => {
 	it.each(jalaliTestDates)(
 		"should return valid week number for Jalali date %i/%i/%i",
