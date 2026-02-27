@@ -443,7 +443,7 @@ export const HIJRI_EVENTS: TEventRecord = {
 				isHoliday: true,
 				categories: ["shia", "official"],
 				title: {
-					fa: "مبعث پیامبر(ص)، شب معراج ایران",
+					fa: "مبعث پیامبر(ص)، شب معراج",
 					en: "Mab'ath of Prophet Muhammad, Isra and Mi'raj",
 				},
 			},
@@ -451,7 +451,7 @@ export const HIJRI_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["sunni"],
 				title: {
-					fa: "مبعث پیامبر(ص)، شب معراج",
+					fa: "مبعث پیامبر(ص)، شب معراج اهل تسنن",
 					en: "Mab'ath of Prophet Muhammad, Isra and Mi'raj",
 				},
 			},
@@ -600,12 +600,12 @@ export const HIJRI_EVENTS: TEventRecord = {
 			{
 				isHoliday: true,
 				categories: ["shia", "official"],
-				title: { fa: "عید فطر ایران", en: "Eid al-Fitr" },
+				title: { fa: "عید سعید فطر", en: "Eid al-Fitr" },
 			},
 			{
 				isHoliday: false,
 				categories: ["sunni"],
-				title: { fa: "عید فطر", en: "Eid al-Fitr" },
+				title: { fa: "عید سعید فطر", en: "Eid al-Fitr" },
 			},
 		],
 		17: [
@@ -750,7 +750,7 @@ export const HIJRI_EVENTS: TEventRecord = {
 			{
 				isHoliday: true,
 				categories: ["shia", "official"],
-				title: { fa: "عید سعید غدیر خم", en: "Eid al-Ghadir" },
+				title: { fa: "غدیر خم", en: "Eid al-Ghadir" },
 			},
 		],
 		20: [

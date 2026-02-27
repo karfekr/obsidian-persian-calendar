@@ -1658,7 +1658,7 @@ export const JALALI_EVENTS: TEventRecord = {
 			{
 				title: { fa: "دی به آذر", en: "Dey be Azar" },
 				categories: ["ancient"],
-				isHoliday: true,
+				isHoliday: false,
 			},
 			{
 				title: {
@@ -1672,7 +1672,7 @@ export const JALALI_EVENTS: TEventRecord = {
 		9: [
 			{
 				title: {
-					fa: "راهپیمایی در پاسخ به تظاهرات عاشورای ۸۸",
+					fa: "راهپیمایی در پاسخ به وقایع عاشورای ۸۸",
 					en: "March in Response to the Ashura Protests of 2009",
 				},
 				categories: ["historical"],
@@ -1708,7 +1708,7 @@ export const JALALI_EVENTS: TEventRecord = {
 			{
 				title: { fa: "دی به مهر", en: "Dey be Mehr" },
 				categories: ["ancient"],
-				isHoliday: true,
+				isHoliday: false,
 			},
 		],
 		16: [
@@ -1755,7 +1755,7 @@ export const JALALI_EVENTS: TEventRecord = {
 			{
 				title: { fa: "دی به دین", en: "Dey be Din" },
 				categories: ["ancient"],
-				isHoliday: true,
+				isHoliday: false,
 			},
 		],
 		26: [

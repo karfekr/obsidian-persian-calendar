@@ -57,7 +57,22 @@ export function dateToEvents(
 			(event.categories.includes("sunni") && showEvents.showSunniEvents),
 	);
 
-	return [...jalaliEvents, ...gregorianEvents, ...officialHijriEvents, ...religiousHijriEvents];
+	const allEvents = [
+		...jalaliEvents,
+		...gregorianEvents,
+		...officialHijriEvents,
+		...religiousHijriEvents,
+	];
+
+	const uniqueEventsMap = new Map<string, TEventObject>();
+	allEvents.forEach((event) => {
+		const key = event.title.fa;
+		if (!uniqueEventsMap.has(key)) {
+			uniqueEventsMap.set(key, event);
+		}
+	});
+
+	return Array.from(uniqueEventsMap.values());
 }
 
 // (Date) => (is holiday?)true|false
