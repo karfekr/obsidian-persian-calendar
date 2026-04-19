@@ -339,8 +339,16 @@ export const JALALI_EVENTS: TEventRecord = {
 		25: [
 			{
 				title: {
-					fa: "پاسداشت زبان فارسی و بزرگداشت فردوسی",
-					en: "Persian Language & Commemoration of Ferdowsi",
+					fa: "بزرگداشت فردوسی",
+					en: "Commemoration of Ferdowsi",
+				},
+				categories: ["official"],
+				isHoliday: false,
+			},
+			{
+				title: {
+					fa: "روز پاسداشت زبان فارسی",
+					en: "Persian Language Day",
 				},
 				categories: ["official"],
 				isHoliday: false,
@@ -898,7 +906,7 @@ export const JALALI_EVENTS: TEventRecord = {
 			},
 			{
 				title: { fa: "اشغال ایران به دست متفقین", en: "Occupation of Iran by Allies" },
-				categories: ["official"],
+				categories: ["historical"],
 				isHoliday: false,
 			},
 		],

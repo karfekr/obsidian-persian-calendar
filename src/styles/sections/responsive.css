@@ -39,8 +39,12 @@
 		font-size: 18px;
 	}
 
+	.persian-calendar__jmonth--en {
+		font-size: 13px;
+	}
+
 	.persian-calendar__go-today {
 		font-size: 12px;
-		padding: 3px 10px;
+		padding: 3px 8px;
 	}
 }

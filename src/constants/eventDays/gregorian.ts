@@ -8,7 +8,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی یادبود قربانیان هولوکاست",
+					fa: "روز جهانی یادبود قربانیان هولوکاست",
 					en: "International Day of Commemoration in Memory of the Victims of the Holocaust",
 				},
 			},
@@ -30,7 +30,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی مقابله با ختنه زنان",
+					fa: "روز جهانی مقابله با ختنه زنان",
 					en: "International Day of Zero Tolerance to Female Genital Mutilation",
 				},
 			},
@@ -40,7 +40,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی زنان و دختران در علم",
+					fa: "روز جهانی زنان و دختران در علم",
 					en: "International Day of Women and Girls in Science",
 				},
 			},
@@ -70,7 +70,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی زبان مادری",
+					fa: "روز جهانی زبان مادری",
 					en: "International Mother Language Day",
 				},
 			},
@@ -82,7 +82,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز صفر تبعیض",
+					fa: "روز جهانی تبعیض صفر",
 					en: "Zero Discrimination Day",
 				},
 			},
@@ -112,7 +112,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی شادی",
+					fa: "روز جهانی شادی",
 					en: "International Day of Happiness",
 				},
 			},
@@ -120,8 +120,8 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز زبان فرانسه",
-					en: "French Language Day",
+					fa: "روز جهانی زبان فرانسه",
+					en: "International French Language Day",
 				},
 			},
 		],
@@ -130,7 +130,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی مبارزه با تبعیض نژادی",
+					fa: "روز جهانی مبارزه با تبعیض نژادی",
 					en: "International Day for the Elimination of Racial Discrimination",
 				},
 			},
@@ -146,7 +146,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی نوروز",
+					fa: "روز جهانی نوروز",
 					en: "International Day of Nowruz",
 				},
 			},
@@ -162,7 +162,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی جنگل",
+					fa: "روز جهانی جنگل",
 					en: "International Day of Forests",
 				},
 			},
@@ -200,7 +200,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی حق دانستن حقیقت درباره نقض حقوق بشر",
+					fa: "روز جهانی حق دانستن حقیقت درباره نقض حقوق بشر",
 					en: "International Day for the Right to the Truth concerning Gross Human Rights Violations and for the Dignity of Victims",
 				},
 			},
@@ -210,7 +210,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی یادبود قربانیان برده‌داری و تجارت برده فراآتلانتیک",
+					fa: "روز جهانی یادبود قربانیان برده‌داری و تجارت برده فراآتلانتیک",
 					en: "International Day of Remembrance of the Victims of Slavery and the Transatlantic Slave Trade",
 				},
 			},
@@ -218,7 +218,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی همبستگی با کارکنان بازداشت‌شده و ناپدیدشده",
+					fa: "روز جهانی همبستگی با کارکنان بازداشت‌شده و ناپدیدشده",
 					en: "International Day of Solidarity with Detained and Missing Staff Members",
 				},
 			},
@@ -240,7 +240,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی آگاهی از مین و کمک در عملیات مین‌زدایی",
+					fa: "روز جهانی آگاهی از مین و کمک در عملیات مین‌زدایی",
 					en: "International Day for Mine Awareness and Assistance in Mine Action",
 				},
 			},
@@ -250,7 +250,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی ورزش برای توسعه و صلح",
+					fa: "روز جهانی ورزش برای توسعه و صلح",
 					en: "International Day of Sport for Development and Peace",
 				},
 			},
@@ -260,7 +260,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی تأمل درباره نسل‌کشی روآندا",
+					fa: "روز جهانی تأمل درباره نسل‌کشی روآندا",
 					en: "International Day of Reflection on the Genocide in Rwanda",
 				},
 			},
@@ -278,7 +278,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی پرواز انسان در فضا",
+					fa: "روز جهانی پرواز انسان در فضا",
 					en: "International Day of Human Space Flight",
 				},
 			},
@@ -288,8 +288,8 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز زبان چینی",
-					en: "Chinese Language Day",
+					fa: "روز جهانی زبان چینی",
+					en: "International Chinese Language Day",
 				},
 			},
 		],
@@ -308,7 +308,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی مادر زمین",
+					fa: "روز جهانی مادر زمین",
 					en: "International Mother Earth Day",
 				},
 			},
@@ -318,8 +318,8 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز زبان اسپانیایی",
-					en: "Spanish Language Day",
+					fa: "روز جهانی زبان اسپانیایی",
+					en: "International Spanish Language Day",
 				},
 			},
 			{
@@ -334,8 +334,8 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز زبان انگلیسی",
-					en: "English Language Day",
+					fa: "روز جهانی زبان انگلیسی",
+					en: "International English Language Day",
 				},
 			},
 		],
@@ -354,7 +354,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی یادبود فاجعه چرنوبیل",
+					fa: "روز جهانی یادبود فاجعه چرنوبیل",
 					en: "International Chernobyl Disaster Remembrance Day",
 				},
 			},
@@ -392,7 +392,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی جاز",
+					fa: "روز جهانی جاز",
 					en: "International Jazz Day",
 				},
 			},
@@ -425,7 +425,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				categories: ["global"],
 				title: {
 					fa: "روز یادبود کشته‌شدگان جنگ جهانی دوم",
-					en: "Time of Remembrance and Reconciliation for Those Who Lost Their Lives During the Second World War",
+					en: "Time of Remembrance and Reconciliation for Those Who Lost Their Lives during the Second World War",
 				},
 			},
 		],
@@ -434,8 +434,8 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "وساک، روز ماه کامل",
-					en: "Vesak, the Day of the Full Moon",
+					fa: "روز جهانی وساک",
+					en: "World Vesak Day",
 				},
 			},
 			{
@@ -452,7 +452,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی خانواده",
+					fa: "روز جهانی خانواده",
 					en: "International Day of Families",
 				},
 			},
@@ -482,7 +482,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی تنوع زیستی",
+					fa: "روز جهانی تنوع زیستی",
 					en: "International Day for Biological Diversity",
 				},
 			},
@@ -492,7 +492,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی پایان دادن به فیستول زایمانی",
+					fa: "روز جهانی پایان دادن به فیستول زایمانی",
 					en: "International Day to End Obstetric Fistula",
 				},
 			},
@@ -502,7 +502,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی صلح‌بانان سازمان ملل",
+					fa: "روز جهانی صلح‌بانان سازمان ملل",
 					en: "International Day of UN Peacekeepers",
 				},
 			},
@@ -534,7 +534,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی کودکان بی‌گناه قربانی تجاوز",
+					fa: "روز جهانی کودکان بی‌گناه قربانی تجاوز",
 					en: "International Day of Innocent Children Victims of Aggression",
 				},
 			},
@@ -554,8 +554,8 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز زبان روسی",
-					en: "Russian Language Day",
+					fa: "روز جهانی زبان روسی",
+					en: "International Russian Language Day",
 				},
 			},
 		],
@@ -584,7 +584,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی آگاهی از آلبینیسم",
+					fa: "روز جهانی آگاهی از آلبینیسم",
 					en: "International Albinism Awareness Day",
 				},
 			},
@@ -614,7 +614,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی حواله‌های خانوادگی",
+					fa: "روز جهانی حواله‌های خانوادگی",
 					en: "International Day of Family Remittances",
 				},
 			},
@@ -625,7 +625,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				categories: ["global"],
 				title: {
 					fa: "روز جهانی مبارزه با بیابان‌زایی و خشکسالی",
-					en: "World Day to Combat Desertification and Drought",
+					en: "International Day to Combat Desertification and Drought",
 				},
 			},
 		],
@@ -634,8 +634,8 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز گاسترونومی پایدار",
-					en: "Sustainable Gastronomy Day",
+					fa: "روز جهانی گاسترونومی پایدار",
+					en: "International Day of Sustainable Gastronomy",
 				},
 			},
 		],
@@ -644,7 +644,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی پایان دادن به خشونت جنسی در مناطق درگیر",
+					fa: "روز جهانی پایان دادن به خشونت جنسی در مناطق درگیر",
 					en: "International Day for the Elimination of Sexual Violence in Conflict",
 				},
 			},
@@ -664,7 +664,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی یوگا",
+					fa: "روز جهانی یوگا",
 					en: "International Day of Yoga",
 				},
 			},
@@ -674,7 +674,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی بیوه‌ها",
+					fa: "روز جهانی بیوه‌ها",
 					en: "International Widows' Day",
 				},
 			},
@@ -692,8 +692,8 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز دریانوردان",
-					en: "Day of the Seafarer",
+					fa: "روز جهانی دریانوردان",
+					en: "International Day of the Seafarer",
 				},
 			},
 		],
@@ -702,7 +702,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی مبارزه با مواد مخدر و قاچاق غیرقانونی",
+					fa: "روز جهانی مبارزه با مواد مخدر و قاچاق غیرقانونی",
 					en: "International Day against Drug Abuse and Illicit Trafficking",
 				},
 			},
@@ -710,8 +710,8 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز حمایت از قربانیان شکنجه",
-					en: "Support of Victims of Torture Day",
+					fa: "روز جهانی حمایت از قربانیان شکنجه",
+					en: "International Day in Support of Victims of Torture",
 				},
 			},
 		],
@@ -730,7 +730,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی مناطق استوایی",
+					fa: "روز جهانی مناطق استوایی",
 					en: "International Day of the Tropics",
 				},
 			},
@@ -740,7 +740,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی سیارک",
+					fa: "روز جهانی سیارک",
 					en: "International Asteroid Day",
 				},
 			},
@@ -772,7 +772,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی نلسون ماندلا",
+					fa: "روز جهانی نلسون ماندلا",
 					en: "Nelson Mandela International Day",
 				},
 			},
@@ -792,7 +792,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی دوستی",
+					fa: "روز جهانی دوستی",
 					en: "International Day of Friendship",
 				},
 			},
@@ -812,7 +812,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی مردمان بومی جهان",
+					fa: "روز جهانی مردمان بومی جهان",
 					en: "International Day of the World's Indigenous Peoples",
 				},
 			},
@@ -822,7 +822,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی جوانان",
+					fa: "روز جهانی جوانان",
 					en: "International Youth Day",
 				},
 			},
@@ -849,7 +849,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "یادبود تجارت برده و الغای آن",
+					fa: "یادبود تجارت برده و لغو آن",
 					en: "the Remembrance of the Slave Trade and Its Abolition",
 				},
 			},
@@ -859,7 +859,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی مبارزه با آزمایش‌های هسته‌ای",
+					fa: "روز جهانی مبارزه با آزمایش‌های هسته‌ای",
 					en: "International Day against Nuclear Tests",
 				},
 			},
@@ -869,7 +869,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی قربانیان ناپدیدشدن اجباری",
+					fa: "روز جهانی قربانیان ناپدیدشدن اجباری",
 					en: "International Day of the Victims of Enforced Disappearances",
 				},
 			},
@@ -881,7 +881,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی خیریه",
+					fa: "روز جهانی خیریه",
 					en: "International Day of Charity",
 				},
 			},
@@ -891,7 +891,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی سواد",
+					fa: "روز جهانی سواد",
 					en: "International Literacy Day",
 				},
 			},
@@ -911,7 +911,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی دموکراسی",
+					fa: "روز جهانی دموکراسی",
 					en: "International Day of Democracy",
 				},
 			},
@@ -921,7 +921,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی حفاظت از لایه اوزون",
+					fa: "روز جهانی حفاظت از لایه اوزون",
 					en: "International Day for the Preservation of the Ozone Layer",
 				},
 			},
@@ -931,7 +931,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی صلح",
+					fa: "روز جهانی صلح",
 					en: "International Day of Peace",
 				},
 			},
@@ -941,7 +941,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی حذف کامل سلاح‌های هسته‌ای",
+					fa: "روز جهانی حذف کامل سلاح‌های هسته‌ای",
 					en: "International Day for the Total Elimination of Nuclear Weapons",
 				},
 			},
@@ -961,7 +961,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی دسترسی همگانی به اطلاعات",
+					fa: "روز جهانی دسترسی همگانی به اطلاعات",
 					en: "International Day for Universal Access to Information",
 				},
 			},
@@ -979,7 +979,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی ترجمه",
+					fa: "روز جهانی ترجمه",
 					en: "International Translation Day",
 				},
 			},
@@ -991,7 +991,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی سالمندان",
+					fa: "روز جهانی سالمندان",
 					en: "International Day of Older Persons",
 				},
 			},
@@ -1001,7 +1001,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی عدم خشونت",
+					fa: "روز جهانی عدم خشونت",
 					en: "International Day of Non-Violence",
 				},
 			},
@@ -1041,7 +1041,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی دختر بچه‌ها",
+					fa: "روز جهانی دختر بچه‌ها",
 					en: "International Day of the Girl Child",
 				},
 			},
@@ -1051,7 +1051,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی کاهش بلایای طبیعی",
+					fa: "روز جهانی کاهش بلایای طبیعی",
 					en: "International Day for Disaster Reduction",
 				},
 			},
@@ -1061,7 +1061,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی زنان روستایی",
+					fa: "روز جهانی زنان روستایی",
 					en: "International Day of Rural Women",
 				},
 			},
@@ -1081,7 +1081,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی ریشه‌کنی فقر",
+					fa: "روز جهانی ریشه‌کنی فقر",
 					en: "International Day for the Eradication of Poverty",
 				},
 			},
@@ -1131,7 +1131,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی پایان دادن به مصونیت از مجازات برای جرایم علیه روزنامه‌نگاران",
+					fa: "روز جهانی پایان دادن به مصونیت از مجازات برای جرایم علیه روزنامه‌نگاران",
 					en: "International Day to End Impunity for Crimes against Journalists",
 				},
 			},
@@ -1151,7 +1151,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی پیشگیری از بهره‌برداری از محیط زیست در جنگ و مخاصمات مسلحانه",
+					fa: "روز جهانی پیشگیری از بهره‌برداری از محیط زیست در جنگ و مخاصمات مسلحانه",
 					en: "International Day for Preventing the Exploitation of the Environment in War and Armed Conflict",
 				},
 			},
@@ -1181,7 +1181,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی مدارا",
+					fa: "روز جهانی مدارا",
 					en: "International Day for Tolerance",
 				},
 			},
@@ -1201,8 +1201,8 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز صنعتی‌سازی آفریقا",
-					en: "Africa Industrialization Day",
+					fa: "روز جهانی صنعتی‌سازی آفریقا",
+					en: "International Africa Industrialization Day",
 				},
 			},
 			{
@@ -1229,7 +1229,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی پایان دادن به خشونت علیه زنان",
+					fa: "روز جهانی پایان دادن به خشونت علیه زنان",
 					en: "International Day for the Elimination of Violence against Women",
 				},
 			},
@@ -1239,7 +1239,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی همبستگی با مردم فلسطین",
+					fa: "روز جهانی همبستگی با مردم فلسطین",
 					en: "International Day of Solidarity with the Palestinian People",
 				},
 			},
@@ -1261,7 +1261,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی الغای برده‌داری",
+					fa: "روز جهانی لغو برده‌داری",
 					en: "International Day for the Abolition of Slavery",
 				},
 			},
@@ -1271,7 +1271,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی افراد دارای معلولیت",
+					fa: "روز جهانی افراد دارای معلولیت",
 					en: "International Day of Persons with Disabilities",
 				},
 			},
@@ -1281,7 +1281,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی داوطلبان برای توسعه اقتصادی و اجتماعی",
+					fa: "روز جهانی داوطلبان برای توسعه اقتصادی و اجتماعی",
 					en: "International Volunteer Day for Economic and Social Development",
 				},
 			},
@@ -1299,7 +1299,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی هوانوردی غیرنظامی",
+					fa: "روز جهانی هوانوردی غیرنظامی",
 					en: "International Civil Aviation Day",
 				},
 			},
@@ -1309,7 +1309,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی مبارزه با فساد",
+					fa: "روز جهانی مبارزه با فساد",
 					en: "International Anti-Corruption Day",
 				},
 			},
@@ -1337,7 +1337,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی کوهستان",
+					fa: "روز جهانی کوهستان",
 					en: "International Mountain Day",
 				},
 			},
@@ -1347,7 +1347,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی بی‌طرفی",
+					fa: "روز جهانی بی‌طرفی",
 					en: "International Day of Neutrality",
 				},
 			},
@@ -1357,15 +1357,15 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز زبان عربی",
-					en: "Arabic Language Day",
+					fa: "روز جهانی زبان عربی",
+					en: "International Arabic Language Day",
 				},
 			},
 			{
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی مهاجران",
+					fa: "روز جهانی مهاجران",
 					en: "International Migrants Day",
 				},
 			},
@@ -1375,7 +1375,7 @@ export const GREGORIAN_EVENTS: TEventRecord = {
 				isHoliday: false,
 				categories: ["global"],
 				title: {
-					fa: "روز بین‌المللی همبستگی انسانی",
+					fa: "روز جهانی همبستگی انسانی",
 					en: "International Human Solidarity Day",
 				},
 			},

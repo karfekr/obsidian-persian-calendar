@@ -174,21 +174,26 @@ export default class CalendarBodyRender {
 			}
 
 			const { showGeorgianDates, showHijriDates } = this.setting;
-			const showBothCalendars = showGeorgianDates && showHijriDates;
+
+			if (!showGeorgianDates && !showHijriDates) {
+				persianDateEl.addClass("persian-calendar__jalali-day--centered");
+			}
 
 			if (cell.isInCurrentMonth) {
 				if (showGeorgianDates) {
-					const cls = showBothCalendars
-						? "persian-calendar__gregorian-day--corner"
-						: "persian-calendar__gregorian-day--center";
+					const cls =
+						showGeorgianDates && showHijriDates
+							? "persian-calendar__gregorian-day--corner"
+							: "persian-calendar__gregorian-day--center";
 					const georgianDateEl = dayEl.createEl("div", { cls });
 					georgianDateEl.textContent = cell.gregorian.gd.toString();
 				}
 
 				if (showHijriDates) {
-					const cls = showBothCalendars
-						? "persian-calendar__hijri-day--corner"
-						: "persian-calendar__hijri-day--center";
+					const cls =
+						showGeorgianDates && showHijriDates
+							? "persian-calendar__hijri-day--corner"
+							: "persian-calendar__hijri-day--center";
 					const hijriDateEl = dayEl.createEl("div", { cls });
 					hijriDateEl.textContent = toArNumber(cell.hijri.hd);
 				}

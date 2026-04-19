@@ -54,6 +54,14 @@
 	line-height: 2;
 }
 
+.persian-calendar__jalali-day--centered {
+	align-items: center;
+	display: flex;
+	height: 100%;
+	justify-content: center;
+	width: 100%;
+}
+
 .persian-calendar__day--current {
 	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 10%, transparent);
 	border: 1px solid var(--persian-calendar-color-primary) !important;

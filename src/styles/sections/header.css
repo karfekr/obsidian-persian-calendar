@@ -1,5 +1,4 @@
 .persian-calendar__header {
-	align-items: center;
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
@@ -34,7 +33,7 @@
 	cursor: pointer;
 	font-weight: 700;
 	opacity: 1;
-	padding: 5px 14px;
+	padding: 5px 12px;
 	transition-duration: var(--persian-calendar-duration);
 	transition-property: all;
 }
