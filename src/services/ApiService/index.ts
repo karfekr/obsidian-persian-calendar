@@ -42,7 +42,7 @@ export default class ApiService {
 			jalaliMonthName,
 			seasonName,
 			checkHoliday,
-			dateToEvents: (date: Date, hijriBase: THijriBase) =>
+			dateToEvents: (date: Date, options?: { base?: THijriBase }) =>
 				dateToEvents(date, {
 					showEvents: {
 						showIROfficialEvents: true,
@@ -52,7 +52,7 @@ export default class ApiService {
 						showShiaEvents: true,
 						showSunniEvents: true,
 					},
-					hijriBase,
+					hijriBase: options?.base ?? "iran",
 				}),
 		});
 	}

@@ -99,7 +99,7 @@ export function dashToEvents(
 	const date = dashToDate(dashDate, dateFormat);
 	if (!date) return null;
 
-	return dateToEvents(date, { showEvents: option?.showEvents });
+	return dateToEvents(date, { showEvents: option?.showEvents, hijriBase: option?.hijriBase });
 }
 
 // (Events[]) => String(Events[])
