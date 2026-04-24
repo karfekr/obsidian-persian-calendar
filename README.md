@@ -203,7 +203,7 @@ pcApi.hijriToJalali(1448, 6, 24, { base: "umalqura" }); // (umalqura){jy: 1405, 
 pcApi.checkHoliday(new Date()); // (is holiday?)true|false
 
 pcApi.dateToEvents(new Date()); // [{(fa & en)title, categories, isHoliday},...]
-pcApi.dateToEvents(new Date(), "umalqura"); // (hijri based on umalqura)[{(fa & en)title, categories, isHoliday},...]
+pcApi.dateToEvents(new Date(), { base: "umalqura" }); // (hijri based on umalqura)[{(fa & en)title, categories, isHoliday},...]
 ```
 
 ## دستورات تعریف شده در افزونه
