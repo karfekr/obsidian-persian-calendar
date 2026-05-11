@@ -1,243 +1,270 @@
+<div dir="ltr" align=center>
 
-# Obsidian Persian Calendar
+[**فارسی**](README_fa.md) / [**English**](README.md)
 
-This tool lets you see events, add and organize notes from daily to yearly on the Persian calendar, use templates with placeholders, and works with all Obsidian daily plugins.
+</div>
 
-![تقویم فارسی ایسیدین](Instructions/calendar-event.png)
+# "Persian Calendar" Plugin for Obsidian
 
-## Usage
+This plugin adds the Solar Hijri calendar alongside the Gregorian and Lunar Hijri calendars to [Obsidian](https://obsidian.md/), offering Iranian users a more pleasant journaling experience.
 
-- Can add daily, weekly, monthly, Seasonal and yearly notes based on Persian calendar.
-- Modify path for creating notes.
-- Can reference notes by typing `@` or selecting them.
-- Can add {{placeholders}} in templates to enrich your templates. Works fine with [Templater](https://github.com/SilentVoid13/Templater) plugin for note templates.
-- Works fine with all obsidian daily plugins.
-- Works with Georgian and Hijri calendar in one view.
-- Showing events of Iranian official calendar.
+- [Guide to the Essential Features of This Plugin](#guid)
+- [Collaboration and Project Participation](#collaboration)
 
-<div dir="rtl">
+<div align="center">
+	<img src="Instructions/Obsidian.webp" alt="preview" />
+	<div>Related to previous versions of the plugin</div>
+</div>
 
-# افزونه تقویم فارسی ابسیدین
+## Installation Guide
 
-این افزونه تقویم فارسی را به [ابسیدین](https://obsidian.md/) اضافه می‌کند و شما می‌توانید بااستفاده از آن روزنوشت‌، هفته‌نوشت، ماه‌نوشت، فصل‌نوشت و سال‌نوشت تولید کنید و آن‌ها را مدیریت کنید، به آسانی به آن‌ها ارجاع دهید و نوشته‌هایتان را غنی‌تر کنید.
+### First method (recommended)
+You can install this plugin by searching for `Persian Calendar` in Obsidian's `Community plugins`.
 
-![نمای اصلی افزونه تقویم فارسی ابسیدین](Instructions/Obsidian.webp)
+### Second method
+You can visit the Releases section of this GitHub page, download the plugin's executable files—`main.js`, `manifest.json`, and `styles.css`—and move them to the following path:
 
-## قابلیت‌ها
+`[Your Vault Address]/.obsidian/plugins/persian-calendar`
 
-- ایجاد یادداشت‌های روزانه، هفتگی، ماهانه، فصلی و سالانه
-- برای یادداشت‌های روزانه و هفتگی موجود در فولدری که تعریف شده است یک نقطه زیر آن‌ها نمایش داده می‌شود.
-- سازگاری کامل با افزونه Templater
-- سازگاری با تم‌های اصلی ابسیدین
-- امکان رفرنس دادن به یادداشت‌ها از طریق تایپ کردن '@' یا سلکت کردن عبارت‌ها برای قالب‌ها.
-- امکان قرار دادن {{عبارت‌های معنادار}} در قالب‌ها برای غنی‌تر کردن یادداشت‌ها
-- ذخیره‌سازی فایل‌های روزنوشت به میلادی برای سازگاری بیشتر با افزونه‌های ابسیدین
-- قابلیت نمایش همزمان تقویم میلادی و قمری
-- نمایش مناسبت‌ها تقویم شمسی و میلادی و هجری
-- امکان تنظیم نمایش مناسبت‌ها
+# <a name="guid"></a> Guide to the Essential Features of This Plugin
+- [Dynamic Paths](#dynamic_path)
+- [Quick Reference to Calendar Notes](#quick_reference)
+- [Meaningful Placeholders](#placeholders)
+- [Using the Dedicated API](#api)
+- [Other Features](#other)
 
-## راهنمای نصب
+## <a name="dynamic_path"></a> Dynamic Paths
+You can set the paths for your calendar notes dynamically.
 
-این افزونه در مخزن افزونه‌های ابسیدین نمایه شده است. برای نصب افزونه کافیست از طریق تنظیمات در بخش Community plugins نام Persian Calendar را جستجو کنید و افزونه را نصب کنید. بعد از فعالسازی افزونه در صورتی که افزونه را در سایدبار سمت چپ نمی‌بینید، با دستور «باز کردن تقویم فارسی» آن را در سایدبار باز کنید. پس از اجرای دستور، افزونه باید در سایدبار سمت چپ بالا به شما نمایش داده شود.
+<div align="center">
 
-## راهنمای استفاده
-
-پس از نصب افزونه اولین کار مهم تعریف مسیرهای ایجاد یادداشت‌های تقویم است. برای این کار به تنظیمات افزونه رفته و مسیرهای ایجاد فایل‌ها را مطابق توضیحات ایجاد کنید. امکان مسیردهی داینامیک یادداشت‌های تقویم به صورت سالانه، فصلی و ماهانه وجود دارد.
-
-| مسیر داینامیک   | مقدار نمونه        | توضیحات                      |
-| ------- | ----------- | -------------------------- |
-| `jYYYY` | 1404        | سال شمسی به صورت چهار رقمی |
-| `jQQQQ` | پاییز | نام فصل شمسی   |
-| `jQQ`   | 03          | شماره‌ی فصل شمسی           |
-| `jQ`    | 3           | شماره‌ی فصل شمسی   |
-| `jMMMM` | آذر     | نام ماه شمسی         |
-| `jMM`   | 09          | شماره‌ی ماه شمسی         |
-| `jM`    | 9           | شماره‌ی ماه شمسی |
-
-
-![تنظیمات افزونه](Instructions/setting-1.png)
-
-![تنظیمات افزونه](Instructions/setting-2.png)
-
-می‌توانید یا از طریق مسیردهی قالب درون تنظیمات یا از طریق افزونه [Templater](https://github.com/SilentVoid13/Templater) برای یادداشت‌های تقویم قالب تعیین کنید.
-
-## آموزش استفاده به همراه افزونه Templater
-
-با استفاده از افزونه [Templater](https://github.com/SilentVoid13/Templater) می‌توانید قالب‌های مشخصی را برای یاداشت‌های روزانه، هفتگی، ماهانه، فصلی و سالانه خود مشخص کنید:
-کافیست افزونه [Templater](https://github.com/SilentVoid13/Templater) را نصب کنید و مطابق تصویر زیر برای هر نوع از فایل‌ها یک قالب به افزونه معرفی کنید. در نظر داشته باشید مسیرهایی که به افزونه معرفی می‌کنید با مسیرهای مشخص شده در تنظیمات افزونه یکسان باشد. حتما باید گزینه Trigger Templater on new file creation روشن باشد. برای غنی‌تر کردن قالب‌ها حتما بخش عبارت معنادار این افزونه را مطالعه کنید.
-
-![راهنمای استفاده به همراه Templater](Instructions/templater.webp)
-
-## امکان درج عبارت معنادار در قالب‌ها
-میتوانید با درج عبارت‌های معنادار زیر تاریخ‌ها را در قالب‌ها اضافه کنید:
-
-### **عبارات معنادار وابسته به روزنوشت**
-فقط در روزنوشت کار می‌کند.
-
-| عبارت | مقادیر نمونه | توضیحات |
+| Dynamic Path | Sample Value | Description |
 | :--- | :--- | :--- |
-| `{{تاریخ شمسی یادداشت}}` | 1404-11-30 | تاریخ روزنوشت را برمی‌گرداند. |
-| `{{تاریخ میلادی یادداشت}}` | 2026-02-19 | تاریخ روزنوشت را برمی‌گرداند. |
-| `{{تاریخ قمری یادداشت}}` | 1447-09-01 | تاریخ روزنوشت را برمی‌گرداند. |
-| `{{روز هفته یادداشت}}` | پنجشنبه | نام روز هفته روزنوشت را برمی‌گرداند.
-| `{{روز ماه یادداشت}}` | 30 | روز ماه یادداشت را برمی‌گرداند. |
-| `{{مناسبت یادداشت}}` | (همان متنی که در مناسبات تقویم نمایش داده می‌شود) | مناسبت‌های روزنوشت را برمی‌گرداند. |
+| `jYYYY` | 1404 | Four-digit Solar Hijri year |
+| `jQQQQ` | پاییز (Autumn) | Full name of the Solar Hijri season |
+| `jQQ` | 03 | Two-digit Solar Hijri season number |
+| `jQ` | 3 | Solar Hijri season number |
+| `jMMMM` | آذر (Azar) | Full name of the Solar Hijri month |
+| `jMM` | 09 | Two-digit Solar Hijri month number |
+| `jM` | 9 | Solar Hijri month number |
 
-### **عبارات معنادار وابسته به هفته**
-فقط در روزنوشت و هفته‌نوشت کار می‌کند.
+</div>
 
-| عبارت | مقادیر نمونه | توضیحات |
+<div align="center">
+	<img src="Instructions/default-path-en.png" alt="default path" />
+	<div>Default note paths</div>
+</div>
+
+## <a name="quick_reference"></a> Quick Reference to Calendar Notes
+Using the `@` symbol, you can quickly reference your calendar notes.
+
+- **Days:** `today`, `yesterday`, `tomorrow`, `the day before yesterday`, `the day after tomorrow`
+- **Days of the week:** (current day name), `next [day]`, `previous [day]`
+- **Weeks:** `this week`, `last week`, `next week`
+- **Months:** `this month`, `last month`, `next month`
+- **Seasons:** `this season`, `last season`, `next season`
+- **Years:** `this year`, `last year`, `next year`
+
+You can also select the desired phrase in the text and link it to the corresponding note by executing the related command.
+
+<div align="center">
+	<img src="Instructions/quick_reference.webp" alt="preview" />
+	<div>Related to previous versions of the plugin</div>
+</div>
+
+## <a name="placeholders"></a> Meaningful Placeholders
+By inserting the following meaningful placeholders into your note templates, you can include your desired text in the final result.
+
+By typing `{{}}` you can receive suggestions for choosing your meaningful placeholder.
+
+### Daily Note Placeholders
+*Only replaced in daily notes.*
+
+<div align="center">
+
+| Placeholder | Sample Output | Description |
 | :--- | :--- | :--- |
-| `{{هفته یادداشت}}` | <span dir="ltr">1404-W49</span> | مشخصه‌ی هفته را برمی‌گرداند. |
-| `{{اول هفته}}` | 2026-02-14 | روز اول هفته‌نوشت را برمی‌گرداند. |
-| `{{آخر هفته}}` | 2026-02-20 | روز آخر هفته‌نوشت را برمی‌گرداند. |
+| `{{تاریخ شمسی یادداشت}}` | 1404-11-30 | Solar Hijri date of the daily note |
+| `{{تاریخ میلادی یادداشت}}` | 2026-02-19 | Gregorian date of the daily note |
+| `{{تاریخ قمری یادداشت}}` | 1447-09-01 | Lunar Hijri date of the daily note |
+| `{{روز هفته یادداشت}}` | پنجشنبه (Thursday) | Name of the day of the week |
+| `{{روز ماه یادداشت}}` | 30 | Day of the month |
+| `{{مناسبت یادداشت}}` | Event text | Events of the daily note's date |
 
-### **عبارات معنادار وابسته به ماه**
-فقط در روزنوشت و ماه‌نوشت کار می‌کند.
+</div>
 
-| عبارت | مقادیر نمونه | توضیحات |
+### Weekly Placeholders
+*Work in daily notes and weekly notes.*
+
+<div align="center">
+
+| Placeholder | Sample Output | Description |
 | :--- | :--- | :--- |
-| `{{ماه یادداشت}}` | 1404-11 | مشخصه‌ی ماه روز نوشت را برمی‌گرداند. |
-| `{{نام ماه یادداشت}}` | بهمن | نام ماه روز نوشت را برمی‌گرداند. |
-| `{{اول ماه}}` | 2026-01-21 | روز اول ماه‌نوشت را برمی‌گرداند. |
-| `{{آخر ماه}}` | 2026-02-19 | روز آخر ماه‌نوشت را برمی‌گرداند. |
+| `{{هفته یادداشت}}` | <span dir="ltr">1404-W49</span> | Week identifier |
+| `{{اول هفته}}` | 2026-02-14 | Start date of the week (Gregorian) |
+| `{{آخر هفته}}` | 2026-02-20 | End date of the week (Gregorian) |
 
-### **عبارات معنادار وابسته به فصل**
-فقط در روزنوشت، ماه‌نوشت و فصل‌نوشت کار می‌کند.
+</div>
 
-| عبارت | مقادیر نمونه | توضیحات |
+### Monthly Placeholders
+*Work in daily notes and monthly notes.*
+
+<div align="center">
+
+| Placeholder | Sample Output | Description |
 | :--- | :--- | :--- |
-| `{{فصل یادداشت}}` | <span dir="ltr">1404-S4</span> | مشخصه‌ی فصل روز نوشت را برمی‌گرداند. |
-| `{{نام فصل یادداشت}}` | زمستان | نام فصل روز نوشت را برمی‌گرداند. |
-| `{{اول فصل}}` | 2025-12-22 | روز اول فصل‌نوشت را برمی‌گرداند. |
-| `{{آخر فصل}}` | 2026-03-21 | روز آخر فصل‌نوشت را برمی‌گرداند. |
+| `{{ماه یادداشت}}` | 1404-11 | Month identifier |
+| `{{نام ماه یادداشت}}` | بهمن (Bahman) | Name of the Solar Hijri month |
+| `{{اول ماه}}` | 2026-01-21 | Start date of the month (Gregorian) |
+| `{{آخر ماه}}` | 2026-02-19 | End date of the month (Gregorian) |
 
-### **عبارات معنادار وابسته به سال**
-در روزنوشت، هفته‌نوشت، ماه‌نوشت و سال‌نوشت به درستی کار می‌کند.
+</div>
 
-| عبارت | مقادیر نمونه | توضیحات |
+### Seasonal Placeholders
+*Work in daily notes, monthly notes, and seasonal notes.*
+
+<div align="center">
+
+| Placeholder | Sample Output | Description |
 | :--- | :--- | :--- |
-| `{{سال یادداشت}}` | 1404 | سال یادداشت را برمی‌گرداند. |
-| `{{اول سال}}` | 2025-03-21 | روز اول سال را برمی‌گرداند. |
-| `{{آخر سال}}` | 2026-03-20 | روز آخر سال را برمی‌گرداند. |
+| `{{فصل یادداشت}}` | <span dir="ltr">1404-S4</span> | Season identifier |
+| `{{نام فصل یادداشت}}` | زمستان (Winter) | Name of the season |
+| `{{اول فصل}}` | 2025-12-22 | Start date of the season (Gregorian) |
+| `{{آخر فصل}}` | 2026-03-21 | End date of the season (Gregorian) |
 
-### **عبارات معنادار زمان حال**
-| عبارت | مقادیر نمونه | توضیحات |
+</div>
+
+### Yearly Placeholders
+*Work in daily, weekly, monthly, and yearly notes.*
+
+<div align="center">
+
+| Placeholder | Sample Output | Description |
 | :--- | :--- | :--- |
-| `{{تاریخ شمسی جاری}}` | 1404-11-26 | تاریخ شمسی جاری را برمی‌گرداند. |
-| `{{تاریخ میلادی جاری}}` | 2026-02-15 | تاریخ میلادی جاری را برمی‌گرداند. |
-| `{{تاریخ قمری جاری}}` | 1447-08-26 | تاریخ قمری جاری را برمی‌گرداند. |
-| `{{روز هفته جاری}}` | یکشنبه | نام روز هفته امروز را برمی‌گرداند. |
-| `{{روز ماه جاری}}` | 26 | روز ماه امروز را برمی‌گرداند. |
-| `{{هفته جاری}}` | <span dir="ltr">1404-W49</span> | مشخصه‌ی هفته جاری را برمی‌گرداند. |
-| `{{نام ماه جاری}}` | بهمن | نام ماه جاری را برمی‌گرداند. |
-| `{{ماه جاری}}` | 1404-11 | مشخصه‌ی ماه جاری را برمی‌گرداند. |
-| `{{نام فصل جاری}}` | زمستان | نام فصل جاری را برمی‌گرداند. |
-| `{{فصل جاری}}` | <span dir="ltr">1404-S4</span> | مشخصه‌ی فصل جاری را برمی‌گرداند. |
-| `{{سال جاری}}` | 1404 | سال جاری را برمی‌گرداند. |
-| `{{مناسبت جاری}}` | (همان متنی که در مناسبات تقویم نمایش داده می‌شود) | مناسبت‌های امروز را برمی‌گرداند. |
+| `{{سال یادداشت}}` | 1404 | Solar Hijri year |
+| `{{اول سال}}` | 2025-03-21 | Start date of the year (Gregorian) |
+| `{{آخر سال}}` | 2026-03-20 | End date of the year (Gregorian) |
 
-### **روزهای گذشته و باقیمانده**
-به صورت پیشفرض به تاریخ روزنوشت وابسته هستند اما اگر در روزنوشت نباشند نتیجه را براساس تاریخ جاری نمایش می‌دهند.
+</div>
 
-| عبارت     | مقادیر نمونه | توضیحات    |
+### Current Time Placeholders
+*These always return today's date, regardless of the note type.*
+
+<div align="center">
+
+| Placeholder | Sample Output | Description |
 | :--- | :--- | :--- |
-| `{{روزهای گذشته سال}}`     | 334 | تعداد روزهای گذشته از ابتدای سال را برمی‌گرداند.     |
-| `{{روزهای باقیمانده سال}}` | 31  | تعداد روزهای باقی‌مانده تا پایان سال را برمی‌گرداند. |
-| `{{روزهای گذشته فصل}}`     | 58  | تعداد روزهای گذشته از ابتدای فصل را برمی‌گرداند.     |
-| `{{روزهای باقیمانده فصل}}` | 31  | تعداد روزهای باقی‌مانده تا پایان فصل را برمی‌گرداند. |
-| `{{روزهای گذشته ماه}}`     | 28  | تعداد روزهای گذشته از ابتدای ماه را برمی‌گرداند.     |
-| `{{روزهای باقیمانده ماه}}` | 2   | تعداد روزهای باقی‌مانده تا پایان ماه را برمی‌گرداند. |
+| `{{تاریخ شمسی جاری}}` | 1404-11-26 | Today's Solar Hijri date |
+| `{{تاریخ میلادی جاری}}` | 2026-02-15 | Today's Gregorian date |
+| `{{تاریخ قمری جاری}}` | 1447-08-26 | Today's Lunar Hijri date |
+| `{{روز هفته جاری}}` | یکشنبه (Sunday) | Name of today's weekday |
+| `{{روز ماه جاری}}` | 26 | Today's day of the month |
+| `{{هفته جاری}}` | <span dir="ltr">1404-W49</span> | Current week identifier |
+| `{{نام ماه جاری}}` | بهمن (Bahman) | Name of the current month |
+| `{{ماه جاری}}` | 1404-11 | Current month identifier |
+| `{{نام فصل جاری}}` | زمستان (Winter) | Name of the current season |
+| `{{فصل جاری}}` | <span dir="ltr">1404-S4</span> | Current season identifier |
+| `{{سال جاری}}` | 1404 | Current year |
+| `{{مناسبت جاری}}` | Event text | Today's events |
 
-## امکان ارجاع به یادداشت‌ها از طریق تایپ کردن '@' یا انتخاب کردن
+</div>
 
-میتوانید از طریق تایپ کردن نویسه '@' در وسط نوشته‌ها به یادداشت‌های خود ارجاع دهید. یادداشت‌های پشتیبانی شده تا به امروز:
+### Elapsed and Remaining Days
+*By default, calculated relative to the daily note's date; if placed in a non-daily note, they use today's date.*
 
-- روزهای جاری به صورت `امروز`، `دیروز`، `فردا`، `پریروز` و `پس‌فردا` (هماهنگ با تنظیم میلادی و خورشیدی)
-- روزهای هفته:روز هفته(روز هفته جاری)، روز هفته بعد، روز هفته قبل (هماهنگ با تنظیم میلادی و خورشیدی)؛ نکته: اگر مثلا دوشنبه باشد و شما یکشنبه را انتخاب کنید یکشنبه بعدی انتخاب می‌شود. یکشنبه ای که گذشته است در تعریف این افزونه یکشنبه گذشته است و باید از عبارت یکشنبه قبل استفاده کنید.
-- هفته‌ها به صورت `این هفته`، `هفته قبل` و `هفته بعد`
-- ماه‌ها به صورت `این ماه`، `ماه قبل` و `ماه بعد`
-- فصل‌ها به صورت `این فصل`، `فصل قبل` و `فصل بعد`
-- سال‌ها به صورت `امسال`، `سال قبل` و `سال بعد`
-همچنین میتوانید با انتخاب کردن عبارت‌های فوق را به روزنوشت‌ها لینک کنید. مثلا اگر فردا را انتخاب کنید و انتخاب دستور مرتبط یادداشت‌ها را لینک کنید. فیلم زیر را برای درک بهتر این موضوع ببینید. در نظر داشته باشید به صورت پیش‌فرض این افزونه فایل‌ها را نمی‌سازد و خودتان باید فایل‌ها را ازطریق افزونه بسازید.
-![suggester](Instructions/suggester.webp)
+<div align="center">
 
-## امکان استفاده از API اختصاصی
-این پلاگین یک API اختصاصی در اختیار شما قرار می‌دهد تا بتوانید داخل اسکریپت‌های Obsidian(مانند dataviewjs ،templater و…) از قابلیت‌های تبدیل عدد و تاریخ استفاده کنید.
+| Placeholder | Sample Output | Description |
+| :--- | :--- | :--- |
+| `{{روزهای گذشته سال}}` | 334 | Days passed since the beginning of the year |
+| `{{روزهای باقیمانده سال}}` | 31 | Days remaining until the end of the year |
+| `{{روزهای گذشته فصل}}` | 58 | Days passed since the beginning of the season |
+| `{{روزهای باقیمانده فصل}}` | 31 | Days remaining until the end of the season |
+| `{{روزهای گذشته ماه}}` | 28 | Days passed since the beginning of the month |
+| `{{روزهای باقیمانده ماه}}` | 2 | Days remaining until the end of the month |
+
+</div>
+
+## <a name="api"></a> Using the Dedicated API
+This plugin provides a public API so you can use features like date and number conversion in other plugins and scripts (such as DataviewJS or Templater).
+
+<div dir="ltr">
 
 ```javascript
 const pcApi = app.plugins.getPlugin("persian-calendar").api;
 
-// for numbers
+// Number conversion
 pcApi.toEnNumber("۱۲۳ تست test"); // "123 تست test"
 pcApi.toFaNumber("123 تست test"); // "۱۲۳ تست test"
 
-// for Jalali/Shamsi/Khorshidi
-pcApi.jalaliToDate(1405, 9, 13); // jalali to Date
+// Solar Hijri date conversion
+pcApi.jalaliToDate(1405, 9, 13); // Equivalent Gregorian date as Date object
 pcApi.jalaliToGregorian(1405, 9, 13); // {gy: 2026, gm: 12, gd: 4}
-pcApi.jalaliToHijri(1405, 9, 13); // (iran){hy: 1448, hm: 6, hd: 24}
-pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" }); // (umalqura){hy: 1448, hm: 6, hd: 24}
-pcApi.jalaliMonthName(9); // آذر
+pcApi.jalaliToHijri(1405, 9, 13); // (Iran basis) {hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" }); // (Umm al-Qura basis) {hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliMonthName(9); // آذر (Azar)
 pcApi.jalaliMonthName(9, "en"); // Azar
-pcApi.seasonName(3); // پاییز
+pcApi.seasonName(3); // پاییز (Autumn)
 pcApi.seasonName(3, "en"); // Autumn
 
-// for Gregorian/Miladi
+// Gregorian date conversion
 pcApi.dateToGregorian(new Date()); // {gy, gm, gd}
-pcApi.gregorianToDate(2026, 12, 4); // gregorian to Date
+pcApi.gregorianToDate(2026, 12, 4); // Date object
 pcApi.gregorianToJalali(2026, 12, 4); // {jy: 1405, jm: 9, jd: 13}
-pcApi.gregorianToHijri(2026, 12, 4); // (iran){hy: 1448, hm: 6, hd: 24}
-pcApi.gregorianToHijri(2026, 12, 4, { base: "umalqura" }); // (umalqura){hy: 1448, hm: 6, hd: 24}
+pcApi.gregorianToHijri(2026, 12, 4); // (Iran) {hy: 1448, hm: 6, hd: 24}
+pcApi.gregorianToHijri(2026, 12, 4, { base: "umalqura" }); // (Umm al-Qura) {hy: 1448, hm: 6, hd: 24}
 
-// for Hijri-iran
-pcApi.hijriToDate(1448, 6, 24); // (iran)hijri to Date
-pcApi.hijriToGregorian(1448, 6, 24); // (iran){gy: 2026, gm: 12, gd: 4}
-pcApi.hijriToJalali(1448, 6, 24); // (iran){jy: 1405, jm: 9, jd: 13}
+// Lunar Hijri date conversion (Iran basis)
+pcApi.hijriToDate(1448, 6, 24); // Date object
+pcApi.hijriToGregorian(1448, 6, 24); // {gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24); // {jy: 1405, jm: 9, jd: 13}
 
-// for Hijri-umalqura
-pcApi.hijriToDate(1448, 6, 24, { base: "umalqura" }); // (umalqura)hijri to Date
-pcApi.hijriToGregorian(1448, 6, 24, { base: "umalqura" }); // (umalqura){gy: 2026, gm: 12, gd: 4}
-pcApi.hijriToJalali(1448, 6, 24, { base: "umalqura" }); // (umalqura){jy: 1405, jm: 9, jd: 13}
+// Lunar Hijri date conversion (Umm al-Qura basis)
+pcApi.hijriToDate(1448, 6, 24, { base: "umalqura" }); // Date object
+pcApi.hijriToGregorian(1448, 6, 24, { base: "umalqura" }); // {gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24, { base: "umalqura" }); // {jy: 1405, jm: 9, jd: 13}
 
-// for all events
-pcApi.checkHoliday(new Date()); // (is holiday?)true|false
-
-pcApi.dateToEvents(new Date()); // [{(fa & en)title, categories, isHoliday},...]
-pcApi.dateToEvents(new Date(), { base: "umalqura" }); // (hijri based on umalqura)[{(fa & en)title, categories, isHoliday},...]
+// Events
+pcApi.checkHoliday(new Date()); // Is it a holiday? true/false
+pcApi.dateToEvents(new Date()); // Array of {title(fa/en), categories, isHoliday}
+pcApi.dateToEvents(new Date(), { base: "umalqura" }); // With Umm al-Qura basis
 ```
 
-## دستورات تعریف شده در افزونه
+</div>
 
-برای سهولت در دسترسی به فایل‌های روزهای مختلف دستورات زیر در افزونه قرار دارد که می‌توانید برای آن‌ها شورتکات تعریف کنید.
+## <a name="other"></a> Other Features
+<div align="center">
+	<img src="Instructions/view-en.png" alt="view" />
+</div>
 
-- دسترسی به روزنوشت، هفته‌نوشت، ماه‌نوشت، فصل‌نوشت و سال‌نوشت جاری
-- ارجاع متن انتخاب شده به یادداشت مرتبط
-- تبدیل تاریخ بین شمسی و میلادی به صورت خودکار و با فرمت `YYYY-MM-DD` . (سال بیشتر از 1700 میلادی و کمتر از آن شمسی است. این حرکت اشتباه اما کار راه‌اندازتر است!)
+- Display of official Iranian holidays on the calendar
+- Display of Iran's official calendar events and international observances
+- Option to "Open today's daily note on startup," user configurable
+- Customizable display of calendar events
+- Option to create and display seasonal notes, user configurable
+- Confirmation dialog before creating calendar notes, user configurable
+- Option to set the user interface to Persian or English
+- Ability to configure calendar note templates
+- Ability to set the Lunar Hijri calendar based on **Iran's Crescent Committee** or **Saudi Arabia's Umm al-Qura**
+- Option to display the Gregorian or Lunar Hijri calendar as supplementary calendars
+- Ability to use a dedicated date picker when setting a property with type `date`
 
-![دستورات تعریف شده در تقویم](Instructions/commands.png)
+</div>
 
-## قابلیت نمایش تقویم میلادی
+## <a name="collaboration"></a> Collaboration and Project Participation
 
-اگر از تقویم میلادی زیاد استفاده می‌کنید و می‌خواهید همزمان در افزونه تقویم میلادی نمایش داده ‌شود می‌توانید در تنظیمات افزونه با فعال‌سازی آن، تقویم میلادی را در کنار تقویم شمسی داشته باشید.
+This plugin has been developed with love, for non-commercial purposes, and under [this license](LICENSE).
 
-![افزونه به همراه تقویم میلادی](Instructions/calendar-event.png)
+You can support our continued efforts in the following ways:
+- Contribute to the development of this plugin
+- Report bugs or suggest a feature for development via the Issues section on this GitHub page
+- Recommend installing and using this plugin to your friends
+- Follow our website and Telegram channel
 
-## قابلیت نمایش تقویم قمری و میلادی به صورت همزمان
+<div align=center>
 
-در تنظیمات تقویم میتوانید مشخص کنید تقویم قمری نمایش داده شود یا خیر. این تنظیمات باعث میشود که بتوانید در کنار تقویم شمسی و میلادی تقویم قمری را هم داشته باشید.
+[![Website](https://img.shields.io/badge/Website-karfekr.ir-orange)](https://karfekr.ir)
+[![Telegram Channel](https://img.shields.io/endpoint?color=neon&label=Karfekr&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fkarfekr)](https://t.me/karfekr)
+[![Telegram Group](https://img.shields.io/endpoint?label=ObsidianFarsi%20Group&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FObsidianFarsi&color=blue)](https://t.me/ObsidianFarsi)
 
-## تنظیم نمایش مناسبت‌های در تقویم
-
-مناسبت‌های تقویم ایران به این افزونه اضافه شده است. میتوانید تنظیم کنید در تولتیپ (وقتی موس را روی روز قرار می‌دهید باکسی نمایش داده می‌شود که به آن تولتیپ می‌گویند) چه مناسبت‌هایی را نمایش دهد. به صورت معمول سه دسته مناسبت در تقویم ایران وجود دارد:
-
-- مناسبت‌های تقویم رسمی: این مناسبت‌ها به صورت رسمی در کشور تصویب شده‌اند
-- مناسبت‌های باستانی:‌ مناسبت‌های که در تقویم باستانی ایران وجود دارد
-- مناسبت‌های جهانی: دارای بیش از ۱۳۰ مناسبت جهانی
-- مناسبت‌های اسلامی: مناسبت‌های اهل تشیع و اهل تسنن را می‌توانید در کنار تنظیم پایه‌ی تقویم هجری قمری بر اساس ستاد استهلال ایران یا ام‌القری عربستان به کار بگیرید
-
-![نمایش مناسبت‌های تقویم شمسی](Instructions/calendar-event.png)
-
-## مسیر مشارکت در توسعه افزونه
-
-این افزونه به صورت رایگان و برای مقاصد غیرتجاری و مطابق [این لایسنس](LICENSE) توسعه یافته است و با مشارکت شما کامل‌ می‌شود. در تب Issues همین مخزن می‌توانید ایده‌ها و باگ‌ها را گزارش کنید. هم‌چنین در تلاشم در سایت و فروم [کارفکر](https://karfekr.ir) مطالب مرتبط با ابسیدین را به اشتراک بگذارم. اگر مایل هستید که توسعه دهنده این افزونه را حمایت کنید [کارفکر](https://karfekr.ir) را دنبال کنید.
 </div>
