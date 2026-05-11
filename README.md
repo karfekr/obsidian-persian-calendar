@@ -1,6 +1,6 @@
 <div dir="ltr" align=center>
 
-[**فارسی**](README_fa.md) / [**English**](README.md)
+[**فارسی**](README_FA.md) / [**English**](README.md)
 
 </div>
 
