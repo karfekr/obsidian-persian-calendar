@@ -8,7 +8,7 @@
 
 This plugin adds the Solar Hijri calendar alongside the Gregorian and Lunar Hijri calendars to [Obsidian](https://obsidian.md/), offering Iranian users a more pleasant journaling experience.
 
-- [Guide to the Essential Features of This Plugin](#guid)
+- [Guide to the Essential Features](#guid)
 - [Collaboration and Project Participation](#collaboration)
 
 <div align="center">
@@ -26,7 +26,7 @@ You can visit the Releases section of this GitHub page, download the plugin's ex
 
 `[Your Vault Address]/.obsidian/plugins/persian-calendar`
 
-# <a name="guid"></a> Guide to the Essential Features of This Plugin
+# <a name="guid"></a> Guide to the Essential Features
 - [Dynamic Paths](#dynamic_path)
 - [Quick Reference to Calendar Notes](#quick_reference)
 - [Placeholders](#placeholders)
