@@ -22,7 +22,7 @@ This plugin adds the Solar Hijri calendar alongside the Gregorian and Lunar Hijr
 You can install this plugin by searching for `Persian Calendar` in Obsidian's `Community plugins`.
 
 ### Second method
-You can visit the Releases section of this GitHub page, download the plugin's executable files -`main.js`, `manifest.json`, and `styles.css`- and move them to the following path:
+You can visit the Releases section of this GitHub page, download the plugin's executable files -`main.js`, `manifest.json` and `styles.css`- and move them to the following path:
 
 `[Your Vault Address]/.obsidian/plugins/persian-calendar`
 
