@@ -58,12 +58,12 @@ You can set the paths for your calendar notes dynamically.
 ## <a name="quick_reference"></a> Quick Reference to Calendar Notes
 Using the `@` symbol, you can quickly reference your calendar notes.
 
-- **Days:** `today`, `yesterday`, `tomorrow`, `the day before yesterday`, `the day after tomorrow`
-- **Days of the week:** (current day name), `next [day]`, `previous [day]`
-- **Weeks:** `this week`, `last week`, `next week`
-- **Months:** `this month`, `last month`, `next month`
-- **Seasons:** `this season`, `last season`, `next season`
-- **Years:** `this year`, `last year`, `next year`
+- **Days:** `امروز`، `دیروز`، `فردا`، `پریروز`، `پس‌فردا`
+- **Days of the week:** (نام روز جاری)، `روز بعد`، `روز قبل`
+- **Weeks:** `این هفته`، `هفته قبل`، `هفته بعد`
+- **Months:** `این ماه`، `ماه قبل`، `ماه بعد`
+- **Seasons:** `این فصل`، `فصل قبل`، `فصل بعد`
+- **Years:** `امسال`، `سال قبل`، `سال بعد`
 
 You can also select the desired phrase in the text and link it to the corresponding note by executing the related command.
 
