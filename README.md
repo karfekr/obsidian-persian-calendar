@@ -248,6 +248,7 @@ pcApi.dateToEvents(new Date(), { base: "umalqura" }); // With Umm al-Qura basis
 - Ability to set the Lunar Hijri calendar based on **Iran's Crescent Committee** or **Saudi Arabia's Umm al-Qura**
 - Option to display the Gregorian or Lunar Hijri calendar as supplementary calendars
 - Ability to use a dedicated date picker when setting a property with type `date`
+- Users can use this plugin's default font named "Persian Calendar"
 
 </div>
 
