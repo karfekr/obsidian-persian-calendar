@@ -29,7 +29,7 @@ You can visit the Releases section of this GitHub page, download the plugin's ex
 # <a name="guid"></a> Guide to the Essential Features of This Plugin
 - [Dynamic Paths](#dynamic_path)
 - [Quick Reference to Calendar Notes](#quick_reference)
-- [Meaningful Placeholders](#placeholders)
+- [Placeholders](#placeholders)
 - [Using the Dedicated API](#api)
 - [Other Features](#other)
 
@@ -72,10 +72,10 @@ You can also select the desired phrase in the text and link it to the correspond
 	<div>Related to previous versions of the plugin</div>
 </div>
 
-## <a name="placeholders"></a> Meaningful Placeholders
-By inserting the following meaningful placeholders into your note templates, you can include your desired text in the final result.
+## <a name="placeholders"></a> Placeholders
+By inserting the following placeholders into your note templates, you can include your desired text in the final result.
 
-By typing `{{}}` you can receive suggestions for choosing your meaningful placeholder.
+By typing `{{}}` you can receive suggestions for choosing your placeholder.
 
 ### Daily Note Placeholders
 *Only replaced in daily notes.*
