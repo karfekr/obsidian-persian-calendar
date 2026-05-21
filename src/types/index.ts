@@ -145,7 +145,10 @@ export type TSuggestProvider = {
 
 export type TReleaseNote = {
 	version: string;
-	changes: string[];
+	changes: {
+		fa: string[];
+		en: string[];
+	};
 };
 
 export type TSocialLink = {

@@ -36,4 +36,5 @@
 	line-height: 1.6;
 	border-radius: 6px;
 	border-right: 3px solid var(--color-accent);
+	border-left: 3px solid var(--color-accent);
 }
