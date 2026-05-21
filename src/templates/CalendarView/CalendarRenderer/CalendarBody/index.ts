@@ -34,7 +34,7 @@ export default class CalendarBodyRender {
 	}
 
 	public async renderSeasonalNotesRow(containerEl: HTMLElement, local: TLocal = "fa") {
-		const seasonsRow = containerEl.createDiv({ cls: "persian-calendar__seasons-row" });
+		const seasonsRow = containerEl.createEl("div", { cls: "persian-calendar__seasons-row" });
 		const { jYearState, jMonthState } = this.calendarState.getJState();
 
 		const seasonState = jalaliToSeason(jMonthState);
@@ -43,7 +43,7 @@ export default class CalendarBodyRender {
 		const seasons = SEASONS_NAME[local];
 
 		for (let seasonNumber = 1; seasonNumber <= 4; seasonNumber++) {
-			const seasonEl = seasonsRow.createDiv({
+			const seasonEl = seasonsRow.createEl("div", {
 				cls: `persian-calendar__season${
 					seasonNumber === seasonState ? " persian-calendar__season--current" : ""
 				}`,
@@ -77,9 +77,9 @@ export default class CalendarBodyRender {
 		setIcon(weekHeader, "refresh-ccw");
 
 		const iconEl = weekHeader.querySelector("svg");
-		iconEl?.addEventListener("click", async (e) => {
+		iconEl?.addEventListener("click", (e) => {
 			e.stopPropagation();
-			await this.onRefresh();
+			this.onRefresh();
 			Notice(t("notice.success.refreshView"), getDirection());
 		});
 
@@ -155,7 +155,7 @@ export default class CalendarBodyRender {
 			dayEl.addEventListener("touchcancel", () => this.tooltip.hideTooltip());
 		};
 
-		let gridEl = contentEl.querySelector(".persian-calendar__days") as HTMLElement | null;
+		let gridEl = contentEl.querySelector(".persian-calendar__days");
 		gridEl?.remove();
 		gridEl = contentEl.createEl("div", { cls: "persian-calendar__days" });
 
@@ -216,7 +216,7 @@ export default class CalendarBodyRender {
 
 			dayEl.classList.add("persian-calendar__day-grid");
 
-			(dayEl as any).setAttr?.("data-day", cell.jd.toString());
+			dayEl.setAttr?.("data-day", cell.jd.toString());
 
 			dayEl.addEventListener("click", () => {
 				this.notesService.openOrCreateDailyNote(cell.jy, cell.jm, cell.jd);

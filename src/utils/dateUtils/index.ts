@@ -1,51 +1,51 @@
 export {
-	checkValidJalali, // (jy, jm, jd) => (Is it a valid jalali date?)true|false
-	checkKabiseh, // (jy) => (Is it a leap year?)true|false
-	dateToJalali, // (Date) => {jy, jm, jd}
-	jalaliToDate, // (jy, jm, jd) => Date
-	jalaliToGregorian, // (jy, jm, jd) => {gy, gm, gd}
-	gregorianToJalali, // (gy, gm, gd) => {jy, jm, jd}
-	jalaliMonthLength, // exp: (1404, 12) => 29
-	getDaysInJalaliYear, // exp: (1404) => 365
-	dateToJWeekNumber, // (Date) => Number(jalali_week_number)
-	jalaliToJWeekNumber, // (jy, jm, jd) => Number(jalali_week_number)
-	getFirstWeekStartOfJYear, // (jy) => (first saturday in jy){jy, jm, jd}
-	jalaliToStartDayOfWeek, // ({jYear, jWeekNumber}) => (start day of week){jy, jm, jd, gy, gm, gd}
-	jalaliToEndDayOfWeek, // ({jYear, jWeekNumber}) => (end day of week){jy, jm, jd, gy, gm, gd}
-	dateToMonthName, // (Date) => String(jalali_month_name)
-	dateToSeasonName, // (Date) => String(season_name)
-	dateToDayOfMonth, // (Date) => Number(day_of_month)
-	dateToDaysPassedJYear, // (Date) => Number(days_passed_in_jy)
-	dateToDaysRemainingJYear, // (Date) => Number(days_remaining_in_jy)
-	dateToDaysPassedSeason, // (Date) => Number(days_passed_in_season)
-	dateToDaysRemainingSeason, // (Date) => Number(days_remaining_in_season)
-	dateToDaysPassedJMonth, // (Date) => Number(days_passed_in_jm)
-	dateToDaysRemainingJMonth, // (Date) => Number(days_remaining_in_jm)
-	dateToStartDayOfJMonthDate, // (Date) => (start day of jalali month)Date
-	dateToEndDayOfJMonthDate, // (Date) => (end day of jalali month)Date
-	dateToStartDayOfSeasonDate, // (Date) => (start day of season)Date
-	dateToEndDayOfSeasonDate, // (Date) => (end day of season)Date
-	jalaliMonthToGregorianRange, // (jYear, jMonth) => { firstDay: {gy, gm, gd}, lastDay: {gy, gm, gd} }
-	jalaliMonthToHijriRange, // (jYear, jMonth) => { firstDay: {gy, gm, gd}, lastDay: {gy, gm, gd} }
+	checkValidJalali,
+	checkKabiseh,
+	dateToJalali,
+	jalaliToDate,
+	jalaliToGregorian,
+	gregorianToJalali,
+	jalaliMonthLength,
+	getDaysInJalaliYear,
+	dateToJWeekNumber,
+	jalaliToJWeekNumber,
+	getFirstWeekStartOfJYear,
+	jalaliToStartDayOfWeek,
+	jalaliToEndDayOfWeek,
+	dateToMonthName,
+	dateToSeasonName,
+	dateToDayOfMonth,
+	dateToDaysPassedJYear,
+	dateToDaysRemainingJYear,
+	dateToDaysPassedSeason,
+	dateToDaysRemainingSeason,
+	dateToDaysPassedJMonth,
+	dateToDaysRemainingJMonth,
+	dateToStartDayOfJMonthDate,
+	dateToEndDayOfJMonthDate,
+	dateToStartDayOfSeasonDate,
+	dateToEndDayOfSeasonDate,
+	jalaliMonthToGregorianRange,
+	jalaliMonthToHijriRange,
 } from "./jalaliUtils";
 export {
-	gregorianToDate, // (gy, gm, gd) => (Is it a valid Gregorian date?)Date|null
-	weekStartNumber, // ("sat" | "sun" | "mon") => Number(JS_weekday_number)
-	jalaliMonthName, // exp: (12) => "اسفند"
-	seasonName, // exp: (3) => "پاییز"
-	dateToGregorian, // (Date) => {gy, gm, gd}
-	dateToWeekdayName, // (Date) => Number(weekday_name)
-	addDayDate, // (date, days) => (with days added)Date
-	jalaliToSeason, // (jm) => Number(season)
+	gregorianToDate,
+	weekStartNumber,
+	jalaliMonthName,
+	seasonName,
+	dateToGregorian,
+	dateToWeekdayName,
+	addDayDate,
+	jalaliToSeason,
 	getWeekdayTehran,
 	todayTehran,
 } from "./gregorianUtils";
 export {
-	gregorianToHijri, // (gy, gm, gd) => {hy, hm, hd}
-	hijriToGregorian, // (hy, hm, hd) => {gy, gm, gd}
-	hijriToJalali, // (hy, hm , hd) => {jy, jm, jd}
-	jalaliToHijri, // (jy, jm, jd) => {hy, hm, hd}
-	dateToHijri, // (Date) => {hy, hm, hd}
+	gregorianToHijri,
+	hijriToGregorian,
+	hijriToJalali,
+	jalaliToHijri,
+	dateToHijri,
 	hijriMonthLength,
 	hijriToDate,
 } from "./hijriUtils";

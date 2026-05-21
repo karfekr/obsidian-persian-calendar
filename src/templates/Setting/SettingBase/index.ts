@@ -75,24 +75,20 @@ export abstract class SettingBase extends PluginSettingTab {
 			.setName(opts.name)
 			.setDesc(opts.desc ?? "")
 			.addDropdown((dropdown) => {
-				Object.entries(opts.options).forEach(([value, label]) =>
-					dropdown.addOption(value as string, label as string),
-				);
+				Object.entries(opts.options).forEach(([value, label]) => dropdown.addOption(value, label));
 
-				dropdown
-					.setValue(this.plugin.setting[opts.key] ?? opts.defaultValue)
-					.onChange(async (value) => {
-						(this.plugin.setting[opts.key] as any) = value as T;
-						await this.plugin.saveSetting();
+				dropdown.setValue(this.plugin.setting[opts.key] ?? opts.defaultValue).onChange((value) => {
+					(this.plugin.setting[opts.key] as string) = value;
+					this.plugin.saveSetting();
 
-						if (opts.key === "language") {
-							setLocal(value as TLocal);
-						}
+					if (opts.key === "language") {
+						setLocal(value as TLocal);
+					}
 
-						if (opts.refresh || opts.key === "language") {
-							this.plugin.refreshViews();
-						}
-					});
+					if (opts.refresh || opts.key === "language") {
+						this.plugin.refreshViews();
+					}
+				});
 			});
 	}
 }

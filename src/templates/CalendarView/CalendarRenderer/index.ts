@@ -47,7 +47,7 @@ export default class CalendarRenderer {
 			await this.bodyRenderer.renderSeasonalNotesRow(containerEl, this.setting.language);
 		}
 
-		const contentDiv = containerEl.createDiv({ cls: "persian-calendar__content" });
+		const contentDiv = containerEl.createEl("div", { cls: "persian-calendar__content" });
 		await this.bodyRenderer.renderContent(contentDiv, this.setting.language);
 	}
 }

@@ -77,17 +77,17 @@ export default class DatePicker extends Modal {
 	}
 
 	private getMonthName(month: number): string {
-		const language = (this.setting?.language ?? "fa") as keyof typeof JALALI_MONTHS_NAME;
-		return (JALALI_MONTHS_NAME[language] as any)[month];
+		const language = this.setting?.language ?? "fa";
+		return JALALI_MONTHS_NAME[language][month];
 	}
 
 	private getWeekdayLetters(): string[] {
-		const language = (this.setting?.language ?? "fa") as keyof typeof WEEKDAYS_NAME;
-		const weekdaysMap = WEEKDAYS_NAME[language] as Record<number, string>;
+		const language = this.setting?.language ?? "fa";
+		const weekdaysMap = WEEKDAYS_NAME[language];
 		const letters: string[] = [];
 
 		for (let dayIndex = 1; dayIndex <= 7; dayIndex++) {
-			const dayName = weekdaysMap[dayIndex as keyof typeof weekdaysMap] ?? "";
+			const dayName = weekdaysMap[dayIndex] ?? "";
 			letters.push(dayName.charAt(0));
 		}
 
@@ -98,7 +98,7 @@ export default class DatePicker extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		const rootContainer = contentEl.createDiv({
+		const rootContainer = contentEl.createEl("div", {
 			cls: "persian-calendar__datepicker",
 			attr: { dir: "rtl" },
 		});
@@ -114,7 +114,7 @@ export default class DatePicker extends Modal {
 	}
 
 	private renderHeader(container: HTMLElement) {
-		const header = container.createDiv({ cls: "persian-calendar__datepicker-header" });
+		const header = container.createEl("div", { cls: "persian-calendar__datepicker-header" });
 
 		// Previous year button
 		const prevYearButton = header.createEl("button", { cls: "persian-calendar__datepicker-arrow" });
@@ -129,7 +129,7 @@ export default class DatePicker extends Modal {
 		prevMonthButton.onclick = () => this.shiftMonth(-1);
 
 		// Month and year title
-		header.createSpan({
+		header.createEl("span", {
 			text: `${this.getMonthName(this.currentJalali.jm)} ${this.getYear(this.currentJalali.jy)}`,
 			cls: "persian-calendar__datepicker-jmonth",
 		});
@@ -148,14 +148,14 @@ export default class DatePicker extends Modal {
 	}
 
 	private renderCalendarGrid(container: HTMLElement) {
-		const grid = container.createDiv({
+		const grid = container.createEl("div", {
 			cls: "persian-calendar__datepicker-days",
 			attr: { role: "grid" },
 		});
 
 		// Render weekday headers
 		this.getWeekdayLetters().forEach((weekdayLetter) =>
-			grid.createSpan({
+			grid.createEl("span", {
 				text: weekdayLetter,
 				cls: "persian-calendar__datepicker-weekday",
 				attr: { role: "columnheader" },
@@ -224,17 +224,17 @@ export default class DatePicker extends Modal {
 	}
 
 	private renderFooter(container: HTMLElement) {
-		const footer = container.createDiv({ cls: "persian-calendar__datepicker-footer" });
+		const footer = container.createEl("div", { cls: "persian-calendar__datepicker-footer" });
 
-		const toggle = footer.createDiv({ cls: "persian-calendar__output-toggle" });
+		const toggle = footer.createEl("div", { cls: "persian-calendar__output-toggle" });
 
-		const jalaliOption = toggle.createDiv({
+		const jalaliOption = toggle.createEl("div", {
 			cls: `persian-calendar__output-option ${this.outputMode === "jalali" ? "active" : ""}`,
 			text: "شمسی",
 		});
 		jalaliOption.onclick = () => this.setOutputMode("jalali");
 
-		const gregorianOption = toggle.createDiv({
+		const gregorianOption = toggle.createEl("div", {
 			cls: `persian-calendar__output-option ${this.outputMode === "gregorian" ? "active" : ""}`,
 			text: "میلادی",
 		});

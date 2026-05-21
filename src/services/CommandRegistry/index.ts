@@ -59,7 +59,7 @@ export default class CommandRegistry {
 		this.register({
 			id: "replace-persian-placeholders",
 			name: t("command.replace"),
-			editorCallback: async (editor, view) => {
+			editorCallback: async (_, view) => {
 				if (view.file) {
 					await this.plugin.placeholder.insertPersianDate(view.file);
 					Notice(t("notice.success.placeholder"), getDirection());

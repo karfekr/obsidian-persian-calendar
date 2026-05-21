@@ -7,7 +7,7 @@ export default class EventManager {
 
 	constructor(private plugin: PersianCalendarPlugin) {
 		this.plugin.app.workspace.onLayoutReady(() => {
-			setTimeout(() => {
+			activeWindow.setTimeout(() => {
 				this.isLayoutReady = true;
 			}, 3000);
 		});
@@ -21,11 +21,11 @@ export default class EventManager {
 
 	private registerFileCreateEvent() {
 		this.plugin.registerEvent(
-			this.plugin.app.vault.on("create", async (file: TAbstractFile) => {
+			this.plugin.app.vault.on("create", (file: TAbstractFile) => {
 				if (file instanceof TFile && file.path.endsWith(".md")) {
 					if (!this.isLayoutReady) return;
 
-					setTimeout(async () => {
+					activeWindow.setTimeout(async () => {
 						await this.plugin.placeholder.insertPersianDate(file);
 					}, 300);
 					this.handleFileUpdate();

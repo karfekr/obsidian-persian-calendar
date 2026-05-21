@@ -7,26 +7,26 @@ export default class Tooltip {
 	private offsetY = 10;
 
 	private getOrCreateTooltip(local: TLocal): { wrapper: HTMLElement; tooltip: HTMLElement } {
-		let wrapper = document.querySelector(this.tooltipWrapperSelector) as HTMLElement | null;
+		let wrapper = activeDocument.querySelector(this.tooltipWrapperSelector) as HTMLElement | null;
 		let tooltip: HTMLElement | null = null;
 
 		if (!wrapper) {
-			wrapper = document.createElement("div");
+			wrapper = activeDocument.createElement("div");
 			wrapper.className = "persian-calendar persian-calendar--tooltip-wrapper";
-			document.body.appendChild(wrapper);
+			activeDocument.body.appendChild(wrapper);
 		}
 
 		const dir = local === "fa" ? "rtl" : "ltr";
 		wrapper.setAttribute("dir", dir);
 
-		tooltip = wrapper.querySelector(this.tooltipSelector) as HTMLElement | null;
+		tooltip = wrapper.querySelector(this.tooltipSelector);
 		if (!tooltip) {
-			tooltip = document.createElement("div");
+			tooltip = activeDocument.createElement("div");
 			tooltip.className = "persian-calendar__tooltip";
 			wrapper.appendChild(tooltip);
 		}
 
-		return { wrapper, tooltip: tooltip! };
+		return { wrapper, tooltip };
 	}
 
 	public showTooltip(e: MouseEvent | TouchEvent, events: TEventObject[], local: TLocal) {
@@ -41,23 +41,24 @@ export default class Tooltip {
 			)
 			.join("");
 
-		tooltip.style.display = "block";
-
 		let x: number | undefined;
 		let y: number | undefined;
 
 		if (e instanceof MouseEvent) {
 			x = e.pageX;
 			y = e.pageY;
-		} else if (e instanceof TouchEvent && e.touches.length > 0) {
+		} else if (e.instanceOf(TouchEvent) && e.touches.length > 0) {
 			x = e.touches[0].pageX;
 			y = e.touches[0].pageY;
 		}
 
 		if (x === undefined || y === undefined) return;
 
-		tooltip.style.left = "0px";
-		tooltip.style.top = "0px";
+		tooltip.setCssProps({
+			display: "block",
+			left: "0px",
+			top: "0px",
+		});
 
 		const tooltipWidth = tooltip.offsetWidth;
 		const tooltipHeight = tooltip.offsetHeight;
@@ -81,17 +82,21 @@ export default class Tooltip {
 			top = y - tooltipHeight - this.offsetY;
 		}
 
-		tooltip.style.left = `${left}px`;
-		tooltip.style.top = `${top}px`;
+		tooltip.setCssProps({
+			left: `${left}px`,
+			top: `${top}px`,
+		});
 	}
 
 	public hideTooltip() {
-		const wrapper = document.querySelector(this.tooltipWrapperSelector) as HTMLElement | null;
+		const wrapper = activeDocument.querySelector(this.tooltipWrapperSelector);
 		if (!wrapper) return;
 
 		const tooltip = wrapper.querySelector(this.tooltipSelector) as HTMLElement | null;
 		if (tooltip) {
-			tooltip.style.display = "none";
+			tooltip.setCssProps({
+				display: "none",
+			});
 		}
 	}
 }

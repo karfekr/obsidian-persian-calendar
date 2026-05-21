@@ -16,9 +16,11 @@ export default class CalendarSetting extends SettingBase {
 		containerEl.empty();
 		containerEl.addClass("persian-calendar");
 
-		containerEl.style.direction = this.plugin.setting.language === "fa" ? "rtl" : "ltr";
+		containerEl.setCssProps({
+			direction: this.plugin.setting.language === "fa" ? "rtl" : "ltr",
+		});
 
-		const contactUs = containerEl.createDiv({
+		const contactUs = containerEl.createEl("div", {
 			cls: "persian-calendar__setting-banner",
 		});
 		contactUs.createEl("h2", {

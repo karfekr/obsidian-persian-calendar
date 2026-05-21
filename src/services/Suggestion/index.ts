@@ -20,9 +20,9 @@ export default class Suggestion extends EditorSuggest<string> {
 	}
 
 	renderSuggestion(value: string, el: HTMLElement): void {
-		const container = el.createDiv();
+		const container = el.createEl("div");
 
-		container.createDiv({
+		container.createEl("div", {
 			text: value,
 		});
 	}
@@ -33,12 +33,18 @@ export default class Suggestion extends EditorSuggest<string> {
 		for (const provider of this.providers) {
 			const match = line.match(provider.trigger);
 			if (match) {
+				const activeFile = this.app.workspace.getActiveFile();
+
+				if (!(activeFile instanceof TFile)) {
+					return null;
+				}
+
 				const ctx: EditorSuggestContext = {
 					start: { line: cursor.line, ch: match.index ?? 0 },
 					end: cursor,
 					query: match[0].replace(/^(@|\{\{)/, ""),
 					editor,
-					file: this.app.workspace.getActiveFile() as TFile,
+					file: activeFile,
 				};
 
 				this.activeProvider = provider;

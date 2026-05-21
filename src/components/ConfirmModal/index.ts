@@ -23,7 +23,7 @@ class ConfirmModal extends Modal {
 		contentEl.createEl("h2", { text: this.titleText });
 		contentEl.createEl("p", { text: this.messageText });
 
-		const buttons = contentEl.createDiv({
+		const buttons = contentEl.createEl("div", {
 			cls: "persian-calendar__cmodal-container",
 		});
 

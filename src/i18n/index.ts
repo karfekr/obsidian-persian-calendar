@@ -10,16 +10,20 @@ const translations = {
 let currentLocal: TLocal = "en";
 let listeners = new Set<() => void>();
 
-function resolvePath(obj: any, path: string): string | undefined {
-	return path.split(".").reduce((acc, part) => {
-		if (acc && typeof acc === "object") {
-			return acc[part];
+function resolvePath(obj: Record<string, unknown>, path: string): unknown {
+	let current: unknown = obj;
+	const parts = path.split(".");
+
+	for (const part of parts) {
+		if (current && typeof current === "object" && part in current) {
+			current = (current as Record<string, unknown>)[part];
+		} else {
+			return undefined;
 		}
-		return undefined;
-	}, obj);
+	}
+	return current;
 }
 
-//? Public Functions
 export function setLocal(lang: TLocal) {
 	currentLocal = lang;
 	listeners.forEach((cb) => cb());
@@ -40,7 +44,6 @@ export function onLocalChange(cb: () => void) {
 
 export function t(key: string): string {
 	const result = resolvePath(translations[currentLocal], key);
-
 	if (typeof result === "string") return result;
 
 	const fallback = resolvePath(translations.en, key);

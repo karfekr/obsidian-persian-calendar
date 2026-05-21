@@ -51,7 +51,7 @@ export default class CalendarState {
 
 		const daysToInclude = firstDayOfWeek;
 
-		for (let i = lastDayOfPreviousMonth! - daysToInclude + 1; i <= lastDayOfPreviousMonth!; i++) {
+		for (let i = lastDayOfPreviousMonth - daysToInclude + 1; i <= lastDayOfPreviousMonth; i++) {
 			daysFromPrevMonth.push(i);
 		}
 
@@ -84,7 +84,7 @@ export default class CalendarState {
 		const daysFromPrevMonth = this.calculateDaysFromPreviousMonth(firstDayOfWeekIndex);
 		const daysFromPrevMonthCount = daysFromPrevMonth.length;
 
-		const totalDaysInGrid = daysFromPrevMonthCount + daysInMonth!;
+		const totalDaysInGrid = daysFromPrevMonthCount + daysInMonth;
 
 		const weeks = Math.ceil(totalDaysInGrid / 7);
 

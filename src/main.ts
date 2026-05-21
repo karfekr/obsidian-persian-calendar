@@ -68,10 +68,10 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		// inject DatePicker button for Jalali
 		const observer = new MutationObserver(() => {
-			this.injectDatePickerButton(document.body);
+			this.injectDatePickerButton(activeDocument.body);
 		});
 
-		observer.observe(document.body, {
+		observer.observe(activeDocument.body, {
 			childList: true,
 			subtree: true,
 		});
@@ -135,11 +135,13 @@ export default class PersianCalendarPlugin extends Plugin {
 			const input = field.querySelector<HTMLInputElement>('input[type="date"]');
 			if (!input) return;
 
-			field.style.display = "flex";
-			field.style.alignItems = "center";
-			field.style.gap = "6px";
+			field.setCssProps({
+				display: "flex",
+				alignItems: "center",
+				gap: "6px",
+			});
 
-			const btn = document.createElement("button");
+			const btn = activeDocument.createElement("button");
 			btn.className = "persian-calendar__datepicker-button persian-calendar";
 			btn.type = "button";
 

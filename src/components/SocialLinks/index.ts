@@ -11,7 +11,7 @@ export default function SocialLinks(
 ): HTMLElement {
 	const { className = "persian-calendar__social-links" } = options;
 
-	const containerEl = container.createDiv({ cls: className });
+	const containerEl = container.createEl("div", { cls: className });
 
 	DEFAULT_SOCIAL_LINKS.forEach((link) => {
 		const a = containerEl.createEl("a", {

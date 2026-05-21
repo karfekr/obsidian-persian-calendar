@@ -58,14 +58,18 @@ export default class CalendarHeaderRender {
 		});
 
 		const monthEl = jalaliStateEl.createEl("span", { cls: "persian-calendar__jmonth" });
-		this.setting.language === "fa"
-			? monthEl.addClass("persian-calendar__jmonth--fa")
-			: monthEl.addClass("persian-calendar__jmonth--en");
+		if (this.setting.language === "fa") {
+			monthEl.addClass("persian-calendar__jmonth--fa");
+		} else {
+			monthEl.addClass("persian-calendar__jmonth--en");
+		}
 
 		const yearEl = jalaliStateEl.createEl("span", { cls: "persian-calendar__jyear" });
-		this.setting.language === "fa"
-			? yearEl.addClass("persian-calendar__jyear--fa")
-			: yearEl.addClass("persian-calendar__jyear--en");
+		if (this.setting.language === "fa") {
+			yearEl.addClass("persian-calendar__jyear--fa");
+		} else {
+			yearEl.addClass("persian-calendar__jyear--en");
+		}
 
 		yearEl.textContent =
 			this.setting.language === "fa" ? toFaNumber(jYearState) : String(jYearState);
