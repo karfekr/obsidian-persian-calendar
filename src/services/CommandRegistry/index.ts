@@ -53,6 +53,17 @@ export default class CommandRegistry {
 		this.registerDailyNoteCommands();
 		this.registerPeriodicNoteCommands();
 		this.registerInsertDatePicker();
+		this.registerOpenCalendarCommand();
+	}
+
+	private registerOpenCalendarCommand() {
+		this.register({
+			id: "open-persian-calendar",
+			name: t("command.openCalendar"),
+			callback: async () => {
+				await this.plugin.activateView();
+			},
+		});
 	}
 
 	private registerReplacePlaceholders() {

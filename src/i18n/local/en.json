@@ -9,7 +9,8 @@
 		"weekly": "Open Weekly Note",
 		"monthly": "Open Monthly Note",
 		"seasonal": "Open Seasonal Note",
-		"yearly": "Open Yearly Note"
+		"yearly": "Open Yearly Note",
+		"openCalendar": "Open Persian Calendar"
 	},
 	"setting": {
 		"banner": {
