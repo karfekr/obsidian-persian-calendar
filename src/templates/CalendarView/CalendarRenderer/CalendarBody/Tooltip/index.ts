@@ -32,14 +32,20 @@ export default class Tooltip {
 	public showTooltip(e: MouseEvent | TouchEvent, events: TEventObject[], local: TLocal) {
 		const { tooltip } = this.getOrCreateTooltip(local);
 
-		tooltip.innerHTML = events
-			.map(
-				({ title, isHoliday }) =>
-					`<div class="persian-calendar__tooltip-event${
-						isHoliday ? " persian-calendar__day--holiday" : ""
-					}">${title[local]}</div>`,
-			)
-			.join("");
+		while (tooltip.firstChild) {
+			tooltip.removeChild(tooltip.firstChild);
+		}
+
+		for (const event of events) {
+			const eventDiv = activeDocument.createElement("div");
+			eventDiv.className = "persian-calendar__tooltip-event";
+			if (event.isHoliday) {
+				eventDiv.classList.add("persian-calendar__day--holiday");
+			}
+
+			eventDiv.textContent = event.title[local];
+			tooltip.appendChild(eventDiv);
+		}
 
 		let x: number | undefined;
 		let y: number | undefined;
