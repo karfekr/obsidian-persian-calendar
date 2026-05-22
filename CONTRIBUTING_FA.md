@@ -29,7 +29,7 @@
 > در پیاده‌سازی معماری این پروژه از معماری پلاگین‌های موفقی همچون
 > [notebook-navigator](https://github.com/johansan/notebook-navigator) و
 > [Templater](https://github.com/SilentVoid13/Templater) و
-> [Journals](https://github.com/srg-kostyrko/obsidian-journal) بهره گرفته شده است. اگر مایلید این
+> [Journals](https://github.com/srg-kostyrko/obsidian-journal) استفاده کردیم. اگر مایلید این
 > ساختار را بهبود ببخشید، پیش از هر کاری با ما مشورت کنید.
 
 > تمام قالب‌های مربوط به فرمت کد توسط **editorconfig** و **prettierrc** و **eslintrc** و… مشخص
@@ -45,19 +45,17 @@
 اگر تجربه‌ی توسعه‌ی پلاگین برای ابسیدین را ندارید و مشتاق هستید در این مسیر با ما همراه شوید، مسیر
 زیر را به شما پیشنهاد می‌کنیم:
 
-**یادگیری Typescript**:
-   [این ویدیو را پیشنهاد می‌کنم](https://www.youtube.com/watch?v=BCg4U1FzODs)
+**یادگیری Typescript**: [این ویدیو را پیشنهاد می‌کنم](https://www.youtube.com/watch?v=BCg4U1FzODs)
 
 **آشنایی با ساختار پلاگین‌های ابسیدین**:
-   [این ویدیو را پیشنهاد می‌کنم](https://www.youtube.com/watch?v=AgXa03ZxJ88)
+[این ویدیو را پیشنهاد می‌کنم](https://www.youtube.com/watch?v=AgXa03ZxJ88)
 
-**درک فانکشن‌های پایه‌ی این پلاگین**: می‌توانید با مراجعه به
-   [این یادداشت](src/utils/README.md) با این توابع آشنا شوید و در توسعه از آن‌ها بهره ببرید.
+**درک فانکشن‌های پایه‌ی این پلاگین**: می‌توانید با مراجعه به [این یادداشت](src/utils/README.md) با
+این توابع آشنا شوید و در توسعه از آن‌ها بهره ببرید.
 
-**برای چالش‌ها**: می‌توانید به
-   [مستندات رسمی ابسیدین برای توسعه‌ی پلاگین](https://docs.obsidian.md) مراجعه کنید یا از مدل‌های
-   زبانی [Claude](https://claude.ai) و [ChatGPT](https://chatgpt.com) و
-   [Gemini](https://gemini.google.com) و [DeepSeek](https://chat.deepseek.com) کمک بگیرید.
+**برای چالش‌ها**: می‌توانید به [مستندات رسمی ابسیدین برای توسعه‌ی پلاگین](https://docs.obsidian.md)
+مراجعه کنید یا از مدل‌های زبانی [Claude](https://claude.ai) و [ChatGPT](https://chatgpt.com) و
+[Gemini](https://gemini.google.com) و [DeepSeek](https://chat.deepseek.com) کمک بگیرید.
 
 ## راه‌های ارتباطی
 
