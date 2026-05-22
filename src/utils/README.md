@@ -1,3 +1,7 @@
+> Was a sentence unclear? Instead of ignoring it, make a simple 'edit' and leave your name in the history of this page's improvement.
+
+> جمله‌ای مبهم بود؟ به جای چشم‌پوشی، با یک ویرایش ساده، نام خود را در تاریخچه‌ی بهبود این صفحه ثبت کن.
+
 # Utils Guide
 
 This file is a complete reference for all utility functions in the `utils` folder.
