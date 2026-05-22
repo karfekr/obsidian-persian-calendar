@@ -43,15 +43,15 @@ If you would like to join us in developing this plugin, please read the followin
 If you have no experience developing Obsidian plugins but are eager to join us, we suggest the
 following path:
 
-1. **Learn TypeScript**: [I recommend this video](https://www.youtube.com/watch?v=BCg4U1FzODs)
+**Learn TypeScript**: [I recommend this video](https://www.youtube.com/watch?v=BCg4U1FzODs)
 
-2. **Get familiar with the structure of Obsidian plugins**:
+**Get familiar with the structure of Obsidian plugins**:
    [I recommend this video](https://www.youtube.com/watch?v=AgXa03ZxJ88)
 
-3. **Understand the basic functions of this plugin**: You can learn about these functions by
+**Understand the basic functions of this plugin**: You can learn about these functions by
    referring to [**this note**](src/utils/README.md) and use them in development.
 
-4. **For challenges**: You can refer to the
+**For challenges**: You can refer to the
    [official Obsidian plugin development documentation](https://docs.obsidian.md) or get help from
    language models like [Claude](https://claude.ai), [ChatGPT](https://chatgpt.com),
    [Gemini](https://gemini.google.com), and [DeepSeek](https://chat.deepseek.com).
