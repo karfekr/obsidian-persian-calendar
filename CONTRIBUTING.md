@@ -49,7 +49,7 @@ following path:
    [I recommend this video](https://www.youtube.com/watch?v=AgXa03ZxJ88)
 
 **Understand the basic functions of this plugin**: You can learn about these functions by
-   referring to [**this note**](src/utils/README.md) and use them in development.
+   referring to [this note](src/utils/README.md) and use them in development.
 
 **For challenges**: You can refer to the
    [official Obsidian plugin development documentation](https://docs.obsidian.md) or get help from
