@@ -22,7 +22,8 @@ If you would like to join us in developing this plugin, please read the followin
 1. **Fork** the repository.
 2. Create a **branch** with a clear name (e.g., `fix/calendar-header` or `feature/shortcut`).
 3. Apply your changes and write small, meaningful commits.
-4. Finally, open a Pull Request and describe precisely what problem it solves in the description.
+4. Specify the version via `git tag` and the `manifest.json` file, and run the command `pnpm run version`.
+5. Finally, open a Pull Request and describe precisely what problem it solves in the description.
 
 > The architecture of this project is inspired by successful plugins such as
 > [notebook-navigator](https://github.com/johansan/notebook-navigator),
