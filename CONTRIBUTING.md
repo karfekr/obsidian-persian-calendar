@@ -56,7 +56,7 @@ following path:
    language models like [Claude](https://claude.ai), [ChatGPT](https://chatgpt.com),
    [Gemini](https://gemini.google.com), and [DeepSeek](https://chat.deepseek.com).
 
-## Communication Channels
+## Communication
 
 You can reach us via GitHub Issues on this page or through the following Accounts:
 
