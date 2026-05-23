@@ -27,7 +27,7 @@
 	],
 	"repository": "https://github.com/karfekr/obsidian-persian-calendar",
 	"license": "GPL-3.0-only",
-	"packageManager": "pnpm@10.29.3",
+	"packageManager": "^pnpm@10.29.3",
 	"devDependencies": {
 		"@types/node": "^25.0.3",
 		"@typescript-eslint/eslint-plugin": "8.51.0",
