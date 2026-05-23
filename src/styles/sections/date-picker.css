@@ -133,5 +133,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: var(--persian-calendar-color-base-3) !important;
+}
+.persian-calendar__datepicker-button.persian-calendar__datepicker-button {
+	color: var(--persian-calendar-color-base-3);
 }

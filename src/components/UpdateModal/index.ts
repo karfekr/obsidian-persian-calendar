@@ -24,7 +24,7 @@ export default class UpdateModal extends Modal {
 		const headerEl = contentEl.createEl("div", { cls: "persian-calendar__update-header" });
 		setIcon(headerEl, "calendar-heart");
 
-		const pluginName = this.setting.language === "fa" ? "تقویم فارسی" : "Persian Calendar";
+		const pluginName = "Persian Calendar";
 		headerEl.createEl("p", { text: pluginName });
 
 		SocialLinks(contentEl, this.setting.language);

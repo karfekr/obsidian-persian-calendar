@@ -15,14 +15,21 @@ export default class PathSuggest extends AbstractInputSuggest<TAbstractFile> {
 	getSuggestions(query: string): TAbstractFile[] {
 		const q = query.toLowerCase();
 
-		return this.app.vault.getAllLoadedFiles().filter((file) => {
-			if (this.mode === "folder" && !(file instanceof TFolder)) return false;
-			if (this.mode === "file" && !(file instanceof TFile)) return false;
-			if (this.mode === "md-file" && !(file instanceof TFile && file.extension === "md"))
-				return false;
+		let candidates: TAbstractFile[];
 
-			return !q || file.path.toLowerCase().includes(q);
-		});
+		switch (this.mode) {
+			case "folder":
+				candidates = this.app.vault.getAllFolders();
+				break;
+			case "md-file":
+				candidates = this.app.vault.getMarkdownFiles();
+				break;
+			case "file":
+				candidates = this.app.vault.getFiles();
+				break;
+		}
+
+		return !q ? candidates : candidates.filter((f) => f.path.toLowerCase().includes(q));
 	}
 
 	renderSuggestion(file: TAbstractFile, el: HTMLElement) {

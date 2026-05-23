@@ -62,9 +62,9 @@
 	width: 100%;
 }
 
-.persian-calendar__day--current {
+.persian-calendar__day--current.persian-calendar__day--current {
 	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 10%, transparent);
-	border: 1px solid var(--persian-calendar-color-primary) !important;
+	border: 1px solid var(--persian-calendar-color-primary);
 	border-radius: 5px;
 	box-shadow: 0 0 0 1px color-mix(in srgb, var(--persian-calendar-color-primary) 50%, transparent);
 }

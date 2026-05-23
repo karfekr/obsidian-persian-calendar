@@ -10,19 +10,19 @@
 
 .persian-calendar__content {
 	border-top: 1px dashed var(--persian-calendar-color-base-1);
-	column-gap: var(--persian-calendar-spacing-sm);
+	grid-column-gap: var(--persian-calendar-spacing-sm);
 	display: grid;
 	grid-template-columns: 50px minmax(0, 1fr);
 	grid-template-rows: 40px repeat(var(--persian-calendar-weeks-count, 6), 40px);
 	padding: 0 var(--persian-calendar-spacing-md);
-	row-gap: var(--persian-calendar-gap-y-days);
+	grid-row-gap: var(--persian-calendar-gap-y-days);
 }
 
 .persian-calendar__weekday--container {
 	align-items: center;
 	border-bottom: 1px dashed var(--persian-calendar-color-base-1);
 	display: grid;
-	gap: 0 var(--persian-calendar-gap-x-days);
+	grid-gap: 0 var(--persian-calendar-gap-x-days);
 	grid-column: 2;
 	grid-row: 1;
 	grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -46,7 +46,7 @@
 	grid-row: 1 / -1;
 	grid-template-rows: 40px;
 	grid-auto-rows: 40px;
-	row-gap: var(--persian-calendar-gap-y-days);
+	grid-row-gap: var(--persian-calendar-gap-y-days);
 	text-align: center;
 }
 
