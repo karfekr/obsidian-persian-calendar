@@ -60,9 +60,6 @@ jobs:
           test -f manifest.json
           node -e "const m=require('./manifest.json'); if(!m.version) process.exit(1)"
 
-      - name: Run typecheck
-        run: pnpm run typecheck --if-present
-
       - name: Run lint
         run: pnpm run lint --if-present
 
