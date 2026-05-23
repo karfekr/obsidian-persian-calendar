@@ -1,8 +1,7 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
 		"paths": {
-			"src/*": ["src/*"]
+			"src/*": ["./src/*"]
 		},
 		"inlineSourceMap": true,
 		"resolveJsonModule": true,
@@ -12,7 +11,7 @@
 		"target": "ES2022",
 		"allowJs": true,
 		"noImplicitAny": true,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"importHelpers": true,
 		"isolatedModules": true,
 		"forceConsistentCasingInFileNames": true,
