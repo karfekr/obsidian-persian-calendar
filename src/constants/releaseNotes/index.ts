@@ -3,6 +3,15 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.5.8",
+		changes: {
+			fa: ["عملکرد رفتاری پیشنهاد مسیر قالب و ایجاد یادداشت به پیشنهادِ Obsidian Scorecard"],
+			en: [
+				"Behavioral performance of template-path suggestion, according to Obsidian Scorecard",
+			],
+		},
+	},
+	{
 		version: "4.5.7",
 		changes: {
 			fa: ["بهبود کد از نظر کارایی براساس پیشنهادات Obsidian Scorecard"],

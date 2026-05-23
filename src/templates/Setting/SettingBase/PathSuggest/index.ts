@@ -1,10 +1,10 @@
-import { App, TAbstractFile, TFile, TFolder, AbstractInputSuggest } from "obsidian";
+import { App, AbstractInputSuggest } from "obsidian";
 
 export type PathSuggestMode = "folder" | "file" | "md-file";
 
-export default class PathSuggest extends AbstractInputSuggest<TAbstractFile> {
-	private inputEl: HTMLInputElement;
+export default class PathSuggest extends AbstractInputSuggest<string> {
 	private mode: PathSuggestMode;
+	private inputEl: HTMLInputElement;
 
 	constructor(app: App, inputEl: HTMLInputElement, mode: PathSuggestMode = "folder") {
 		super(app, inputEl);
@@ -12,32 +12,38 @@ export default class PathSuggest extends AbstractInputSuggest<TAbstractFile> {
 		this.mode = mode;
 	}
 
-	getSuggestions(query: string): TAbstractFile[] {
-		const q = query.toLowerCase();
+	async getSuggestions(query: string): Promise<string[]> {
+		const lastSlash = query.lastIndexOf("/");
+		const dirPath = lastSlash >= 0 ? query.substring(0, lastSlash) : "";
+		const partial = query.substring(lastSlash + 1).toLowerCase();
 
-		let candidates: TAbstractFile[];
+		const isHidden = (p: string) => p.split("/").some((part) => part.startsWith("."));
 
-		switch (this.mode) {
-			case "folder":
-				candidates = this.app.vault.getAllFolders();
-				break;
-			case "md-file":
-				candidates = this.app.vault.getMarkdownFiles();
-				break;
-			case "file":
-				candidates = this.app.vault.getFiles();
-				break;
+		try {
+			const listed = await this.app.vault.adapter.list(dirPath || "/");
+
+			let entries: string[] = [];
+
+			if (this.mode === "folder") {
+				entries = listed.folders;
+			} else if (this.mode === "md-file") {
+				entries = [...listed.folders, ...listed.files.filter((f) => f.endsWith(".md"))];
+			} else {
+				entries = [...listed.folders, ...listed.files];
+			}
+
+			return entries.filter((e) => !isHidden(e) && e.toLowerCase().includes(partial)).slice(0, 20);
+		} catch {
+			return [];
 		}
-
-		return !q ? candidates : candidates.filter((f) => f.path.toLowerCase().includes(q));
 	}
 
-	renderSuggestion(file: TAbstractFile, el: HTMLElement) {
-		el.setText(file.path);
+	renderSuggestion(path: string, el: HTMLElement) {
+		el.setText(path);
 	}
 
-	selectSuggestion(file: TAbstractFile) {
-		this.inputEl.value = file.path;
+	selectSuggestion(path: string) {
+		this.setValue(path);
 		this.inputEl.dispatchEvent(new Event("input"));
 		this.close();
 	}
