@@ -3,14 +3,17 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.5.7",
+		changes: {
+			fa: ["بهبود کد از نظر کارایی براساس پیشنهادات Obsidian Scorecard"],
+			en: ["Code improvements based on Obsidian Scorecard suggestions"],
+		},
+	},
+	{
 		version: "4.5.6",
 		changes: {
-			fa: [
-				"بهبود کد از نظر امنیتی براساس پیشنهادات Obsidian Plugin Review",
-			],
-			en: [
-				"Improve security based on Obsidian Plugin Review",
-			],
+			fa: ["بهبود کد از نظر امنیتی براساس پیشنهادات Obsidian Scorecard"],
+			en: ["Improve security based on Obsidian Scorecard"],
 		},
 	},
 	{
@@ -19,14 +22,14 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 			fa: [
 				"اضافه شدن دوباره‌ی امکان باز کردن تقویم با دستور command",
 				"دو زبانه شدن نمایش تغییرات هر نسخه از برنامه",
-				"بهبود کد براساس پیشنهادات Obsidian Plugin Review",
+				"بهبود کد براساس پیشنهادات Obsidian Scorecard",
 				"تنظیم دقیق حداقل ورژن ابسیدین برای اجرای پلاگین",
 				"تغییر آدرس پیشفرض یادداشت‌های تقویم برای کاربران جدید",
 			],
 			en: [
 				"Re-added the ability to open the calendar via command palette",
 				"Bilingual display of release notes for each version",
-				"Code improvements based on Obsidian Plugin Review suggestions",
+				"Code improvements based on Obsidian Scorecard suggestions",
 				"Set minimum Obsidian version requirement for the plugin",
 				"Change default path for calendar notes for new users",
 			],
