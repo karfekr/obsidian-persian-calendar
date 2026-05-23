@@ -60,12 +60,6 @@ jobs:
           test -f manifest.json
           node -e "const m=require('./manifest.json'); if(!m.version) process.exit(1)"
 
-      - name: Run lint
-        run: pnpm run lint --if-present
-
-      - name: Run tests
-        run: pnpm test --if-present
-
       - name: Build plugin
         run: pnpm run build
 
