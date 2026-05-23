@@ -83,7 +83,6 @@ jobs:
         run: |
           gh release create "$TAG" \
             --title "$TAG" \
-            --notes-file release-notes.md \
             main.js \
             manifest.json \
             styles.css
