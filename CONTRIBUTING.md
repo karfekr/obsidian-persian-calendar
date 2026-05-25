@@ -8,7 +8,7 @@
 
 Welcome to the community that keeps this project alive💚
 
-As I write this, the project has **over 8,000 active users** – which means every bug fix, every
+As I write this, the project has **over 8,000 downloads** – which means every bug fix, every
 suggestion, every small improvement can enhance the experience of thousands of people.
 
 Contributing is not just about writing code. Reporting bugs, suggesting new features, improving
