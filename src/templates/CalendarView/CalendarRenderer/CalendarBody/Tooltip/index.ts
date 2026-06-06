@@ -42,7 +42,6 @@ export default class Tooltip {
 			if (event.isHoliday) {
 				eventDiv.classList.add("persian-calendar__day--holiday");
 			}
-
 			eventDiv.textContent = event.title[local];
 			tooltip.appendChild(eventDiv);
 		}
@@ -53,18 +52,18 @@ export default class Tooltip {
 		if (e instanceof MouseEvent) {
 			x = e.pageX;
 			y = e.pageY;
-		} else if (e.instanceOf(TouchEvent) && e.touches.length > 0) {
+		} else if (window.TouchEvent && e instanceof TouchEvent && e.touches.length > 0) {
 			x = e.touches[0].pageX;
 			y = e.touches[0].pageY;
+
+			setTimeout(() => {
+				activeDocument.addEventListener("touchstart", () => this.hideTooltip(), { once: true });
+			}, 0);
 		}
 
 		if (x === undefined || y === undefined) return;
 
-		tooltip.setCssProps({
-			display: "block",
-			left: "0px",
-			top: "0px",
-		});
+		tooltip.setCssProps({ display: "block", left: "0px", top: "0px" });
 
 		const tooltipWidth = tooltip.offsetWidth;
 		const tooltipHeight = tooltip.offsetHeight;
@@ -72,26 +71,19 @@ export default class Tooltip {
 		const viewportHeight = window.innerHeight;
 
 		let left = x - tooltipWidth - this.offsetX;
-		const leftSpaceEnough = left >= 0;
-
-		if (!leftSpaceEnough) {
+		if (left < 0) {
 			left = x + this.offsetX;
-
 			if (left + tooltipWidth > viewportWidth) {
 				left = Math.max(0, viewportWidth - tooltipWidth - this.offsetX);
 			}
 		}
 
 		let top = y + this.offsetY;
-
 		if (top + tooltipHeight > viewportHeight + window.scrollY) {
 			top = y - tooltipHeight - this.offsetY;
 		}
 
-		tooltip.setCssProps({
-			left: `${left}px`,
-			top: `${top}px`,
-		});
+		tooltip.setCssProps({ left: `${left}px`, top: `${top}px` });
 	}
 
 	public hideTooltip() {

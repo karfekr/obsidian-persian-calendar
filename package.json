@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-persian-calendar",
-	"version": "4.5.8",
+	"version": "4.5.9",
 	"description": "Persian/Jalali calendar integration featuring dynamic note paths, placeholders, API access, and event display.",
 	"main": "main.js",
 	"scripts": {
@@ -22,7 +22,7 @@
 		},
 		{
 			"name": "Alireza Mohammadzadeh(NedaMani)",
-			"url": "https://github.com/NedaMani"
+			"url": "https://nedamani.ir"
 		}
 	],
 	"repository": "https://github.com/karfekr/obsidian-persian-calendar",
