@@ -134,10 +134,11 @@ export default class Placeholder {
 			["{{روز هفته جاری}}", dateToWeekdayName(currentDate)],
 			["{{هفته جاری}}", dateToJWeekDash(currentDate)],
 			["{{نام ماه جاری}}", dateToMonthName(currentDate)],
+			["{{روز ماه جاری}}", dateToDayOfMonth(currentDate)],
 			["{{ماه جاری}}", dateToJMonthDash(currentDate)],
 			["{{نام فصل جاری}}", dateToSeasonName(currentDate)],
-			["{{روز ماه جاری}}", dateToDayOfMonth(currentDate)],
 			["{{فصل جاری}}", dateToSeasonDash(currentDate)],
+			["{{سال جاری}}", dateToJYearDash(currentDate)],
 			[
 				"{{مناسبت جاری}}",
 				eventsToString(
@@ -147,20 +148,27 @@ export default class Placeholder {
 					}),
 				),
 			],
-			["{{سال جاری}}", dateToJYearDash(currentDate)],
 
-			["{{روز ماه یادداشت}}", fromFile(dateToDayOfMonth)],
 			["{{تاریخ شمسی یادداشت}}", fromFile((d) => dateToDash(d, "jalali"))],
 			["{{تاریخ میلادی یادداشت}}", fromFile((d) => dateToDash(d, "gregorian"))],
 			["{{تاریخ قمری یادداشت}}", fromFile((d) => dateToDash(d, "hijri"))],
 			["{{روز هفته یادداشت}}", fromFile(dateToWeekdayName)],
-			["{{سال یادداشت}}", fileDate ? dateToJYearDash(fileDate) : extractYearFormat(fileName)],
-			["{{مناسبت یادداشت}}", eventsToString(dashToEvents(fileName, baseDate, this.plugin.setting))],
+			["{{هفته یادداشت}}", dashToJWeekDash(fileName, baseDate)],
 			["{{نام ماه یادداشت}}", dashToJMonthName(fileName, baseDate)],
+			["{{روز ماه یادداشت}}", fromFile(dateToDayOfMonth)],
 			["{{ماه یادداشت}}", dashToJMonthDash(fileName, baseDate)],
 			["{{نام فصل یادداشت}}", dashToSeasonName(fileName, baseDate)],
 			["{{فصل یادداشت}}", dashToSeasonDash(fileName, baseDate)],
-			["{{هفته یادداشت}}", dashToJWeekDash(fileName, baseDate)],
+			["{{سال یادداشت}}", fileDate ? dateToJYearDash(fileDate) : extractYearFormat(fileName)],
+			[
+				"{{مناسبت یادداشت}}",
+				eventsToString(
+					dashToEvents(fileName, baseDate, {
+						showEvents: this.plugin.setting,
+						hijriBase: this.plugin.setting.hijriBase,
+					}),
+				),
+			],
 
 			["{{روزهای گذشته سال}}", fromFileOrToday(dateToDaysPassedJYear)],
 			["{{روزهای باقیمانده سال}}", fromFileOrToday(dateToDaysRemainingJYear)],
