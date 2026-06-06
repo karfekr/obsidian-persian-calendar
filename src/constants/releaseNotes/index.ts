@@ -5,8 +5,8 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 	{
 		version: "4.5.9",
 		changes: {
-			fa: ["برطرف کردن باگ عبارت معنایی {{مناسبت یادداشت}}"],
-			en: [],
+			fa: ["برطرف کردن باگ عبارت معنایی {{مناسبت یادداشت}}", "اصلاح باگ نمایش Tooltip"],
+			en: ["Fix semantic expression bug {{مناسبت یادداشت}}", "Fix Tooltip display bug"],
 		},
 	},
 	{
