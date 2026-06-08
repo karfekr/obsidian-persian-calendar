@@ -32,7 +32,7 @@ export default class CalendarView extends View {
 		);
 		this.calendarNavigation = new CalendarNavigation(
 			this.calendarState,
-			this.calendarRenderer.render,
+			this.calendarRenderer.render.bind(this.calendarRenderer),
 		);
 	}
 
@@ -82,7 +82,7 @@ export default class CalendarView extends View {
 				today.jd !== this.lastCheckedDate.jd
 			) {
 				this.lastCheckedDate = today;
-				this.render();
+				void this.render();
 			}
 		}, 60 * 1000);
 	}
