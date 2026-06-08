@@ -60,9 +60,9 @@ export default class PersianCalendarPlugin extends Plugin {
 		this.registerView("persian-calendar", (leaf) => new CalendarView(leaf, this.app, this));
 
 		// Activate view if not already active
-		this.app.workspace.onLayoutReady(async () => {
+		this.app.workspace.onLayoutReady(() => {
 			if (this.app.workspace.getLeavesOfType("persian-calendar").length === 0) {
-				await this.activateView();
+				void this.activateView();
 			}
 		});
 
@@ -152,12 +152,12 @@ export default class PersianCalendarPlugin extends Plugin {
 			};
 
 			refresh();
-			onLocalChange(refresh);
+			void onLocalChange(refresh);
 
 			btn.onclick = () => {
 				const val = input.value || null;
 
-				new DatePicker(this.app, this.setting, val, (out) => {
+				void new DatePicker(this.app, this.setting, val, (out) => {
 					input.focus();
 
 					input.value = out;

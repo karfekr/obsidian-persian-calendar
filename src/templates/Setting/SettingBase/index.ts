@@ -11,7 +11,7 @@ export abstract class SettingBase extends PluginSettingTab {
 		super(app, plugin);
 		this.plugin = plugin;
 
-		onLocalChange(() => this.display());
+		onLocalChange(() => void this.display());
 	}
 
 	protected addPathSetting(
@@ -60,7 +60,7 @@ export abstract class SettingBase extends PluginSettingTab {
 			);
 	}
 
-	protected addDropdownSetting<T extends string = string>(
+	protected addDropdownSetting(
 		containerEl: HTMLElement,
 		opts: {
 			name: string;
@@ -79,7 +79,7 @@ export abstract class SettingBase extends PluginSettingTab {
 
 				dropdown.setValue(this.plugin.setting[opts.key] ?? opts.defaultValue).onChange((value) => {
 					(this.plugin.setting[opts.key] as string) = value;
-					this.plugin.saveSetting();
+					void this.plugin.saveSetting();
 
 					if (opts.key === "language") {
 						setLocal(value as TLocal);

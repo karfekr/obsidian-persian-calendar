@@ -7,7 +7,7 @@ export default class EventManager {
 
 	constructor(private plugin: PersianCalendarPlugin) {
 		this.plugin.app.workspace.onLayoutReady(() => {
-			activeWindow.setTimeout(() => {
+			window.setTimeout(() => {
 				this.isLayoutReady = true;
 			}, 3000);
 		});
@@ -25,7 +25,7 @@ export default class EventManager {
 				if (file instanceof TFile && file.path.endsWith(".md")) {
 					if (!this.isLayoutReady) return;
 
-					activeWindow.setTimeout(async () => {
+					window.setTimeout(async () => {
 						await this.plugin.placeholder.insertPersianDate(file);
 					}, 300);
 					this.handleFileUpdate();
