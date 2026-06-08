@@ -2,8 +2,6 @@ name: Release Obsidian plugin
 
 on:
   push:
-    branches:
-      - main
     tags:
       - "*"
 
@@ -68,8 +66,7 @@ jobs:
           test -f main.js
           test -f manifest.json
 
-      - name: Attest release assets
-        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4
+      - uses: actions/attest-build-provenance@v3
         with:
           subject-path: |
             main.js
