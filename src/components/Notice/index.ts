@@ -8,15 +8,15 @@ export default function Notice(
 ): ObsidianNotice {
 	const notice = new ObsidianNotice(message, timeout);
 
-	const observer = new MutationObserver((mutations, obs) => {
-		const noticeEl = document.querySelector(".notice");
+	const observer = new MutationObserver((_, obs) => {
+		const noticeEl = activeDocument.querySelector(".notice");
 		if (noticeEl) {
 			noticeEl.setAttribute("dir", direction === "rtl" ? "rtl" : "ltr");
 			obs.disconnect();
 		}
 	});
 
-	observer.observe(document.body, { childList: true, subtree: true });
+	observer.observe(activeDocument.body, { childList: true, subtree: true });
 
 	return notice;
 }
