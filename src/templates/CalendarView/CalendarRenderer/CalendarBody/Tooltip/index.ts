@@ -56,7 +56,7 @@ export default class Tooltip {
 			x = e.touches[0].pageX;
 			y = e.touches[0].pageY;
 
-			setTimeout(() => {
+			window.setTimeout(() => {
 				activeDocument.addEventListener("touchstart", () => this.hideTooltip(), { once: true });
 			}, 0);
 		}
