@@ -75,14 +75,14 @@ export default class CalendarHeaderRender {
 			this.setting.language === "fa" ? toFaNumber(jYearState) : String(jYearState);
 		yearEl.addEventListener("click", (e) => {
 			e.stopPropagation();
-			this.notesService.openOrCreateYearlyNote(jYearState);
+			void this.notesService.openOrCreateYearlyNote(jYearState);
 		});
 
 		const monthName = jalaliMonthName(jMonthState, this.setting.language);
 		monthEl.textContent = monthName;
 		monthEl.addEventListener("click", (e) => {
 			e.stopPropagation();
-			this.notesService.openOrCreateMonthlyNote(jYearState, jMonthState);
+			void this.notesService.openOrCreateMonthlyNote(jYearState, jMonthState);
 		});
 
 		const navContainerEl = stateControlEl.createEl("div", {
@@ -98,7 +98,7 @@ export default class CalendarHeaderRender {
 		const todayButton = navContainerEl.createEl("span", { cls: "persian-calendar__go-today" });
 		todayButton.textContent = t("today");
 		todayButton.addEventListener("click", () => {
-			this.navigation.goToToday();
+			void this.navigation.goToToday();
 		});
 
 		const nextMonthArrow = navContainerEl.createEl("span", {

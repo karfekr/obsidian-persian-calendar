@@ -9,7 +9,7 @@ export default class CalendarNavigation {
 
 	public changeMonth(direction: "prev" | "next") {
 		this.calendarState.changeJMonthState(direction === "prev" ? -1 : 1);
-		this.rerender();
+		void this.rerender();
 	}
 
 	public async goToToday() {

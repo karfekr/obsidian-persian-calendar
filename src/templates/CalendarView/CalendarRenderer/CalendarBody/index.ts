@@ -56,7 +56,7 @@ export default class CalendarBodyRender {
 			}
 
 			seasonEl.addEventListener("click", () => {
-				this.notesService.openOrCreateSeasonalNote(jYearState, seasonNumber);
+				void this.notesService.openOrCreateSeasonalNote(jYearState, seasonNumber);
 			});
 		}
 	}
@@ -79,7 +79,7 @@ export default class CalendarBodyRender {
 		const iconEl = weekHeader.querySelector("svg");
 		iconEl?.addEventListener("click", (e) => {
 			e.stopPropagation();
-			this.onRefresh();
+			void this.onRefresh();
 			Notice(t("notice.success.refreshView"), getDirection());
 		});
 
@@ -104,7 +104,7 @@ export default class CalendarBodyRender {
 			}
 
 			weekEl.addEventListener("click", () => {
-				this.notesService.openOrCreateWeeklyNote(jy, weekNumber);
+				void this.notesService.openOrCreateWeeklyNote(jy, weekNumber);
 			});
 		}
 	}
@@ -219,7 +219,7 @@ export default class CalendarBodyRender {
 			dayEl.setAttr?.("data-day", cell.jd.toString());
 
 			dayEl.addEventListener("click", () => {
-				this.notesService.openOrCreateDailyNote(cell.jy, cell.jm, cell.jd);
+				void this.notesService.openOrCreateDailyNote(cell.jy, cell.jm, cell.jd);
 
 				if (!cell.isInCurrentMonth && cell.jd > 15) {
 					this.navigation.changeMonth("prev");
