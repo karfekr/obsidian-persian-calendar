@@ -31,11 +31,7 @@ export default class CommandRegistry {
 	}
 
 	private register(cmd: Parameters<typeof this.plugin.addCommand>[0]) {
-		const command = this.plugin.addCommand(cmd);
-
-		this.unregisterCallbacks.push(() => {
-			(this.plugin.app as any).commands.removeCommand(command.id);
-		});
+		this.plugin.addCommand(cmd);
 	}
 
 	private unregisterAll() {
