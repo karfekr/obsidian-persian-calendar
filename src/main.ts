@@ -68,7 +68,7 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		// inject DatePicker button for Jalali
 		const observer = new MutationObserver(() => {
-			this.injectDatePickerButton(activeDocument.body);
+			void this.injectDatePickerButton(activeDocument.body);
 		});
 
 		observer.observe(activeDocument.body, {
@@ -79,7 +79,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		this.register(() => observer.disconnect());
 
 		// Call parent onload
-		super.onload();
+		super.onload?.();
 
 		// Register editor suggester
 		this.dateSuggester = new SmartDateLinker(this);
@@ -111,14 +111,12 @@ export default class PersianCalendarPlugin extends Plugin {
 		this.versionChecker = new VersionChecker(this);
 	}
 
-	private handleStartup() {
-		this.app.workspace.onLayoutReady(async () => {
-			if (this.setting.openDailyNoteOnStartup) {
-				const now = todayTehran();
-				const { jy, jm, jd } = dateToJalali(now);
-				await this.noteService.openOrCreateDailyNote(jy, jm, jd);
-			}
-		});
+	private async handleStartup() {
+		if (this.setting.openDailyNoteOnStartup) {
+			const now = todayTehran();
+			const { jy, jm, jd } = dateToJalali(now);
+			await this.noteService.openOrCreateDailyNote(jy, jm, jd);
+		}
 	}
 
 	private injectDatePickerButton(root: HTMLElement) {
@@ -157,24 +155,13 @@ export default class PersianCalendarPlugin extends Plugin {
 			btn.onclick = () => {
 				const val = input.value || null;
 
-				void new DatePicker(this.app, this.setting, val, (out) => {
+				new DatePicker(this.app, this.setting, val, (out) => {
 					input.focus();
 
 					input.value = out;
 
-					input.dispatchEvent(
-						new InputEvent("input", {
-							bubbles: true,
-							cancelable: true,
-						}),
-					);
-
-					input.dispatchEvent(
-						new Event("change", {
-							bubbles: true,
-							cancelable: true,
-						}),
-					);
+					input.dispatchEvent(new InputEvent("input", { bubbles: true }));
+					input.dispatchEvent(new Event("change", { bubbles: true }));
 				}).open();
 			};
 

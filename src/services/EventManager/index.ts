@@ -25,8 +25,8 @@ export default class EventManager {
 				if (file instanceof TFile && file.path.endsWith(".md")) {
 					if (!this.isLayoutReady) return;
 
-					window.setTimeout(async () => {
-						await this.plugin.placeholder.insertPersianDate(file);
+					window.setTimeout(() => {
+						void this.plugin.placeholder.insertPersianDate(file);
 					}, 300);
 					this.handleFileUpdate();
 				}
@@ -66,7 +66,7 @@ export default class EventManager {
 
 			leaves.forEach((leaf) => {
 				if (leaf.view instanceof CalendarView) {
-					leaf.view.refreshCalendar();
+					void leaf.view.refreshCalendar();
 				}
 			});
 		}, 50);
