@@ -6,12 +6,27 @@ import { onLocalChange, setLocal } from "src/i18n";
 
 export abstract class SettingBase extends PluginSettingTab {
 	plugin: PersianCalendarPlugin;
+	private unsubscribeLocale?: () => void;
 
 	constructor(app: App, plugin: PersianCalendarPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 
-		onLocalChange(() => void this.display());
+		this.unsubscribeLocale = onLocalChange(() => {
+			this.refresh();
+		});
+	}
+
+	protected refresh(): void {
+		this.containerEl.empty();
+
+		//! display() is deprecated but still required for backwards compatibility.
+		this.display();
+	}
+
+	override hide(): void {
+		super.hide();
+		this.unsubscribeLocale?.();
 	}
 
 	protected addPathSetting(
@@ -22,7 +37,7 @@ export abstract class SettingBase extends PluginSettingTab {
 			desc?: string;
 			mode?: "folder" | "file" | "md-file";
 		},
-	) {
+	): void {
 		new ObsidianSettings(containerEl)
 			.setName(name)
 			.setDesc(opts?.desc ?? "")
@@ -30,9 +45,10 @@ export abstract class SettingBase extends PluginSettingTab {
 				text
 					.setPlaceholder("")
 					.setValue(this.plugin.setting[settingKey] as string)
-					.onChange(async (value) => {
+					.onChange((value) => {
 						(this.plugin.setting[settingKey] as string) = value;
-						await this.plugin.saveSetting();
+
+						void this.plugin.saveSetting();
 					});
 
 				new PathSuggest(this.app, text.inputEl, opts?.mode ?? "folder");
@@ -47,15 +63,19 @@ export abstract class SettingBase extends PluginSettingTab {
 			key: TBoolSettingKeys;
 			refresh?: boolean;
 		},
-	) {
+	): void {
 		new ObsidianSettings(containerEl)
 			.setName(opts.name)
 			.setDesc(opts.desc ?? "")
 			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.setting[opts.key]).onChange(async (value) => {
+				toggle.setValue(this.plugin.setting[opts.key]).onChange((value) => {
 					this.plugin.setting[opts.key] = value;
-					await this.plugin.saveSetting();
-					if (opts.refresh) this.plugin.refreshViews();
+
+					void this.plugin.saveSetting();
+
+					if (opts.refresh) {
+						this.plugin.refreshViews();
+					}
 				}),
 			);
 	}
@@ -70,7 +90,7 @@ export abstract class SettingBase extends PluginSettingTab {
 			defaultValue: string;
 			refresh?: boolean;
 		},
-	) {
+	): void {
 		new ObsidianSettings(containerEl)
 			.setName(opts.name)
 			.setDesc(opts.desc ?? "")
@@ -79,6 +99,7 @@ export abstract class SettingBase extends PluginSettingTab {
 
 				dropdown.setValue(this.plugin.setting[opts.key] ?? opts.defaultValue).onChange((value) => {
 					(this.plugin.setting[opts.key] as string) = value;
+
 					void this.plugin.saveSetting();
 
 					if (opts.key === "language") {
