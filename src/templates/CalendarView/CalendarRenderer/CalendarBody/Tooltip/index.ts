@@ -52,7 +52,11 @@ export default class Tooltip {
 		if (e instanceof MouseEvent) {
 			x = e.pageX;
 			y = e.pageY;
-		} else if (window.TouchEvent && e instanceof TouchEvent && e.touches.length > 0) {
+		} else if (
+			typeof TouchEvent !== "undefined" &&
+			e instanceof TouchEvent &&
+			e.touches.length > 0
+		) {
 			x = e.touches[0].pageX;
 			y = e.touches[0].pageY;
 
@@ -90,7 +94,7 @@ export default class Tooltip {
 		const wrapper = activeDocument.querySelector(this.tooltipWrapperSelector);
 		if (!wrapper) return;
 
-		const tooltip = wrapper.querySelector(this.tooltipSelector) as HTMLElement | null;
+		const tooltip = wrapper.querySelector(this.tooltipSelector) as HTMLElement;
 		if (tooltip) {
 			tooltip.setCssProps({
 				display: "none",
