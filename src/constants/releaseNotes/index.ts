@@ -3,6 +3,13 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.5.11",
+		changes: {
+			fa: ["بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard"],
+			en: ["Code improvements based on Obsidian Scorecard suggestions"],
+		},
+	},
+	{
 		version: "4.5.10",
 		changes: {
 			fa: ["بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard"],
