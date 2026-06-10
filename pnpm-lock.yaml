@@ -31,7 +31,7 @@ importers:
         specifier: 0.27.2
         version: 0.27.2
       obsidian:
-        specifier: 1.13.1
+        specifier: ^1.13.1
         version: 1.13.1(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
       postcss:
         specifier: ^8.5.15

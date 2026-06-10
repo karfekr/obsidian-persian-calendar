@@ -1,3 +1,4 @@
+import { Platform } from "obsidian";
 import type { TEventObject, TLocal } from "src/types";
 
 export default class Tooltip {
@@ -52,16 +53,16 @@ export default class Tooltip {
 		if (e instanceof MouseEvent) {
 			x = e.pageX;
 			y = e.pageY;
-		} else if (
-			typeof TouchEvent !== "undefined" &&
-			e instanceof TouchEvent &&
-			e.touches.length > 0
-		) {
-			x = e.touches[0].pageX;
-			y = e.touches[0].pageY;
+		} else if (Platform.isMobile && e.type === "touchstart") {
+			x = e.touches[0]?.pageX;
+			y = e.touches[0]?.pageY;
 
-			window.setTimeout(() => {
-				activeDocument.addEventListener("touchstart", () => this.hideTooltip(), { once: true });
+			const hideOnTouch = () => this.hideTooltip();
+
+			activeWindow.setTimeout(() => {
+				activeDocument.addEventListener("touchstart", hideOnTouch, { once: true });
+				activeDocument.addEventListener("touchend", hideOnTouch, { once: true });
+				activeDocument.addEventListener("touchcancel", hideOnTouch, { once: true });
 			}, 0);
 		}
 
