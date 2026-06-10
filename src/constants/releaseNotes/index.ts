@@ -3,14 +3,7 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
-		version: "4.5.11",
-		changes: {
-			fa: ["بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard"],
-			en: ["Code improvements based on Obsidian Scorecard suggestions"],
-		},
-	},
-	{
-		version: "4.5.10",
+		version: "4.5.12",
 		changes: {
 			fa: ["بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard"],
 			en: ["Code improvements based on Obsidian Scorecard suggestions"],
@@ -19,29 +12,16 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 	{
 		version: "4.5.9",
 		changes: {
-			fa: ["برطرف کردن باگ عبارت معنایی {{مناسبت یادداشت}}", "اصلاح باگ نمایش Tooltip"],
-			en: ["Fix semantic expression bug {{مناسبت یادداشت}}", "Fix Tooltip display bug"],
-		},
-	},
-	{
-		version: "4.5.8",
-		changes: {
-			fa: ["عملکرد رفتاری پیشنهاد مسیر قالب و ایجاد یادداشت به پیشنهادِ Obsidian Scorecard"],
-			en: ["Behavioral performance of template-path suggestion, according to Obsidian Scorecard"],
-		},
-	},
-	{
-		version: "4.5.7",
-		changes: {
-			fa: ["بهبود کد از نظر کارایی براساس پیشنهادات Obsidian Scorecard"],
-			en: ["Code improvements based on Obsidian Scorecard suggestions"],
-		},
-	},
-	{
-		version: "4.5.6",
-		changes: {
-			fa: ["بهبود کد از نظر امنیتی براساس پیشنهادات Obsidian Scorecard"],
-			en: ["Improve security based on Obsidian Scorecard"],
+			fa: [
+				"برطرف کردن باگ عبارت معنایی {{مناسبت یادداشت}}",
+				"اصلاح باگ نمایش Tooltip",
+				"عملکرد رفتاری پیشنهاد مسیر قالب و ایجاد یادداشت به پیشنهادِ Obsidian Scorecard",
+			],
+			en: [
+				"Fix semantic expression bug {{مناسبت یادداشت}}",
+				"Fix Tooltip display bug",
+				"Behavioral performance of template-path suggestion, according to Obsidian Scorecard",
+			],
 		},
 	},
 	{
@@ -88,6 +68,8 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 				"حالا خزانه‌ی مناسبات تقویم فارسی غنی‌تر از همیشه است.",
 				"مناسبات اهل تسنن و امکان تغییر تاریخ هجری به ام‌القری در اختیار کاربران اهل سنت قرار گرفت.",
 				"کاربران می‌توانند از طریق تنظیمات تاریخ هجری قمری را بر پایه‌ی ام‌القری عربستان یا ستاد استهلال ایران قرار دهند.",
+				"حالا شما می‌توانید از امکان پیشنهاد(suggestion) عبارات معنادار استفاده کنید.",
+				"بهبود بیشتر در ساختار پروژه و برطرف کردن برخی باگ‌ها",
 			],
 			en: [
 				"Users can now use the Persian Calendar plugin's private API in scripting",
@@ -96,17 +78,6 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 				"The Persian calendar's occasions repository is richer than ever",
 				"Sunni occasions and the option to change Hijri to Umm al-Qura are now available for Sunni users",
 				"Users can choose Hijri calendar based on Saudi Umm al-Qura or Iran's Istehlal committee in settings",
-			],
-		},
-	},
-	{
-		version: "4.4.0",
-		changes: {
-			fa: [
-				"حالا شما می‌توانید از امکان پیشنهاد(suggestion) عبارات معنادار استفاده کنید.",
-				"بهبود بیشتر در ساختار پروژه و برطرف کردن برخی باگ‌ها",
-			],
-			en: [
 				"Now you can use meaningful expressions suggestion feature",
 				"Further project structure improvements and bug fixes",
 			],
@@ -125,6 +96,8 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 				"تغییر عبارت معنادار {{روزهای باقیمانده}} به {{روزهای باقیمانده سال}}",
 				"عبارات معنادار خانواده‌ی «روزهای باقیمانده» و «روزهای گذشته» به صورت پیشفرض به تاریخ روزنوشت وابسته هستند اما اگر در روزنوشت نباشند نتیجه را براساس تاریخ جاری نمایش می‌دهند.",
 				"بهبود استایل مودال تایید ایجاد یادداشت در موبایل",
+				"دو عبارت معنادار جدید: {{روز ماه یادداشت}} {{روز ماه جاری}}",
+				"بهبود نمایش مناسبت‌ها در عبارات معنادار",
 			],
 			en: [
 				"Fixed bug that ignored settings in command palette",
@@ -136,17 +109,6 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 				"Changed expression {{روزهای باقیمانده}} to {{روزهای باقیمانده سال}}",
 				"Expressions of type 'remaining days' and 'past days' depend on the daily note by default; if not in a daily note, they use the current date",
 				"Improved mobile note creation confirmation modal styling",
-			],
-		},
-	},
-	{
-		version: "4.2.2",
-		changes: {
-			fa: [
-				"دو عبارت معنادار جدید: {{روز ماه یادداشت}} {{روز ماه جاری}}",
-				"بهبود نمایش مناسبت‌ها در عبارات معنادار",
-			],
-			en: [
 				"Two new meaningful expressions: {{روز ماه یادداشت}} {{روز ماه جاری}}",
 				"Improved occasion display in meaningful expressions",
 			],

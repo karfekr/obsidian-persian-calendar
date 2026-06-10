@@ -54,7 +54,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		this.noteService = new NoteService(this.app, this);
 
 		// Handle startup operations
-		this.handleStartup();
+		void this.handleStartup();
 
 		// Register calendar view
 		this.registerView("persian-calendar", (leaf) => new CalendarView(leaf, this.app, this));
@@ -79,7 +79,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		this.register(() => observer.disconnect());
 
 		// Call parent onload
-		super.onload?.();
+		void super.onload?.();
 
 		// Register editor suggester
 		this.dateSuggester = new SmartDateLinker(this);
@@ -181,7 +181,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		const existingLeaves = this.app.workspace.getLeavesOfType("persian-calendar");
 
 		if (existingLeaves.length > 0) {
-			this.app.workspace.revealLeaf(existingLeaves[0]);
+			void this.app.workspace.revealLeaf(existingLeaves[0]);
 			return existingLeaves[0];
 		}
 
@@ -201,7 +201,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		const leaves = this.app.workspace.getLeavesOfType("persian-calendar");
 		leaves.forEach((leaf) => {
 			if (leaf.view instanceof CalendarView) {
-				leaf.view.render();
+				void leaf.view.render();
 			}
 		});
 	}

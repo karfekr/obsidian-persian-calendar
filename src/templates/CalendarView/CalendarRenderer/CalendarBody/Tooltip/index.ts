@@ -7,7 +7,7 @@ export default class Tooltip {
 	private offsetY = 10;
 
 	private getOrCreateTooltip(local: TLocal): { wrapper: HTMLElement; tooltip: HTMLElement } {
-		let wrapper = activeDocument.querySelector(this.tooltipWrapperSelector) as HTMLElement | null;
+		let wrapper = activeDocument.querySelector<HTMLElement>(this.tooltipWrapperSelector);
 		let tooltip: HTMLElement | null = null;
 
 		if (!wrapper) {

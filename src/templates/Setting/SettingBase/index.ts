@@ -67,17 +67,15 @@ export abstract class SettingBase extends PluginSettingTab {
 		new ObsidianSettings(containerEl)
 			.setName(opts.name)
 			.setDesc(opts.desc ?? "")
-			.addToggle((toggle) =>
+			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.setting[opts.key]).onChange((value) => {
 					this.plugin.setting[opts.key] = value;
-
 					void this.plugin.saveSetting();
-
 					if (opts.refresh) {
 						this.plugin.refreshViews();
 					}
-				}),
-			);
+				});
+			});
 	}
 
 	protected addDropdownSetting(
