@@ -40,7 +40,7 @@ export default class Tooltip {
 		for (const event of events) {
 			const eventDiv = activeDocument.createElement("div");
 			eventDiv.className = "persian-calendar__tooltip-event";
-			if (event.isHoliday) {
+			if (event.isHolidayInIran) {
 				eventDiv.classList.add("persian-calendar__day--holiday");
 			}
 			eventDiv.textContent = event.title[local];

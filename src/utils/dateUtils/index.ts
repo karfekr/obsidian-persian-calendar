@@ -39,6 +39,7 @@ export {
 	jalaliToSeason,
 	getWeekdayTehran,
 	todayTehran,
+	gregorianMonthLength,
 } from "./gregorianUtils";
 export {
 	gregorianToHijri,

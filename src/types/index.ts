@@ -26,7 +26,15 @@ export type TWeekStart = "sat" | "sun" | "mon";
 
 export type TEventRecord = Record<number, Record<number, TEventObject[]>>;
 
-export type TEventCategory = "official" | "historical" | "ancient" | "shia" | "sunni" | "global";
+export type TEventCategory =
+	| "government"
+	| "historical"
+	| "ancient"
+	| "shia"
+	| "sunni"
+	| "international"
+	| "united_nations"
+	| "religious";
 
 type Ttitle = {
 	fa: string;
@@ -34,7 +42,7 @@ type Ttitle = {
 };
 
 export type TEventObject = {
-	isHoliday: boolean;
+	isHolidayInIran: boolean;
 	categories: TEventCategory[];
 	title: Ttitle;
 };
@@ -134,7 +142,7 @@ export type TMonthGridCell = TJalali & {
 	isInCurrentMonth: boolean;
 	isToday: boolean;
 	isWeekend: boolean;
-	isHoliday: boolean;
+	isHolidayInIran: boolean;
 };
 
 export type TSuggestProvider = {

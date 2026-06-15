@@ -203,7 +203,7 @@ export default class CalendarBodyRender {
 				dayEl.addClass("persian-calendar__day--current");
 			}
 
-			if (cell.isHoliday || cell.isWeekend) {
+			if (cell.isHolidayInIran || cell.isWeekend) {
 				dayEl.addClass("persian-calendar__day--holiday");
 				dayEl
 					.querySelectorAll(

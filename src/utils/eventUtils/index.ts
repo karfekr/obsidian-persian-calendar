@@ -1,24 +1,41 @@
-import { JALALI_EVENTS, HIJRI_EVENTS, GREGORIAN_EVENTS } from "src/constants";
-import type {
-	TEventObject,
-	TDateFormat,
-	TShowEvents,
-	TEventRecord,
-	TLocal,
-	THijriBase,
-} from "src/types";
+import { getEvents, type CategoryType, type EventType } from "persian-holidays";
+import type { TEventObject, TDateFormat, TShowEvents, TLocal, THijriBase } from "src/types";
 import { dateToGregorian, dateToHijri, dateToJalali } from "src/utils/dateUtils";
 import { dashToDate } from "src/utils/dashUtils";
+import { setUmalquraEventAdapter } from "./eventAdapter";
 
-function getEventsFromRecord(record: TEventRecord, month: number, day: number): TEventObject[] {
-	return record[month]?.[day] ?? [];
+function buildCategories(showEvents: TShowEvents): CategoryType[] {
+	if (!showEvents) return [];
+
+	const map: Array<[boolean | undefined, CategoryType]> = [
+		[showEvents.showGlobalEvents, "international"],
+		[showEvents.showIROfficialEvents, "government"],
+		[showEvents.showShiaEvents, "shia"],
+		[showEvents.showSunniEvents, "sunni"],
+		[showEvents.showIRAncientEvents, "ancient"],
+		[showEvents.showIRHistoricalEvents, "historical"],
+	];
+
+	return map.filter(([flag]) => flag).map(([, cat]) => cat);
+}
+
+function uniqueEvents(events: EventType[]): EventType[] {
+	const seen = new Set<string>();
+
+	return events.filter((e) => {
+		const key = `${e.id}-${e.isHolidayInIran}`;
+
+		if (seen.has(key)) return false;
+		seen.add(key);
+		return true;
+	});
 }
 
 // (Date) => Events[]
 export function dateToEvents(
 	date: Date,
 	option?: { showEvents?: TShowEvents; hijriBase?: THijriBase },
-): TEventObject[] {
+): EventType[] {
 	const showEvents = option?.showEvents ?? {
 		showIROfficialEvents: false,
 		showIRHistoricalEvents: false,
@@ -27,52 +44,44 @@ export function dateToEvents(
 		showSunniEvents: false,
 		showGlobalEvents: false,
 	};
-	const hijriBase = option?.hijriBase ?? "iran";
 
-	const { jm, jd } = dateToJalali(date);
-	const { gm, gd } = dateToGregorian(date);
+	const categories = buildCategories(showEvents);
 
-	const jalaliEvents = getEventsFromRecord(JALALI_EVENTS, jm, jd).filter(
-		(event) =>
-			(event.categories.includes("official") && showEvents.showIROfficialEvents) ||
-			(event.categories.includes("historical") && showEvents.showIRHistoricalEvents) ||
-			(event.categories.includes("ancient") && showEvents.showIRAncientEvents),
-	);
-
-	const gregorianEvents = getEventsFromRecord(GREGORIAN_EVENTS, gm, gd).filter(
-		(event) => event.categories.includes("global") && showEvents.showGlobalEvents,
-	);
-
-	const { hm: officialHM, hd: officialHD } = dateToHijri(date);
-	const officialHijriEvents = getEventsFromRecord(HIJRI_EVENTS, officialHM, officialHD).filter(
-		(event) =>
-			(event.categories.includes("official") && showEvents.showIROfficialEvents) ||
-			(event.categories.includes("historical") && showEvents.showIRHistoricalEvents),
-	);
-
-	const { hm, hd } = dateToHijri(date, { base: hijriBase });
-	const religiousHijriEvents = getEventsFromRecord(HIJRI_EVENTS, hm, hd).filter(
-		(event) =>
-			(event.categories.includes("shia") && showEvents.showShiaEvents) ||
-			(event.categories.includes("sunni") && showEvents.showSunniEvents),
-	);
-
-	const allEvents = [
-		...jalaliEvents,
-		...gregorianEvents,
-		...officialHijriEvents,
-		...religiousHijriEvents,
-	];
-
-	const uniqueEventsMap = new Map<string, TEventObject>();
-	allEvents.forEach((event) => {
-		const key = event.title.fa;
-		if (!uniqueEventsMap.has(key)) {
-			uniqueEventsMap.set(key, event);
-		}
+	const { jy, jm, jd } = dateToJalali(date);
+	const jalaliEvents = getEvents("jalali", jm, jd, {
+		year: jy,
+		categories,
 	});
 
-	return Array.from(uniqueEventsMap.values());
+	const { hy, hm, hd } = dateToHijri(date);
+	const hijriBaseEvents = getEvents("hijri", hm, hd, {
+		year: hy,
+		categories,
+	});
+
+	let hijriEvents: EventType[] = hijriBaseEvents;
+
+	if (option?.hijriBase === "umalqura") {
+		const { hy, hm, hd } = dateToHijri(date, { base: "umalqura" });
+
+		const umalquraEvents = getEvents("hijri", hm, hd, {
+			year: hy,
+			categories,
+			adapter: setUmalquraEventAdapter(),
+			trueHolidays: false,
+		});
+
+		// merge + dedupe
+		hijriEvents = uniqueEvents([...hijriBaseEvents, ...umalquraEvents]);
+	}
+
+	const { gy, gm, gd } = dateToGregorian(date);
+	const gregorianEvents = getEvents("gregorian", gm, gd, {
+		year: gy,
+		categories,
+	});
+
+	return uniqueEvents([...jalaliEvents, ...hijriEvents, ...gregorianEvents]);
 }
 
 // (Date) => (is holiday?)true|false
@@ -87,7 +96,7 @@ export function checkHoliday(date: Date): boolean {
 	};
 
 	const events = dateToEvents(date, { showEvents });
-	return events.some((event) => event.isHoliday === true);
+	return events.some((event) => event.isHolidayInIran === true);
 }
 
 // ("jy-jm-jd"|"jyjmjd"|"gy-gm-gd"|"gygmgd") => Events[]
@@ -109,6 +118,6 @@ export function eventsToString(events: TEventObject[] | null, local: TLocal = "f
 	}
 
 	return events
-		.map((event) => "- " + event.title[local] + (event.isHoliday ? " (تعطیل)" : ""))
+		.map((event) => "- " + event.title[local] + (event.isHolidayInIran ? " (تعطیل)" : ""))
 		.join("\n");
 }

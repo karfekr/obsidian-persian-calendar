@@ -79,3 +79,7 @@ export function addDayDate(date: Date, days: number): Date {
 export function jalaliToSeason(jm: number): number {
 	return Math.ceil(jm / 3);
 }
+
+export function gregorianMonthLength(gy: number, gm: number) {
+	return new Date(gy, gm, 0).getDate();
+}

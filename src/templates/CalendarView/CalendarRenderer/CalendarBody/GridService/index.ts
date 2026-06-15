@@ -118,7 +118,7 @@ export default class GridService {
 			const gregorian = jalaliToGregorian(cellJy, cellJm, cellJd);
 			const hijri = jalaliToHijri(cellJy, cellJm, cellJd, { base: this.setting.hijriBase });
 
-			let isHoliday = false;
+			let isHolidayInIran = false;
 			let isWeekendFlag = false;
 
 			if (isInCurrentMonth) {
@@ -126,7 +126,7 @@ export default class GridService {
 				isWeekendFlag = this.isWeekend(dayOfWeek);
 
 				if (showHolidays && checkHoliday(date)) {
-					isHoliday = true;
+					isHolidayInIran = true;
 				}
 			}
 
@@ -146,7 +146,7 @@ export default class GridService {
 				isInCurrentMonth,
 				isToday,
 				isWeekend: isWeekendFlag,
-				isHoliday,
+				isHolidayInIran,
 				date,
 				gregorian,
 				hijri,

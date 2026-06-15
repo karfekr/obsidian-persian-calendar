@@ -246,7 +246,7 @@ pcApi.hijriToJalali(1448, 6, 24, { base: "umalqura" }); // {jy: 1405, jm: 9, jd:
 
 // Events
 pcApi.checkHoliday(new Date()); // Is it a holiday? true/false
-pcApi.dateToEvents(new Date()); // Array of {title(fa/en), categories, isHoliday}
+pcApi.dateToEvents(new Date()); // Array of {title(fa/en), categories, isHolidayInIran}
 pcApi.dateToEvents(new Date(), { base: "umalqura" }); // With Umm al-Qura basis
 ```
 

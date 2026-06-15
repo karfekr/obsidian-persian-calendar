@@ -16,6 +16,8 @@ import { dateToJalali, todayTehran } from "./utils/dateUtils";
 import type { TSetting } from "./types";
 import { onLocalChange, setLocal, t } from "./i18n";
 import { DatePicker } from "src/components";
+import { createEventAdapter } from "./utils/eventUtils/eventAdapter";
+import { setAdapter } from "persian-holidays";
 
 export default class PersianCalendarPlugin extends Plugin {
 	// Core properties
@@ -47,14 +49,15 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		setLocal(this.setting.language);
 
+		setAdapter(createEventAdapter());
+
 		// Initialize api service
 		this.apiService = new ApiService();
 
 		// Initialize note service
 		this.noteService = new NoteService(this.app, this);
 
-		// Handle startup operations
-		void this.handleStartup();
+		void this.openDailyNoteOnStartup();
 
 		// Register calendar view
 		this.registerView("persian-calendar", (leaf) => new CalendarView(leaf, this.app, this));
@@ -111,7 +114,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		this.versionChecker = new VersionChecker(this);
 	}
 
-	private async handleStartup() {
+	private async openDailyNoteOnStartup() {
 		if (this.setting.openDailyNoteOnStartup) {
 			const now = todayTehran();
 			const { jy, jm, jd } = dateToJalali(now);
