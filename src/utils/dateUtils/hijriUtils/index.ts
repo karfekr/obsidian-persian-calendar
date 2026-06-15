@@ -58,4 +58,4 @@ export const hijriToJalali = (
 	return gregorianToJalali(gy, gm, gd);
 };
 
-export { gregorianToHijri, hijriMonthLength,hijriToGregorian };
+export { gregorianToHijri, hijriMonthLength, hijriToGregorian };

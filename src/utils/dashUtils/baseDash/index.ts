@@ -55,9 +55,6 @@ export function gregorianDashToJalaliDash(
 	const gd = dayProps.day;
 
 	const date = gregorianToDate(gy, gm, gd);
-
-	if (!date) return null;
-
 	const { jy, jm, jd } = dateToJalali(date);
 
 	return toDayFormat(jy, jm, jd, { separator });
@@ -105,8 +102,6 @@ export function gregorianDashToJalali(dashDate: string): TJalali | null {
 	const gm = dayProps.month;
 	const gd = dayProps.day;
 
-	if (!gregorianToDate(gy, gm, gd)) return null;
-
 	return gregorianToJalali(gy, gm, gd);
 }
 
@@ -119,8 +114,6 @@ export function gregorianDashToDate(dashDate: string): Date | null {
 	const gd = dayProps.day;
 
 	const date = gregorianToDate(gy, gm, gd);
-
-	if (!date) return null;
 
 	return date;
 }

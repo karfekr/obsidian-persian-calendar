@@ -1,20 +1,15 @@
-import type { App } from "obsidian";
 import { SocialLinks } from "src/components";
 import { t } from "src/i18n";
-import type PersianCalendarPlugin from "src/main";
 
 import { SettingBase } from "./SettingBase";
 
 export default class CalendarSetting extends SettingBase {
 	protected render(): void {
+		// eslint-disable-next-line @typescript-eslint/no-deprecated
 		this.display();
 	}
 
 	icon = "calendar-heart";
-
-	constructor(app: App, plugin: PersianCalendarPlugin) {
-		super(app, plugin);
-	}
 
 	display() {
 		const { containerEl } = this;

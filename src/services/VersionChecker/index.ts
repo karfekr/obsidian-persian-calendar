@@ -48,7 +48,7 @@ export default class VersionChecker {
 
 		new UpdateModal(this.plugin.app, this.plugin.setting, releaseNotes, () => {
 			this.plugin.setting.lastSeenVersion = currentVersion;
-			this.plugin.saveSetting();
+			void this.plugin.saveSetting();
 		}).open();
 	}
 
@@ -77,7 +77,7 @@ export default class VersionChecker {
 
 		new UpdateModal(this.plugin.app, this.plugin.setting, releaseNotes, () => {
 			this.plugin.setting.lastSeenVersion = currentVersion;
-			this.plugin.saveSetting();
+			void this.plugin.saveSetting();
 		}).open();
 	}
 }

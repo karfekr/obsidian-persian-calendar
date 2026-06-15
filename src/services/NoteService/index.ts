@@ -1,5 +1,5 @@
-import { App, MarkdownView,TFile } from "obsidian";
-import { createNoteModal } from "src/components";
+import { App, MarkdownView, TFile } from "obsidian";
+import { createNoteModal, Notice } from "src/components";
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
 import type { TLocal, TPathTokenContext } from "src/types";
@@ -22,11 +22,11 @@ export default class NoteService {
 		let result = path;
 		const { jy, jm } = ctx;
 
-		if (jy != null) {
+		if (jy) {
 			result = result.replace(/jYYYY/g, String(jy));
 		}
 
-		if (jm != null) {
+		if (jm) {
 			const monthName = JALALI_MONTHS_NAME[local][jm];
 
 			result = result
@@ -36,11 +36,11 @@ export default class NoteService {
 		}
 
 		let { season } = ctx;
-		if (season == null && jm != null) {
+		if (!season && jm) {
 			season = jalaliToSeason(jm);
 		}
 
-		if (season != null) {
+		if (season) {
 			const seasonName = SEASONS_NAME["fa"][season];
 
 			result = result
@@ -116,7 +116,7 @@ export default class NoteService {
 				await this.app.vault.modify(file, templateContent);
 			}
 		} catch (error) {
-			console.error(`Error applying template for ${noteType} note:`, error);
+			Notice(`Error applying template for ${noteType}: ${error}`);
 		}
 	}
 
@@ -176,11 +176,11 @@ export default class NoteService {
 				await this.openNoteInWorkspace(createdFile);
 			}
 		} catch (error) {
-			console.error("Error creating note:", error);
+			Notice(`Error creating note: ${error}`);
 		}
 	}
 
-	public async getWeeksWithNotes(jy: number): Promise<number[]> {
+	public getWeeksWithNotes(jy: number): number[] {
 		const notesLocation = this.plugin.setting.weeklyNotesPath;
 		const result: number[] = [];
 
@@ -197,7 +197,7 @@ export default class NoteService {
 		return result;
 	}
 
-	public async getSeasonsWithNotes(jy: number): Promise<number[]> {
+	public getSeasonsWithNotes(jy: number): number[] {
 		const notesLocation = this.plugin.setting.seasonalNotesPath;
 		const result: number[] = [];
 
@@ -217,7 +217,7 @@ export default class NoteService {
 		return result;
 	}
 
-	public async getDaysWithNotes(jy: number, jm: number): Promise<number[]> {
+	public getDaysWithNotes(jy: number, jm: number): number[] {
 		const notesLocation = this.plugin.setting.dailyNotesPath;
 		const result: number[] = [];
 		const daysInMonth = jalaliMonthLength(jy, jm);

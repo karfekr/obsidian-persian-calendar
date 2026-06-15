@@ -1,6 +1,6 @@
-import { DatePicker,Notice } from "src/components";
+import { DatePicker, Notice } from "src/components";
 import { dailyInTextRegex } from "src/constants";
-import { getDirection, onLocalChange,t } from "src/i18n";
+import { getDirection, onLocalChange, t } from "src/i18n";
 import type PersianCalendarPlugin from "src/main";
 import {
 	addDayDate,
@@ -35,7 +35,9 @@ export default class CommandRegistry {
 	}
 
 	private unregisterAll() {
-		this.unregisterCallbacks.forEach((fn) => { fn(); });
+		this.unregisterCallbacks.forEach((fn) => {
+			fn();
+		});
 		this.unregisterCallbacks = [];
 	}
 
@@ -149,7 +151,7 @@ export default class CommandRegistry {
 			name: t("command.insert"),
 			editorCallback: (editor) => {
 				const cursor = editor.getCursor();
-				const line = editor.getLine(cursor.line) ?? "";
+				const line = editor.getLine(cursor.line);
 
 				const match = line.match(dailyInTextRegex);
 				const initial = match?.[0] ?? null;

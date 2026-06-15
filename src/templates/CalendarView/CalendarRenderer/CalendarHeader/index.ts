@@ -17,7 +17,7 @@ export default class CalendarHeaderRender {
 		private readonly navigation: CalendarNavigation,
 	) {}
 
-	public async render(containerEl: HTMLElement) {
+	public render(containerEl: HTMLElement) {
 		const headerEl = containerEl.createEl("div", { cls: "persian-calendar__header" });
 
 		const { jYearState, jMonthState } = this.calendarState.getJState();
@@ -94,7 +94,9 @@ export default class CalendarHeaderRender {
 			cls: "persian-calendar__arrow",
 		});
 		setIcon(prevMonthArrow, "square-chevron-right");
-		prevMonthArrow.addEventListener("click", () => { this.navigation.changeMonth("prev"); });
+		prevMonthArrow.addEventListener("click", () => {
+			this.navigation.changeMonth("prev");
+		});
 
 		const todayButton = navContainerEl.createEl("span", { cls: "persian-calendar__go-today" });
 		todayButton.textContent = t("today");
@@ -106,6 +108,8 @@ export default class CalendarHeaderRender {
 			cls: "persian-calendar__arrow",
 		});
 		setIcon(nextMonthArrow, "square-chevron-left");
-		nextMonthArrow.addEventListener("click", () => { this.navigation.changeMonth("next"); });
+		nextMonthArrow.addEventListener("click", () => {
+			this.navigation.changeMonth("next");
+		});
 	}
 }

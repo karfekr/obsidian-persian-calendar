@@ -40,13 +40,8 @@ export function dateToWeekdayName(date: Date, local: TLocal = "fa"): string {
 }
 
 export function getWeekdayTehran(date: Date): number {
-	const parts = new Intl.DateTimeFormat("en-US", {
-		timeZone: TEHRAN_TZ,
-		weekday: "short",
-	}).formatToParts(date);
-
-	const day = parts.find((p) => p.type === "weekday")!.value;
-	return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(day);
+	const tehranDate = new Date(date.toLocaleString("en-US", { timeZone: TEHRAN_TZ }));
+	return tehranDate.getDay();
 }
 
 export const weekStartNumber = (weekStart: TWeekStart): number =>

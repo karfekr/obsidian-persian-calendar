@@ -29,8 +29,8 @@
 > در پیاده‌سازی معماری این پروژه از معماری پلاگین‌های موفقی همچون
 > [notebook-navigator](https://github.com/johansan/notebook-navigator) و
 > [Templater](https://github.com/SilentVoid13/Templater) و
-> [Journals](https://github.com/srg-kostyrko/obsidian-journal) استفاده کردیم. اگر مایلید این
-> ساختار را بهبود ببخشید، پیش از هر کاری با ما مشورت کنید.
+> [Journals](https://github.com/srg-kostyrko/obsidian-journal) استفاده کردیم. اگر مایلید این ساختار
+> را بهبود ببخشید، پیش از هر کاری با ما مشورت کنید.
 
 > تمام قالب‌های مربوط به فرمت کد توسط **editorconfig** و **prettierrc** و **eslintrc** و… مشخص
 > شده‌اند. از شما درخواست می‌کنیم **این چهارچوب را تغییر ندهید** و کد خود را با همان استانداردها

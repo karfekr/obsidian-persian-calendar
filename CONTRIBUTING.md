@@ -22,7 +22,8 @@ If you would like to join us in developing this plugin, please read the followin
 1. **Fork** the repository.
 2. Create a **branch** with a clear name (e.g., `fix/calendar-header` or `feature/shortcut`).
 3. Apply your changes and write small, meaningful commits.
-4. Specify the version via `git tag` and the `manifest.json` file, and run the command `pnpm run version`.
+4. Specify the version via `git tag` and the `manifest.json` file, and run the command
+   `pnpm run version`.
 5. Finally, open a Pull Request and describe precisely what problem it solves in the description.
 
 > The architecture of this project is inspired by successful plugins such as
@@ -46,15 +47,15 @@ following path:
 **Learn TypeScript**: [I recommend this video](https://www.youtube.com/watch?v=BCg4U1FzODs)
 
 **Get familiar with the structure of Obsidian plugins**:
-   [I recommend this video](https://www.youtube.com/watch?v=AgXa03ZxJ88)
+[I recommend this video](https://www.youtube.com/watch?v=AgXa03ZxJ88)
 
-**Understand the basic functions of this plugin**: You can learn about these functions by
-   referring to [this note](src/utils/README.md) and use them in development.
+**Understand the basic functions of this plugin**: You can learn about these functions by referring
+to [this note](src/utils/README.md) and use them in development.
 
 **For challenges**: You can refer to the
-   [official Obsidian plugin development documentation](https://docs.obsidian.md) or get help from
-   language models like [Claude](https://claude.ai), [ChatGPT](https://chatgpt.com),
-   [Gemini](https://gemini.google.com), and [DeepSeek](https://chat.deepseek.com).
+[official Obsidian plugin development documentation](https://docs.obsidian.md) or get help from
+language models like [Claude](https://claude.ai), [ChatGPT](https://chatgpt.com),
+[Gemini](https://gemini.google.com), and [DeepSeek](https://chat.deepseek.com).
 
 ## Communication
 

@@ -1,13 +1,12 @@
-import { type CategoryType, type EventType,getEvents } from "persian-holidays";
-import type { TDateFormat, TEventObject, THijriBase,TLocal, TShowEvents } from "src/types";
+import type { CategoryType, EventType } from "persian-holidays";
+import { getEvents } from "persian-holidays";
+import type { TDateFormat, TEventObject, THijriBase, TLocal, TShowEvents } from "src/types";
 import { dashToDate } from "src/utils/dashUtils";
 import { dateToGregorian, dateToHijri, dateToJalali } from "src/utils/dateUtils";
 
 import { setUmalquraEventAdapter } from "./eventAdapter";
 
 function buildCategories(showEvents: TShowEvents): CategoryType[] {
-	if (!showEvents) return [];
-
 	const map: [boolean | undefined, CategoryType][] = [
 		[showEvents.showGlobalEvents, "international"],
 		[showEvents.showIROfficialEvents, "government"],
@@ -119,6 +118,6 @@ export function eventsToString(events: TEventObject[] | null, local: TLocal = "f
 	}
 
 	return events
-		.map((event) => `- ${  event.title[local]  }${event.isHolidayInIran ? " (تعطیل)" : ""}`)
+		.map((event) => `- ${event.title[local]}${event.isHolidayInIran ? " (تعطیل)" : ""}`)
 		.join("\n");
 }

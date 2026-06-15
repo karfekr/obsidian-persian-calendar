@@ -9,7 +9,6 @@ export default class Tooltip {
 
 	private getOrCreateTooltip(local: TLocal): { wrapper: HTMLElement; tooltip: HTMLElement } {
 		let wrapper = activeDocument.querySelector<HTMLElement>(this.tooltipWrapperSelector);
-		let tooltip: HTMLElement | null = null;
 
 		if (!wrapper) {
 			wrapper = activeDocument.createElement("div");
@@ -20,7 +19,7 @@ export default class Tooltip {
 		const dir = local === "fa" ? "rtl" : "ltr";
 		wrapper.setAttribute("dir", dir);
 
-		tooltip = wrapper.querySelector(this.tooltipSelector);
+		let tooltip = wrapper.querySelector<HTMLElement>(this.tooltipSelector);
 		if (!tooltip) {
 			tooltip = activeDocument.createElement("div");
 			tooltip.className = "persian-calendar__tooltip";
@@ -54,10 +53,12 @@ export default class Tooltip {
 			x = e.pageX;
 			y = e.pageY;
 		} else if (Platform.isMobile && e.type === "touchstart") {
-			x = e.touches[0]?.pageX;
-			y = e.touches[0]?.pageY;
+			x = e.touches[0].pageX;
+			y = e.touches[0].pageY;
 
-			const hideOnTouch = () => { this.hideTooltip(); };
+			const hideOnTouch = () => {
+				this.hideTooltip();
+			};
 
 			window.setTimeout(() => {
 				activeDocument.addEventListener("touchstart", hideOnTouch, { once: true });
@@ -96,10 +97,8 @@ export default class Tooltip {
 		if (!wrapper) return;
 
 		const tooltip = wrapper.querySelector(this.tooltipSelector) as HTMLElement;
-		if (tooltip) {
-			tooltip.setCssProps({
-				display: "none",
-			});
-		}
+		tooltip.setCssProps({
+			display: "none",
+		});
 	}
 }

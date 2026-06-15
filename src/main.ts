@@ -1,4 +1,4 @@
-import { App, Plugin, type PluginManifest, setIcon,WorkspaceLeaf } from "obsidian";
+import { App, Plugin, type PluginManifest, setIcon, WorkspaceLeaf } from "obsidian";
 import { setAdapter } from "persian-holidays";
 import { DatePicker } from "src/components";
 
@@ -80,10 +80,12 @@ export default class PersianCalendarPlugin extends Plugin {
 			subtree: true,
 		});
 
-		this.register(() => { observer.disconnect(); });
+		this.register(() => {
+			observer.disconnect();
+		});
 
 		// Call parent onload
-		void super.onload?.();
+		void super.onload();
 
 		// Register editor suggester
 		this.dateSuggester = new SmartDateLinker(this);
@@ -104,9 +106,6 @@ export default class PersianCalendarPlugin extends Plugin {
 		await this.versionChecker.checkForVersionUpdate();
 
 		this.api = this.apiService.build();
-
-		// @ts-ignore
-		this.app.plugins.plugins[this.manifest.id].api = this.api;
 	}
 
 	private initializeServices() {
@@ -174,11 +173,12 @@ export default class PersianCalendarPlugin extends Plugin {
 	}
 
 	async loadSetting() {
-		this.setting = { ...DEFAULT_SETTING, ...await this.loadData()};
+		const data = (await this.loadData()) as Partial<TSetting> | null;
+		this.setting = { ...DEFAULT_SETTING, ...(data || {}) };
 	}
 
-	saveSetting() {
-		this.saveData(this.setting);
+	async saveSetting() {
+		await this.saveData(this.setting);
 	}
 
 	async activateView(): Promise<WorkspaceLeaf | null> {
@@ -205,12 +205,14 @@ export default class PersianCalendarPlugin extends Plugin {
 		const leaves = this.app.workspace.getLeavesOfType("persian-calendar");
 		leaves.forEach((leaf) => {
 			if (leaf.view instanceof CalendarView) {
-				void leaf.view.render();
+				leaf.view.render();
 			}
 		});
 	}
 
 	onunload() {
-		this.app.workspace.getLeavesOfType("persian-calendar").forEach((leaf) => { leaf.detach(); });
+		this.app.workspace.getLeavesOfType("persian-calendar").forEach((leaf) => {
+			leaf.detach();
+		});
 	}
 }

@@ -1,4 +1,4 @@
-import { debounce,TAbstractFile, TFile, TFolder } from "obsidian";
+import { debounce, TAbstractFile, TFile, TFolder } from "obsidian";
 import type PersianCalendarPlugin from "src/main";
 import CalendarView from "src/templates/CalendarView";
 
@@ -66,7 +66,7 @@ export default class EventManager {
 
 			leaves.forEach((leaf) => {
 				if (leaf.view instanceof CalendarView) {
-					void leaf.view.refreshCalendar();
+					leaf.view.refreshCalendar();
 				}
 			});
 		}, 50);

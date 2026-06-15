@@ -11,4 +11,4 @@ export {
 	isWeekFormat,
 	isYearFormat,
 } from "./formatExtractor";
-export { toArNumber, toEnNumber,toFaNumber } from "./numberConverter";
+export { toArNumber, toEnNumber, toFaNumber } from "./numberConverter";

@@ -28,7 +28,7 @@ export default class Suggestion extends EditorSuggest<string> {
 	}
 
 	onTrigger(cursor: EditorPosition, editor: Editor): EditorSuggestContext | null {
-		const line = editor.getLine(cursor.line)?.substring(0, cursor.ch) ?? "";
+		const line = editor.getLine(cursor.line).substring(0, cursor.ch);
 
 		for (const provider of this.providers) {
 			const match = line.match(provider.trigger);

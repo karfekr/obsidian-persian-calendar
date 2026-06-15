@@ -3,11 +3,11 @@ import { JALALI_MONTHS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { t } from "src/i18n";
 import type { TDateFormat, TJalali, TSetting } from "src/types";
 import {
-	gregorianToJalali,
-	jalaliToGregorian,
-	jalaliMonthLength,
-	gregorianToDate,
 	dateToJalali,
+	gregorianToDate,
+	gregorianToJalali,
+	jalaliMonthLength,
+	jalaliToGregorian,
 	todayTehran,
 } from "src/utils/dateUtils";
 import { extractDayFormat, toDayFormat, toFaNumber } from "src/utils/formatters";
@@ -72,17 +72,17 @@ export default class DatePicker extends Modal {
 		this.render();
 	}
 
-	private getYear(year: number) {
-		return this.setting.language === "fa" ? toFaNumber(year) : year;
+	private getYear(year: number): string {
+		return this.setting.language === "fa" ? toFaNumber(year) : String(year);
 	}
 
 	private getMonthName(month: number): string {
-		const language = this.setting?.language ?? "fa";
+		const language = this.setting.language;
 		return JALALI_MONTHS_NAME[language][month];
 	}
 
 	private getWeekdayLetters(): string[] {
-		const language = this.setting?.language ?? "fa";
+		const language = this.setting.language;
 		const weekdaysMap = WEEKDAYS_NAME[language];
 		const letters: string[] = [];
 
@@ -119,14 +119,18 @@ export default class DatePicker extends Modal {
 		// Previous year button
 		const prevYearButton = header.createEl("button", { cls: "persian-calendar__datepicker-arrow" });
 		setIcon(prevYearButton, "chevrons-right");
-		prevYearButton.onclick = () => this.shiftYear(-1);
+		prevYearButton.onclick = () => {
+			this.shiftYear(-1);
+		};
 
 		// Previous month button
 		const prevMonthButton = header.createEl("button", {
 			cls: "persian-calendar__datepicker-arrow",
 		});
 		setIcon(prevMonthButton, "chevron-right");
-		prevMonthButton.onclick = () => this.shiftMonth(-1);
+		prevMonthButton.onclick = () => {
+			this.shiftMonth(-1);
+		};
 
 		// Month and year title
 		header.createEl("span", {
@@ -139,12 +143,16 @@ export default class DatePicker extends Modal {
 			cls: "persian-calendar__datepicker-arrow",
 		});
 		setIcon(nextMonthButton, "chevron-left");
-		nextMonthButton.onclick = () => this.shiftMonth(1);
+		nextMonthButton.onclick = () => {
+			this.shiftMonth(1);
+		};
 
 		// Next year button
 		const nextYearButton = header.createEl("button", { cls: "persian-calendar__datepicker-arrow" });
 		setIcon(nextYearButton, "chevrons-left");
-		nextYearButton.onclick = () => this.shiftYear(1);
+		nextYearButton.onclick = () => {
+			this.shiftYear(1);
+		};
 	}
 
 	private renderCalendarGrid(container: HTMLElement) {
@@ -210,7 +218,9 @@ export default class DatePicker extends Modal {
 				text: toFaNumber(day),
 				cls: classList.join(" "),
 			});
-			dayButton.onclick = () => this.selectDay(day);
+			dayButton.onclick = () => {
+				this.selectDay(day);
+			};
 		}
 
 		// Render next month's leading days
@@ -232,19 +242,25 @@ export default class DatePicker extends Modal {
 			cls: `persian-calendar__output-option ${this.outputMode === "jalali" ? "active" : ""}`,
 			text: "شمسی",
 		});
-		jalaliOption.onclick = () => this.setOutputMode("jalali");
+		jalaliOption.onclick = () => {
+			this.setOutputMode("jalali");
+		};
 
 		const gregorianOption = toggle.createEl("div", {
 			cls: `persian-calendar__output-option ${this.outputMode === "gregorian" ? "active" : ""}`,
 			text: "میلادی",
 		});
-		gregorianOption.onclick = () => this.setOutputMode("gregorian");
+		gregorianOption.onclick = () => {
+			this.setOutputMode("gregorian");
+		};
 
 		const todayButton = footer.createEl("button", {
 			text: t("today"),
 			cls: "persian-calendar__go-today",
 		});
-		todayButton.onclick = () => this.goToToday();
+		todayButton.onclick = () => {
+			this.goToToday();
+		};
 	}
 
 	private setOutputMode(mode: TDateFormat) {
@@ -293,7 +309,8 @@ export default class DatePicker extends Modal {
 	}
 
 	private shiftYear(delta: number) {
-		let { jy: year, jm: month, jd: day } = this.currentJalali;
+		let { jy: year, jd: day } = this.currentJalali;
+		const { jm: month } = this.currentJalali;
 
 		year += delta;
 

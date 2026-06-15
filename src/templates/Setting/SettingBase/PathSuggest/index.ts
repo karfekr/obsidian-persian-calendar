@@ -1,4 +1,4 @@
-import { AbstractInputSuggest,App } from "obsidian";
+import { AbstractInputSuggest, App } from "obsidian";
 
 export type PathSuggestMode = "folder" | "file" | "md-file";
 

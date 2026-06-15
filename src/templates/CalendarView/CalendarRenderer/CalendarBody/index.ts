@@ -4,7 +4,7 @@ import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { getDirection, t } from "src/i18n";
 import { NoteService } from "src/services";
 import CalendarState from "src/templates/CalendarView/CalendarState";
-import type { TLocal,TSetting } from "src/types";
+import type { TLocal, TSetting } from "src/types";
 import { jalaliToSeason } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 import { toArNumber, toFaNumber } from "src/utils/formatters";
@@ -28,19 +28,19 @@ export default class CalendarBodyRender {
 		this.gridService = new GridService(calendarState, setting);
 	}
 
-	public async renderContent(contentEl: HTMLElement, local: TLocal = "fa") {
+	public renderContent(contentEl: HTMLElement, _local: TLocal = "fa") {
 		const { jYearState, jMonthState } = this.calendarState.getJState();
-		await this.renderWeekNumbers(contentEl, { jy: jYearState, jm: jMonthState });
-		await this.renderDaysGrid(contentEl, { jy: jYearState, jm: jMonthState });
+		this.renderWeekNumbers(contentEl, { jy: jYearState, jm: jMonthState });
+		this.renderDaysGrid(contentEl, { jy: jYearState, jm: jMonthState });
 	}
 
-	public async renderSeasonalNotesRow(containerEl: HTMLElement, local: TLocal = "fa") {
+	public renderSeasonalNotesRow(containerEl: HTMLElement, local: TLocal = "fa") {
 		const seasonsRow = containerEl.createEl("div", { cls: "persian-calendar__seasons-row" });
 		const { jYearState, jMonthState } = this.calendarState.getJState();
 
 		const seasonState = jalaliToSeason(jMonthState);
 
-		const seasonsWithNotes = await this.notesService.getSeasonsWithNotes(jYearState);
+		const seasonsWithNotes = this.notesService.getSeasonsWithNotes(jYearState);
 		const seasons = SEASONS_NAME[local];
 
 		for (let seasonNumber = 1; seasonNumber <= 4; seasonNumber++) {
@@ -62,7 +62,7 @@ export default class CalendarBodyRender {
 		}
 	}
 
-	private async renderWeekNumbers(contentEl: HTMLElement, jalaliDate: { jy: number; jm: number }) {
+	private renderWeekNumbers(contentEl: HTMLElement, jalaliDate: { jy: number; jm: number }) {
 		let weekNumbersEl = contentEl.querySelector(".persian-calendar__week-numbers");
 		if (weekNumbersEl) {
 			weekNumbersEl.remove();
@@ -90,7 +90,7 @@ export default class CalendarBodyRender {
 		contentEl.style.setProperty("--persian-calendar-weeks-count", String(weeksCount));
 
 		const weekNumbers = this.calendarState.getWeekNumbersForMonth(jy, jm);
-		const weeksWithNotes = await this.notesService.getWeeksWithNotes(jy);
+		const weeksWithNotes = this.notesService.getWeeksWithNotes(jy);
 
 		for (let i = 0; i < weekNumbers.length; i++) {
 			const weekNumber = weekNumbers[i];
@@ -110,7 +110,7 @@ export default class CalendarBodyRender {
 		}
 	}
 
-	private async renderDaysGrid(contentEl: HTMLElement, jalaliDate: { jy: number; jm: number }) {
+	private renderDaysGrid(contentEl: HTMLElement, jalaliDate: { jy: number; jm: number }) {
 		const weekdaysHeader = contentEl.createEl("div", {
 			cls: "persian-calendar__weekday--container",
 		});
@@ -126,7 +126,7 @@ export default class CalendarBodyRender {
 			headerCell.textContent = shortName;
 		}
 
-		const daysWithNotesArray = await this.notesService.getDaysWithNotes(jy, jm);
+		const daysWithNotesArray = this.notesService.getDaysWithNotes(jy, jm);
 		const daysWithNotes = new Set(daysWithNotesArray);
 
 		const cells = this.gridService.buildMonthGrid(jy, jm);
@@ -143,7 +143,9 @@ export default class CalendarBodyRender {
 			};
 
 			dayEl.addEventListener("mouseenter", handler);
-			dayEl.addEventListener("mouseleave", () => { this.tooltip.hideTooltip(); });
+			dayEl.addEventListener("mouseleave", () => {
+				this.tooltip.hideTooltip();
+			});
 
 			dayEl.addEventListener(
 				"touchstart",
@@ -152,8 +154,12 @@ export default class CalendarBodyRender {
 				},
 				{ passive: true },
 			);
-			dayEl.addEventListener("touchend", () => { this.tooltip.hideTooltip(); });
-			dayEl.addEventListener("touchcancel", () => { this.tooltip.hideTooltip(); });
+			dayEl.addEventListener("touchend", () => {
+				this.tooltip.hideTooltip();
+			});
+			dayEl.addEventListener("touchcancel", () => {
+				this.tooltip.hideTooltip();
+			});
 		};
 
 		let gridEl = contentEl.querySelector(".persian-calendar__days");
@@ -182,19 +188,17 @@ export default class CalendarBodyRender {
 
 			if (cell.isInCurrentMonth) {
 				if (showGeorgianDates) {
-					const cls =
-						showGeorgianDates && showHijriDates
-							? "persian-calendar__gregorian-day--corner"
-							: "persian-calendar__gregorian-day--center";
+					const cls = showHijriDates
+						? "persian-calendar__gregorian-day--corner"
+						: "persian-calendar__gregorian-day--center";
 					const georgianDateEl = dayEl.createEl("div", { cls });
 					georgianDateEl.textContent = cell.gregorian.gd.toString();
 				}
 
 				if (showHijriDates) {
-					const cls =
-						showGeorgianDates && showHijriDates
-							? "persian-calendar__hijri-day--corner"
-							: "persian-calendar__hijri-day--center";
+					const cls = showGeorgianDates
+						? "persian-calendar__hijri-day--corner"
+						: "persian-calendar__hijri-day--center";
 					const hijriDateEl = dayEl.createEl("div", { cls });
 					hijriDateEl.textContent = toArNumber(cell.hijri.hd);
 				}
@@ -217,7 +221,7 @@ export default class CalendarBodyRender {
 
 			dayEl.classList.add("persian-calendar__day-grid");
 
-			dayEl.setAttr?.("data-day", cell.jd.toString());
+			dayEl.setAttr("data-day", cell.jd.toString());
 
 			dayEl.addEventListener("click", () => {
 				void this.notesService.openOrCreateDailyNote(cell.jy, cell.jm, cell.jd);

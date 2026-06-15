@@ -156,7 +156,6 @@ export function jalaliMonthToRangeDash(
 
 	if (first.month === last.month) {
 		return `${first.monthName} ${first.year}`;
-	} 
-		return `${first.monthName} - ${last.monthName} ${last.year}`;
-	
+	}
+	return `${first.monthName} - ${last.monthName} ${last.year}`;
 }

@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting as ObsidianSettings } from "obsidian";
 import { onLocalChange, setLocal } from "src/i18n";
 import PersianCalendarPlugin from "src/main";
-import type { TBoolSettingKeys, TLocal,TSetting } from "src/types";
+import type { TBoolSettingKeys, TLocal, TSetting } from "src/types";
 
 import PathSuggest from "./PathSuggest";
 
@@ -49,7 +49,7 @@ export abstract class SettingBase extends PluginSettingTab {
 					.onChange((value) => {
 						(this.plugin.setting[settingKey] as string) = value;
 
-						this.plugin.saveSetting();
+						void this.plugin.saveSetting();
 					});
 
 				new PathSuggest(this.app, text.inputEl, opts?.mode ?? "folder");
@@ -71,7 +71,7 @@ export abstract class SettingBase extends PluginSettingTab {
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.setting[opts.key]).onChange((value) => {
 					this.plugin.setting[opts.key] = value;
-					this.plugin.saveSetting();
+					void this.plugin.saveSetting();
 					if (opts.refresh) {
 						this.plugin.refreshViews();
 					}
@@ -94,12 +94,14 @@ export abstract class SettingBase extends PluginSettingTab {
 			.setName(opts.name)
 			.setDesc(opts.desc ?? "")
 			.addDropdown((dropdown) => {
-				Object.entries(opts.options).forEach(([value, label]) => dropdown.addOption(value, label));
+				for (const [value, label] of Object.entries(opts.options)) {
+					dropdown.addOption(value, label);
+				}
 
-				dropdown.setValue(this.plugin.setting[opts.key] ?? opts.defaultValue).onChange((value) => {
+				dropdown.setValue(this.plugin.setting[opts.key]).onChange((value) => {
 					(this.plugin.setting[opts.key] as string) = value;
 
-					this.plugin.saveSetting();
+					void this.plugin.saveSetting();
 
 					if (opts.key === "language") {
 						setLocal(value as TLocal);

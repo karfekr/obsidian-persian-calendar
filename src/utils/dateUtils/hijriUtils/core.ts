@@ -4,7 +4,7 @@ import {
 	IslamicUmalquraCalendar,
 	toCalendar,
 } from "@internationalized/date";
-import { IRAN_HIJRI_ANCHOR,IRAN_HIJRI_MONTHS } from "src/constants";
+import { IRAN_HIJRI_ANCHOR, IRAN_HIJRI_MONTHS } from "src/constants";
 import type { TGregorian, THijri, THijriBase } from "src/types";
 
 const HIJRI_MONTH_MAP = buildHijriMonthMap(IRAN_HIJRI_MONTHS);

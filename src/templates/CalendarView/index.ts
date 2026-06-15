@@ -1,7 +1,7 @@
-import { App, View,WorkspaceLeaf } from "obsidian";
+import { App, View, WorkspaceLeaf } from "obsidian";
 import PersianCalendarPlugin from "src/main";
 import { NoteService } from "src/services";
-import type { TJalali,TSetting } from "src/types";
+import type { TJalali, TSetting } from "src/types";
 import { dateToJalali, todayTehran } from "src/utils/dateUtils";
 
 import CalendarRenderer from "./CalendarRenderer";
@@ -51,26 +51,23 @@ export default class CalendarView extends View {
 
 	async onOpen() {
 		this.startDailyCheckInterval();
-		await this.render();
+		this.render();
 	}
 
 	async onClose() {
 		this.stopDailyCheckInterval();
 	}
 
-	public async render() {
-		await this.calendarRenderer.render();
+	public render() {
+		this.calendarRenderer.render();
 	}
 
 	public async goToToday() {
 		await this.calendarNavigation.goToToday();
 	}
 
-	public async refreshCalendar() {
-		if (!this.containerEl) {
-			return;
-		}
-		await this.render();
+	public refreshCalendar() {
+		this.render();
 	}
 
 	private startDailyCheckInterval() {
@@ -83,7 +80,7 @@ export default class CalendarView extends View {
 				today.jd !== this.lastCheckedDate.jd
 			) {
 				this.lastCheckedDate = today;
-				void this.render();
+				this.render();
 			}
 		}, 60 * 1000);
 	}

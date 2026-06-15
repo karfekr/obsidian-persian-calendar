@@ -4,7 +4,7 @@ import {
 	PersianCalendar,
 	toCalendar,
 } from "@internationalized/date";
-import type { TGetDayOfWeek, TGregorian, THijriBase,TJalali, TWeekStart } from "src/types";
+import type { TGetDayOfWeek, TGregorian, THijriBase, TJalali, TWeekStart } from "src/types";
 
 import {
 	dateToGregorian,

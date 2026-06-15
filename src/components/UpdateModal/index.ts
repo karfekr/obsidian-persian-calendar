@@ -40,7 +40,7 @@ export default class UpdateModal extends Modal {
 			});
 
 			const changesArray = note.changes[this.setting.language];
-			if (changesArray && changesArray.length > 0) {
+			if (changesArray.length > 0) {
 				const changesContainer = section.createEl("div", {
 					cls: "persian-calendar__update-body",
 				});

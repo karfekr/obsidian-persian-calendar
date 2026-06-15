@@ -37,7 +37,7 @@ import {
 	dateToWeekdayName,
 	todayTehran,
 } from "src/utils/dateUtils";
-import { dashToEvents, dateToEvents,eventsToString } from "src/utils/eventUtils";
+import { dashToEvents, dateToEvents, eventsToString } from "src/utils/eventUtils";
 import { extractYearFormat } from "src/utils/formatters";
 
 export default class Placeholder {
@@ -58,7 +58,7 @@ export default class Placeholder {
 	}
 
 	public async getTemplateContent(templatePath: string, targetFile: TFile): Promise<string | null> {
-		if (!templatePath?.trim()) return null;
+		if (!templatePath.trim()) return null;
 
 		const templateFile = this.plugin.app.vault.getAbstractFileByPath(templatePath);
 		if (!templateFile || !(templateFile instanceof TFile)) return null;
@@ -73,7 +73,7 @@ export default class Placeholder {
 
 	public async insertPersianDate(file: TFile) {
 		const fileContent = await this.plugin.app.vault.read(file);
-		const updatedContent = await this.processPlaceholders(file, fileContent);
+		const updatedContent = this.processPlaceholders(file, fileContent);
 
 		if (updatedContent !== fileContent) {
 			await this.plugin.app.vault.modify(file, updatedContent);
@@ -82,25 +82,23 @@ export default class Placeholder {
 	}
 
 	private getOrCreatePattern(placeholder: string): RegExp {
-		if (!this.placeholderPatterns.has(placeholder)) {
+		let pattern = this.placeholderPatterns.get(placeholder);
+		if (!pattern) {
 			const escaped = placeholder.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-			this.placeholderPatterns.set(placeholder, new RegExp(escaped, "g"));
+			pattern = new RegExp(escaped, "g");
+			this.placeholderPatterns.set(placeholder, pattern);
 		}
-		return this.placeholderPatterns.get(placeholder)!;
+		return pattern;
 	}
 
-	private async processPlaceholders(file: TFile, content: string): Promise<string> {
+	private processPlaceholders(file: TFile, content: string): string {
 		const context = this.buildContext(file);
-		if (!context) return content;
 
 		let result = content;
 		for (const [placeholder, value] of this.getPlaceholderMap(context).entries()) {
-			if (!result.includes(placeholder)) continue;
+			if (value === null || !result.includes(placeholder)) continue;
 
-			const resolvedValue = typeof value === "function" ? await value() : value;
-			if (resolvedValue != null) {
-				result = result.replace(this.getOrCreatePattern(placeholder), resolvedValue);
-			}
+			result = result.replace(this.getOrCreatePattern(placeholder), String(value));
 		}
 
 		return result;
@@ -123,11 +121,11 @@ export default class Placeholder {
 		fileName,
 		fileDate,
 		baseDate,
-	}: TBuildContext): Map<string, unknown> {
+	}: TBuildContext): Map<string, string | number | boolean | null | undefined> {
 		const fromFile = <T>(fn: (d: Date) => T): T | null => (fileDate ? fn(fileDate) : null);
 		const fromFileOrToday = <T>(fn: (d: Date) => T): T => fn(fileDate ?? currentDate);
 
-		return new Map<string, unknown>([
+		return new Map<string, string | number | null | undefined>([
 			["{{تاریخ شمسی جاری}}", dateToDash(currentDate, "jalali")],
 			["{{تاریخ میلادی جاری}}", dateToDash(currentDate, "gregorian")],
 			["{{تاریخ قمری جاری}}", dateToDash(currentDate, "hijri")],

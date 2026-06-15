@@ -20,7 +20,7 @@ export default class SmartDateLinker {
 	}
 
 	private makeLink(dash: string | null, label: string): string {
-		if (dash == null) return label;
+		if (!dash) return label;
 		return `[[${dash}|${label}]]`;
 	}
 
@@ -75,7 +75,7 @@ export default class SmartDateLinker {
 		}
 
 		type PeriodConfig = { fn: (d: Date) => string; days?: number; months?: number; years?: number };
-		const periodMap: Record<string, PeriodConfig> = {
+		const periodMap: Partial<Record<string, PeriodConfig>> = {
 			"این هفته": { fn: dateToJWeekDash },
 			"هفته قبل": { fn: dateToJWeekDash, days: -7 },
 			"هفته بعد": { fn: dateToJWeekDash, days: 7 },

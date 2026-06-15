@@ -27,7 +27,9 @@ function resolvePath(obj: Record<string, unknown>, path: string): unknown {
 
 export function setLocal(lang: TLocal) {
 	currentLocal = lang;
-	listeners.forEach((cb) => { cb(); });
+	listeners.forEach((cb) => {
+		cb();
+	});
 }
 
 export function getDirection() {
