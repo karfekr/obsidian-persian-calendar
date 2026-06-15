@@ -74,7 +74,7 @@ jobs:
             styles.css
 
       - name: Get release notes
-        run: node scripts/get-release-notes.mjs
+        run: node --loader ts-node/esm scripts/get-release-notes.mjs
 
       - name: Create GitHub release
         if: startsWith(github.ref, 'refs/tags/')

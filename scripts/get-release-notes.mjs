@@ -1,4 +1,4 @@
-import { RELEASE_NOTES } from "../src/constants/releaseNotes.js";
+import { RELEASE_NOTES } from "../src/constants/releaseNotes/index.ts";
 import fs from "fs";
 
 const version = process.env.GITHUB_REF_NAME;
