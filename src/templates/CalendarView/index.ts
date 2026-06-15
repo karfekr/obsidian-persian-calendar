@@ -1,11 +1,12 @@
-import { WorkspaceLeaf, App, View } from "obsidian";
+import { App, View,WorkspaceLeaf } from "obsidian";
 import PersianCalendarPlugin from "src/main";
 import { NoteService } from "src/services";
+import type { TJalali,TSetting } from "src/types";
 import { dateToJalali, todayTehran } from "src/utils/dateUtils";
+
+import CalendarRenderer from "./CalendarRenderer";
 import CalendarNavigation from "./CalendarRenderer/CalendarNavigation";
 import CalendarState from "./CalendarState";
-import CalendarRenderer from "./CalendarRenderer";
-import type { TSetting, TJalali } from "src/types";
 
 export default class CalendarView extends View {
 	dailyCheckInterval: number | undefined;

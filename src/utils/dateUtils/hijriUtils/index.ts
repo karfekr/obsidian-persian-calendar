@@ -1,6 +1,7 @@
+import type { THijri, THijriBase, TJalali } from "src/types";
+
 import { dateToGregorian, gregorianToDate, gregorianToJalali, jalaliToGregorian } from "..";
 import { gregorianToHijri, hijriMonthLength, hijriToGregorian } from "./core";
-import type { THijri, THijriBase, TJalali } from "src/types";
 
 //? --- Main ---
 export const dateToHijri = (
@@ -57,4 +58,4 @@ export const hijriToJalali = (
 	return gregorianToJalali(gy, gm, gd);
 };
 
-export { gregorianToHijri, hijriToGregorian, hijriMonthLength };
+export { gregorianToHijri, hijriMonthLength,hijriToGregorian };

@@ -1,10 +1,6 @@
-import {
-	extractMonthFormat,
-	isDayFormat,
-	isMonthFormat,
-	toArNumber,
-	toMonthFormat,
-} from "src/utils/formatters";
+import { GREGORIAN_MONTHS_NAME, HIJRI_MONTHS_NAME } from "src/constants";
+import type { TDateFormat, THijriBase, TLocal } from "src/types";
+import { dashToDate, dateToDash } from "src/utils/dashUtils";
 import {
 	dateToEndDayOfJMonthDate,
 	dateToJalali,
@@ -15,9 +11,13 @@ import {
 	jalaliMonthToHijriRange,
 	jalaliToDate,
 } from "src/utils/dateUtils";
-import { dashToDate, dateToDash } from "src/utils/dashUtils";
-import type { TDateFormat, THijriBase, TLocal } from "src/types";
-import { GREGORIAN_MONTHS_NAME, HIJRI_MONTHS_NAME } from "src/constants";
+import {
+	extractMonthFormat,
+	isDayFormat,
+	isMonthFormat,
+	toArNumber,
+	toMonthFormat,
+} from "src/utils/formatters";
 
 export function dateToJMonthDash(date: Date, option?: { separator?: string }) {
 	const separator = option?.separator ?? "-";
@@ -156,7 +156,7 @@ export function jalaliMonthToRangeDash(
 
 	if (first.month === last.month) {
 		return `${first.monthName} ${first.year}`;
-	} else {
+	} 
 		return `${first.monthName} - ${last.monthName} ${last.year}`;
-	}
+	
 }

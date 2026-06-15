@@ -1,23 +1,24 @@
-import { Plugin, App, type PluginManifest, WorkspaceLeaf, setIcon } from "obsidian";
+import { App, Plugin, type PluginManifest, setIcon,WorkspaceLeaf } from "obsidian";
+import { setAdapter } from "persian-holidays";
+import { DatePicker } from "src/components";
+
+import { DEFAULT_SETTING } from "./constants";
+import { onLocalChange, setLocal, t } from "./i18n";
 import {
-	SmartDateLinker,
-	Placeholder,
-	NoteService,
+	ApiService,
 	CommandRegistry,
 	EventManager,
-	VersionChecker,
-	ApiService,
+	NoteService,
+	Placeholder,
+	SmartDateLinker,
 	Suggestion,
+	VersionChecker,
 } from "./services";
 import CalendarView from "./templates/CalendarView";
 import Setting from "./templates/Setting";
-import { DEFAULT_SETTING } from "./constants";
-import { dateToJalali, todayTehran } from "./utils/dateUtils";
 import type { TSetting } from "./types";
-import { onLocalChange, setLocal, t } from "./i18n";
-import { DatePicker } from "src/components";
+import { dateToJalali, todayTehran } from "./utils/dateUtils";
 import { createEventAdapter } from "./utils/eventUtils/eventAdapter";
-import { setAdapter } from "persian-holidays";
 
 export default class PersianCalendarPlugin extends Plugin {
 	// Core properties
@@ -71,7 +72,7 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		// inject DatePicker button for Jalali
 		const observer = new MutationObserver(() => {
-			void this.injectDatePickerButton(activeDocument.body);
+			this.injectDatePickerButton(activeDocument.body);
 		});
 
 		observer.observe(activeDocument.body, {
@@ -79,7 +80,7 @@ export default class PersianCalendarPlugin extends Plugin {
 			subtree: true,
 		});
 
-		this.register(() => observer.disconnect());
+		this.register(() => { observer.disconnect(); });
 
 		// Call parent onload
 		void super.onload?.();
@@ -173,11 +174,11 @@ export default class PersianCalendarPlugin extends Plugin {
 	}
 
 	async loadSetting() {
-		this.setting = Object.assign({}, DEFAULT_SETTING, await this.loadData());
+		this.setting = { ...DEFAULT_SETTING, ...await this.loadData()};
 	}
 
-	async saveSetting() {
-		await this.saveData(this.setting);
+	saveSetting() {
+		this.saveData(this.setting);
 	}
 
 	async activateView(): Promise<WorkspaceLeaf | null> {
@@ -210,6 +211,6 @@ export default class PersianCalendarPlugin extends Plugin {
 	}
 
 	onunload() {
-		this.app.workspace.getLeavesOfType("persian-calendar").forEach((leaf) => leaf.detach());
+		this.app.workspace.getLeavesOfType("persian-calendar").forEach((leaf) => { leaf.detach(); });
 	}
 }

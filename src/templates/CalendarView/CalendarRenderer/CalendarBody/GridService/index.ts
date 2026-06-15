@@ -1,4 +1,5 @@
 import CalendarState from "src/templates/CalendarView/CalendarState";
+import type { TMonthGridCell,TSetting } from "src/types";
 import {
 	dateToJalali,
 	jalaliMonthLength,
@@ -8,7 +9,6 @@ import {
 	todayTehran,
 } from "src/utils/dateUtils";
 import { checkHoliday } from "src/utils/eventUtils";
-import type { TSetting, TMonthGridCell } from "src/types";
 
 export default class GridService {
 	constructor(

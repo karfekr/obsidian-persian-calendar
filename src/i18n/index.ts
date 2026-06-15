@@ -1,6 +1,7 @@
+import type { TLocal } from "src/types";
+
 import en from "./local/en.json";
 import fa from "./local/fa.json";
-import type { TLocal } from "src/types";
 
 const translations = {
 	en,
@@ -8,7 +9,7 @@ const translations = {
 } as const;
 
 let currentLocal: TLocal = "en";
-let listeners = new Set<() => void>();
+const listeners = new Set<() => void>();
 
 function resolvePath(obj: Record<string, unknown>, path: string): unknown {
 	let current: unknown = obj;
@@ -26,7 +27,7 @@ function resolvePath(obj: Record<string, unknown>, path: string): unknown {
 
 export function setLocal(lang: TLocal) {
 	currentLocal = lang;
-	listeners.forEach((cb) => cb());
+	listeners.forEach((cb) => { cb(); });
 }
 
 export function getDirection() {

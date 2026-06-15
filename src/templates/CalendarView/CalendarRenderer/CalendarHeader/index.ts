@@ -1,12 +1,13 @@
 import { setIcon } from "obsidian";
-import { toFaNumber } from "src/utils/formatters";
-import CalendarState from "src/templates/CalendarView/CalendarState";
+import { t } from "src/i18n";
 import { NoteService } from "src/services";
-import CalendarNavigation from "../CalendarNavigation";
-import { jalaliMonthName } from "src/utils/dateUtils";
+import CalendarState from "src/templates/CalendarView/CalendarState";
 import type { TSetting } from "src/types";
 import { jalaliMonthToRangeDash } from "src/utils/dashUtils";
-import { t } from "src/i18n";
+import { jalaliMonthName } from "src/utils/dateUtils";
+import { toFaNumber } from "src/utils/formatters";
+
+import CalendarNavigation from "../CalendarNavigation";
 
 export default class CalendarHeaderRender {
 	constructor(
@@ -93,7 +94,7 @@ export default class CalendarHeaderRender {
 			cls: "persian-calendar__arrow",
 		});
 		setIcon(prevMonthArrow, "square-chevron-right");
-		prevMonthArrow.addEventListener("click", () => this.navigation.changeMonth("prev"));
+		prevMonthArrow.addEventListener("click", () => { this.navigation.changeMonth("prev"); });
 
 		const todayButton = navContainerEl.createEl("span", { cls: "persian-calendar__go-today" });
 		todayButton.textContent = t("today");
@@ -105,6 +106,6 @@ export default class CalendarHeaderRender {
 			cls: "persian-calendar__arrow",
 		});
 		setIcon(nextMonthArrow, "square-chevron-left");
-		nextMonthArrow.addEventListener("click", () => this.navigation.changeMonth("next"));
+		nextMonthArrow.addEventListener("click", () => { this.navigation.changeMonth("next"); });
 	}
 }

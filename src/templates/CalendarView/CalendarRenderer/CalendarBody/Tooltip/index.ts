@@ -57,9 +57,9 @@ export default class Tooltip {
 			x = e.touches[0]?.pageX;
 			y = e.touches[0]?.pageY;
 
-			const hideOnTouch = () => this.hideTooltip();
+			const hideOnTouch = () => { this.hideTooltip(); };
 
-			activeWindow.setTimeout(() => {
+			window.setTimeout(() => {
 				activeDocument.addEventListener("touchstart", hideOnTouch, { once: true });
 				activeDocument.addEventListener("touchend", hideOnTouch, { once: true });
 				activeDocument.addEventListener("touchcancel", hideOnTouch, { once: true });

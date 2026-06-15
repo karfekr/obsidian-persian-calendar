@@ -1,9 +1,10 @@
-import type { TSetting } from "src/types";
 import { NoteService } from "src/services";
+import type { TSetting } from "src/types";
+
 import CalendarState from "../CalendarState";
-import CalendarNavigation from "./CalendarNavigation";
-import CalendarHeaderRender from "./CalendarHeader";
 import CalendarBodyRender from "./CalendarBody";
+import CalendarHeaderRender from "./CalendarHeader";
+import CalendarNavigation from "./CalendarNavigation";
 
 export default class CalendarRenderer {
 	private readonly headerRenderer: CalendarHeaderRender;

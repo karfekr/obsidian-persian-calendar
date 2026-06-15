@@ -1,11 +1,11 @@
 import {
 	CalendarDate,
+	GregorianCalendar,
 	IslamicUmalquraCalendar,
 	toCalendar,
-	GregorianCalendar,
 } from "@internationalized/date";
-import type { THijri, TGregorian, THijriBase } from "src/types";
-import { IRAN_HIJRI_MONTHS, IRAN_HIJRI_ANCHOR } from "src/constants";
+import { IRAN_HIJRI_ANCHOR,IRAN_HIJRI_MONTHS } from "src/constants";
+import type { TGregorian, THijri, THijriBase } from "src/types";
 
 const HIJRI_MONTH_MAP = buildHijriMonthMap(IRAN_HIJRI_MONTHS);
 function buildHijriMonthMap(raw: Record<number, readonly number[]>) {

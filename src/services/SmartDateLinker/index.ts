@@ -1,14 +1,14 @@
+import { SMART_DATE_LINKS, WEEKDAYS_NAME } from "src/constants";
 import PersianCalendarPlugin from "src/main";
-import { todayTehran } from "src/utils/dateUtils";
+import type { TDateFormatWithoutHijri, TLocal, TSuggestProvider } from "src/types";
 import {
+	dateToDash,
 	dateToJMonthDash,
-	dateToSeasonDash,
 	dateToJWeekDash,
 	dateToJYearDash,
-	dateToDash,
+	dateToSeasonDash,
 } from "src/utils/dashUtils";
-import { SMART_DATE_LINKS, WEEKDAYS_NAME } from "src/constants";
-import type { TDateFormatWithoutHijri, TLocal, TSuggestProvider } from "src/types";
+import { todayTehran } from "src/utils/dateUtils";
 
 export default class SmartDateLinker {
 	plugin: PersianCalendarPlugin;

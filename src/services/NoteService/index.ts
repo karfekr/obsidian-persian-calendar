@@ -1,9 +1,9 @@
-import { App, TFile, MarkdownView } from "obsidian";
-import type { TLocal, TPathTokenContext } from "src/types";
-import { jalaliToGregorian, jalaliMonthLength, jalaliToSeason } from "src/utils/dateUtils";
+import { App, MarkdownView,TFile } from "obsidian";
 import { createNoteModal } from "src/components";
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
+import type { TLocal, TPathTokenContext } from "src/types";
+import { jalaliMonthLength, jalaliToGregorian, jalaliToSeason } from "src/utils/dateUtils";
 
 export default class NoteService {
 	constructor(
@@ -146,7 +146,7 @@ export default class NoteService {
 		const { filePath, confirmTitle, confirmMessage, noteType } = options;
 
 		try {
-			let noteFile = this.app.vault.getAbstractFileByPath(filePath);
+			const noteFile = this.app.vault.getAbstractFileByPath(filePath);
 
 			if (noteFile instanceof TFile) {
 				await this.openNoteInWorkspace(noteFile);

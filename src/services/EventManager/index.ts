@@ -1,4 +1,4 @@
-import { TAbstractFile, TFile, TFolder, debounce } from "obsidian";
+import { debounce,TAbstractFile, TFile, TFolder } from "obsidian";
 import type PersianCalendarPlugin from "src/main";
 import CalendarView from "src/templates/CalendarView";
 

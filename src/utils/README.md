@@ -1,4 +1,5 @@
-> Was a sentence unclear? Instead of ignoring it, make a simple 'edit' and leave your name in the history of this page's improvement.
+> Was a sentence unclear? Instead of ignoring it, make a simple 'edit' and leave your name in the
+> history of this page's improvement.
 
 > چیزی مبهم بود؟ به جای چشم‌پوشی، با یک ویرایش ساده، نام خود را در تاریخچه‌ی بهبود این صفحه ثبت کن.
 
@@ -43,17 +44,18 @@ This file is a complete reference for all utility functions in the `utils` folde
 
 ### 2. Gregorian Functions
 
-| Function            | Input                                  | Output         | Description                                                                                     |
-| ------------------- | -------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------- |
-| `gregorianToDate`   | `(gy: number, gm: number, gd: number)` | `Date \| null` | Validates a Gregorian date and converts it to a `Date` object (or `null` if invalid)            |
-| `weekStartNumber`   | `("sat" \| "sun" \| "mon")`            | `number`       | Converts a weekday name to its JavaScript weekday number (Saturday = 6, Sunday = 0, Monday = 1) |
-| `jalaliMonthName`   | `(jm: number)`                         | `string`       | Persian name of a Jalali month from its number (1–12) – e.g., `jalaliMonthName(12)` → `"اسفند"` |
-| `seasonName`        | `(seasonNumber: number)`               | `string`       | Persian name of a season from its number (1–4) – e.g., `seasonName(3)` → `"پاییز"`              |
-| `dateToGregorian`   | `(date: Date)`                         | `{gy, gm, gd}` | Extracts Gregorian year, month, day from a `Date` object                                        |
-| `dateToWeekdayName` | `(date: Date)`                         | `string`       | Persian name of the weekday (Saturday to Friday)                                                |
-| `addDayDate`        | `(date: Date, days: number)`           | `Date`         | Adds (or subtracts) a number of days to/from a date – returns a new `Date` object               |
-| `getWeekdayTehran`  | `(date: Date)`                         | `number`       | Returns the weekday number based on the Tehran timezone (0–6, but check: Saturday=6?)           |
-| `todayTehran`       | `()`                                   | `Date`         | Returns today’s date based on the Tehran timezone (no manual setup required)                    |
+| Function               | Input                                  | Output         | Description                                                                                     |
+| ---------------------- | -------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------- |
+| `gregorianToDate`      | `(gy: number, gm: number, gd: number)` | `Date \| null` | Validates a Gregorian date and converts it to a `Date` object (or `null` if invalid)            |
+| `weekStartNumber`      | `("sat" \| "sun" \| "mon")`            | `number`       | Converts a weekday name to its JavaScript weekday number (Saturday = 6, Sunday = 0, Monday = 1) |
+| `jalaliMonthName`      | `(jm: number)`                         | `string`       | Persian name of a Jalali month from its number (1–12) – e.g., `jalaliMonthName(12)` → `"اسفند"` |
+| `gregorianMonthLength` | `(jy: number, jm: number)`             | `number`       | Returns the number of days in a given gregorian month                                           |
+| `seasonName`           | `(seasonNumber: number)`               | `string`       | Persian name of a season from its number (1–4) – e.g., `seasonName(3)` → `"پاییز"`              |
+| `dateToGregorian`      | `(date: Date)`                         | `{gy, gm, gd}` | Extracts Gregorian year, month, day from a `Date` object                                        |
+| `dateToWeekdayName`    | `(date: Date)`                         | `string`       | Persian name of the weekday (Saturday to Friday)                                                |
+| `addDayDate`           | `(date: Date, days: number)`           | `Date`         | Adds (or subtracts) a number of days to/from a date – returns a new `Date` object               |
+| `getWeekdayTehran`     | `(date: Date)`                         | `number`       | Returns the weekday number based on the Tehran timezone (0–6, but check: Saturday=6?)           |
+| `todayTehran`          | `()`                                   | `Date`         | Returns today’s date based on the Tehran timezone (no manual setup required)                    |
 
 ### 3. Hijri(Islamic Lunar) Functions
 

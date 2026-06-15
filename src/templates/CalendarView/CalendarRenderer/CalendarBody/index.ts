@@ -1,16 +1,17 @@
 import { setIcon } from "obsidian";
+import { Notice } from "src/components";
 import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
-import type { TSetting, TLocal } from "src/types";
+import { getDirection, t } from "src/i18n";
+import { NoteService } from "src/services";
+import CalendarState from "src/templates/CalendarView/CalendarState";
+import type { TLocal,TSetting } from "src/types";
 import { jalaliToSeason } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 import { toArNumber, toFaNumber } from "src/utils/formatters";
-import CalendarState from "src/templates/CalendarView/CalendarState";
-import { NoteService } from "src/services";
+
 import CalendarNavigation from "../CalendarNavigation";
-import Tooltip from "./Tooltip";
 import GridService from "./GridService";
-import { Notice } from "src/components";
-import { getDirection, t } from "src/i18n";
+import Tooltip from "./Tooltip";
 
 export default class CalendarBodyRender {
 	private readonly tooltip: Tooltip;
@@ -142,7 +143,7 @@ export default class CalendarBodyRender {
 			};
 
 			dayEl.addEventListener("mouseenter", handler);
-			dayEl.addEventListener("mouseleave", () => this.tooltip.hideTooltip());
+			dayEl.addEventListener("mouseleave", () => { this.tooltip.hideTooltip(); });
 
 			dayEl.addEventListener(
 				"touchstart",
@@ -151,8 +152,8 @@ export default class CalendarBodyRender {
 				},
 				{ passive: true },
 			);
-			dayEl.addEventListener("touchend", () => this.tooltip.hideTooltip());
-			dayEl.addEventListener("touchcancel", () => this.tooltip.hideTooltip());
+			dayEl.addEventListener("touchend", () => { this.tooltip.hideTooltip(); });
+			dayEl.addEventListener("touchcancel", () => { this.tooltip.hideTooltip(); });
 		};
 
 		let gridEl = contentEl.querySelector(".persian-calendar__days");

@@ -1,10 +1,10 @@
 import {
 	App,
 	Editor,
-	EditorSuggest,
-	TFile,
 	type EditorPosition,
+	EditorSuggest,
 	type EditorSuggestContext,
+	TFile,
 } from "obsidian";
 import type { TSuggestProvider } from "src/types";
 
@@ -69,7 +69,7 @@ export default class Suggestion extends EditorSuggest<string> {
 		const ctx = this.lastContext;
 		const editor = ctx.editor;
 
-		let end = { ...ctx.end };
+		const end = { ...ctx.end };
 
 		const after = editor.getRange(end, { line: end.line, ch: end.ch + 2 });
 

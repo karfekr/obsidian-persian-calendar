@@ -1,8 +1,9 @@
 import { App, PluginSettingTab, Setting as ObsidianSettings } from "obsidian";
-import PersianCalendarPlugin from "src/main";
-import PathSuggest from "./PathSuggest";
-import type { TSetting, TBoolSettingKeys, TLocal } from "src/types";
 import { onLocalChange, setLocal } from "src/i18n";
+import PersianCalendarPlugin from "src/main";
+import type { TBoolSettingKeys, TLocal,TSetting } from "src/types";
+
+import PathSuggest from "./PathSuggest";
 
 export abstract class SettingBase extends PluginSettingTab {
 	plugin: PersianCalendarPlugin;
@@ -17,11 +18,11 @@ export abstract class SettingBase extends PluginSettingTab {
 		});
 	}
 
+	protected abstract render(): void;
+
 	protected refresh(): void {
 		this.containerEl.empty();
-
-		//! display() is deprecated but still required for backwards compatibility.
-		this.display();
+		this.render();
 	}
 
 	override hide(): void {
@@ -48,7 +49,7 @@ export abstract class SettingBase extends PluginSettingTab {
 					.onChange((value) => {
 						(this.plugin.setting[settingKey] as string) = value;
 
-						void this.plugin.saveSetting();
+						this.plugin.saveSetting();
 					});
 
 				new PathSuggest(this.app, text.inputEl, opts?.mode ?? "folder");
@@ -70,7 +71,7 @@ export abstract class SettingBase extends PluginSettingTab {
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.setting[opts.key]).onChange((value) => {
 					this.plugin.setting[opts.key] = value;
-					void this.plugin.saveSetting();
+					this.plugin.saveSetting();
 					if (opts.refresh) {
 						this.plugin.refreshViews();
 					}
@@ -98,7 +99,7 @@ export abstract class SettingBase extends PluginSettingTab {
 				dropdown.setValue(this.plugin.setting[opts.key] ?? opts.defaultValue).onChange((value) => {
 					(this.plugin.setting[opts.key] as string) = value;
 
-					void this.plugin.saveSetting();
+					this.plugin.saveSetting();
 
 					if (opts.key === "language") {
 						setLocal(value as TLocal);

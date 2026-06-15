@@ -3,6 +3,19 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.6.0",
+		changes: {
+			fa: [
+				"جداسازی منطق مناسبت‌های تقویم از پلاگین",
+				"بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard",
+			],
+			en: [
+				"Separate calendar event logic from the plugin",
+				"Code improvements based on Obsidian Scorecard suggestions",
+			],
+		},
+	},
+	{
 		version: "4.5.12",
 		changes: {
 			fa: ["بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard"],

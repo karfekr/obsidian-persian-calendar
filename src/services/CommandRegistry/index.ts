@@ -1,14 +1,14 @@
+import { DatePicker,Notice } from "src/components";
+import { dailyInTextRegex } from "src/constants";
+import { getDirection, onLocalChange,t } from "src/i18n";
 import type PersianCalendarPlugin from "src/main";
 import {
+	addDayDate,
 	dateToJalali,
 	dateToJWeekNumber,
-	addDayDate,
 	jalaliToSeason,
 	todayTehran,
 } from "src/utils/dateUtils";
-import { Notice, DatePicker } from "src/components";
-import { getDirection, t, onLocalChange } from "src/i18n";
-import { dailyInTextRegex } from "src/constants";
 
 export default class CommandRegistry {
 	private unregisterCallbacks: (() => void)[] = [];
@@ -35,7 +35,7 @@ export default class CommandRegistry {
 	}
 
 	private unregisterAll() {
-		this.unregisterCallbacks.forEach((fn) => fn());
+		this.unregisterCallbacks.forEach((fn) => { fn(); });
 		this.unregisterCallbacks = [];
 	}
 

@@ -1,7 +1,7 @@
-import { Modal, App, setIcon } from "obsidian";
+import { App, Modal, setIcon } from "obsidian";
 import { SocialLinks } from "src/components";
-import type { TReleaseNote, TSetting } from "src/types";
 import { RELEASE_NOTES } from "src/constants/releaseNotes";
+import type { TReleaseNote, TSetting } from "src/types";
 
 export default class UpdateModal extends Modal {
 	private notes: TReleaseNote[];
