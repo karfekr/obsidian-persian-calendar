@@ -7,10 +7,12 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 		changes: {
 			fa: [
 				"جداسازی منطق مناسبت‌های تقویم از پلاگین",
+				"بهبود ساختار کلی کد پلاگین و اطمینان بخشی به فانکشن‌های پایه",
 				"بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard",
 			],
 			en: [
 				"Separate calendar event logic from the plugin",
+				"Improving the overall plugin code structure and ensuring the reliability of core functions.",
 				"Code improvements based on Obsidian Scorecard suggestions",
 			],
 		},

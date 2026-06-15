@@ -73,6 +73,24 @@ jobs:
             manifest.json
             styles.css
 
+      - name: Get release notes
+        run: |
+          node -e "
+          const notes = require('./src/constants/releaseNotes').RELEASE_NOTES;
+          const version = process.env.GITHUB_REF_NAME;
+
+          const found = notes.find(n => n.version === version);
+
+          if (!found) {
+            console.error('No release notes found for version', version);
+            process.exit(1);
+          }
+
+          const body = found.changes.en.map(c => \`- \${c}\`).join('\\n');
+
+          require('fs').writeFileSync('release_body.txt', body);
+          "
+
       - name: Create GitHub release
         if: startsWith(github.ref, 'refs/tags/')
         env:
@@ -81,6 +99,7 @@ jobs:
         run: |
           gh release create "$TAG" \
             --title "$TAG" \
+            --notes-file release_body.txt \
             main.js \
             manifest.json \
             styles.css
