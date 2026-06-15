@@ -44,6 +44,7 @@ export function dateToEvents(
 		showSunniEvents: false,
 		showGlobalEvents: false,
 	};
+	const hijriBase = option?.hijriBase ?? "iran";
 
 	const categories = buildCategories(showEvents);
 
@@ -53,7 +54,7 @@ export function dateToEvents(
 		categories,
 	});
 
-	const { hy, hm, hd } = dateToHijri(date);
+	const { hy, hm, hd } = dateToHijri(date, { base: hijriBase });
 	const hijriBaseEvents = getEvents("hijri", hm, hd, {
 		year: hy,
 		categories,
@@ -61,7 +62,7 @@ export function dateToEvents(
 
 	let hijriEvents: EventType[] = hijriBaseEvents;
 
-	if (option?.hijriBase === "umalqura") {
+	if (option?.hijriBase === "umalqura" && showEvents.showSunniEvents) {
 		const { hy, hm, hd } = dateToHijri(date, { base: "umalqura" });
 
 		const umalquraEvents = getEvents("hijri", hm, hd, {
