@@ -67,7 +67,7 @@ jobs:
           test -f manifest.json
 
       - name: Extract release notes
-        run: pnpm exec tsx scripts/get-release-notes.ts
+        run: pnpm dlx tsx scripts/get-release-notes.ts
 
       - uses: actions/attest-build-provenance@v3
         with:
