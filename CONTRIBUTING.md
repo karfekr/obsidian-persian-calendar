@@ -32,7 +32,7 @@ If you would like to join us in developing this plugin, please read the followin
 > [Journals](https://github.com/srg-kostyrko/obsidian-journal). If you wish to improve this
 > structure, please consult us first.
 
-> All code formatting templates are defined by **editorconfig**, **prettierrc**, **eslintrc**, etc.
+> All code formatting templates are defined by **editorconfig**, **prettierrc**, **esbuild.config.mjs**, etc.
 > We ask you **not to change this framework** and to submit your code following the same standards.
 
 > The only external dependency of this plugin on the user side is the
