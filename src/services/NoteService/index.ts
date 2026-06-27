@@ -190,7 +190,7 @@ export default class NoteService {
 				Notice("An unknown error occurred while creating the note.");
 			}
 
-			console.error(error);
+			Notice(`Unexpected Error: ${error}`);
 		}
 	}
 
