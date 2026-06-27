@@ -1,4 +1,4 @@
 allowBuilds:
   esbuild: false
 minimumReleaseAgeExclude:
-  - persian-holidays@1.3.6
+  - persian-holidays@1.4.0
