@@ -67,11 +67,11 @@ export default class CalendarSettingTab extends PluginSettingTab {
 		}, true);
 	}
 
-	addHeading(parent: HTMLElement, key: string): HTMLElement {
-		const element = parent.createEl("h2");
+	addHeading(parent: HTMLElement, key: string): Setting {
+		const element = new Setting(parent).setHeading();
 
 		onLocalChange(() => {
-			element.textContent = t(key);
+			element.setName(t(key));
 		}, true);
 
 		return element;
