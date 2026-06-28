@@ -142,6 +142,8 @@ export type TSocialLink = {
 export type TPathTokenContext = {
 	jy?: number;
 	jm?: number;
+	gy?: number;
+	gm?: number;
 	season?: number;
 	local?: TLocal;
 };
