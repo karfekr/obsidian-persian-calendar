@@ -1,6 +1,6 @@
 import { App, Modal, setIcon } from "obsidian";
 import { JALALI_MONTHS_NAME, WEEKDAYS_NAME } from "src/constants";
-import { t } from "src/i18n";
+import { t } from "src/languages";
 import type { TDateFormat, TJalali, TSetting } from "src/types";
 import {
 	dateToJalali,

@@ -1,5 +1,5 @@
 import { App, Modal } from "obsidian";
-import { getDirection, t } from "src/i18n";
+import { getDirection, t } from "src/languages";
 
 class ConfirmModal extends Modal {
 	private titleText: string;

@@ -27,7 +27,7 @@ export default class UpdateModal extends Modal {
 		const pluginName = "Persian Calendar";
 		headerEl.createEl("p", { text: pluginName });
 
-		SocialLinks(contentEl, this.setting.language);
+		SocialLinks(contentEl);
 
 		this.notes.forEach((note) => {
 			const section = contentEl.createEl("div");

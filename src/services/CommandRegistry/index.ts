@@ -1,6 +1,6 @@
 import { DatePicker, Notice } from "src/components";
 import { dailyInTextRegex } from "src/constants";
-import { getDirection, onLocalChange, t } from "src/i18n";
+import { getDirection, onLocalChange, t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
 import {
 	addDayDate,

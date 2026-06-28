@@ -1,10 +1,9 @@
 import { setIcon } from "obsidian";
 import { DEFAULT_SOCIAL_LINKS } from "src/constants";
-import type { TLocal } from "src/types";
+import { onLocalChange, t } from "src/languages";
 
 export default function SocialLinks(
 	container: HTMLElement,
-	local: TLocal,
 	options: {
 		className?: string;
 	} = {},
@@ -16,9 +15,13 @@ export default function SocialLinks(
 	DEFAULT_SOCIAL_LINKS.forEach((link) => {
 		const a = containerEl.createEl("a", {
 			href: link.href,
-			title: link.title[local],
 		});
+
 		setIcon(a, link.icon);
+
+		onLocalChange(() => {
+			a.title = t(link.title);
+		}, true);
 	});
 
 	return containerEl;

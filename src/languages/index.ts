@@ -40,9 +40,16 @@ export function getLocal() {
 	return currentLocal;
 }
 
-export function onLocalChange(cb: () => void) {
+export function onLocalChange(cb: () => void, immediate = false) {
+	if (immediate) {
+		cb();
+	}
+
 	listeners.add(cb);
-	return () => listeners.delete(cb);
+
+	return () => {
+		listeners.delete(cb);
+	};
 }
 
 export function t(key: string): string {

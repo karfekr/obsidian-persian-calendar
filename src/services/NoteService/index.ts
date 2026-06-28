@@ -1,4 +1,4 @@
-import { App, MarkdownView, TFile } from "obsidian";
+import { App, MarkdownView, TFile, TFolder } from "obsidian";
 import { createNoteModal, Notice } from "src/components";
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
@@ -146,10 +146,15 @@ export default class NoteService {
 		const { filePath, confirmTitle, confirmMessage, noteType } = options;
 
 		try {
-			const noteFile = this.app.vault.getAbstractFileByPath(filePath);
+			const existing = this.app.vault.getAbstractFileByPath(filePath);
 
-			if (noteFile instanceof TFile) {
-				await this.openNoteInWorkspace(noteFile);
+			if (existing instanceof TFile) {
+				await this.openNoteInWorkspace(existing);
+				return;
+			}
+
+			if (existing instanceof TFolder) {
+				Notice(`Cannot create note because a folder already exists:\n${filePath}`);
 				return;
 			}
 
@@ -168,15 +173,24 @@ export default class NoteService {
 
 			const createdFile = await this.app.vault.create(filePath, "");
 
-			if (createdFile instanceof TFile) {
-				if (noteType) {
-					await this.applyTemplateIfConfigured(createdFile, noteType);
+			if (noteType) {
+				await this.applyTemplateIfConfigured(createdFile, noteType);
+			}
+
+			await this.openNoteInWorkspace(createdFile);
+		} catch (error) {
+			if (error instanceof Error) {
+				if (error.message.includes("Folder already exists")) {
+					Notice(`Cannot create note because a folder already exists:\n${filePath}`);
+					return;
 				}
 
-				await this.openNoteInWorkspace(createdFile);
+				Notice(`Error creating note: ${error.message}`);
+			} else {
+				Notice("An unknown error occurred while creating the note.");
 			}
-		} catch (error) {
-			Notice(`Error creating note: ${error}`);
+
+			Notice(`Unexpected Error: ${error}`);
 		}
 	}
 

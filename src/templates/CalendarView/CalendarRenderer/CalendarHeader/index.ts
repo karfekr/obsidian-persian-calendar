@@ -1,5 +1,5 @@
 import { setIcon } from "obsidian";
-import { t } from "src/i18n";
+import { t } from "src/languages";
 import { NoteService } from "src/services";
 import CalendarState from "src/templates/CalendarView/CalendarState";
 import type { TSetting } from "src/types";

@@ -12,6 +12,12 @@
 		"yearly": "Open Yearly Note",
 		"openCalendar": "Open Persian Calendar"
 	},
+	"links": {
+		"github": "Plugin Documentation",
+		"website": "Karfekr Website",
+		"channel": "Karfekr Telegram Channel",
+		"group": "Obsidian Farsi Community"
+	},
 	"setting": {
 		"banner": {
 			"title": "Use the links below to view the documentation, report issues or send feedback"

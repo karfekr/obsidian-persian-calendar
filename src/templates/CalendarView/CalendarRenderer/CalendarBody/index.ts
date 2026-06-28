@@ -1,7 +1,7 @@
 import { setIcon } from "obsidian";
 import { Notice } from "src/components";
 import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
-import { getDirection, t } from "src/i18n";
+import { getDirection, t } from "src/languages";
 import { NoteService } from "src/services";
 import CalendarState from "src/templates/CalendarView/CalendarState";
 import type { TLocal, TSetting } from "src/types";

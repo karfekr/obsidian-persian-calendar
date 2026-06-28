@@ -1,6 +1,6 @@
 import type { CategoryType, EventType } from "persian-holidays";
 import { getEvents } from "persian-holidays";
-import type { TDateFormat, TEventObject, THijriBase, TLocal, TShowEvents } from "src/types";
+import type { TDateFormat, THijriBase, TLocal, TShowEvents } from "src/types";
 import { dashToDate } from "src/utils/dashUtils";
 import { dateToGregorian, dateToHijri, dateToJalali } from "src/utils/dateUtils";
 
@@ -44,6 +44,7 @@ export function dateToEvents(
 		showSunniEvents: false,
 		showGlobalEvents: false,
 	};
+	const hijriBase = option?.hijriBase ?? "iran";
 
 	const categories = buildCategories(showEvents);
 
@@ -53,7 +54,7 @@ export function dateToEvents(
 		categories,
 	});
 
-	const { hy, hm, hd } = dateToHijri(date);
+	const { hy, hm, hd } = dateToHijri(date, { base: hijriBase });
 	const hijriBaseEvents = getEvents("hijri", hm, hd, {
 		year: hy,
 		categories,
@@ -61,7 +62,7 @@ export function dateToEvents(
 
 	let hijriEvents: EventType[] = hijriBaseEvents;
 
-	if (option?.hijriBase === "umalqura") {
+	if (option?.hijriBase === "umalqura" && showEvents.showSunniEvents) {
 		const { hy, hm, hd } = dateToHijri(date, { base: "umalqura" });
 
 		const umalquraEvents = getEvents("hijri", hm, hd, {
@@ -104,7 +105,7 @@ export function dashToEvents(
 	dashDate: string,
 	dateFormat: TDateFormat,
 	option?: { showEvents?: TShowEvents; hijriBase?: THijriBase },
-): TEventObject[] | null {
+): EventType[] | null {
 	const date = dashToDate(dashDate, dateFormat);
 	if (!date) return null;
 
@@ -112,7 +113,7 @@ export function dashToEvents(
 }
 
 // (Events[]) => String(Events[])
-export function eventsToString(events: TEventObject[] | null, local: TLocal = "fa"): string {
+export function eventsToString(events: EventType[] | null, local: TLocal = "fa"): string {
 	if (!events || events.length === 0) {
 		return "هیچ مناسبتی برای این روز ثبت نشده است.";
 	}

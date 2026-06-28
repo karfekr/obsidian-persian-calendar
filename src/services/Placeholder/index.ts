@@ -1,6 +1,6 @@
 import { TFile } from "obsidian";
 import { Notice } from "src/components";
-import { getDirection, t } from "src/i18n";
+import { getDirection, t } from "src/languages";
 import PersianCalendarPlugin from "src/main";
 import type { TBuildContext, TDateFormat, TSuggestProvider } from "src/types";
 import {
