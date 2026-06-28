@@ -1,200 +1,159 @@
-import { SocialLinks } from "src/components";
-import { t } from "src/i18n";
+import { App, PluginSettingTab, Setting } from "obsidian";
+import SocialLinks from "src/components/SocialLinks";
+import { getDirection, onLocalChange, setLocal, t } from "src/languages";
+import PersianCalendarPlugin from "src/main";
+import type { TBoolSettingKeys, TLocal, TPathSuggestMode, TSetting } from "src/types";
 
-import { SettingBase } from "./SettingBase";
+import { PathSuggest } from "./PathSuggest";
+import { renderEventSettingsSection } from "./sections/EventSettingsSection";
+import { renderExtraCalendarSettingsSection } from "./sections/ExtraCalendarSettingsSection";
+import { renderGeneralSettingsSection } from "./sections/GeneralSettingsSection";
+import { renderHolidaySettingsSection } from "./sections/HolidaySettingsSection";
+import { renderPathSettingsSection } from "./sections/PathSettingsSection";
+import { renderTemplateSettingsSection } from "./sections/TemplateSettingsSection";
 
-export default class CalendarSetting extends SettingBase {
-	protected render(): void {
-		// eslint-disable-next-line @typescript-eslint/no-deprecated
-		this.display();
+export default class CalendarSettingTab extends PluginSettingTab {
+	readonly plugin: PersianCalendarPlugin;
+
+	private unsubscribeLocale?: () => void;
+
+	constructor(app: App, plugin: PersianCalendarPlugin) {
+		super(app, plugin);
+		this.plugin = plugin;
 	}
 
-	icon = "calendar-heart";
+	hide(): void {
+		this.unsubscribeLocale?.();
+		this.unsubscribeLocale = undefined;
+	}
 
-	display() {
+	display(): void {
+		this.unsubscribeLocale?.();
+
+		this.unsubscribeLocale = onLocalChange(() => {
+			this.containerEl.setCssProps({
+				direction: getDirection(),
+			});
+		});
+
 		const { containerEl } = this;
+
 		containerEl.empty();
 		containerEl.addClass("persian-calendar");
-
 		containerEl.setCssProps({
-			direction: this.plugin.setting.language === "fa" ? "rtl" : "ltr",
+			direction: getDirection(),
 		});
 
 		const contactUs = containerEl.createEl("div", {
 			cls: "persian-calendar__setting-banner",
 		});
-		contactUs.createEl("h2", {
-			text: t("setting.banner.title"),
-		});
-		SocialLinks(contactUs, this.plugin.setting.language);
 
-		containerEl.createEl("h2", { text: t("setting.sections.general") });
+		this.addHeading(contactUs, "setting.banner.title");
 
-		this.addDropdownSetting(containerEl, {
-			name: t("setting.general.language.name"),
-			key: "language",
-			options: {
-				fa: t("setting.general.language.options.fa"),
-				en: t("setting.general.language.options.en"),
-			},
-			defaultValue: "en",
-			refresh: true,
-		});
+		SocialLinks(contactUs);
 
-		this.addDropdownSetting(containerEl, {
-			name: t("setting.general.dateFormat.name"),
-			desc: t("setting.general.dateFormat.desc"),
-			key: "dateFormat",
-			options: {
-				jalali: t("setting.general.dateFormat.options.jalali"),
-				gregorian: t("setting.general.dateFormat.options.gregorian"),
-			},
-			defaultValue: "gregorian",
-			refresh: true,
-		});
+		renderGeneralSettingsSection(this, containerEl);
+		renderPathSettingsSection(this, containerEl);
+		renderTemplateSettingsSection(this, containerEl);
+		renderExtraCalendarSettingsSection(this, containerEl);
+		renderHolidaySettingsSection(this, containerEl);
+		renderEventSettingsSection(this, containerEl);
+	}
 
-		this.addToggleSetting(containerEl, {
-			name: t("setting.general.askBeforeCreate.name"),
-			desc: t("setting.general.askBeforeCreate.desc"),
-			key: "askForCreateNote",
-			refresh: true,
-		});
+	private trackSetting(setting: Setting, nameKey: string, descKey: string | null): void {
+		onLocalChange(() => {
+			setting.setName(t(nameKey));
+			setting.setDesc(descKey ? t(descKey) : "");
+		}, true);
+	}
 
-		this.addToggleSetting(containerEl, {
-			name: t("setting.general.openDailyOnStartup.name"),
-			desc: t("setting.general.openDailyOnStartup.desc"),
-			key: "openDailyNoteOnStartup",
-			refresh: true,
-		});
+	addHeading(parent: HTMLElement, key: string): HTMLElement {
+		const element = parent.createEl("h2");
 
-		this.addToggleSetting(containerEl, {
-			name: t("setting.general.showSeasons.name"),
-			desc: t("setting.general.showSeasons.desc"),
-			key: "showSeasonalNotes",
-			refresh: true,
+		onLocalChange(() => {
+			element.textContent = t(key);
+		}, true);
+
+		return element;
+	}
+
+	addToggle(
+		containerEl: HTMLElement,
+		nameKey: string,
+		descKey: string | null,
+		key: TBoolSettingKeys,
+		opts: { refresh?: boolean } = {},
+	): void {
+		const setting = new Setting(containerEl).addToggle((toggle) => {
+			toggle.setValue(this.plugin.setting[key]).onChange(async (value) => {
+				this.plugin.setting[key] = value;
+				await this.plugin.saveSetting();
+
+				if (opts.refresh) {
+					this.plugin.refreshViews();
+				}
+			});
 		});
 
-		containerEl.createEl("h2", { text: t("setting.sections.paths") });
+		this.trackSetting(setting, nameKey, descKey);
+	}
 
-		this.addPathSetting(containerEl, t("setting.paths.daily.name"), "dailyNotesPath", {
-			desc: t("setting.paths.daily.desc"),
-			mode: "folder",
-		});
-		this.addPathSetting(containerEl, t("setting.paths.weekly.name"), "weeklyNotesPath", {
-			desc: t("setting.paths.weekly.desc"),
-			mode: "folder",
-		});
-		this.addPathSetting(containerEl, t("setting.paths.monthly.name"), "monthlyNotesPath", {
-			desc: t("setting.paths.monthly.desc"),
-			mode: "folder",
-		});
-		this.addPathSetting(containerEl, t("setting.paths.seasonal.name"), "seasonalNotesPath", {
-			desc: t("setting.paths.seasonal.desc"),
-			mode: "folder",
-		});
-		this.addPathSetting(containerEl, t("setting.paths.yearly.name"), "yearlyNotesPath", {
-			desc: t("setting.paths.yearly.desc"),
-			mode: "folder",
-		});
+	addDropdown(
+		containerEl: HTMLElement,
+		nameKey: string,
+		descKey: string | null,
+		key: Extract<keyof TSetting, "language" | "dateFormat" | "weekendDays" | "hijriBase">,
+		optionKeys: Record<string, string>,
+		opts: { refresh?: boolean; isLanguage?: boolean } = {},
+	): void {
+		const setting = new Setting(containerEl).addDropdown((dropdown) => {
+			const optionMap = new Map<HTMLOptionElement, string>();
 
-		containerEl.createEl("h2", { text: t("setting.sections.templates") });
+			for (const [value, labelKey] of Object.entries(optionKeys)) {
+				dropdown.addOption(value, "");
+				optionMap.set(dropdown.selectEl.options[dropdown.selectEl.options.length - 1], labelKey);
+			}
 
-		this.addPathSetting(containerEl, t("setting.templates.daily.name"), "dailyTemplatePath", {
-			desc: t("setting.templates.daily.desc"),
-			mode: "md-file",
-		});
-		this.addPathSetting(containerEl, t("setting.templates.weekly.name"), "weeklyTemplatePath", {
-			desc: t("setting.templates.weekly.desc"),
-			mode: "md-file",
-		});
-		this.addPathSetting(containerEl, t("setting.templates.monthly.name"), "monthlyTemplatePath", {
-			desc: t("setting.templates.monthly.desc"),
-			mode: "md-file",
-		});
-		this.addPathSetting(containerEl, t("setting.templates.seasonal.name"), "seasonalTemplatePath", {
-			desc: t("setting.templates.seasonal.desc"),
-			mode: "md-file",
-		});
-		this.addPathSetting(containerEl, t("setting.templates.yearly.name"), "yearlyTemplatePath", {
-			desc: t("setting.templates.yearly.desc"),
-			mode: "md-file",
+			onLocalChange(() => {
+				for (const [option, labelKey] of optionMap) {
+					option.textContent = t(labelKey);
+				}
+			}, true);
+
+			dropdown.setValue(this.plugin.setting[key]).onChange(async (value) => {
+				(this.plugin.setting[key] as string) = value;
+
+				await this.plugin.saveSetting();
+
+				if (opts.isLanguage) {
+					setLocal(value as TLocal);
+				}
+
+				if (opts.refresh || opts.isLanguage) {
+					this.plugin.refreshViews();
+				}
+			});
 		});
 
-		containerEl.createEl("h2", { text: t("setting.sections.extraCalendars") });
+		this.trackSetting(setting, nameKey, descKey);
+	}
 
-		this.addToggleSetting(containerEl, {
-			name: t("setting.extraCalendars.showGregorian.name"),
-			desc: t("setting.extraCalendars.showGregorian.desc"),
-			key: "showGeorgianDates",
-			refresh: true,
-		});
+	addPath(
+		containerEl: HTMLElement,
+		nameKey: string,
+		descKey: string | null,
+		key: keyof TSetting,
+		mode: TPathSuggestMode,
+	): void {
+		const setting = new Setting(containerEl).addText((text) => {
+			text.setValue(this.plugin.setting[key] as string).onChange(async (value) => {
+				(this.plugin.setting[key] as string) = value;
+				await this.plugin.saveSetting();
+			});
 
-		this.addToggleSetting(containerEl, {
-			name: t("setting.extraCalendars.showHijri.name"),
-			desc: t("setting.extraCalendars.showHijri.desc"),
-			key: "showHijriDates",
-			refresh: true,
-		});
-
-		this.addDropdownSetting(containerEl, {
-			name: t("setting.extraCalendars.hijriBase.name"),
-			desc: t("setting.extraCalendars.hijriBase.desc"),
-			key: "hijriBase",
-			options: {
-				iran: t("setting.extraCalendars.hijriBase.options.iran"),
-				umalqura: t("setting.extraCalendars.hijriBase.options.umalqura"),
-			},
-			defaultValue: "iran",
-			refresh: true,
+			new PathSuggest(this.app, text.inputEl, mode);
 		});
 
-		containerEl.createEl("h2", { text: t("setting.sections.holidays") });
-
-		this.addToggleSetting(containerEl, {
-			name: t("setting.holidays.showOfficial.name"),
-			desc: t("setting.holidays.showOfficial.desc"),
-			key: "showHolidays",
-			refresh: true,
-		});
-
-		this.addDropdownSetting(containerEl, {
-			name: t("setting.holidays.weekendDays.name"),
-			desc: t("setting.holidays.weekendDays.desc"),
-			key: "weekendDays",
-			options: {
-				friday: t("setting.holidays.weekendDays.options.friday"),
-				"thursday-friday": t("setting.holidays.weekendDays.options.thursdayFriday"),
-				"friday-saturday": t("setting.holidays.weekendDays.options.fridaySaturday"),
-			},
-			defaultValue: "friday",
-			refresh: true,
-		});
-
-		containerEl.createEl("h2", { text: t("setting.sections.events") });
-
-		this.addToggleSetting(containerEl, {
-			name: t("setting.events.official.name"),
-			key: "showIROfficialEvents",
-		});
-		this.addToggleSetting(containerEl, {
-			name: t("setting.events.global.name"),
-			key: "showGlobalEvents",
-		});
-		this.addToggleSetting(containerEl, {
-			name: t("setting.events.historical.name"),
-			key: "showIRHistoricalEvents",
-		});
-		this.addToggleSetting(containerEl, {
-			name: t("setting.events.ancient.name"),
-			key: "showIRAncientEvents",
-		});
-		this.addToggleSetting(containerEl, {
-			name: t("setting.events.shia.name"),
-			key: "showShiaEvents",
-		});
-		this.addToggleSetting(containerEl, {
-			name: t("setting.events.sunni.name"),
-			key: "showSunniEvents",
-		});
+		this.trackSetting(setting, nameKey, descKey);
 	}
 }

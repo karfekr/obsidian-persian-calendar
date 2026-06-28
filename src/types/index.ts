@@ -24,32 +24,6 @@ export type THijri = {
 
 export type TWeekStart = "sat" | "sun" | "mon";
 
-export type TEventRecord = Record<number, Record<number, TEventObject[]>>;
-
-export type TEventCategory =
-	| "government"
-	| "historical"
-	| "ancient"
-	| "shia"
-	| "sunni"
-	| "international"
-	| "united_nations"
-	| "religious";
-
-type Ttitle = {
-	fa: string;
-	en: string;
-};
-
-export type TEventObject = {
-	isHolidayInIran: boolean;
-	categories: TEventCategory[];
-	title: Ttitle;
-};
-
-export type TDayMap = Map<number, TEventObject[]>;
-export type TMonthMap = Map<number, TDayMap>;
-
 export type TGetDayOfWeek = { jYear: number; jWeekNumber: number };
 
 export type TSupportedHijriYear = keyof typeof IRAN_HIJRI_MONTHS;
@@ -161,7 +135,7 @@ export type TReleaseNote = {
 
 export type TSocialLink = {
 	href: string;
-	title: Ttitle;
+	title: string;
 	icon: string;
 };
 
@@ -171,3 +145,5 @@ export type TPathTokenContext = {
 	season?: number;
 	local?: TLocal;
 };
+
+export type TPathSuggestMode = "folder" | "file" | "md-file";

@@ -3,7 +3,7 @@ import { setAdapter } from "persian-holidays";
 import { DatePicker } from "src/components";
 
 import { DEFAULT_SETTING } from "./constants";
-import { onLocalChange, setLocal, t } from "./i18n";
+import { onLocalChange, setLocal, t } from "./languages";
 import {
 	ApiService,
 	CommandRegistry,
@@ -15,7 +15,7 @@ import {
 	VersionChecker,
 } from "./services";
 import CalendarView from "./templates/CalendarView";
-import Setting from "./templates/Setting";
+import CalendarSettingTab from "./templates/Setting";
 import type { TSetting } from "./types";
 import { dateToJalali, todayTehran } from "./utils/dateUtils";
 import { createEventAdapter } from "./utils/eventUtils/eventAdapter";
@@ -97,7 +97,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		this.eventManager.registerEvents();
 
 		// Register setting tab
-		this.addSettingTab(new Setting(this.app, this));
+		this.addSettingTab(new CalendarSettingTab(this.app, this));
 
 		// Register commands
 		this.commandRegistry.init();

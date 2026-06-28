@@ -1,5 +1,6 @@
 import { Platform } from "obsidian";
-import type { TEventObject, TLocal } from "src/types";
+import type { EventType } from "persian-holidays";
+import type { TLocal } from "src/types";
 
 export default class Tooltip {
 	private tooltipWrapperSelector = ".persian-calendar--tooltip-wrapper";
@@ -29,7 +30,7 @@ export default class Tooltip {
 		return { wrapper, tooltip };
 	}
 
-	public showTooltip(e: MouseEvent | TouchEvent, events: TEventObject[], local: TLocal) {
+	public showTooltip(e: MouseEvent | TouchEvent, events: EventType[], local: TLocal) {
 		const { tooltip } = this.getOrCreateTooltip(local);
 
 		while (tooltip.firstChild) {

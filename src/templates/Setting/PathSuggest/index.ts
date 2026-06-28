@@ -1,28 +1,25 @@
 import { AbstractInputSuggest, App } from "obsidian";
+import type { TPathSuggestMode } from "src/types";
 
-export type PathSuggestMode = "folder" | "file" | "md-file";
+export class PathSuggest extends AbstractInputSuggest<string> {
+	private readonly mode: TPathSuggestMode;
+	private readonly inputEl: HTMLInputElement;
 
-export default class PathSuggest extends AbstractInputSuggest<string> {
-	private mode: PathSuggestMode;
-	private inputEl: HTMLInputElement;
-
-	constructor(app: App, inputEl: HTMLInputElement, mode: PathSuggestMode = "folder") {
+	constructor(app: App, inputEl: HTMLInputElement, mode: TPathSuggestMode = "folder") {
 		super(app, inputEl);
-		this.inputEl = inputEl;
 		this.mode = mode;
+		this.inputEl = inputEl;
 	}
 
 	async getSuggestions(query: string): Promise<string[]> {
 		const lastSlash = query.lastIndexOf("/");
 		const dirPath = lastSlash >= 0 ? query.substring(0, lastSlash) : "";
 		const partial = query.substring(lastSlash + 1).toLowerCase();
-
 		const isHidden = (p: string) => p.split("/").some((part) => part.startsWith("."));
 
 		try {
 			const listed = await this.app.vault.adapter.list(dirPath || "/");
-
-			let entries: string[] = [];
+			let entries: string[];
 
 			if (this.mode === "folder") {
 				entries = listed.folders;
@@ -38,11 +35,11 @@ export default class PathSuggest extends AbstractInputSuggest<string> {
 		}
 	}
 
-	renderSuggestion(path: string, el: HTMLElement) {
+	renderSuggestion(path: string, el: HTMLElement): void {
 		el.setText(path);
 	}
 
-	selectSuggestion(path: string) {
+	selectSuggestion(path: string): void {
 		this.setValue(path);
 		this.inputEl.dispatchEvent(new Event("input"));
 		this.close();
