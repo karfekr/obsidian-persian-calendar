@@ -63,7 +63,8 @@ You can set the paths for your calendar notes dynamically.
 
 ## <a name="quick_reference"></a> Quick Reference to Calendar Notes
 
-Using the `@` symbol, you can quickly reference your calendar notes.
+Use `@` to insert a link to a calendar note, or `@/` to insert the resolved date as plain text
+without creating a link.
 
 - **Days:** `امروز`، `دیروز`، `فردا`، `پریروز`، `پس‌فردا`
 - **Days of the week:** (نام روز جاری)، `روز بعد`، `روز قبل`

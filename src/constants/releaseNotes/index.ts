@@ -8,13 +8,15 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 			fa: [
 				"ویژگی جدید '@/' برای اضافه شدن تاریخ بدون لینک به یادداشت",
 				"رفع باگ باز کردن روزنوشت به هنگام باز کردن ابسیدین",
-				"رفع باگ نمایش تولتیپ در مک او اس",
+				"از این پس کاربران می‌توانند از روی تقویم ببیند که کدام روزنوشت را باز کرده‌اند",
+				"رفع باگ نمایش تولتیپ در MacOS",
 				"بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard",
 			],
 			en: [
 				"Add @/ for adding date without link to note",
 				"Fix daily note opening bug on Obsidian startup",
-				"Fix Tooltip display bug on macOS",
+				"The calendar now highlights the currently open daily note",
+				"Fix Tooltip display bug on MacOS",
 				"Code improvements based on Obsidian Scorecard suggestions",
 			],
 		},

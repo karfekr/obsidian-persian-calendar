@@ -2,8 +2,13 @@ import { App, MarkdownView, TFile, TFolder } from "obsidian";
 import { createNoteModal, Notice } from "src/components";
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
-import type { TLocal, TPathTokenContext } from "src/types";
-import { jalaliMonthLength, jalaliToGregorian, jalaliToSeason } from "src/utils/dateUtils";
+import type { TJalali, TLocal, TPathTokenContext } from "src/types";
+import {
+	gregorianToJalali,
+	jalaliMonthLength,
+	jalaliToGregorian,
+	jalaliToSeason,
+} from "src/utils/dateUtils";
 
 export default class NoteService {
 	constructor(
@@ -277,7 +282,7 @@ export default class NoteService {
 		return result;
 	}
 
-	public async openOrCreateDailyNote(jy: number, jm: number, jd: number) {
+	private buildDailyNotePath(jy: number, jm: number, jd: number) {
 		let dateString = `${jy}-${jm.toString().padStart(2, "0")}-${jd.toString().padStart(2, "0")}`;
 
 		if (this.plugin.setting.dateFormat === "gregorian") {
@@ -290,6 +295,31 @@ export default class NoteService {
 			jy,
 			jm,
 		});
+
+		return { filePath, dateString };
+	}
+
+	public getDailyNoteDate(file: TFile): TJalali | null {
+		const match = file.basename.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+		if (!match) return null;
+
+		const year = Number(match[1]);
+		const month = Number(match[2]);
+		const day = Number(match[3]);
+
+		const date: TJalali =
+			this.plugin.setting.dateFormat === "gregorian"
+				? gregorianToJalali(year, month, day)
+				: { jy: year, jm: month, jd: day };
+
+		const { filePath } = this.buildDailyNotePath(date.jy, date.jm, date.jd);
+		if (filePath !== file.path) return null;
+
+		return date;
+	}
+
+	public async openOrCreateDailyNote(jy: number, jm: number, jd: number) {
+		const { filePath, dateString } = this.buildDailyNotePath(jy, jm, jd);
 
 		const lang = this.plugin.setting.language;
 		const confirmTitle = lang === "fa" ? "ایجاد روزنوشت جدید" : "Create New Daily Note";
