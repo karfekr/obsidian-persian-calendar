@@ -3,7 +3,7 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
-		version: "4.6.5",
+		version: "4.7.0",
 		changes: {
 			fa: [
 				"ویژگی جدید '@/' برای اضافه شدن تاریخ بدون لینک به یادداشت",
