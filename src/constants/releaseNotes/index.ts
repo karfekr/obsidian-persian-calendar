@@ -6,13 +6,15 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 		version: "4.6.5",
 		changes: {
 			fa: [
-				"افزودن @/ برای اضافه شدن تاریخ بدون لینک به یادداشت",
+				"ویژگی جدید '@/' برای اضافه شدن تاریخ بدون لینک به یادداشت",
 				"رفع باگ باز کردن روزنوشت به هنگام باز کردن ابسیدین",
+				"رفع باگ نمایش تولتیپ در مک او اس",
 				"بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard",
 			],
 			en: [
 				"Add @/ for adding date without link to note",
 				"Fix daily note opening bug on Obsidian startup",
+				"Fix Tooltip display bug on macOS",
 				"Code improvements based on Obsidian Scorecard suggestions",
 			],
 		},
