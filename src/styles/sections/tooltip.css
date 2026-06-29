@@ -1,6 +1,9 @@
 .persian-calendar--tooltip-wrapper {
 	position: absolute;
-	inset: 0;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
 	pointer-events: none;
 	z-index: 9999;
 }
@@ -18,7 +21,7 @@
 	font-size: 12px;
 	line-height: 1.6;
 	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-	pointer-events: auto;
+	pointer-events: none;
 }
 
 .persian-calendar__tooltip-event {
