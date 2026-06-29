@@ -1,3 +1,4 @@
+import type { EditorSuggestContext } from "obsidian";
 import { SMART_DATE_LINKS, WEEKDAYS_NAME } from "src/constants";
 import PersianCalendarPlugin from "src/main";
 import type { TDateFormatWithoutHijri, TLocal, TSuggestProvider } from "src/types";
@@ -19,9 +20,9 @@ export default class SmartDateLinker {
 		this.dateFormat = plugin.setting.dateFormat;
 	}
 
-	private makeLink(dash: string | null, label: string): string {
+	private makeOutput(dash: string | null, label: string, link = true): string {
 		if (!dash) return label;
-		return `[[${dash}|${label}]]`;
+		return link ? `[[${dash}|${label}]]` : dash;
 	}
 
 	private dateToDashByFormat(date: Date) {
@@ -36,7 +37,7 @@ export default class SmartDateLinker {
 		return d;
 	}
 
-	getFormattedDateLink(keyword: string, date: Date, local: TLocal = "fa"): string {
+	formatSmartDate(keyword: string, date: Date, local: TLocal = "fa", link = true): string {
 		const now = todayTehran();
 		const ERROR_LINK = "تاریخ شناسایی نشد";
 
@@ -57,7 +58,7 @@ export default class SmartDateLinker {
 			now.setDate(now.getDate() + daysOffset + extraWeeks);
 
 			const label = weekdayName + (specifier ? ` ${specifier.trim()}` : "");
-			return this.makeLink(this.dateToDashByFormat(now), label);
+			return this.makeOutput(this.dateToDashByFormat(now), label, link);
 		}
 
 		const dayOffsets: Record<string, number> = {
@@ -67,14 +68,22 @@ export default class SmartDateLinker {
 			پریروز: -2,
 			پس‌فردا: 2,
 		};
+
 		if (keyword in dayOffsets) {
-			return this.makeLink(
+			return this.makeOutput(
 				this.dateToDashByFormat(this.adjustedDate(date, dayOffsets[keyword])),
 				keyword,
+				link,
 			);
 		}
 
-		type PeriodConfig = { fn: (d: Date) => string; days?: number; months?: number; years?: number };
+		type PeriodConfig = {
+			fn: (d: Date) => string;
+			days?: number;
+			months?: number;
+			years?: number;
+		};
+
 		const periodMap: Partial<Record<string, PeriodConfig>> = {
 			"این هفته": { fn: dateToJWeekDash },
 			"هفته قبل": { fn: dateToJWeekDash, days: -7 },
@@ -91,9 +100,11 @@ export default class SmartDateLinker {
 		};
 
 		const period = periodMap[keyword];
+
 		if (period) {
 			const { fn, days, months, years } = period;
-			return this.makeLink(fn(this.adjustedDate(now, days, months, years)), keyword);
+
+			return this.makeOutput(fn(this.adjustedDate(now, days, months, years)), keyword, link);
 		}
 
 		return ERROR_LINK;
@@ -101,9 +112,20 @@ export default class SmartDateLinker {
 
 	public toProvider(): TSuggestProvider {
 		return {
-			trigger: /@[^@\s]*$/,
-			getSuggestions: (query: string) => SMART_DATE_LINKS.filter((s) => s.startsWith(query)),
-			onSelect: (value: string) => this.getFormattedDateLink(value, todayTehran()),
+			trigger: /@\/?[^@\s]*$/,
+
+			getSuggestions: (query: string) => {
+				const normalized = query.startsWith("/") ? query.slice(1) : query;
+				return SMART_DATE_LINKS.filter((s) => s.startsWith(normalized));
+			},
+
+			onSelect: (value: string, ctx: EditorSuggestContext) => {
+				const query = typeof ctx === "string" ? ctx : ctx.query;
+				const normalized = query.startsWith("/") ? query.slice(1) : query;
+				const isPlain = query.startsWith("/");
+
+				return this.formatSmartDate(normalized || value, todayTehran(), "fa", !isPlain);
+			},
 		};
 	}
 }

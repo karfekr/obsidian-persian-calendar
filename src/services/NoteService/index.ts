@@ -64,26 +64,6 @@ export default class NoteService {
 		return resolved ? `${resolved}/${fileName}` : fileName;
 	}
 
-	private async ensureFolderExistsForPath(filePath: string) {
-		const parts = filePath.split("/");
-		parts.pop();
-
-		const folderPath = parts.join("/");
-		if (!folderPath) return;
-
-		let currentPath = "";
-		for (const part of parts) {
-			if (!part) continue;
-
-			currentPath = currentPath ? `${currentPath}/${part}` : part;
-
-			const existing = this.app.vault.getAbstractFileByPath(currentPath);
-			if (!existing) {
-				await this.app.vault.createFolder(currentPath);
-			}
-		}
-	}
-
 	private async openNoteInWorkspace(noteFile: TFile) {
 		const markdownLeaves = this.app.workspace.getLeavesOfType("markdown");
 
@@ -96,7 +76,7 @@ export default class NoteService {
 			return;
 		}
 
-		await this.app.workspace.openLinkText(noteFile.path, "", false);
+		await this.app.workspace.getLeaf(true).openFile(noteFile);
 	}
 
 	private async applyTemplateIfConfigured(
@@ -137,6 +117,33 @@ export default class NoteService {
 		}
 	}
 
+	private async ensureFolderExistsForPath(filePath: string): Promise<boolean> {
+		const folderPath = filePath.substring(0, filePath.lastIndexOf("/"));
+
+		if (!folderPath) return true;
+
+		let currentPath = "";
+
+		for (const segment of folderPath.split("/")) {
+			currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+
+			const existing = this.app.vault.getAbstractFileByPath(currentPath);
+
+			if (existing instanceof TFolder) {
+				continue;
+			}
+
+			if (existing instanceof TFile) {
+				Notice(`Cannot create folder because a file already exists:\n${currentPath}`);
+				return false;
+			}
+
+			await this.app.vault.createFolder(currentPath);
+		}
+
+		return true;
+	}
+
 	private async openOrCreateNoteWithConfirm(options: {
 		filePath: string;
 		confirmTitle: string;
@@ -145,53 +152,62 @@ export default class NoteService {
 	}) {
 		const { filePath, confirmTitle, confirmMessage, noteType } = options;
 
-		try {
-			const existing = this.app.vault.getAbstractFileByPath(filePath);
+		const existing = this.app.vault.getAbstractFileByPath(filePath);
 
-			if (existing instanceof TFile) {
-				await this.openNoteInWorkspace(existing);
-				return;
-			}
-
-			if (existing instanceof TFolder) {
-				Notice(`Cannot create note because a folder already exists:\n${filePath}`);
-				return;
-			}
-
-			if (this.plugin.setting.askForCreateNote) {
-				const shouldCreate = await createNoteModal(this.app, {
-					title: confirmTitle,
-					message: confirmMessage,
-				});
-
-				if (!shouldCreate) {
-					return;
-				}
-			}
-
-			await this.ensureFolderExistsForPath(filePath);
-
-			const createdFile = await this.app.vault.create(filePath, "");
-
-			if (noteType) {
-				await this.applyTemplateIfConfigured(createdFile, noteType);
-			}
-
-			await this.openNoteInWorkspace(createdFile);
-		} catch (error) {
-			if (error instanceof Error) {
-				if (error.message.includes("Folder already exists")) {
-					Notice(`Cannot create note because a folder already exists:\n${filePath}`);
-					return;
-				}
-
-				Notice(`Error creating note: ${error.message}`);
-			} else {
-				Notice("An unknown error occurred while creating the note.");
-			}
-
-			Notice(`Unexpected Error: ${error}`);
+		if (existing instanceof TFile) {
+			await this.openNoteInWorkspace(existing);
+			return;
 		}
+
+		if (existing instanceof TFolder) {
+			Notice(`Cannot create note because a folder already exists:\n${filePath}`);
+			return;
+		}
+
+		if (this.plugin.setting.askForCreateNote) {
+			const confirmed = await createNoteModal(this.app, {
+				title: confirmTitle,
+				message: confirmMessage,
+			});
+
+			if (!confirmed) {
+				return;
+			}
+		}
+
+		if (!(await this.ensureFolderExistsForPath(filePath))) {
+			return;
+		}
+
+		let createdFile: TFile;
+
+		try {
+			createdFile = await this.app.vault.create(filePath, "");
+		} catch {
+			const retry = this.app.vault.getAbstractFileByPath(filePath);
+
+			if (!(retry instanceof TFile)) {
+				Notice(`Failed to create note:\n${filePath}`);
+				return;
+			}
+
+			createdFile = retry;
+		}
+
+		if (noteType) {
+			try {
+				await this.applyTemplateIfConfigured(createdFile, noteType);
+			} catch (error) {
+				Notice(
+					`The note was created successfully, but applying the template failed.${
+						error instanceof Error ? `\n${error.message}` : ""
+					}`,
+				);
+			}
+		}
+
+		await this.openNoteInWorkspace(createdFile);
+		this.plugin.refreshViews();
 	}
 
 	public getWeeksWithNotes(jy: number): number[] {

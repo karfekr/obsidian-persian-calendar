@@ -3,16 +3,27 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
-		version: "4.6.1",
+		version: "4.6.5",
 		changes: {
 			fa: [
-				"بهبود ساختار کد تنظیمات و کنار گذاشتن display() منسوخ شده",
+				"ویژگی جدید '@/' برای اضافه شدن تاریخ بدون لینک به یادداشت",
 				"رفع باگ باز کردن روزنوشت به هنگام باز کردن ابسیدین",
+				"رفع باگ نمایش تولتیپ در مک او اس",
+				"بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard",
 			],
 			en: [
-				"Refactor config structure and remove deprecated display()",
+				"Add @/ for adding date without link to note",
 				"Fix daily note opening bug on Obsidian startup",
+				"Fix Tooltip display bug on macOS",
+				"Code improvements based on Obsidian Scorecard suggestions",
 			],
+		},
+	},
+	{
+		version: "4.6.1",
+		changes: {
+			fa: ["بهبود ساختار کد تنظیمات و کنار گذاشتن display() منسوخ شده"],
+			en: ["Refactor config structure and remove deprecated display()"],
 		},
 	},
 	{

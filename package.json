@@ -59,6 +59,6 @@
 	},
 	"dependencies": {
 		"@internationalized/date": "^3.12.2",
-		"persian-holidays": "^1.4.0"
+		"persian-holidays": "^1.5.0"
 	}
 }
