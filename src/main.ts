@@ -58,13 +58,13 @@ export default class PersianCalendarPlugin extends Plugin {
 		// Initialize note service
 		this.noteService = new NoteService(this.app, this);
 
-		void this.openDailyNoteOnStartup();
-
 		// Register calendar view
 		this.registerView("persian-calendar", (leaf) => new CalendarView(leaf, this.app, this));
 
 		// Activate view if not already active
 		this.app.workspace.onLayoutReady(() => {
+			void this.openDailyNoteOnStartup();
+
 			if (this.app.workspace.getLeavesOfType("persian-calendar").length === 0) {
 				void this.activateView();
 			}
