@@ -166,6 +166,8 @@ export default class CalendarBodyRender {
 		gridEl?.remove();
 		gridEl = contentEl.createEl("div", { cls: "persian-calendar__days" });
 
+		const activeDate = this.calendarState.getActiveJDate();
+
 		for (const cell of cells) {
 			const dayEl = gridEl.createEl("div", { cls: "persian-calendar__day" });
 
@@ -206,6 +208,16 @@ export default class CalendarBodyRender {
 
 			if (cell.isToday) {
 				dayEl.addClass("persian-calendar__day--current");
+			}
+
+			if (
+				activeDate &&
+				cell.isInCurrentMonth &&
+				cell.jy === activeDate.jy &&
+				cell.jm === activeDate.jm &&
+				cell.jd === activeDate.jd
+			) {
+				dayEl.addClass("persian-calendar__day--active");
 			}
 
 			if (cell.isHolidayInIran || cell.isWeekend) {

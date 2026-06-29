@@ -1,3 +1,4 @@
+import type { TJalali } from "src/types";
 import {
 	dateToJalali,
 	dateToJWeekNumber,
@@ -10,6 +11,7 @@ import {
 export default class CalendarState {
 	public jYearState: number;
 	public jMonthState: number;
+	public activeJDate: TJalali | null = null;
 
 	constructor(initial?: { jYear: number; jMonth: number }) {
 		if (initial) {
@@ -33,6 +35,14 @@ export default class CalendarState {
 			jYearState: this.jYearState,
 			jMonthState: this.jMonthState,
 		};
+	}
+
+	public setActiveJDate(date: TJalali | null) {
+		this.activeJDate = date;
+	}
+
+	public getActiveJDate(): TJalali | null {
+		return this.activeJDate;
 	}
 
 	public changeJMonthState(offset: number) {

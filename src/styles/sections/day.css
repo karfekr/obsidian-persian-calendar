@@ -63,13 +63,24 @@
 }
 
 .persian-calendar__day--current.persian-calendar__day--current {
-	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 10%, transparent);
+	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 5%, transparent);
 	border: 1px solid var(--persian-calendar-color-primary);
 	border-radius: 5px;
 	box-shadow: 0 0 0 1px color-mix(in srgb, var(--persian-calendar-color-primary) 50%, transparent);
 }
 .persian-calendar__day--current:hover {
-	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 30%, transparent);
+	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 15%, transparent);
+}
+
+.persian-calendar__day--active.persian-calendar__day--active {
+	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 50%, transparent);
+	color: var(--persian-calendar-color-static);
+	border: 1px solid var(--persian-calendar-color-primary);
+	border-radius: 5px;
+	font-weight: 600;
+}
+.persian-calendar__day--active:hover {
+	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 40%, transparent);
 }
 
 .persian-calendar__gregorian-day--center,

@@ -1,4 +1,4 @@
-import { App, View, WorkspaceLeaf } from "obsidian";
+import { App, MarkdownView, View, WorkspaceLeaf } from "obsidian";
 import PersianCalendarPlugin from "src/main";
 import { NoteService } from "src/services";
 import type { TJalali, TSetting } from "src/types";
@@ -51,6 +51,15 @@ export default class CalendarView extends View {
 
 	async onOpen() {
 		this.startDailyCheckInterval();
+
+		this.registerEvent(
+			this.app.workspace.on("active-leaf-change", (leaf) => {
+				this.handleActiveLeafChange(leaf);
+			}),
+		);
+
+		this.syncActiveDailyNote();
+
 		this.render();
 	}
 
@@ -68,6 +77,46 @@ export default class CalendarView extends View {
 
 	public refreshCalendar() {
 		this.render();
+	}
+
+	private syncActiveDailyNote() {
+		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+		const date = view?.file ? this.notesService.getDailyNoteDate(view.file) : null;
+
+		if (!date) return;
+
+		this.calendarState.setActiveJDate(date);
+		this.calendarState.setJState(date.jy, date.jm);
+	}
+
+	private handleActiveLeafChange(leaf: WorkspaceLeaf | null) {
+		if (!(leaf?.view instanceof MarkdownView)) {
+			return;
+		}
+
+		const file = leaf.view.file;
+		const next = file ? this.notesService.getDailyNoteDate(file) : null;
+		const current = this.calendarState.getActiveJDate();
+
+		if (this.isSameJDate(current, next)) {
+			return;
+		}
+
+		this.calendarState.setActiveJDate(next);
+
+		if (next) {
+			this.calendarState.setJState(next.jy, next.jm);
+		}
+
+		this.render();
+	}
+
+	private isSameJDate(a: TJalali | null, b: TJalali | null): boolean {
+		if (!a || !b) {
+			return a === b;
+		}
+
+		return a.jy === b.jy && a.jm === b.jm && a.jd === b.jd;
 	}
 
 	private startDailyCheckInterval() {

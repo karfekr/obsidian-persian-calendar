@@ -17,6 +17,7 @@
 	padding: 6px 8px;
 	z-index: 1;
 	display: none;
+	width: max-content;
 	max-width: 260px;
 	font-size: 12px;
 	line-height: 1.6;
