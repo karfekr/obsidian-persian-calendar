@@ -263,7 +263,7 @@ pcApi.dateToEvents(new Date(), { base: "umalqura" }); // با مبنای ام‌
 
 ## <a name="other"></a> دیگر امکانات
 
-- اندازه‌ی تقویم به‌طور خودکار با عرض سایدبار هماهنگ می‌شود.
+- اندازه‌ی تقویم به‌طور خودکار با عرض سایدبار تنظیم می‌شود.
 <div align="center">
 	<img src="Instructions/responsive.webp" alt="view" width="350px" />
 </div>

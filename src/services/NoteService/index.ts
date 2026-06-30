@@ -81,7 +81,13 @@ export default class NoteService {
 			return;
 		}
 
-		await this.app.workspace.getLeaf(true).openFile(noteFile);
+		const leaf =
+			this.app.workspace.getActiveViewOfType(MarkdownView)?.leaf ??
+			this.app.workspace.getMostRecentLeaf();
+
+		if (leaf) {
+			await leaf.openFile(noteFile);
+		}
 	}
 
 	private async applyTemplateIfConfigured(

@@ -3,13 +3,14 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
-		version: "4.7.0",
+		version: "4.7.1",
 		changes: {
 			fa: [
 				"ویژگی جدید '@/' برای اضافه شدن تاریخ بدون لینک به یادداشت",
 				"رفع باگ باز کردن روزنوشت به هنگام باز کردن ابسیدین",
 				"از این پس کاربران می‌توانند از روی تقویم ببیند که کدام روزنوشت را باز کرده‌اند",
-				"رفع باگ نمایش تولتیپ در MacOS",
+				"رفع باگ نمایش مناسبت‌ها در MacOS",
+				"بازگشت به رفتار پیشفرض باز شدن یادداشت با کلیک روی تقویم",
 				"بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard",
 			],
 			en: [
@@ -17,6 +18,7 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 				"Fix daily note opening bug on Obsidian startup",
 				"The calendar now highlights the currently open daily note",
 				"Fix Tooltip display bug on MacOS",
+				"Revert to default behavior of opening note on calendar click",
 				"Code improvements based on Obsidian Scorecard suggestions",
 			],
 		},
