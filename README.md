@@ -6,6 +6,10 @@
 
 # "Persian Calendar" Plugin for Obsidian
 
+<div align="center">
+	<img src="Instructions/view-en.png" alt="view" />
+</div>
+
 This plugin adds the Solar Hijri calendar alongside the Gregorian and Lunar Hijri calendars to
 [Obsidian](https://obsidian.md/), offering Iranian users a more pleasant journaling experience.
 
@@ -255,8 +259,9 @@ pcApi.dateToEvents(new Date(), { base: "umalqura" }); // With Umm al-Qura basis
 
 ## <a name="other"></a> Other Features
 
+- scales responsively with the sidebar width
 <div align="center">
-	<img src="Instructions/view-en.png" alt="view" />
+	<img src="Instructions/responsive.webp" alt="view" width="350px" />
 </div>
 
 - Display of official Iranian holidays on the calendar

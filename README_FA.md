@@ -8,6 +8,10 @@
 
 # افزونه‌ی «تقویم فارسی» برای Obsidian
 
+<div align="center">
+	<img src="Instructions/view-fa.png" alt="view" />
+</div>
+
 این افزونه، تقویم هجری شمسی را در کنار تقویم میلادی و هجری قمری به [ابسیدین](https://obsidian.md/)
 اضافه می‌کند تا کاربران ایرانی تجربه‌ی دلپذیرتری از ژورنال‌نویسی داشته باشند.
 
@@ -259,8 +263,9 @@ pcApi.dateToEvents(new Date(), { base: "umalqura" }); // با مبنای ام‌
 
 ## <a name="other"></a> دیگر امکانات
 
+- اندازه‌ی تقویم به‌طور خودکار با عرض سایدبار هماهنگ می‌شود.
 <div align="center">
-	<img src="Instructions/view-fa.png" alt="view" />
+	<img src="Instructions/responsive.webp" alt="view" width="350px" />
 </div>
 
 - نمایش روزهای تعطیل رسمی ایران بر روی تقویم
