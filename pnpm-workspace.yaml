@@ -1,4 +1,5 @@
 allowBuilds:
   esbuild: false
+  simple-git-hooks: set this to true or false
 minimumReleaseAgeExclude:
   - persian-holidays@1.5.0
