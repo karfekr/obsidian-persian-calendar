@@ -12,8 +12,8 @@ importers:
         specifier: ^3.12.2
         version: 3.12.2
       persian-holidays:
-        specifier: ^1.5.0
-        version: 1.5.0
+        specifier: ^1.5.1
+        version: 1.5.1
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.4
@@ -1070,8 +1070,8 @@ packages:
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
 
-  persian-holidays@1.5.0:
-    resolution: {integrity: sha512-1M3P/Y0I80Mb9BSh6SaMdmmPhe6Az31t7NXQbQ7DoqKV2IReYELPI5V9wRbhtvbmmJySiM2HqHUxgdZBIihxfw==}
+  persian-holidays@1.5.1:
+    resolution: {integrity: sha512-L5rAd/Va7HM7TdXXkZ+qsHPTl9OMVqEnviKj1EZi7Ui25hGlC42SNwam/1vrdtLLfJfoh7prMGlNgxwSBb6Y4Q==}
     engines: {node: '>=18.0.0'}
 
   picocolors@1.1.1:
@@ -2416,7 +2416,7 @@ snapshots:
 
   pathe@2.0.3: {}
 
-  persian-holidays@1.5.0: {}
+  persian-holidays@1.5.1: {}
 
   picocolors@1.1.1: {}
 
