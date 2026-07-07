@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-persian-calendar",
-	"version": "4.7.1",
+	"version": "4.7.2",
 	"description": "Persian/Jalali calendar integration featuring dynamic note paths, placeholders, API access, and event display.",
 	"main": "main.js",
 	"scripts": {
@@ -12,10 +12,14 @@
 		"build": "pnpm run clean && pnpm run build:style && node esbuild.config.mjs production && tsc -noEmit -skipLibCheck",
 		"build:style": "node scripts/build-styles.mjs",
 		"test": "vitest",
-		"prepare": "husky"
+		"prepare": "simple-git-hooks"
+	},
+	"simple-git-hooks": {
+		"pre-commit": "pnpm nano-staged",
+		"pre-push": "pnpm run test && pnpm run version"
 	},
 	"keywords": [],
-	"packageManager": "pnpm@11.9.0+sha512.bd682d5d03fe525ef7c9fd6780c6884d1e756ac4c9c9fe00c538782824310dcf90e3ddc4f53835f06dfaebd5085e41855e0bcbb3b60de2ac5bbab89e5036f03b",
+	"packageManager": "pnpm@11.10.0+sha512.0b7f8b98060031904c017e3a41eb187a16d40eeb829b95c4f8cb03681761fc4ab53dd219115b9b447f4dce1a05a214764461e7d3703392a9f32f9511ce8c86c8",
 	"author": {
 		"name": "Hossein Maleknejad",
 		"url": "http://karfekr.ir"
@@ -47,7 +51,6 @@
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-simple-import-sort": "^13.0.0",
 		"globals": "^17.6.0",
-		"husky": "^9.1.7",
 		"nano-staged": "^1.0.2",
 		"obsidian": "^1.13.1",
 		"postcss": "^8.5.15",
@@ -55,10 +58,11 @@
 		"tslib": "2.8.1",
 		"typescript": "5.9.3",
 		"typescript-eslint": "^8.61.0",
+		"simple-git-hooks": "^2.13.1",
 		"vitest": "^4.1.8"
 	},
 	"dependencies": {
 		"@internationalized/date": "^3.12.2",
-		"persian-holidays": "^1.5.0"
+		"persian-holidays": "^1.5.1"
 	}
 }

@@ -9,7 +9,7 @@ import {
 	jalaliToDate,
 } from "src/utils/dateUtils";
 
-export function createEventAdapter(): AdapterType {
+export function setDefaultEventAdapter(): AdapterType {
 	return {
 		firstWeekdayOfMonth(calendar, year, month) {
 			switch (calendar) {

@@ -48,7 +48,11 @@ export default class CalendarSettingTab extends PluginSettingTab {
 			cls: "persian-calendar__setting-banner",
 		});
 
-		this.addHeading(contactUs, "setting.banner.title");
+		const heading = contactUs.createEl("h3");
+
+		onLocalChange(() => {
+			heading.setText(t("setting.banner.title"));
+		}, true);
 
 		SocialLinks(contactUs);
 

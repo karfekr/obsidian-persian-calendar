@@ -12,8 +12,8 @@ importers:
         specifier: ^3.12.2
         version: 3.12.2
       persian-holidays:
-        specifier: ^1.5.0
-        version: 1.5.0
+        specifier: ^1.5.1
+        version: 1.5.1
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.4
@@ -42,9 +42,6 @@ importers:
       globals:
         specifier: ^17.6.0
         version: 17.6.0
-      husky:
-        specifier: ^9.1.7
-        version: 9.1.7
       nano-staged:
         specifier: ^1.0.2
         version: 1.0.2
@@ -57,6 +54,9 @@ importers:
       prettier:
         specifier: ^3.8.4
         version: 3.8.4
+      simple-git-hooks:
+        specifier: ^2.13.1
+        version: 2.13.1
       tslib:
         specifier: 2.8.1
         version: 2.8.1
@@ -853,11 +853,6 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
-  husky@9.1.7:
-    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
@@ -1075,8 +1070,8 @@ packages:
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
 
-  persian-holidays@1.5.0:
-    resolution: {integrity: sha512-1M3P/Y0I80Mb9BSh6SaMdmmPhe6Az31t7NXQbQ7DoqKV2IReYELPI5V9wRbhtvbmmJySiM2HqHUxgdZBIihxfw==}
+  persian-holidays@1.5.1:
+    resolution: {integrity: sha512-L5rAd/Va7HM7TdXXkZ+qsHPTl9OMVqEnviKj1EZi7Ui25hGlC42SNwam/1vrdtLLfJfoh7prMGlNgxwSBb6Y4Q==}
     engines: {node: '>=18.0.0'}
 
   picocolors@1.1.1:
@@ -1304,6 +1299,10 @@ packages:
 
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
+
+  simple-git-hooks@2.13.1:
+    resolution: {integrity: sha512-WszCLXwT4h2k1ufIXAgsbiTOazqqevFCIncOuUBZJ91DdvWcC5+OFkluWRQPrcuSYd8fjq+o2y1QfWqYMoAToQ==}
+    hasBin: true
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -2250,8 +2249,6 @@ snapshots:
 
   has-flag@4.0.0: {}
 
-  husky@9.1.7: {}
-
   ignore@5.3.2: {}
 
   ignore@7.0.5: {}
@@ -2419,7 +2416,7 @@ snapshots:
 
   pathe@2.0.3: {}
 
-  persian-holidays@1.5.0: {}
+  persian-holidays@1.5.1: {}
 
   picocolors@1.1.1: {}
 
@@ -2631,6 +2628,8 @@ snapshots:
   shebang-regex@3.0.0: {}
 
   siginfo@2.0.0: {}
+
+  simple-git-hooks@2.13.1: {}
 
   source-map-js@1.2.1: {}
 
