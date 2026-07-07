@@ -3,6 +3,17 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.7.2",
+		changes: {
+			fa: [
+				"رفع مشکل نمایش مناسبت‌ها روی روزهای تقویم، با وجود غیرفعال بودن هر شش گزینهٔ نمایش مناسبت‌ها.",
+			],
+			en: [
+				'Fixed tooltips appearing on calendar days when all six "Show Events" options were disabled.',
+			],
+		},
+	},
+	{
 		version: "4.7.1",
 		changes: {
 			fa: [

@@ -1,6 +1,6 @@
 import { setAdapter } from "persian-holidays";
 import { dateToEvents } from "src/utils/eventUtils";
-import { createEventAdapter } from "src/utils/eventUtils/eventAdapter";
+import { setDefaultEventAdapter } from "src/utils/eventUtils/eventAdapter";
 import { jalaliToDate } from "src/utils/dateUtils";
 
 const allEventsOff = {
@@ -13,7 +13,7 @@ const allEventsOff = {
 };
 
 beforeAll(() => {
-	setAdapter(createEventAdapter());
+	setAdapter(setDefaultEventAdapter());
 });
 
 describe("dateToEvents", () => {

@@ -18,7 +18,7 @@ import CalendarView from "./templates/CalendarView";
 import CalendarSettingTab from "./templates/Setting";
 import type { TSetting } from "./types";
 import { dateToJalali, todayTehran } from "./utils/dateUtils";
-import { createEventAdapter } from "./utils/eventUtils/eventAdapter";
+import { setDefaultEventAdapter } from "./utils/eventUtils/eventAdapter";
 
 export default class PersianCalendarPlugin extends Plugin {
 	// Core properties
@@ -50,7 +50,7 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		setLocal(this.setting.language);
 
-		setAdapter(createEventAdapter());
+		setAdapter(setDefaultEventAdapter());
 
 		// Initialize api service
 		this.apiService = new ApiService();
