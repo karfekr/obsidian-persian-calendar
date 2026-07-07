@@ -47,6 +47,9 @@ export function dateToEvents(
 	const hijriBase = option?.hijriBase ?? "iran";
 
 	const categories = buildCategories(showEvents);
+	if (categories.length === 0) {
+		return [];
+	}
 
 	const { jy, jm, jd } = dateToJalali(date);
 	const jalaliEvents = getEvents("jalali", jm, jd, {
