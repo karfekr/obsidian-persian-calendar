@@ -37,6 +37,16 @@ export function renderGeneralSettingsSection(
 
 	tab.addToggle(
 		containerEl,
+		"setting.general.useObsidianDailyNotes.name",
+		"setting.general.useObsidianDailyNotes.desc",
+		"useObsidianDailyNotes",
+		{
+			refresh: true,
+		},
+	);
+
+	tab.addToggle(
+		containerEl,
 		"setting.general.askBeforeCreate.name",
 		"setting.general.askBeforeCreate.desc",
 		"askForCreateNote",

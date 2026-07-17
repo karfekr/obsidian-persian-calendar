@@ -58,6 +58,7 @@ export type TBoolSettingKeys = Extract<
 	| "showGlobalEvents"
 	| "askForCreateNote"
 	| "openDailyNoteOnStartup"
+	| "useObsidianDailyNotes"
 >;
 
 export type TSetting = {
@@ -66,6 +67,7 @@ export type TSetting = {
 	versionUpdate: boolean;
 	askForCreateNote: boolean;
 	openDailyNoteOnStartup: boolean;
+	useObsidianDailyNotes: boolean;
 	dateFormat: TDateFormatWithoutHijri;
 	showSeasonalNotes: boolean;
 	// show holidays

@@ -1,6 +1,16 @@
-import { App, MarkdownView, TFile, TFolder } from "obsidian";
+import { App, MarkdownView, normalizePath, TFile, TFolder } from "obsidian";
+import {
+	appHasDailyNotesPluginLoaded,
+	createDailyNote,
+	getAllDailyNotes,
+	getDailyNote,
+	getDailyNoteSettings,
+	getDateFromFile,
+	getDateUID,
+} from "obsidian-daily-notes-interface";
 import { createNoteModal, Notice } from "src/components";
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
+import { getDirection, t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
 import type { TJalali, TLocal, TPathTokenContext } from "src/types";
 import {
@@ -9,6 +19,11 @@ import {
 	jalaliToGregorian,
 	jalaliToSeason,
 } from "src/utils/dateUtils";
+
+type TObsidianDailyNoteSettings = {
+	folder: string;
+	format: string;
+};
 
 export default class NoteService {
 	constructor(
@@ -88,6 +103,101 @@ export default class NoteService {
 		if (leaf) {
 			await leaf.openFile(noteFile);
 		}
+	}
+
+	private shouldUseObsidianDailyNotes() {
+		return this.plugin.setting.useObsidianDailyNotes;
+	}
+
+	private hasObsidianDailyNotesAvailable() {
+		try {
+			return appHasDailyNotesPluginLoaded();
+		} catch {
+			return false;
+		}
+	}
+
+	private jalaliToMoment(jy: number, jm: number, jd: number) {
+		const { gy, gm, gd } = jalaliToGregorian(jy, jm, jd);
+		return window.moment({ year: gy, month: gm - 1, day: gd }).startOf("day");
+	}
+
+	private getObsidianDailyNotesSafely(): Record<string, TFile> {
+		try {
+			return getAllDailyNotes();
+		} catch {
+			return {};
+		}
+	}
+
+	private getObsidianDailyNoteSettingsSafely(): TObsidianDailyNoteSettings {
+		try {
+			const settings = getDailyNoteSettings();
+			return {
+				folder: settings.folder || "",
+				format: settings.format || "YYYY-MM-DD",
+			};
+		} catch {
+			return { folder: "", format: "YYYY-MM-DD" };
+		}
+	}
+
+	private buildObsidianDailyNotePath(
+		date: ReturnType<typeof window.moment>,
+		settings: TObsidianDailyNoteSettings,
+	) {
+		const path = [settings.folder, date.format(settings.format)].filter(Boolean).join("/");
+		return normalizePath(path.endsWith(".md") ? path : `${path}.md`);
+	}
+
+	private getDateFromObsidianDailyNotePath(
+		file: TFile,
+		settings: TObsidianDailyNoteSettings,
+	): ReturnType<typeof window.moment> | null {
+		if (!settings.format.includes("/")) {
+			return null;
+		}
+
+		const folder = normalizePath(settings.folder).replace(/^\/+|\/+$/g, "");
+		const prefix = folder ? `${folder}/` : "";
+
+		if (prefix && !file.path.startsWith(prefix)) {
+			return null;
+		}
+
+		const relativePath = file.path.slice(prefix.length).replace(/\.md$/, "");
+		const date = window.moment(relativePath, settings.format, true);
+		return date.isValid() ? date : null;
+	}
+
+	private findObsidianDailyNote(
+		date: ReturnType<typeof window.moment>,
+		dailyNotes: Record<string, TFile>,
+		settings = this.getObsidianDailyNoteSettingsSafely(),
+	): TFile | null {
+		try {
+			if (settings.format.includes("/")) {
+				const file = this.app.vault.getAbstractFileByPath(
+					this.buildObsidianDailyNotePath(date, settings),
+				);
+
+				if (file instanceof TFile) {
+					dailyNotes[getDateUID(date, "day")] = file;
+				}
+			}
+
+			return getDailyNote(date, dailyNotes);
+		} catch {
+			return null;
+		}
+	}
+
+	private getObsidianDailyNoteName(date: ReturnType<typeof window.moment>) {
+		return date.format(this.getObsidianDailyNoteSettingsSafely().format);
+	}
+
+	private showObsidianDailyNotesUnavailableNotice() {
+		Notice(t("notice.error.dailyNotesUnavailable"), getDirection());
 	}
 
 	private async applyTemplateIfConfigured(
@@ -259,6 +369,27 @@ export default class NoteService {
 	}
 
 	public getDaysWithNotes(jy: number, jm: number): number[] {
+		if (this.shouldUseObsidianDailyNotes()) {
+			if (!this.hasObsidianDailyNotesAvailable()) {
+				return [];
+			}
+
+			const dailyNotes = this.getObsidianDailyNotesSafely();
+			const settings = this.getObsidianDailyNoteSettingsSafely();
+			const result: number[] = [];
+			const daysInMonth = jalaliMonthLength(jy, jm);
+
+			for (let jd = 1; jd <= daysInMonth; jd++) {
+				const date = this.jalaliToMoment(jy, jm, jd);
+
+				if (this.findObsidianDailyNote(date, dailyNotes, settings)) {
+					result.push(jd);
+				}
+			}
+
+			return result;
+		}
+
 		const notesLocation = this.plugin.setting.dailyNotesPath;
 		const result: number[] = [];
 		const daysInMonth = jalaliMonthLength(jy, jm);
@@ -306,6 +437,45 @@ export default class NoteService {
 	}
 
 	public getDailyNoteDate(file: TFile): TJalali | null {
+		if (this.shouldUseObsidianDailyNotes()) {
+			if (!this.hasObsidianDailyNotesAvailable()) {
+				return null;
+			}
+
+			let date: ReturnType<typeof window.moment> | null;
+			const settings = this.getObsidianDailyNoteSettingsSafely();
+
+			try {
+				date = getDateFromFile(file, "day");
+			} catch {
+				return null;
+			}
+
+			const dailyNotes = this.getObsidianDailyNotesSafely();
+
+			if (date) {
+				const canonicalFile = this.findObsidianDailyNote(date, dailyNotes, settings);
+
+				if (canonicalFile?.path === file.path) {
+					return gregorianToJalali(date.year(), date.month() + 1, date.date());
+				}
+			}
+
+			date = this.getDateFromObsidianDailyNotePath(file, settings);
+
+			if (!date) {
+				return null;
+			}
+
+			const canonicalFile = this.findObsidianDailyNote(date, dailyNotes, settings);
+
+			if (canonicalFile?.path !== file.path) {
+				return null;
+			}
+
+			return gregorianToJalali(date.year(), date.month() + 1, date.date());
+		}
+
 		const match = file.basename.match(/^(\d{4})-(\d{2})-(\d{2})$/);
 		if (!match) return null;
 
@@ -325,6 +495,11 @@ export default class NoteService {
 	}
 
 	public async openOrCreateDailyNote(jy: number, jm: number, jd: number) {
+		if (this.shouldUseObsidianDailyNotes()) {
+			await this.openOrCreateObsidianDailyNote(jy, jm, jd);
+			return;
+		}
+
 		const { filePath, dateString } = this.buildDailyNotePath(jy, jm, jd);
 
 		const lang = this.plugin.setting.language;
@@ -340,6 +515,75 @@ export default class NoteService {
 			confirmMessage,
 			noteType: "daily",
 		});
+	}
+
+	private async openOrCreateObsidianDailyNote(jy: number, jm: number, jd: number) {
+		if (!this.hasObsidianDailyNotesAvailable()) {
+			this.showObsidianDailyNotesUnavailableNotice();
+			return;
+		}
+
+		const date = this.jalaliToMoment(jy, jm, jd);
+		const settings = this.getObsidianDailyNoteSettingsSafely();
+		const existingFile = this.findObsidianDailyNote(
+			date,
+			this.getObsidianDailyNotesSafely(),
+			settings,
+		);
+
+		if (existingFile) {
+			await this.openNoteInWorkspace(existingFile);
+			return;
+		}
+
+		const dateString = this.getObsidianDailyNoteName(date);
+		const lang = this.plugin.setting.language;
+		const confirmTitle = lang === "fa" ? "ایجاد روزنوشت جدید" : "Create New Daily Note";
+		const confirmMessage =
+			lang === "fa"
+				? `روزنوشت \u202A${dateString}\u202C ایجاد شود؟`
+				: `Create daily note for ${dateString}?`;
+
+		if (this.plugin.setting.askForCreateNote) {
+			const confirmed = await createNoteModal(this.app, {
+				title: confirmTitle,
+				message: confirmMessage,
+			});
+
+			if (!confirmed) {
+				return;
+			}
+		}
+
+		const fileCreatedWhileConfirming = this.findObsidianDailyNote(
+			date,
+			this.getObsidianDailyNotesSafely(),
+			settings,
+		);
+
+		if (fileCreatedWhileConfirming) {
+			await this.openNoteInWorkspace(fileCreatedWhileConfirming);
+			return;
+		}
+
+		let createdFile: TFile | undefined;
+
+		try {
+			createdFile = await createDailyNote(date);
+		} catch {
+			createdFile = undefined;
+		}
+
+		const noteFile =
+			createdFile ?? this.findObsidianDailyNote(date, this.getObsidianDailyNotesSafely(), settings);
+
+		if (!noteFile) {
+			Notice(t("notice.error.dailyNoteCreationFailed"), getDirection());
+			return;
+		}
+
+		await this.openNoteInWorkspace(noteFile);
+		this.plugin.refreshViews();
 	}
 
 	public async openOrCreateWeeklyNote(jy: number, weekNumber: number) {

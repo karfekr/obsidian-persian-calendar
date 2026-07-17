@@ -6,6 +6,7 @@ export const DEFAULT_SETTING: TSetting = {
 	dateFormat: "gregorian",
 	askForCreateNote: true,
 	openDailyNoteOnStartup: false,
+	useObsidianDailyNotes: false,
 	showSeasonalNotes: true,
 	showHolidays: true,
 	weekendDays: "friday",

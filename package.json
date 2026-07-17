@@ -63,6 +63,7 @@
 	},
 	"dependencies": {
 		"@internationalized/date": "^3.12.2",
+		"obsidian-daily-notes-interface": "^0.9.5",
 		"persian-holidays": "^1.5.1"
 	}
 }

@@ -48,6 +48,10 @@
 					"gregorian": "Gregorian"
 				}
 			},
+			"useObsidianDailyNotes": {
+				"name": "Use Obsidian Daily Notes settings",
+				"desc": "Use Obsidian’s Daily Notes folder, filename format, and template for daily notes. When enabled, Persian Calendar’s daily-note path and daily template are ignored."
+			},
 			"askBeforeCreate": {
 				"name": "Confirm Before Creating Notes",
 				"desc": "When enabled, a confirmation dialog will appear before creating any note."
@@ -164,6 +168,10 @@
 		}
 	},
 	"notice": {
+		"error": {
+			"dailyNotesUnavailable": "Enable and configure Obsidian Daily Notes or the daily feature in Periodic Notes to use this integration.",
+			"dailyNoteCreationFailed": "Obsidian Daily Notes could not create the daily note. Check its folder and template settings."
+		},
 		"success": {
 			"placeholder": "Meaningful phrases replaced successfully",
 			"refreshView": "Calendar view updated"

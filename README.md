@@ -37,6 +37,7 @@ files -`main.js`, `manifest.json` and `styles.css`- and move them to the followi
 # <a name="guid"></a> Guide to the Essential Features
 
 - [Dynamic Paths](#dynamic_path)
+- [Obsidian Daily Notes Integration](#daily_notes)
 - [Quick Reference to Calendar Notes](#quick_reference)
 - [Placeholders](#placeholders)
 - [Using the Dedicated API](#api)
@@ -64,6 +65,14 @@ You can set the paths for your calendar notes dynamically.
 	<img src="Instructions/default-path-en.png" alt="default path" />
 	<div>Default note paths</div>
 </div>
+
+## <a name="daily_notes"></a> Obsidian Daily Notes Integration
+
+The optional **Use Obsidian Daily Notes settings** option is disabled by default. When enabled,
+Persian Calendar uses Obsidian Daily Notes' folder, filename format, and template, so Obsidian,
+Persian Calendar, and compatible calendar plugins share the same daily files. Persian Calendar's own
+daily-note path and daily template settings are ignored in this mode. Weekly, monthly, seasonal, and
+yearly notes are unaffected.
 
 ## <a name="quick_reference"></a> Quick Reference to Calendar Notes
 

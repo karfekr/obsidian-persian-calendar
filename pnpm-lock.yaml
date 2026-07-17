@@ -11,6 +11,9 @@ importers:
       '@internationalized/date':
         specifier: ^3.12.2
         version: 3.12.2
+      obsidian-daily-notes-interface:
+        specifier: ^0.9.5
+        version: 0.9.5(obsidian@1.13.1(@codemirror/state@6.5.0)(@codemirror/view@6.38.6))
       persian-holidays:
         specifier: ^1.5.1
         version: 1.5.1
@@ -1033,6 +1036,12 @@ packages:
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
 
+  obsidian-daily-notes-interface@0.9.5:
+    resolution: {integrity: sha512-Jk1hFagCcMAC1B/LGHCeSLRWIvNCX4qJ6a5HDpUZqs8ckmdszzDKNTdnJZgCVzsUEQKdATJmoNW2kjMzk7+qhw==}
+    engines: {node: '>=22.9.0'}
+    peerDependencies:
+      obsidian: '>=1.0.0'
+
   obsidian@1.13.1:
     resolution: {integrity: sha512-qtTEA2pmhJzhuhJqzbBFRYhpIOqvW+krDYjtFynv66KbxBbumHBlsJfWw3I4jtnK/6fZwbQhCrmmDdRwXmX56w==}
     peerDependencies:
@@ -1356,6 +1365,9 @@ packages:
     engines: {node: '>=18.12'}
     peerDependencies:
       typescript: '>=4.8.4'
+
+  tslib@2.5.0:
+    resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
@@ -2380,6 +2392,11 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
+  obsidian-daily-notes-interface@0.9.5(obsidian@1.13.1(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)):
+    dependencies:
+      obsidian: 1.13.1(@codemirror/state@6.5.0)(@codemirror/view@6.38.6)
+      tslib: 2.5.0
+
   obsidian@1.13.1(@codemirror/state@6.5.0)(@codemirror/view@6.38.6):
     dependencies:
       '@codemirror/state': 6.5.0
@@ -2675,6 +2692,8 @@ snapshots:
   ts-api-utils@2.5.0(typescript@5.9.3):
     dependencies:
       typescript: 5.9.3
+
+  tslib@2.5.0: {}
 
   tslib@2.8.1: {}
 
