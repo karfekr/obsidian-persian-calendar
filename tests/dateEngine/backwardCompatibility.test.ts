@@ -7,7 +7,7 @@ beforeEach(() => {
 });
 
 describe("backward compatibility - filename generation", () => {
-	it("daily jalali: `${jy}-${jm.pad}-${jd.pad}` == pattern jYYYY-jMM-jDD", () => {
+	it("daily Jalali legacy format matches jYYYY-jMM-jDD", () => {
 		const legacy = (jy: number, jm: number, jd: number) =>
 			`${jy}-${jm.toString().padStart(2, "0")}-${jd.toString().padStart(2, "0")}`;
 
@@ -15,33 +15,33 @@ describe("backward compatibility - filename generation", () => {
 		expect(formatPattern("jYYYY-jMM-jDD", { jy: 1403, jm: 12, jd: 29 })).toBe(legacy(1403, 12, 29));
 	});
 
-	it("daily gregorian fallback: `${gy}-${gm.pad}-${gd.pad}` == pattern YYYY-MM-DD", () => {
+	it("daily Gregorian legacy format matches YYYY-MM-DD", () => {
 		const legacy = (gy: number, gm: number, gd: number) =>
 			`${gy}-${gm.toString().padStart(2, "0")}-${gd.toString().padStart(2, "0")}`;
 
 		expect(formatPattern("YYYY-MM-DD", { gy: 2026, gm: 3, gd: 9 })).toBe(legacy(2026, 3, 9));
 	});
 
-	it("weekly: `${jy}-W${weekNumber}` (unpadded) == pattern jYYYY-[W]W", () => {
+	it("weekly legacy format matches jYYYY-[W]W", () => {
 		const legacy = (jy: number, weekNumber: number) => `${jy}-W${weekNumber}`;
 
 		expect(formatPattern("jYYYY-[W]W", { jy: 1403, week: 7 })).toBe(legacy(1403, 7));
 		expect(formatPattern("jYYYY-[W]W", { jy: 1403, week: 23 })).toBe(legacy(1403, 23));
 	});
 
-	it("monthly: `${jy}-${jm.pad}` == pattern jYYYY-jMM", () => {
+	it("monthly legacy format matches jYYYY-jMM", () => {
 		const legacy = (jy: number, jm: number) => `${jy}-${jm.toString().padStart(2, "0")}`;
 
 		expect(formatPattern("jYYYY-jMM", { jy: 1403, jm: 7 })).toBe(legacy(1403, 7));
 	});
 
-	it("seasonal: `${jy}-S${seasonNumber}` (unpadded) == pattern jYYYY-[S]Q", () => {
+	it("seasonal legacy format matches jYYYY-[S]Q", () => {
 		const legacy = (jy: number, seasonNumber: number) => `${jy}-S${seasonNumber}`;
 
 		expect(formatPattern("jYYYY-[S]Q", { jy: 1403, season: 3 })).toBe(legacy(1403, 3));
 	});
 
-	it("yearly: `${jy}` == pattern jYYYY", () => {
+	it("yearly legacy format matches jYYYY", () => {
 		expect(formatPattern("jYYYY", { jy: 1403 })).toBe("1403");
 	});
 });

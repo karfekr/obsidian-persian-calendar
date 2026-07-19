@@ -1,4 +1,5 @@
-import { App, Modal, setIcon } from "obsidian";
+import type { App } from "obsidian";
+import { Modal, setIcon } from "obsidian";
 import { SocialLinks } from "src/components";
 import { RELEASE_NOTES } from "src/constants/releaseNotes";
 import type { TReleaseNote, TSetting } from "src/types";

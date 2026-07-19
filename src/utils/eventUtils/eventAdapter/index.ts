@@ -1,4 +1,4 @@
-import { type AdapterType } from "persian-holidays";
+import type { AdapterType } from "persian-holidays";
 import {
 	getWeekdayTehran,
 	gregorianMonthLength,

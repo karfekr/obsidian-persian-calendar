@@ -1,4 +1,5 @@
-import { App, Plugin, type PluginManifest, setIcon, WorkspaceLeaf } from "obsidian";
+import type { App, PluginManifest, WorkspaceLeaf } from "obsidian";
+import { Plugin, setIcon } from "obsidian";
 import { setAdapter } from "persian-holidays";
 import { DatePicker } from "src/components";
 
@@ -6,6 +7,7 @@ import { DEFAULT_SETTING } from "./constants";
 import { onLocalChange, setLocal, t } from "./languages";
 import {
 	ApiService,
+	applySettingsMigrations,
 	CommandRegistry,
 	EventManager,
 	NoteService,
@@ -174,7 +176,9 @@ export default class PersianCalendarPlugin extends Plugin {
 
 	async loadSetting() {
 		const data = (await this.loadData()) as Partial<TSetting> | null;
-		this.setting = { ...DEFAULT_SETTING, ...(data || {}) };
+		const merged = { ...DEFAULT_SETTING, ...(data || {}) };
+
+		this.setting = applySettingsMigrations(data, merged);
 	}
 
 	async saveSetting() {

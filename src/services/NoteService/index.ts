@@ -1,72 +1,20 @@
-import { App, MarkdownView, TFile, TFolder } from "obsidian";
+import type { App } from "obsidian";
+import { MarkdownView, TFile, TFolder } from "obsidian";
 import { createNoteModal, Notice } from "src/components";
-import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
-import type { TJalali, TLocal, TPathTokenContext } from "src/types";
-import {
-	gregorianToJalali,
-	jalaliMonthLength,
-	jalaliToGregorian,
-	jalaliToSeason,
-} from "src/utils/dateUtils";
+import NotePathBuilder from "src/services/NotePathBuilder";
+import type { TJalali } from "src/types";
+import { parsePattern } from "src/utils/dateEngine";
+import { gregorianToJalali, jalaliMonthLength } from "src/utils/dateUtils";
 
 export default class NoteService {
+	private readonly pathBuilder: NotePathBuilder;
+
 	constructor(
 		private readonly app: App,
 		private readonly plugin: PersianCalendarPlugin,
-	) {}
-
-	private normalizeFolderPath(path?: string | null) {
-		if (!path) return "";
-		return path.trim().replace(/^\/*|\/*$/g, "");
-	}
-
-	private resolvePathTokens(path: string, ctx?: TPathTokenContext, local: TLocal = "fa") {
-		if (!ctx) return path;
-
-		let result = path;
-		const { jy, jm } = ctx;
-
-		if (jy) {
-			result = result.replace(/jYYYY/g, String(jy));
-		}
-
-		if (jm) {
-			const monthName = JALALI_MONTHS_NAME[local][jm];
-
-			result = result
-				.replace(/jMMMM/g, monthName)
-				.replace(/jMM/g, jm.toString().padStart(2, "0"))
-				.replace(/jM/g, jm.toString());
-		}
-
-		let { season } = ctx;
-		if (!season && jm) {
-			season = jalaliToSeason(jm);
-		}
-
-		if (season) {
-			const seasonName = SEASONS_NAME["fa"][season];
-
-			result = result
-				.replace(/jQQQQ/g, seasonName)
-				.replace(/jQQ/g, season.toString().padStart(2, "0"))
-				.replace(/jQ/g, season.toString());
-		}
-
-		return result;
-	}
-
-	private buildNotePath(
-		basePath: string | undefined,
-		fileName: string,
-		tokenContext?: TPathTokenContext,
-		local: TLocal = "fa",
 	) {
-		const normalized = this.normalizeFolderPath(basePath);
-		const resolved = this.resolvePathTokens(normalized, tokenContext, local);
-
-		return resolved ? `${resolved}/${fileName}` : fileName;
+		this.pathBuilder = new NotePathBuilder(plugin);
 	}
 
 	private async openNoteInWorkspace(noteFile: TFile) {
@@ -222,13 +170,10 @@ export default class NoteService {
 	}
 
 	public getWeeksWithNotes(jy: number): number[] {
-		const notesLocation = this.plugin.setting.weeklyNotesPath;
 		const result: number[] = [];
 
 		for (let weekNumber = 1; weekNumber <= 53; weekNumber++) {
-			const fileName = `${jy}-W${weekNumber}.md`;
-			const filePath = this.buildNotePath(notesLocation, fileName, { jy });
-
+			const { filePath } = this.pathBuilder.buildWeeklyNotePath(jy, weekNumber);
 			const file = this.app.vault.getAbstractFileByPath(filePath);
 			if (file instanceof TFile) {
 				result.push(weekNumber);
@@ -239,16 +184,10 @@ export default class NoteService {
 	}
 
 	public getSeasonsWithNotes(jy: number): number[] {
-		const notesLocation = this.plugin.setting.seasonalNotesPath;
 		const result: number[] = [];
 
 		for (let seasonNumber = 1; seasonNumber <= 4; seasonNumber++) {
-			const fileName = `${jy}-S${seasonNumber}.md`;
-			const filePath = this.buildNotePath(notesLocation, fileName, {
-				jy,
-				season: seasonNumber,
-			});
-
+			const { filePath } = this.pathBuilder.buildSeasonalNotePath(jy, seasonNumber);
 			const file = this.app.vault.getAbstractFileByPath(filePath);
 			if (file instanceof TFile) {
 				result.push(seasonNumber);
@@ -259,25 +198,11 @@ export default class NoteService {
 	}
 
 	public getDaysWithNotes(jy: number, jm: number): number[] {
-		const notesLocation = this.plugin.setting.dailyNotesPath;
 		const result: number[] = [];
 		const daysInMonth = jalaliMonthLength(jy, jm);
 
 		for (let jd = 1; jd <= daysInMonth; jd++) {
-			let fileName: string;
-
-			if (this.plugin.setting.dateFormat === "gregorian") {
-				const { gy, gm, gd } = jalaliToGregorian(jy, jm, jd);
-				fileName = `${gy}-${gm.toString().padStart(2, "0")}-${gd.toString().padStart(2, "0")}.md`;
-			} else {
-				fileName = `${jy}-${jm.toString().padStart(2, "0")}-${jd.toString().padStart(2, "0")}.md`;
-			}
-
-			const filePath = this.buildNotePath(notesLocation, fileName, {
-				jy,
-				jm,
-			});
-
+			const { filePath } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
 			const file = this.app.vault.getAbstractFileByPath(filePath);
 
 			if (file instanceof TFile) {
@@ -288,44 +213,28 @@ export default class NoteService {
 		return result;
 	}
 
-	private buildDailyNotePath(jy: number, jm: number, jd: number) {
-		let dateString = `${jy}-${jm.toString().padStart(2, "0")}-${jd.toString().padStart(2, "0")}`;
+	public getDailyNoteDate(file: TFile): TJalali | null {
+		const parsed = parsePattern(this.plugin.setting.dailyNoteFormat, file.basename, "fa");
+		if (!parsed) return null;
 
-		if (this.plugin.setting.dateFormat === "gregorian") {
-			const { gy, gm, gd } = jalaliToGregorian(jy, jm, jd);
-			dateString = `${gy}-${gm.toString().padStart(2, "0")}-${gd.toString().padStart(2, "0")}`;
+		let date: TJalali;
+
+		if (parsed.jy !== undefined && parsed.jm !== undefined && parsed.jd !== undefined) {
+			date = { jy: parsed.jy, jm: parsed.jm, jd: parsed.jd };
+		} else if (parsed.gy !== undefined && parsed.gm !== undefined && parsed.gd !== undefined) {
+			date = gregorianToJalali(parsed.gy, parsed.gm, parsed.gd);
+		} else {
+			return null;
 		}
 
-		const notesLocation = this.plugin.setting.dailyNotesPath;
-		const filePath = this.buildNotePath(notesLocation, `${dateString}.md`, {
-			jy,
-			jm,
-		});
-
-		return { filePath, dateString };
-	}
-
-	public getDailyNoteDate(file: TFile): TJalali | null {
-		const match = file.basename.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-		if (!match) return null;
-
-		const year = Number(match[1]);
-		const month = Number(match[2]);
-		const day = Number(match[3]);
-
-		const date: TJalali =
-			this.plugin.setting.dateFormat === "gregorian"
-				? gregorianToJalali(year, month, day)
-				: { jy: year, jm: month, jd: day };
-
-		const { filePath } = this.buildDailyNotePath(date.jy, date.jm, date.jd);
+		const { filePath } = this.pathBuilder.buildDailyNotePath(date.jy, date.jm, date.jd);
 		if (filePath !== file.path) return null;
 
 		return date;
 	}
 
 	public async openOrCreateDailyNote(jy: number, jm: number, jd: number) {
-		const { filePath, dateString } = this.buildDailyNotePath(jy, jm, jd);
+		const { filePath, dateString } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
 
 		const lang = this.plugin.setting.language;
 		const confirmTitle = lang === "fa" ? "ایجاد روزنوشت جدید" : "Create New Daily Note";
@@ -343,9 +252,7 @@ export default class NoteService {
 	}
 
 	public async openOrCreateWeeklyNote(jy: number, weekNumber: number) {
-		const fileName = `${jy}-W${weekNumber}.md`;
-		const notesLocation = this.plugin.setting.weeklyNotesPath;
-		const filePath = this.buildNotePath(notesLocation, fileName, { jy });
+		const { filePath } = this.pathBuilder.buildWeeklyNotePath(jy, weekNumber);
 
 		const lang = this.plugin.setting.language;
 		const confirmTitle = lang === "fa" ? "ایجاد هفته‌نوشت جدید" : "Create New Weekly Note";
@@ -362,27 +269,15 @@ export default class NoteService {
 		});
 	}
 
-	public async openOrCreateMonthlyNote(jy: number, jm: number, local: TLocal = "fa") {
-		const fileName = `${jy}-${jm.toString().padStart(2, "0")}.md`;
-		const notesLocation = this.plugin.setting.monthlyNotesPath;
-		const filePath = this.buildNotePath(
-			notesLocation,
-			fileName,
-			{
-				jy,
-				jm,
-			},
-			local,
-		);
-
-		const jMonthName = JALALI_MONTHS_NAME[local];
+	public async openOrCreateMonthlyNote(jy: number, jm: number) {
+		const { filePath, jMonthName } = this.pathBuilder.buildMonthlyNotePath(jy, jm);
 
 		const lang = this.plugin.setting.language;
 		const confirmTitle = lang === "fa" ? "ایجاد ماه‌نوشت جدید" : "Create New Monthly Note";
 		const confirmMessage =
 			lang === "fa"
-				? `ماه‌نوشت ${jMonthName[jm]} ${jy} ایجاد شود؟`
-				: `Create monthly note for ${jMonthName[jm]} ${jy}?`;
+				? `ماه‌نوشت ${jMonthName} ${jy} ایجاد شود؟`
+				: `Create monthly note for ${jMonthName} ${jy}?`;
 
 		await this.openOrCreateNoteWithConfirm({
 			filePath,
@@ -392,27 +287,15 @@ export default class NoteService {
 		});
 	}
 
-	public async openOrCreateSeasonalNote(jy: number, seasonNumber: number, local: TLocal = "fa") {
-		const fileName = `${jy}-S${seasonNumber}.md`;
-		const notesLocation = this.plugin.setting.seasonalNotesPath;
-		const filePath = this.buildNotePath(
-			notesLocation,
-			fileName,
-			{
-				jy,
-				season: seasonNumber,
-			},
-			local,
-		);
-
-		const seasonsName = SEASONS_NAME[local];
+	public async openOrCreateSeasonalNote(jy: number, seasonNumber: number) {
+		const { filePath, seasonName } = this.pathBuilder.buildSeasonalNotePath(jy, seasonNumber);
 
 		const lang = this.plugin.setting.language;
 		const confirmTitle = lang === "fa" ? "ایجاد فصل‌نوشت جدید" : "Create New Seasonal Note";
 		const confirmMessage =
 			lang === "fa"
-				? `فصل‌نوشت ${seasonsName[seasonNumber]} ${jy} ایجاد شود؟`
-				: `Create seasonal note for ${seasonsName[seasonNumber]} ${jy}?`;
+				? `فصل‌نوشت ${seasonName} ${jy} ایجاد شود؟`
+				: `Create seasonal note for ${seasonName} ${jy}?`;
 
 		await this.openOrCreateNoteWithConfirm({
 			filePath,
@@ -423,9 +306,7 @@ export default class NoteService {
 	}
 
 	public async openOrCreateYearlyNote(jy: number) {
-		const fileName = `${jy}.md`;
-		const notesLocation = this.plugin.setting.yearlyNotesPath;
-		const filePath = this.buildNotePath(notesLocation, fileName, { jy });
+		const { filePath } = this.pathBuilder.buildYearlyNotePath(jy);
 
 		const lang = this.plugin.setting.language;
 		const confirmTitle = lang === "fa" ? "ایجاد سال‌نوشت جدید" : "Create New Yearly Note";

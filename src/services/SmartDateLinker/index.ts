@@ -1,6 +1,6 @@
 import type { EditorSuggestContext } from "obsidian";
 import { SMART_DATE_LINKS, WEEKDAYS_NAME } from "src/constants";
-import PersianCalendarPlugin from "src/main";
+import type PersianCalendarPlugin from "src/main";
 import type { TDateFormatWithoutHijri, TLocal, TSuggestProvider } from "src/types";
 import {
 	dateToDash,

@@ -1,4 +1,4 @@
-import CalendarState from "src/templates/CalendarView/CalendarState";
+import type CalendarState from "src/templates/CalendarView/CalendarState";
 import type { TMonthGridCell, TSetting } from "src/types";
 import {
 	dateToJalali,

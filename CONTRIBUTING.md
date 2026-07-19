@@ -8,7 +8,7 @@
 
 Welcome to the community that keeps this project alive💚
 
-As I write this, the project has **over 9,000 downloads** – which means every bug fix, every
+As I write this, the project has **over 10,000 downloads** – which means every bug fix, every
 suggestion, every small improvement can enhance the experience of thousands of people.
 
 Contributing is not just about writing code. Reporting bugs, suggesting new features, improving
@@ -32,8 +32,7 @@ If you would like to join us in developing this plugin, please read the followin
 > [Journals](https://github.com/srg-kostyrko/obsidian-journal). If you wish to improve this
 > structure, please consult us first.
 
-> All code formatting templates are defined by **editorconfig**, **prettierrc**,
-> **esbuild.config.mjs**, etc. We ask you **not to change this framework** and to submit your code
+> All code formatting templates are defined by **editorconfig**, **biome.json**, etc. We ask you **not to change this framework** and to submit your code
 > following the same standards.
 
 > The only external dependency of this plugin on the user side is the

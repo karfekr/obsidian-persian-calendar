@@ -6,8 +6,8 @@ import {
 import { DatePatternFormatError } from "src/utils/dateEngine/errors";
 import { formatPattern } from "src/utils/dateEngine/formatter";
 import { parsePattern } from "src/utils/dateEngine/parser";
-import { defaultTokenRegistry } from "src/utils/dateEngine/tokens";
 import { tokenize } from "src/utils/dateEngine/tokenizer";
+import { defaultTokenRegistry } from "src/utils/dateEngine/tokens";
 import { validatePattern } from "src/utils/dateEngine/validator";
 
 beforeEach(() => {

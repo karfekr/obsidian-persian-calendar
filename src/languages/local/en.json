@@ -22,7 +22,6 @@
 		"banner": {
 			"title": "Use the links below to view the documentation, report issues or send feedback"
 		},
-
 		"sections": {
 			"general": "General Settings",
 			"paths": "Calendar Note Paths",
@@ -31,7 +30,6 @@
 			"holidays": "Holiday Display",
 			"events": "Event Display"
 		},
-
 		"general": {
 			"language": {
 				"name": "Language | زبان",
@@ -61,30 +59,38 @@
 				"desc": "Display seasonal divisions within the calendar view."
 			}
 		},
-
 		"paths": {
 			"daily": {
 				"name": "Daily Notes Folder",
-				"desc": "Daily notes will be created in this folder."
+				"desc": "Daily notes will be created in this folder.",
+				"formatName": "Daily Note Filename Format",
+				"formatDesc": "Pattern used to name daily notes (e.g. jYYYY-jMM-jDD)."
 			},
 			"weekly": {
 				"name": "Weekly Notes Folder",
-				"desc": "Weekly notes will be created in this folder."
+				"desc": "Weekly notes will be created in this folder.",
+				"formatName": "Weekly Note Filename Format",
+				"formatDesc": "Pattern used to name weekly notes (e.g. jYYYY-[W]W)."
 			},
 			"monthly": {
 				"name": "Monthly Notes Folder",
-				"desc": "Monthly notes will be created in this folder."
+				"desc": "Monthly notes will be created in this folder.",
+				"formatName": "Monthly Note Filename Format",
+				"formatDesc": "Pattern used to name monthly notes (e.g. jYYYY-jMM)."
 			},
 			"seasonal": {
 				"name": "Seasonal Notes Folder",
-				"desc": "Seasonal notes will be created in this folder."
+				"desc": "Seasonal notes will be created in this folder.",
+				"formatName": "Seasonal Note Filename Format",
+				"formatDesc": "Pattern used to name seasonal notes (e.g. jYYYY-[S]Q)."
 			},
 			"yearly": {
 				"name": "Yearly Notes Folder",
-				"desc": "Yearly notes will be created in this folder."
+				"desc": "Yearly notes will be created in this folder.",
+				"formatName": "Yearly Note Filename Format",
+				"formatDesc": "Pattern used to name yearly notes (e.g. jYYYY)."
 			}
 		},
-
 		"templates": {
 			"daily": {
 				"name": "Daily Note Template",
@@ -107,7 +113,6 @@
 				"desc": "Template used when creating yearly notes."
 			}
 		},
-
 		"extraCalendars": {
 			"showGregorian": {
 				"name": "Show Gregorian Calendar",
@@ -126,7 +131,6 @@
 				}
 			}
 		},
-
 		"holidays": {
 			"showOfficial": {
 				"name": "Show Official Iranian Holidays",
@@ -142,14 +146,25 @@
 				}
 			}
 		},
-
 		"events": {
-			"official": { "name": "Show Official Iranian Events" },
-			"historical": { "name": "Show Historical Events" },
-			"ancient": { "name": "Show Ancient Iranian Events" },
-			"global": { "name": "Show Global Events" },
-			"shia": { "name": "Show Shia Events" },
-			"sunni": { "name": "Show Sunni Events" }
+			"official": {
+				"name": "Show Official Iranian Events"
+			},
+			"historical": {
+				"name": "Show Historical Events"
+			},
+			"ancient": {
+				"name": "Show Ancient Iranian Events"
+			},
+			"global": {
+				"name": "Show Global Events"
+			},
+			"shia": {
+				"name": "Show Shia Events"
+			},
+			"sunni": {
+				"name": "Show Sunni Events"
+			}
 		}
 	},
 	"modal": {
@@ -164,6 +179,10 @@
 		}
 	},
 	"notice": {
+		"error": {
+			"dailyNotesUnavailable": "Enable and configure Obsidian Daily Notes or the daily feature in Periodic Notes to use this integration.",
+			"dailyNoteCreationFailed": "Obsidian Daily Notes could not create the daily note. Check its folder and template settings."
+		},
 		"success": {
 			"placeholder": "Meaningful phrases replaced successfully",
 			"refreshView": "Calendar view updated"

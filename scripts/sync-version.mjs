@@ -1,7 +1,7 @@
 //? Syncs the plugin version using "manifest.json" as the source of truth.
 //? Updates package.json and versions.json accordingly.
 
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();

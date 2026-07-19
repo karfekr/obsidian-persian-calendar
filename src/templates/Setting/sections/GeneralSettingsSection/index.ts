@@ -35,6 +35,13 @@ export function renderGeneralSettingsSection(
 		},
 	);
 
+	tab.addPatternField(
+		containerEl,
+		"setting.paths.daily.formatName",
+		"setting.paths.daily.formatDesc",
+		"dailyNoteFormat",
+	);
+
 	tab.addToggle(
 		containerEl,
 		"setting.general.askBeforeCreate.name",

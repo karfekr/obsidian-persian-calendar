@@ -2,6 +2,7 @@ export { clearCompiledPatternCache, compilePattern, getCompiledPatternCacheSize 
 export { DatePatternFormatError } from "./errors";
 export { formatPattern } from "./formatter";
 export { parsePattern } from "./parser";
+export { tokenize } from "./tokenizer";
 export { defaultTokenRegistry, TokenRegistry } from "./tokens";
 export type {
 	TCalendarFamily,

@@ -1,29 +1,29 @@
 import {
-	gregorianToDate,
-	weekStartNumber,
-	jalaliMonthName,
-	gregorianMonthLength,
-	seasonName,
+	addDayDate,
 	dateToGregorian,
 	dateToWeekdayName,
-	addDayDate,
 	getWeekdayTehran,
+	gregorianMonthLength,
+	gregorianToDate,
+	jalaliMonthName,
+	seasonName,
 	todayTehran,
+	weekStartNumber,
 } from "src/utils/dateUtils/gregorianUtils";
 
 describe("gregorianToDate", () => {
 	it("should return a valid Date for a valid Gregorian date", () => {
 		const date = gregorianToDate(2024, 3, 20);
 		expect(date).toBeInstanceOf(Date);
-		expect(date!.getFullYear()).toBe(2024);
-		expect(date!.getMonth() + 1).toBe(3);
-		expect(date!.getDate()).toBe(20);
+		expect(date.getFullYear()).toBe(2024);
+		expect(date.getMonth() + 1).toBe(3);
+		expect(date.getDate()).toBe(20);
 	});
 
 	it("should handle Feb 29 in a leap year", () => {
 		const date = gregorianToDate(2024, 2, 29);
 		expect(date).not.toBeNull();
-		expect(date!.getDate()).toBe(29);
+		expect(date.getDate()).toBe(29);
 	});
 });
 
@@ -215,6 +215,6 @@ describe("todayTehran", () => {
 	it("should not include time component (midnight)", () => {
 		const tehran = todayTehran();
 		// Time component may vary; just verify it's a valid date
-		expect(isNaN(tehran.getTime())).toBe(false);
+		expect(Number.isNaN(tehran.getTime())).toBe(false);
 	});
 });

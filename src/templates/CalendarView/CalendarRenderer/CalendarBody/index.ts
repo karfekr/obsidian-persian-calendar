@@ -2,14 +2,14 @@ import { setIcon } from "obsidian";
 import { Notice } from "src/components";
 import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { getDirection, t } from "src/languages";
-import { NoteService } from "src/services";
-import CalendarState from "src/templates/CalendarView/CalendarState";
+import type { NoteService } from "src/services";
+import type CalendarState from "src/templates/CalendarView/CalendarState";
 import type { TLocal, TSetting } from "src/types";
 import { jalaliToSeason } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 import { toArNumber, toFaNumber } from "src/utils/formatters";
 
-import CalendarNavigation from "../CalendarNavigation";
+import type CalendarNavigation from "../CalendarNavigation";
 import GridService from "./GridService";
 import Tooltip from "./Tooltip";
 

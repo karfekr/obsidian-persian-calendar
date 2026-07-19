@@ -25,7 +25,6 @@ export class TokenRegistry {
 		return Array.from(this.tokens.values());
 	}
 
-	/** Token keys sorted longest-first, so the tokenizer always prefers the longest match. */
 	sortedByLengthDesc(): string[] {
 		if (!this.sortedKeysCache) {
 			this.sortedKeysCache = Array.from(this.tokens.keys()).sort((a, b) => b.length - a.length);

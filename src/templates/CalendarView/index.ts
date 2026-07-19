@@ -1,5 +1,6 @@
-import { App, MarkdownView, View, WorkspaceLeaf } from "obsidian";
-import PersianCalendarPlugin from "src/main";
+import type { App, WorkspaceLeaf } from "obsidian";
+import { MarkdownView, View } from "obsidian";
+import type PersianCalendarPlugin from "src/main";
 import { NoteService } from "src/services";
 import type { TJalali, TSetting } from "src/types";
 import { dateToJalali, todayTehran } from "src/utils/dateUtils";

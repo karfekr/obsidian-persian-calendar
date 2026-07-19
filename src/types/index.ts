@@ -67,6 +67,7 @@ export type TSetting = {
 	askForCreateNote: boolean;
 	openDailyNoteOnStartup: boolean;
 	dateFormat: TDateFormatWithoutHijri;
+	dailyNoteFormat: string;
 	showSeasonalNotes: boolean;
 	// show holidays
 	showHolidays: boolean;
@@ -137,15 +138,6 @@ export type TSocialLink = {
 	href: string;
 	title: string;
 	icon: string;
-};
-
-export type TPathTokenContext = {
-	jy?: number;
-	jm?: number;
-	gy?: number;
-	gm?: number;
-	season?: number;
-	local?: TLocal;
 };
 
 export type TPathSuggestMode = "folder" | "file" | "md-file";

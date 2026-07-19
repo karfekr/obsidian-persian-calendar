@@ -1,4 +1,5 @@
 import type PersianCalendarPlugin from "src/main";
+import type { TReleaseNote } from "src/types";
 
 export default class VersionChecker {
 	constructor(private plugin: PersianCalendarPlugin) {}
@@ -68,7 +69,7 @@ export default class VersionChecker {
 
 		const { UpdateModal } = await import("src/components");
 
-		let releaseNotes;
+		let releaseNotes: TReleaseNote[];
 		if (compareVersions(currentVersion, lastSeenVersion) > 0) {
 			releaseNotes = getReleaseNotesBetweenVersions(lastSeenVersion, currentVersion);
 		} else {

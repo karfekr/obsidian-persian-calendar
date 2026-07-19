@@ -1,64 +1,40 @@
 import type { TokenRegistry } from "./tokens/registry";
 import type { TPatternSegment } from "./types";
+import { escapeRegex } from "./utils";
 
 export function tokenize(pattern: string, registry: TokenRegistry): TPatternSegment[] {
-	const sortedTokens = registry.sortedByLengthDesc();
+	const tokenAlternation = registry.sortedByLengthDesc().map(escapeRegex).join("|");
+	const regex = new RegExp(`\\[[^\\]]*\\]|${tokenAlternation}`, "g");
+
 	const segments: TPatternSegment[] = [];
+	let lastIndex = 0;
 
-	let literalBuffer = "";
-	let i = 0;
+	for (const match of pattern.matchAll(regex)) {
+		const text = match[0];
+		const index = match.index;
 
-	const flushLiteral = () => {
-		if (literalBuffer) {
-			segments.push({ type: "literal", value: literalBuffer });
-			literalBuffer = "";
+		if (index > lastIndex) {
+			segments.push({ type: "literal", value: pattern.slice(lastIndex, index) });
 		}
-	};
 
-	while (i < pattern.length) {
-		const char = pattern[i];
-
-		if (char === "[") {
-			const closeIndex = pattern.indexOf("]", i + 1);
-
-			if (closeIndex !== -1) {
-				flushLiteral();
-				const value = pattern.slice(i + 1, closeIndex);
-				if (value) {
-					segments.push({ type: "literal", value, escaped: true });
-				}
-				i = closeIndex + 1;
-				continue;
+		if (text.startsWith("[")) {
+			const value = text.slice(1, -1);
+			if (value) segments.push({ type: "literal", value, escaped: true });
+		} else {
+			const token = registry.get(text);
+			if (!token) {
+				throw new Error(`Unknown token: ${text}`);
 			}
 
-			literalBuffer += char;
-			i += 1;
-			continue;
+			segments.push({ type: "token", token });
 		}
 
-		let matchedTokenKey: string | null = null;
-
-		for (const tokenKey of sortedTokens) {
-			if (pattern.startsWith(tokenKey, i)) {
-				matchedTokenKey = tokenKey;
-				break;
-			}
-		}
-
-		if (matchedTokenKey) {
-			flushLiteral();
-			const definition = registry.get(matchedTokenKey);
-			if (definition) {
-				segments.push({ type: "token", token: definition });
-			}
-			i += matchedTokenKey.length;
-			continue;
-		}
-
-		literalBuffer += char;
-		i += 1;
+		lastIndex = index + text.length;
 	}
 
-	flushLiteral();
+	if (lastIndex < pattern.length) {
+		segments.push({ type: "literal", value: pattern.slice(lastIndex) });
+	}
+
 	return segments;
 }

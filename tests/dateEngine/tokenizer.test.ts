@@ -1,5 +1,5 @@
-import { defaultTokenRegistry } from "src/utils/dateEngine/tokens";
 import { tokenize } from "src/utils/dateEngine/tokenizer";
+import { defaultTokenRegistry } from "src/utils/dateEngine/tokens";
 import type { TPatternSegment } from "src/utils/dateEngine/types";
 
 function segmentSummary(segments: TPatternSegment[]) {

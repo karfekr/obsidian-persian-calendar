@@ -1,8 +1,10 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import type { App } from "obsidian";
+import { PluginSettingTab, Setting } from "obsidian";
 import SocialLinks from "src/components/SocialLinks";
 import { getDirection, onLocalChange, setLocal, t } from "src/languages";
-import PersianCalendarPlugin from "src/main";
+import type PersianCalendarPlugin from "src/main";
 import type { TBoolSettingKeys, TLocal, TPathSuggestMode, TSetting } from "src/types";
+import { validatePattern } from "src/utils/dateEngine";
 
 import { PathSuggest } from "./PathSuggest";
 import { renderEventSettingsSection } from "./sections/EventSettingsSection";
@@ -156,6 +158,32 @@ export default class CalendarSettingTab extends PluginSettingTab {
 			});
 
 			new PathSuggest(this.app, text.inputEl, mode);
+		});
+
+		this.trackSetting(setting, nameKey, descKey);
+	}
+
+	addPatternField(
+		containerEl: HTMLElement,
+		nameKey: string,
+		descKey: string | null,
+		key: keyof TSetting,
+	): void {
+		const applyValidationFeedback = (inputEl: HTMLInputElement, value: string) => {
+			const result = validatePattern(value);
+
+			inputEl.toggleClass("persian-calendar__setting-input--invalid", !result.valid);
+			inputEl.title = result.errors.map((error) => error.message).join("\n");
+		};
+
+		const setting = new Setting(containerEl).addText((text) => {
+			text.setValue(this.plugin.setting[key] as string).onChange(async (value) => {
+				(this.plugin.setting[key] as string) = value;
+				applyValidationFeedback(text.inputEl, value);
+				await this.plugin.saveSetting();
+			});
+
+			applyValidationFeedback(text.inputEl, text.inputEl.value);
 		});
 
 		this.trackSetting(setting, nameKey, descKey);
