@@ -38,7 +38,6 @@ describe("parsePattern - non-matching input", () => {
 	});
 
 	it("returns null when the input is missing required zero-padding", () => {
-		// jMM/jDD require exactly 2 digits (pad: true) - "1-5" is not a valid match.
 		expect(parsePattern("jYYYY-jMM-jDD", "1403-1-5")).toBeNull();
 	});
 

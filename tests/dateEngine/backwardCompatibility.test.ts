@@ -64,11 +64,6 @@ describe("backward compatibility - folder token substitution", () => {
 	});
 
 	it("default settings folder patterns round-trip unchanged when no per-note customization happens", () => {
-		// These mirror DEFAULT_SETTING's dailyNotesPath/monthlyNotesPath/etc.
-		// Note: the literal suffixes must be [bracket]-escaped, because "D",
-		// "M" and "W" are themselves single-letter tokens (day/month/week) -
-		// see the "single-letter token collisions" edge case tests below for
-		// why an unescaped "Journal/jYYYY/Daily" is NOT safe to use as-is.
 		const defaults: Array<[string, Record<string, number>, string]> = [
 			["Journal/jYYYY/[Daily]", { jy: 1403 }, "Journal/1403/Daily"],
 			["Journal/jYYYY/[Weekly]", { jy: 1403 }, "Journal/1403/Weekly"],
@@ -85,7 +80,6 @@ describe("backward compatibility - folder token substitution", () => {
 
 describe("backward compatibility - filename parsing", () => {
 	it("matches the old strict isDailyRegex behavior: requires exactly 4-2-2 digits", () => {
-		// Old regex: /^(\d{4})-(\d{2})-(\d{2})$/
 		expect(parsePattern("jYYYY-jMM-jDD", "1403-01-05")).toEqual({ jy: 1403, jm: 1, jd: 5 });
 		expect(parsePattern("jYYYY-jMM-jDD", "1403-1-5")).toBeNull();
 		expect(parsePattern("jYYYY-jMM-jDD", "not-a-date")).toBeNull();
