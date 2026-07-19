@@ -1,6 +1,6 @@
 import { now } from "@internationalized/date";
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
-import type { TGregorian, TLocal, TWeekStart } from "src/types";
+import type { TGregorian, TLocale, TWeekStart } from "src/types";
 
 const TEHRAN_TZ = "Asia/Tehran";
 
@@ -30,7 +30,7 @@ export function dateToGregorian(date: Date): TGregorian {
 	};
 }
 
-export function dateToWeekdayName(date: Date, local: TLocal = "fa"): string {
+export function dateToWeekdayName(date: Date, local: TLocale = "fa"): string {
 	const locale = local === "fa" ? "fa-IR" : "en-US";
 
 	return new Intl.DateTimeFormat(locale, {
@@ -51,14 +51,14 @@ export const weekStartNumber = (weekStart: TWeekStart): number =>
 		mon: 1,
 	})[weekStart];
 
-export function jalaliMonthName(month: number, local: TLocal = "fa") {
+export function jalaliMonthName(month: number, local: TLocale = "fa") {
 	if (month > 12 || month < 1) {
 		throw Error("month number is not currect!");
 	}
 	return JALALI_MONTHS_NAME[local][month];
 }
 
-export function seasonName(season: number, local: TLocal = "fa") {
+export function seasonName(season: number, local: TLocale = "fa") {
 	if (season > 4 || season < 1) {
 		throw Error("season number is not currect!");
 	}

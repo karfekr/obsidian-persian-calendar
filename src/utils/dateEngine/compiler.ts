@@ -1,6 +1,6 @@
+import type { TCompiledPattern, TLocale, TTokenField } from "src/types";
 import { tokenize } from "./tokenizer";
 import { defaultTokenRegistry } from "./tokens";
-import type { TCompiledPattern, TLocale, TTokenField } from "./types";
 import { escapeRegex } from "./utils";
 
 const compiledPatternCache = new Map<string, TCompiledPattern>();

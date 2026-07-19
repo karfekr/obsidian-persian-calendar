@@ -3,7 +3,7 @@ import { PluginSettingTab, Setting } from "obsidian";
 import SocialLinks from "src/components/SocialLinks";
 import { getDirection, onLocalChange, setLocal, t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
-import type { TBoolSettingKeys, TLocal, TPathSuggestMode, TSetting } from "src/types";
+import type { TBoolSettingKeys, TLocale, TPathSuggestMode, TSetting } from "src/types";
 import { validatePattern } from "src/utils/dateEngine";
 
 import { PathSuggest } from "./PathSuggest";
@@ -132,7 +132,7 @@ export default class CalendarSettingTab extends PluginSettingTab {
 				await this.plugin.saveSetting();
 
 				if (opts.isLanguage) {
-					setLocal(value as TLocal);
+					setLocal(value as TLocale);
 				}
 
 				if (opts.refresh || opts.isLanguage) {

@@ -1,6 +1,6 @@
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
-import type { TLocal } from "src/types";
+import type { TLocale } from "src/types";
 import type { TDateEngineContext } from "src/utils/dateEngine";
 import { formatPattern } from "src/utils/dateEngine";
 import { jalaliToGregorian, jalaliToSeason } from "src/utils/dateUtils";
@@ -25,7 +25,7 @@ export default class NotePathBuilder {
 		basePath: string | undefined,
 		fileName: string,
 		tokenContext: TDateEngineContext,
-		local: TLocal = "fa",
+		local: TLocale = "fa",
 	) {
 		const normalized = this.normalizeFolderPath(basePath);
 		const resolved = normalized
@@ -63,7 +63,7 @@ export default class NotePathBuilder {
 		return { filePath, fileName };
 	}
 
-	public buildMonthlyNotePath(jy: number, jm: number, local: TLocal = "fa") {
+	public buildMonthlyNotePath(jy: number, jm: number, local: TLocale = "fa") {
 		const fileName = `${formatPattern("jYYYY-jMM", { jy, jm }, local)}.md`;
 		const notesLocation = this.plugin.setting.monthlyNotesPath;
 		const filePath = this.buildNotePath(notesLocation, fileName, { jy, jm }, local);
@@ -72,7 +72,7 @@ export default class NotePathBuilder {
 		return { filePath, fileName, jMonthName };
 	}
 
-	public buildSeasonalNotePath(jy: number, seasonNumber: number, local: TLocal = "fa") {
+	public buildSeasonalNotePath(jy: number, seasonNumber: number, local: TLocale = "fa") {
 		const fileName = `${formatPattern("jYYYY-[S]Q", { jy, season: seasonNumber }, local)}.md`;
 		const notesLocation = this.plugin.setting.seasonalNotesPath;
 		const filePath = this.buildNotePath(

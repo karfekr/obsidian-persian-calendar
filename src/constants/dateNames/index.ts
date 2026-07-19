@@ -1,6 +1,6 @@
-import type { TLocal } from "src/types";
+import type { TLocale } from "src/types";
 
-export const SEASONS_NAME: Record<TLocal, Record<number, string>> = {
+export const SEASONS_NAME: Record<TLocale, Record<number, string>> = {
 	fa: {
 		1: "بهار",
 		2: "تابستان",
@@ -15,7 +15,7 @@ export const SEASONS_NAME: Record<TLocal, Record<number, string>> = {
 	},
 } as const;
 
-export const JALALI_MONTHS_NAME: Record<TLocal, Record<number, string>> = {
+export const JALALI_MONTHS_NAME: Record<TLocale, Record<number, string>> = {
 	fa: {
 		1: "فروردین",
 		2: "اردیبهشت",
@@ -46,7 +46,7 @@ export const JALALI_MONTHS_NAME: Record<TLocal, Record<number, string>> = {
 	},
 } as const;
 
-export const GREGORIAN_MONTHS_NAME: Record<TLocal, Record<number, string>> = {
+export const GREGORIAN_MONTHS_NAME: Record<TLocale, Record<number, string>> = {
 	fa: {
 		1: "ژانویه",
 		2: "فوریه",
@@ -77,7 +77,7 @@ export const GREGORIAN_MONTHS_NAME: Record<TLocal, Record<number, string>> = {
 	},
 } as const;
 
-export const HIJRI_MONTHS_NAME: Record<TLocal, Record<number, string>> = {
+export const HIJRI_MONTHS_NAME: Record<TLocale, Record<number, string>> = {
 	fa: {
 		1: "محرم",
 		2: "صفر",
@@ -108,7 +108,7 @@ export const HIJRI_MONTHS_NAME: Record<TLocal, Record<number, string>> = {
 	},
 } as const;
 
-export const WEEKDAYS_NAME: Record<TLocal, Record<number, string>> = {
+export const WEEKDAYS_NAME: Record<TLocale, Record<number, string>> = {
 	fa: {
 		1: "شنبه",
 		2: "یکشنبه",

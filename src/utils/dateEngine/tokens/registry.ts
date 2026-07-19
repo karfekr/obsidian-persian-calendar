@@ -1,4 +1,4 @@
-import type { TTokenDefinition } from "../types";
+import type { TTokenDefinition } from "src/types";
 
 export class TokenRegistry {
 	private tokens = new Map<string, TTokenDefinition>();

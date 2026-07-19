@@ -1,4 +1,4 @@
-import type { TCalendarFamily, TLocale, TTokenDefinition, TTokenField } from "../types";
+import type { TCalendarFamily, TLocale, TTokenDefinition, TTokenField } from "src/types";
 import { escapeRegex } from "../utils";
 
 export function createNumericToken(opts: {
@@ -36,10 +36,11 @@ export function createNameToken(opts: {
 	field: TTokenField;
 	namesByLocale: Record<TLocale, Record<number, string>>;
 	abbreviate?: boolean;
+	local?: TLocale;
 }): TTokenDefinition {
 	const reverseMapCache = new Map<TLocale, Map<string, number>>();
 
-	const getNames = () => opts.namesByLocale.en;
+	const getNames = (locale: TLocale = opts.local ?? "en") => opts.namesByLocale[locale];
 
 	const toLabel = (name: string) => (opts.abbreviate ? name.slice(0, 3) : name);
 
@@ -48,7 +49,7 @@ export function createNameToken(opts: {
 		if (cached) return cached;
 
 		const map = new Map<string, number>();
-		const names = getNames();
+		const names = getNames(locale);
 
 		for (const key of Object.keys(names)) {
 			const index = Number(key);
@@ -63,17 +64,21 @@ export function createNameToken(opts: {
 		token: opts.token,
 		family: opts.family,
 		field: opts.field,
-		format: (ctx) => {
+
+		format: (ctx, locale) => {
 			const raw = ctx[opts.field];
 			if (raw === undefined) return null;
 
-			const name = getNames()[raw];
+			const name = getNames(locale)[raw];
 			return name ? toLabel(name) : null;
 		},
+
 		regexFragment: (locale) => {
 			const labels = Array.from(getReverseMap(locale).keys()).sort((a, b) => b.length - a.length);
+
 			return `(${labels.map(escapeRegex).join("|")})`;
 		},
+
 		parseValue: (raw, locale) => {
 			const map = getReverseMap(locale);
 			return map.has(raw) ? (map.get(raw) as number) : null;

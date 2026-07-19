@@ -1,7 +1,7 @@
 import type { EditorSuggestContext } from "obsidian";
 import { SMART_DATE_LINKS, WEEKDAYS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
-import type { TDateFormatWithoutHijri, TLocal, TSuggestProvider } from "src/types";
+import type { TDateFormatWithoutHijri, TLocale, TSuggestProvider } from "src/types";
 import {
 	dateToDash,
 	dateToJMonthDash,
@@ -37,7 +37,7 @@ export default class SmartDateLinker {
 		return d;
 	}
 
-	formatSmartDate(keyword: string, date: Date, local: TLocal = "fa", link = true): string {
+	formatSmartDate(keyword: string, date: Date, local: TLocale = "fa", link = true): string {
 		const now = todayTehran();
 		const ERROR_LINK = "تاریخ شناسایی نشد";
 

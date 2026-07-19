@@ -1,5 +1,5 @@
+import type { TPatternSegment } from "src/types";
 import type { TokenRegistry } from "./tokens/registry";
-import type { TPatternSegment } from "./types";
 import { escapeRegex } from "./utils";
 
 export function tokenize(pattern: string, registry: TokenRegistry): TPatternSegment[] {

@@ -1,9 +1,3 @@
-export { clearCompiledPatternCache, compilePattern, getCompiledPatternCacheSize } from "./compiler";
-export { DatePatternFormatError } from "./errors";
-export { formatPattern } from "./formatter";
-export { parsePattern } from "./parser";
-export { tokenize } from "./tokenizer";
-export { defaultTokenRegistry, TokenRegistry } from "./tokens";
 export type {
 	TCalendarFamily,
 	TCompiledPattern,
@@ -14,5 +8,11 @@ export type {
 	TTokenField,
 	TValidationError,
 	TValidationResult,
-} from "./types";
+} from "src/types";
+export { clearCompiledPatternCache, compilePattern, getCompiledPatternCacheSize } from "./compiler";
+export { DatePatternFormatError } from "./errors";
+export { formatPattern } from "./formatter";
+export { parsePattern } from "./parser";
+export { tokenize } from "./tokenizer";
+export { defaultTokenRegistry, TokenRegistry } from "./tokens";
 export { validatePattern } from "./validator";

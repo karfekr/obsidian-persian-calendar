@@ -4,7 +4,7 @@ import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { getDirection, t } from "src/languages";
 import type { NoteService } from "src/services";
 import type CalendarState from "src/templates/CalendarView/CalendarState";
-import type { TLocal, TSetting } from "src/types";
+import type { TLocale, TSetting } from "src/types";
 import { jalaliToSeason } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 import { toArNumber, toFaNumber } from "src/utils/formatters";
@@ -28,13 +28,13 @@ export default class CalendarBodyRender {
 		this.gridService = new GridService(calendarState, setting);
 	}
 
-	public renderContent(contentEl: HTMLElement, _local: TLocal = "fa") {
+	public renderContent(contentEl: HTMLElement, _local: TLocale = "fa") {
 		const { jYearState, jMonthState } = this.calendarState.getJState();
 		this.renderWeekNumbers(contentEl, { jy: jYearState, jm: jMonthState });
 		this.renderDaysGrid(contentEl, { jy: jYearState, jm: jMonthState });
 	}
 
-	public renderSeasonalNotesRow(containerEl: HTMLElement, local: TLocal = "fa") {
+	public renderSeasonalNotesRow(containerEl: HTMLElement, local: TLocale = "fa") {
 		const seasonsRow = containerEl.createEl("div", { cls: "persian-calendar__seasons-row" });
 		const { jYearState, jMonthState } = this.calendarState.getJState();
 

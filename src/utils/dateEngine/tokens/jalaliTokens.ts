@@ -1,6 +1,6 @@
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 
-import type { TTokenDefinition } from "../types";
+import type { TTokenDefinition } from "src/types";
 import { createNameToken, createNumericToken } from "./tokenFactories";
 
 export const jalaliTokens: TTokenDefinition[] = [

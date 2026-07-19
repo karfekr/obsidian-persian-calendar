@@ -1,6 +1,6 @@
+import type { TPatternSegment, TTokenField, TValidationError, TValidationResult } from "src/types";
 import { tokenize } from "./tokenizer";
 import { defaultTokenRegistry } from "./tokens";
-import type { TPatternSegment, TTokenField, TValidationError, TValidationResult } from "./types";
 
 function isNumericTokenSegment(segment: TPatternSegment): boolean {
 	if (segment.type !== "token") return false;
