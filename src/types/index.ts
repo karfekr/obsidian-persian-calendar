@@ -24,7 +24,11 @@ export type THijri = {
 
 export type TWeekStart = "sat" | "sun" | "mon";
 
-export type TGetDayOfWeek = { jYear: number; jWeekNumber: number };
+export type TGetJalaliDayOfWeek = { jYear: number; jWeekNumber: number };
+export type TGetGregorianDayOfWeek = {
+	gYear: number;
+	gWeekNumber: number;
+};
 
 export type TSupportedHijriYear = keyof typeof IRAN_HIJRI_MONTHS;
 

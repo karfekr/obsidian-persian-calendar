@@ -4,7 +4,7 @@ import {
 	PersianCalendar,
 	toCalendar,
 } from "@internationalized/date";
-import type { TGetDayOfWeek, TGregorian, THijriBase, TJalali, TWeekStart } from "src/types";
+import type { TGetJalaliDayOfWeek, TGregorian, THijriBase, TJalali, TWeekStart } from "src/types";
 
 import {
 	dateToGregorian,
@@ -105,7 +105,7 @@ export function jalaliToJWeekNumber(
 	return weekNumber(jalaliToDate(jy, jm, jd), jalaliToDate(jy, 1, 1), weekStart);
 }
 
-export function getFirstWeekStartOfJYear(jy: number, weekStart: TWeekStart = "sat"): TJalali {
+export function jalaliToStartWeek(jy: number, weekStart: TWeekStart = "sat"): TJalali {
 	const firstDayOfYear = jalaliToDate(jy, 1, 1);
 	const firstWeekday = getWeekdayTehran(firstDayOfYear);
 	const offset = (weekStartNumber(weekStart) - firstWeekday + 7) % 7;
@@ -115,7 +115,7 @@ export function getFirstWeekStartOfJYear(jy: number, weekStart: TWeekStart = "sa
 }
 
 export function jalaliToStartDayOfWeek(
-	{ jYear, jWeekNumber }: TGetDayOfWeek,
+	{ jYear, jWeekNumber }: TGetJalaliDayOfWeek,
 	weekStart: TWeekStart = "sat",
 ): TJalali & TGregorian {
 	const firstDayOfYear = jalaliToDate(jYear, 1, 1);
@@ -142,7 +142,7 @@ export function jalaliToStartDayOfWeek(
 }
 
 export function jalaliToEndDayOfWeek(
-	{ jYear, jWeekNumber }: TGetDayOfWeek,
+	{ jYear, jWeekNumber }: TGetJalaliDayOfWeek,
 	weekStart: TWeekStart = "sat",
 ): TJalali & TGregorian {
 	const { gy, gm, gd } = jalaliToStartDayOfWeek({ jYear, jWeekNumber }, weekStart);

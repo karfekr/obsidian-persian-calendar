@@ -18,7 +18,6 @@ import {
 	dateToStartDayOfJMonthDate,
 	dateToStartDayOfSeasonDate,
 	getDaysInJalaliYear,
-	getFirstWeekStartOfJYear,
 	gregorianToJalali,
 	jalaliMonthLength,
 	jalaliMonthToGregorianRange,
@@ -28,6 +27,7 @@ import {
 	jalaliToGregorian,
 	jalaliToJWeekNumber,
 	jalaliToStartDayOfWeek,
+	jalaliToStartWeek,
 } from "src/utils/dateUtils/jalaliUtils";
 
 describe("checkValidJalali", () => {
@@ -204,16 +204,16 @@ describe("jalaliToJWeekNumber", () => {
 	});
 });
 
-describe("getFirstWeekStartOfJYear", () => {
+describe("jalaliToStartWeek", () => {
 	it("should return a valid Jalali date", () => {
-		const result = getFirstWeekStartOfJYear(1404);
+		const result = jalaliToStartWeek(1404);
 		expect(result.jy).toBe(1404);
 		expect(result.jm).toBeGreaterThanOrEqual(1);
 		expect(result.jd).toBeGreaterThanOrEqual(1);
 	});
 
 	it("should return a Saturday (first day of Iranian week)", () => {
-		const result = getFirstWeekStartOfJYear(1404);
+		const result = jalaliToStartWeek(1404);
 		const date = jalaliToDate(result.jy, result.jm, result.jd);
 		// Saturday = 6 in JS
 		expect(date.getUTCDay()).toBe(6);

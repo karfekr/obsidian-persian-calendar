@@ -1,6 +1,6 @@
-import { now } from "@internationalized/date";
+import { CalendarDate, now } from "@internationalized/date";
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
-import type { TGregorian, TLocale, TWeekStart } from "src/types";
+import type { TGetGregorianDayOfWeek, TGregorian, TLocale, TWeekStart } from "src/types";
 
 const TEHRAN_TZ = "Asia/Tehran";
 
@@ -77,4 +77,42 @@ export function jalaliToSeason(jm: number): number {
 
 export function gregorianMonthLength(gy: number, gm: number) {
 	return new Date(gy, gm, 0).getDate();
+}
+
+export function gregorianToStartDayOfWeek(
+	{ gYear, gWeekNumber }: TGetGregorianDayOfWeek,
+	weekStart: TWeekStart = "sat",
+): TGregorian {
+	const firstDayOfYear = new Date(Date.UTC(gYear, 0, 1));
+	const firstDayWeekday = getWeekdayTehran(firstDayOfYear);
+	const weekStartNum = weekStartNumber(weekStart);
+
+	let daysToAdd = weekStartNum - firstDayWeekday;
+	if (daysToAdd < 0) daysToAdd += 7;
+	if (daysToAdd > 0) daysToAdd -= 7;
+
+	const firstDate = new CalendarDate(gYear, 1, 1);
+	const targetDate = firstDate.add({
+		days: daysToAdd + (gWeekNumber - 1) * 7,
+	});
+
+	return {
+		gy: targetDate.year,
+		gm: targetDate.month,
+		gd: targetDate.day,
+	};
+}
+
+export function gregorianToStartWeek(gy: number, weekStart: TWeekStart = "sat"): TGregorian {
+	const firstDayOfYear = new Date(Date.UTC(gy, 0, 1));
+	const firstWeekday = getWeekdayTehran(firstDayOfYear);
+	const offset = (weekStartNumber(weekStart) - firstWeekday + 7) % 7;
+
+	const result = new CalendarDate(gy, 1, 1).add({ days: offset });
+
+	return {
+		gy: result.year,
+		gm: result.month,
+		gd: result.day,
+	};
 }

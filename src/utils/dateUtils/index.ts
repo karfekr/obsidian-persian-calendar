@@ -5,6 +5,8 @@ export {
 	getWeekdayTehran,
 	gregorianMonthLength,
 	gregorianToDate,
+	gregorianToStartDayOfWeek,
+	gregorianToStartWeek,
 	jalaliMonthName,
 	jalaliToSeason,
 	seasonName,
@@ -39,7 +41,6 @@ export {
 	dateToStartDayOfJMonthDate,
 	dateToStartDayOfSeasonDate,
 	getDaysInJalaliYear,
-	getFirstWeekStartOfJYear,
 	gregorianToJalali,
 	jalaliMonthLength,
 	jalaliMonthToGregorianRange,
@@ -49,4 +50,5 @@ export {
 	jalaliToGregorian,
 	jalaliToJWeekNumber,
 	jalaliToStartDayOfWeek,
+	jalaliToStartWeek,
 } from "./jalaliUtils";
