@@ -61,6 +61,6 @@
 	},
 	"simple-git-hooks": {
 		"pre-commit": "pnpm nano-staged",
-		"pre-push": "pnpm run test && pnpm run version"
+		"pre-push": "pnpm run build && pnpm run test"
 	}
 }

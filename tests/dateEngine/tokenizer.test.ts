@@ -1,6 +1,6 @@
+import type { TPatternSegment } from "src/types";
 import { tokenize } from "src/utils/dateEngine/tokenizer";
 import { defaultTokenRegistry } from "src/utils/dateEngine/tokens";
-import type { TPatternSegment } from "src/utils/dateEngine/types";
 
 function segmentSummary(segments: TPatternSegment[]) {
 	return segments.map((s) =>

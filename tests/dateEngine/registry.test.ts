@@ -1,6 +1,6 @@
+import type { TTokenDefinition } from "src/types";
 import { defaultTokenRegistry } from "src/utils/dateEngine/tokens";
 import { TokenRegistry } from "src/utils/dateEngine/tokens/registry";
-import type { TTokenDefinition } from "src/utils/dateEngine/types";
 
 function fakeToken(token: string): TTokenDefinition {
 	return {
