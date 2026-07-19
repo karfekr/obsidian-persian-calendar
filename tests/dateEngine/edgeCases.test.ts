@@ -63,20 +63,13 @@ describe("edge cases - regex-special characters in literals", () => {
 
 describe("edge cases - compiled pattern caching", () => {
 	it("returns the same compiled object for repeated calls with the same pattern+locale", () => {
-		const a = compilePattern("jYYYY-jMM-jDD", "fa");
-		const b = compilePattern("jYYYY-jMM-jDD", "fa");
+		const a = compilePattern("jYYYY-jMM-jDD");
+		const b = compilePattern("jYYYY-jMM-jDD");
 		expect(a).toBe(b);
 	});
 
-	it("compiles separately per locale, since name tokens differ", () => {
-		const en = compilePattern("jMMMM", "en");
-		const fa = compilePattern("jMMMM", "fa");
-		expect(en).not.toBe(fa);
-		expect(en.regex.source).not.toBe(fa.regex.source);
-	});
-
 	it("cache can be cleared", () => {
-		compilePattern("jYYYY", "en");
+		compilePattern("jYYYY");
 		expect(getCompiledPatternCacheSize()).toBeGreaterThan(0);
 
 		clearCompiledPatternCache();

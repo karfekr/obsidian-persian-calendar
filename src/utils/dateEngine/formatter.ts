@@ -1,13 +1,9 @@
-import type { TDateEngineContext, TLocale } from "src/types";
+import type { TDateEngineContext } from "src/types";
 import { compilePattern } from "./compiler";
 import { DatePatternFormatError } from "./errors";
 
-export function formatPattern(
-	pattern: string,
-	context: TDateEngineContext,
-	locale: TLocale = "en",
-): string {
-	const compiled = compilePattern(pattern, locale);
+export function formatPattern(pattern: string, context: TDateEngineContext): string {
+	const compiled = compilePattern(pattern);
 	let result = "";
 
 	for (const segment of compiled.segments) {
@@ -16,7 +12,7 @@ export function formatPattern(
 			continue;
 		}
 
-		const value = segment.token.format(context, locale);
+		const value = segment.token.format(context);
 		if (value === null) {
 			throw new DatePatternFormatError(pattern, segment.token.token);
 		}

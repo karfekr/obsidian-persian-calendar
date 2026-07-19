@@ -161,9 +161,9 @@ export interface TTokenDefinition {
 	token: string;
 	family: TCalendarFamily;
 	field: TTokenField;
-	format: (ctx: TDateEngineContext, locale: TLocale) => string | null;
+	format: (ctx: TDateEngineContext) => string | null;
 	regexFragment: (locale: TLocale) => string;
-	parseValue: (raw: string, locale: TLocale) => number | null;
+	parseValue: (raw: string) => number | null;
 }
 
 export type TPatternSegment =

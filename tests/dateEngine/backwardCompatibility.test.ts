@@ -35,10 +35,10 @@ describe("backward compatibility - filename generation", () => {
 		expect(formatPattern("jYYYY-jMM", { jy: 1403, jm: 7 })).toBe(legacy(1403, 7));
 	});
 
-	it("seasonal legacy format matches jYYYY-[S]Q", () => {
+	it("seasonal legacy format matches jYYYY-[S]jQ", () => {
 		const legacy = (jy: number, seasonNumber: number) => `${jy}-S${seasonNumber}`;
 
-		expect(formatPattern("jYYYY-[S]Q", { jy: 1403, season: 3 })).toBe(legacy(1403, 3));
+		expect(formatPattern("jYYYY-[S]jQ", { jy: 1403, season: 3 })).toBe(legacy(1403, 3));
 	});
 
 	it("yearly legacy format matches jYYYY", () => {
@@ -52,14 +52,14 @@ describe("backward compatibility - folder token substitution", () => {
 	});
 
 	it("reproduces today's resolvePathTokens behavior for jMM/jM/jMMMM together", () => {
-		expect(formatPattern("Journal/jYYYY/jMM-jMMMM", { jy: 1403, jm: 1 }, "fa")).toBe(
-			"Journal/1403/01-فروردین",
+		expect(formatPattern("Journal/jYYYY/jMM-jMMMM", { jy: 1403, jm: 1 })).toBe(
+			"Journal/1403/01-Farvardin",
 		);
 	});
 
 	it("reproduces today's resolvePathTokens behavior for season tokens (jQQQQ/jQQ/jQ)", () => {
-		expect(formatPattern("Journal/jYYYY/jQQQQ", { jy: 1403, season: 1 }, "fa")).toBe(
-			"Journal/1403/بهار",
+		expect(formatPattern("Journal/jYYYY/jQQQQ", { jy: 1403, season: 1 })).toBe(
+			"Journal/1403/Spring",
 		);
 	});
 

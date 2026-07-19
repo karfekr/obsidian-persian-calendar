@@ -1,12 +1,8 @@
-import type { TDateEngineContext, TLocale } from "src/types";
+import type { TDateEngineContext } from "src/types";
 import { compilePattern } from "./compiler";
 
-export function parsePattern(
-	pattern: string,
-	input: string,
-	locale: TLocale = "en",
-): TDateEngineContext | null {
-	const compiled = compilePattern(pattern, locale);
+export function parsePattern(pattern: string, input: string): TDateEngineContext | null {
+	const compiled = compilePattern(pattern);
 	const match = compiled.regex.exec(input);
 	if (!match) return null;
 
@@ -19,7 +15,7 @@ export function parsePattern(
 		const raw = match[groupIndex];
 		groupIndex += 1;
 
-		const value = segment.token.parseValue(raw, locale);
+		const value = segment.token.parseValue(raw);
 		if (value === null || Number.isNaN(value)) {
 			return null;
 		}

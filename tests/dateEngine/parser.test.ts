@@ -23,12 +23,12 @@ describe("parsePattern - round trips with formatPattern", () => {
 	});
 
 	it("parses full month names back to a month index", () => {
-		expect(parsePattern("MMMM YYYY", "January 2026", "en")).toEqual({ gm: 1, gy: 2026 });
-		expect(parsePattern("jMMMM jYYYY", "فروردین 1403", "fa")).toEqual({ jm: 1, jy: 1403 });
+		expect(parsePattern("MMMM YYYY", "January 2026")).toEqual({ gm: 1, gy: 2026 });
+		expect(parsePattern("jMMMM jYYYY", "Farvardin 1403")).toEqual({ jm: 1, jy: 1403 });
 	});
 
 	it("parses abbreviated English month names back to a month index", () => {
-		expect(parsePattern("MMM YYYY", "Sep 2026", "en")).toEqual({ gm: 9, gy: 2026 });
+		expect(parsePattern("MMM YYYY", "Sep 2026")).toEqual({ gm: 9, gy: 2026 });
 	});
 });
 
@@ -42,7 +42,7 @@ describe("parsePattern - non-matching input", () => {
 	});
 
 	it("returns null for a month name that doesn't exist in the given locale", () => {
-		expect(parsePattern("MMMM YYYY", "Farvardin 2026", "en")).toBeNull();
+		expect(parsePattern("MMMM YYYY", "Farvardin 2026")).toBeNull();
 	});
 
 	it("returns null for trailing or leading extra characters (pattern is fully anchored)", () => {

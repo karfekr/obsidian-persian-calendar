@@ -214,7 +214,7 @@ export default class NoteService {
 	}
 
 	public getDailyNoteDate(file: TFile): TJalali | null {
-		const parsed = parsePattern(this.plugin.setting.dailyNoteFormat, file.basename, "fa");
+		const parsed = parsePattern(this.plugin.setting.dailyNoteFormat, file.basename);
 		if (!parsed) return null;
 
 		let date: TJalali;

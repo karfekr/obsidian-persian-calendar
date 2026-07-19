@@ -1,4 +1,4 @@
-import { GREGORIAN_MONTHS_NAME, SEASONS_NAME } from "src/constants";
+import { GREGORIAN_MONTHS_NAME } from "src/constants";
 
 import type { TTokenDefinition } from "src/types";
 import { createNameToken, createNumericToken } from "./tokenFactories";
@@ -35,13 +35,4 @@ export const gregorianTokens: TTokenDefinition[] = [
 
 	createNumericToken({ token: "WW", family: "gregorian", field: "week", digits: 2, pad: true }),
 	createNumericToken({ token: "W", family: "gregorian", field: "week", digits: 2, pad: false }),
-
-	createNameToken({
-		token: "QQQQ",
-		family: "gregorian",
-		field: "season",
-		namesByLocale: SEASONS_NAME,
-	}),
-	createNumericToken({ token: "QQ", family: "gregorian", field: "season", digits: 2, pad: true }),
-	createNumericToken({ token: "Q", family: "gregorian", field: "season", digits: 1, pad: false }),
 ];

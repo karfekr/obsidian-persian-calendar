@@ -36,11 +36,10 @@ export function createNameToken(opts: {
 	field: TTokenField;
 	namesByLocale: Record<TLocale, Record<number, string>>;
 	abbreviate?: boolean;
-	local?: TLocale;
 }): TTokenDefinition {
 	const reverseMapCache = new Map<TLocale, Map<string, number>>();
 
-	const getNames = (locale: TLocale = opts.local ?? "en") => opts.namesByLocale[locale];
+	const getNames = opts.namesByLocale.en;
 
 	const toLabel = (name: string) => (opts.abbreviate ? name.slice(0, 3) : name);
 
@@ -49,11 +48,10 @@ export function createNameToken(opts: {
 		if (cached) return cached;
 
 		const map = new Map<string, number>();
-		const names = getNames(locale);
 
-		for (const key of Object.keys(names)) {
+		for (const key of Object.keys(getNames)) {
 			const index = Number(key);
-			map.set(toLabel(names[index]), index);
+			map.set(toLabel(getNames[index]), index);
 		}
 
 		reverseMapCache.set(locale, map);
@@ -65,11 +63,11 @@ export function createNameToken(opts: {
 		family: opts.family,
 		field: opts.field,
 
-		format: (ctx, locale) => {
+		format: (ctx) => {
 			const raw = ctx[opts.field];
 			if (raw === undefined) return null;
 
-			const name = getNames(locale)[raw];
+			const name = getNames[raw];
 			return name ? toLabel(name) : null;
 		},
 
@@ -79,8 +77,8 @@ export function createNameToken(opts: {
 			return `(${labels.map(escapeRegex).join("|")})`;
 		},
 
-		parseValue: (raw, locale) => {
-			const map = getReverseMap(locale);
+		parseValue: (raw) => {
+			const map = getReverseMap("en");
 			return map.has(raw) ? (map.get(raw) as number) : null;
 		},
 	};

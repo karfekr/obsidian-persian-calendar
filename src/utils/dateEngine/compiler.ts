@@ -1,16 +1,16 @@
-import type { TCompiledPattern, TLocale, TTokenField } from "src/types";
+import type { TCompiledPattern, TTokenField } from "src/types";
 import { tokenize } from "./tokenizer";
 import { defaultTokenRegistry } from "./tokens";
 import { escapeRegex } from "./utils";
 
 const compiledPatternCache = new Map<string, TCompiledPattern>();
 
-function cacheKey(pattern: string, locale: TLocale): string {
-	return `${locale}::${pattern}`;
+function cacheKey(pattern: string): string {
+	return `"en"::${pattern}`;
 }
 
-export function compilePattern(pattern: string, locale: TLocale = "en"): TCompiledPattern {
-	const key = cacheKey(pattern, locale);
+export function compilePattern(pattern: string): TCompiledPattern {
+	const key = cacheKey(pattern);
 	const cached = compiledPatternCache.get(key);
 	if (cached) return cached;
 
@@ -22,14 +22,14 @@ export function compilePattern(pattern: string, locale: TLocale = "en"): TCompil
 		if (segment.type === "literal") {
 			regexSource += escapeRegex(segment.value);
 		} else {
-			regexSource += segment.token.regexFragment(locale);
+			regexSource += segment.token.regexFragment("en");
 			fields.push(segment.token.field);
 		}
 	}
 
 	const compiled: TCompiledPattern = {
 		pattern,
-		locale,
+		locale: "en",
 		segments,
 		regex: new RegExp(`^${regexSource}$`),
 		fields,
