@@ -35,6 +35,24 @@ export function renderGeneralSettingsSection(
 		},
 	);
 
+	tab.addDropdown(
+		containerEl,
+		"setting.general.weekCalculationMode.name",
+		"setting.general.weekCalculationMode.desc",
+		"weekCalculationMode",
+		{
+			"jalali-first-day-of-year": "setting.general.weekCalculationMode.options.firstDayOfYear",
+			"jalali-first-week-start": "setting.general.weekCalculationMode.options.firstWeekStart",
+			"gregorian-first-day-of-year":
+				"setting.general.weekCalculationMode.options.gregorianFirstDayOfYear",
+			"gregorian-first-week-start":
+				"setting.general.weekCalculationMode.options.gregorianFirstWeekStart",
+		},
+		{
+			refresh: true,
+		},
+	);
+
 	tab.addPatternField(
 		containerEl,
 		"setting.paths.daily.formatName",

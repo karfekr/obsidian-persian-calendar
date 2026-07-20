@@ -46,6 +46,16 @@
 					"gregorian": "Gregorian"
 				}
 			},
+			"weekCalculationMode": {
+				"name": "Week Calculation Mode",
+				"desc": "Controls how the first week of the year and week numbers are determined.",
+				"options": {
+					"firstDayOfYear": "By first day of jalali year",
+					"firstWeekStart": "By first full jalali week",
+					"gregorianFirstDayOfYear": "By first day of gregorian year",
+					"gregorianFirstWeekStart": "By first full gregorian week"
+				}
+			},
 			"askBeforeCreate": {
 				"name": "Confirm Before Creating Notes",
 				"desc": "When enabled, a confirmation dialog will appear before creating any note."

@@ -5,6 +5,7 @@ export const DEFAULT_SETTING: TSetting = {
 	language: "en",
 	dateFormat: "gregorian",
 	dailyNoteFormat: "YYYY-MM-DD",
+	weekCalculationMode: "jalali-first-week-start",
 	askForCreateNote: true,
 	openDailyNoteOnStartup: false,
 	showSeasonalNotes: true,

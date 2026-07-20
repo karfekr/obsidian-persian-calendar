@@ -89,23 +89,36 @@ export default class CalendarBodyRender {
 		const weeksCount = this.calendarState.getWeeksCountForMonth(jy, jm);
 		contentEl.style.setProperty("--persian-calendar-weeks-count", String(weeksCount));
 
-		const weekNumbers = this.calendarState.getWeekNumbersForMonth(jy, jm);
-		const weeksWithNotes = this.notesService.getWeeksWithNotes(jy);
+		const weekNumbers = this.calendarState.getWeekNumbersForMonth(
+			jy,
+			jm,
+			this.setting.weekCalculationMode,
+		);
+
+		const weeksWithNotesCache = new Map<number, number[]>();
+		const getWeeksWithNotes = (weekYear: number) => {
+			let cached = weeksWithNotesCache.get(weekYear);
+			if (!cached) {
+				cached = this.notesService.getWeeksWithNotes(weekYear);
+				weeksWithNotesCache.set(weekYear, cached);
+			}
+			return cached;
+		};
 
 		for (let i = 0; i < weekNumbers.length; i++) {
-			const weekNumber = weekNumbers[i];
+			const { jy: weekYear, weekNumber } = weekNumbers[i];
 
 			const weekEl = weekNumbersEl.createEl("div", {
 				cls: "persian-calendar__week-number",
 			});
 			weekEl.textContent = toFaNumber(weekNumber);
 
-			if (!weeksWithNotes.includes(weekNumber)) {
+			if (!getWeeksWithNotes(weekYear).includes(weekNumber)) {
 				weekEl.addClass("persian-calendar__no-note");
 			}
 
 			weekEl.addEventListener("click", () => {
-				void this.notesService.openOrCreateWeeklyNote(jy, weekNumber);
+				void this.notesService.openOrCreateWeeklyNote(weekYear, weekNumber);
 			});
 		}
 	}

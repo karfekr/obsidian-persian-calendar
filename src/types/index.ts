@@ -24,6 +24,16 @@ export type THijri = {
 
 export type TWeekStart = "sat" | "sun" | "mon";
 
+// first-day-of-year: week 1 is the week containing 1 Farvardin (jalaliToStartDayOfWeek)
+// first-week-start: week 1 begins on the first occurrence of weekStart in the jalali year (jalaliToStartWeek)
+// gregorian-first-day-of-year: week 1 is the week containing 1 January (gregorianToStartDayOfWeek)
+// gregorian-first-week-start: week 1 begins on the first occurrence of weekStart in the gregorian year (gregorianToStartWeek)
+export type TWeekCalculationMode =
+	| "jalali-first-day-of-year"
+	| "jalali-first-week-start"
+	| "gregorian-first-day-of-year"
+	| "gregorian-first-week-start";
+
 export type TGetJalaliDayOfWeek = { jYear: number; jWeekNumber: number };
 export type TGetGregorianDayOfWeek = {
 	gYear: number;
@@ -72,6 +82,7 @@ export type TSetting = {
 	openDailyNoteOnStartup: boolean;
 	dateFormat: TDateFormatWithoutHijri;
 	dailyNoteFormat: string;
+	weekCalculationMode: TWeekCalculationMode;
 	showSeasonalNotes: boolean;
 	// show holidays
 	showHolidays: boolean;

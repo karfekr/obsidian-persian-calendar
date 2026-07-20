@@ -105,13 +105,76 @@ export function jalaliToJWeekNumber(
 	return weekNumber(jalaliToDate(jy, jm, jd), jalaliToDate(jy, 1, 1), weekStart);
 }
 
-export function jalaliToStartWeek(jy: number, weekStart: TWeekStart = "sat"): TJalali {
+export function jalaliToStartWeek(
+	jy: number,
+	jWeekNumber: number = 1,
+	weekStart: TWeekStart = "sat",
+): TJalali & TGregorian {
 	const firstDayOfYear = jalaliToDate(jy, 1, 1);
 	const firstWeekday = getWeekdayTehran(firstDayOfYear);
 	const offset = (weekStartNumber(weekStart) - firstWeekday + 7) % 7;
 
-	const result = new CalendarDate(persian, jy, 1, 1).add({ days: offset });
-	return { jy: result.year, jm: result.month, jd: result.day };
+	const { gy, gm, gd } = jalaliToGregorian(jy, 1, 1);
+	const firstGCD = new CalendarDate(gy, gm, gd);
+	const targetGCD = firstGCD.add({ days: offset + (jWeekNumber - 1) * 7 });
+	const targetJCD = toCalendar(targetGCD, persian);
+
+	return {
+		jy: targetJCD.year,
+		jm: targetJCD.month,
+		jd: targetJCD.day,
+		gy: targetGCD.year,
+		gm: targetGCD.month,
+		gd: targetGCD.day,
+	};
+}
+
+export function jalaliToEndWeek(
+	jy: number,
+	jWeekNumber: number = 1,
+	weekStart: TWeekStart = "sat",
+): TJalali & TGregorian {
+	const { gy, gm, gd } = jalaliToStartWeek(jy, jWeekNumber, weekStart);
+
+	const startGCD = new CalendarDate(gy, gm, gd);
+	const endGCD = startGCD.add({ days: 6 });
+	const endJCD = toCalendar(endGCD, persian);
+
+	return {
+		jy: endJCD.year,
+		jm: endJCD.month,
+		jd: endJCD.day,
+		gy: endGCD.year,
+		gm: endGCD.month,
+		gd: endGCD.day,
+	};
+}
+
+// occurrence of weekStart in a jalali year belong to the previous year's last week.
+export function jalaliToJWeekNumberFromFirstWeekStart(
+	date: Date,
+	weekStart: TWeekStart = "sat",
+): { jy: number; weekNumber: number } {
+	const { jy } = dateToJalali(date);
+
+	const { gy, gm, gd } = jalaliToStartWeek(jy, 1, weekStart);
+	const diffInDays = daysBetween(calendarDateToUTCDate(new CalendarDate(gy, gm, gd)), date);
+
+	if (diffInDays >= 0) {
+		return { jy, weekNumber: Math.floor(diffInDays / 7) + 1 };
+	}
+
+	const previousYear = jy - 1;
+	const previousStart = jalaliToStartWeek(previousYear, 1, weekStart);
+	const previousDiffInDays = daysBetween(
+		calendarDateToUTCDate(new CalendarDate(previousStart.gy, previousStart.gm, previousStart.gd)),
+		date,
+	);
+
+	return {
+		jy: previousYear,
+		weekNumber: Math.floor(previousDiffInDays / 7) + 1,
+	};
 }
 
 export function jalaliToStartDayOfWeek(

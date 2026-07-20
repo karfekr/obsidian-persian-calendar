@@ -84,10 +84,13 @@ export default class SmartDateLinker {
 			years?: number;
 		};
 
+		const weekDashFn = (d: Date) =>
+			dateToJWeekDash(d, undefined, { mode: this.plugin.setting.weekCalculationMode });
+
 		const periodMap: Partial<Record<string, PeriodConfig>> = {
-			"این هفته": { fn: dateToJWeekDash },
-			"هفته قبل": { fn: dateToJWeekDash, days: -7 },
-			"هفته بعد": { fn: dateToJWeekDash, days: 7 },
+			"این هفته": { fn: weekDashFn },
+			"هفته قبل": { fn: weekDashFn, days: -7 },
+			"هفته بعد": { fn: weekDashFn, days: 7 },
 			"این ماه": { fn: dateToJMonthDash },
 			"ماه قبل": { fn: dateToJMonthDash, months: -1 },
 			"ماه بعد": { fn: dateToJMonthDash, months: 1 },

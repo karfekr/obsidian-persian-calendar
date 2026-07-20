@@ -108,7 +108,10 @@ export default class CalendarSettingTab extends PluginSettingTab {
 		containerEl: HTMLElement,
 		nameKey: string,
 		descKey: string | null,
-		key: Extract<keyof TSetting, "language" | "dateFormat" | "weekendDays" | "hijriBase">,
+		key: Extract<
+			keyof TSetting,
+			"language" | "dateFormat" | "weekendDays" | "hijriBase" | "weekCalculationMode"
+		>,
 		optionKeys: Record<string, string>,
 		opts: { refresh?: boolean; isLanguage?: boolean } = {},
 	): void {

@@ -1,10 +1,14 @@
 export {
 	addDayDate,
 	dateToGregorian,
+	dateToGWeekNumber,
 	dateToWeekdayName,
 	getWeekdayTehran,
 	gregorianMonthLength,
 	gregorianToDate,
+	gregorianToEndDayOfWeek,
+	gregorianToEndWeek,
+	gregorianToGWeekNumberFromFirstWeekStart,
 	gregorianToStartDayOfWeek,
 	gregorianToStartWeek,
 	jalaliMonthName,
@@ -47,8 +51,12 @@ export {
 	jalaliMonthToHijriRange,
 	jalaliToDate,
 	jalaliToEndDayOfWeek,
+	jalaliToEndWeek,
 	jalaliToGregorian,
 	jalaliToJWeekNumber,
+	jalaliToJWeekNumberFromFirstWeekStart,
 	jalaliToStartDayOfWeek,
 	jalaliToStartWeek,
 } from "./jalaliUtils";
+export type { TWeekCalculator } from "./weekCalculator";
+export { getWeekStartCalculator } from "./weekCalculator";

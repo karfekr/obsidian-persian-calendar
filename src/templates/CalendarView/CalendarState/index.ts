@@ -1,7 +1,8 @@
-import type { TJalali } from "src/types";
+import type { TJalali, TWeekCalculationMode, TWeekStart } from "src/types";
 import {
+	addDayDate,
 	dateToJalali,
-	dateToJWeekNumber,
+	getWeekStartCalculator,
 	jalaliMonthLength,
 	jalaliToDate,
 	jalaliToGregorian,
@@ -111,17 +112,42 @@ export default class CalendarState {
 		return adjustedDayOfWeek;
 	}
 
-	public getWeekNumbersForMonth(jy: number, jm: number): number[] {
-		const startOfMonthDate = jalaliToDate(jy, jm, 1);
-		const startWeekNumber = dateToJWeekNumber(startOfMonthDate);
-
+	public getWeekNumbersForMonth(
+		jy: number,
+		jm: number,
+		mode: TWeekCalculationMode = "jalali-first-day-of-year",
+		weekStart: TWeekStart = "sat",
+	): { jy: number; weekNumber: number }[] {
+		const calculator = getWeekStartCalculator(mode);
 		const weeks = this.getWeeksCountForMonth(jy, jm);
 
-		const weekNumbers: number[] = [];
+		// "jalali-first-day-of-year" always assigns week 1 to the week containing day 1
+		// of the jalali year, and Farvardin 1 is always day 1 of Farvardin's grid.
+		// So within any single month's grid, weeks never roll into another year,
+		// and we can just anchor on the month's day 1 and count forward.
+		if (mode === "jalali-first-day-of-year") {
+			const anchor = calculator.getWeekNumber(jalaliToDate(jy, jm, 1), weekStart);
 
+			const weekNumbers: { jy: number; weekNumber: number }[] = [];
+			for (let i = 0; i < weeks; i++) {
+				weekNumbers.push({ jy: anchor.jy, weekNumber: anchor.weekNumber + i });
+			}
+
+			return weekNumbers;
+		}
+
+		// Every other mode can legitimately roll a grid row into a different year
+		// mid-month (e.g. the gregorian modes roll over on 1 January, which never
+		// aligns with the start of a jalali month), so each row is computed from
+		// its own date rather than assumed to increment sequentially.
+		const startOfMonthDate = jalaliToDate(jy, jm, 1);
+		const firstDayOfWeekIndex = this.calculateFirstDayOfWeekIndex(jy, jm);
+		const gridStartDate = addDayDate(startOfMonthDate, -firstDayOfWeekIndex);
+
+		const weekNumbers: { jy: number; weekNumber: number }[] = [];
 		for (let i = 0; i < weeks; i++) {
-			const weekNumberForIthWeek = startWeekNumber + i;
-			weekNumbers.push(weekNumberForIthWeek);
+			const rowDate = addDayDate(gridStartDate, i * 7);
+			weekNumbers.push(calculator.getWeekNumber(rowDate, weekStart));
 		}
 
 		return weekNumbers;
