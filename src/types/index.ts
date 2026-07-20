@@ -1,5 +1,6 @@
-import type { EditorSuggestContext } from "obsidian";
+import type { App, EditorSuggestContext } from "obsidian";
 import type { IRAN_HIJRI_MONTHS } from "src/constants";
+import type { SettingsController } from "src/templates/Setting/SettingsController";
 
 // jalali = هجری شمسی/خورشیدی
 export type TJalali = {
@@ -24,10 +25,6 @@ export type THijri = {
 
 export type TWeekStart = "sat" | "sun" | "mon";
 
-// first-day-of-year: week 1 is the week containing 1 Farvardin (jalaliToStartDayOfWeek)
-// first-week-start: week 1 begins on the first occurrence of weekStart in the jalali year (jalaliToStartWeek)
-// gregorian-first-day-of-year: week 1 is the week containing 1 January (gregorianToStartDayOfWeek)
-// gregorian-first-week-start: week 1 begins on the first occurrence of weekStart in the gregorian year (gregorianToStartWeek)
 export type TWeekCalculationMode =
 	| "jalali-first-day-of-year"
 	| "jalali-first-week-start"
@@ -112,6 +109,11 @@ export type TSetting = {
 	showGlobalEvents: boolean;
 };
 
+//? Utility type that extracts the keys of TSetting whose values are assignable to V.
+type KeysOfType<V> = { [K in keyof TSetting]-?: TSetting[K] extends V ? K : never }[keyof TSetting];
+export type BoolKey = KeysOfType<boolean>;
+export type StringKey = KeysOfType<string>;
+
 export type TLocale = "fa" | "en";
 export type TDirection = "rtl" | "ltr";
 
@@ -172,26 +174,26 @@ export type TDateEngineContext = {
 
 export type TTokenField = keyof TDateEngineContext;
 
-export interface TTokenDefinition {
+export type TTokenDefinition = {
 	token: string;
 	family: TCalendarFamily;
 	field: TTokenField;
 	format: (ctx: TDateEngineContext) => string | null;
 	regexFragment: (locale: TLocale) => string;
 	parseValue: (raw: string) => number | null;
-}
+};
 
 export type TPatternSegment =
 	| { type: "literal"; value: string; escaped?: boolean }
 	| { type: "token"; token: TTokenDefinition };
 
-export interface TCompiledPattern {
+export type TCompiledPattern = {
 	pattern: string;
 	locale: TLocale;
 	segments: TPatternSegment[];
 	regex: RegExp;
 	fields: TTokenField[];
-}
+};
 
 export type TValidationSeverity = "error" | "warning";
 
@@ -206,3 +208,10 @@ export type TValidationResult = {
 	valid: boolean;
 	errors: TValidationError[];
 };
+
+export type SectionContext = {
+	app: App;
+	controller: SettingsController;
+};
+
+export type SectionRenderer = (ctx: SectionContext, containerEl: HTMLElement) => void;

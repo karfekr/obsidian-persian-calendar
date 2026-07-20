@@ -1,22 +1,22 @@
-import type CalendarSettingTab from "src/templates/Setting";
+import type { SectionRenderer } from "src/types";
+import { addDropdown, addHeading, addToggle } from "../controls";
 
-export function renderHolidaySettingsSection(
-	tab: CalendarSettingTab,
-	containerEl: HTMLElement,
-): void {
-	tab.addHeading(containerEl, "setting.sections.holidays");
+export const renderHolidaySection: SectionRenderer = (ctx, containerEl) => {
+	const { controller } = ctx;
 
-	tab.addToggle(
+	addHeading(controller, containerEl, "setting.sections.holidays");
+
+	addToggle(
+		controller,
 		containerEl,
 		"setting.holidays.showOfficial.name",
 		"setting.holidays.showOfficial.desc",
 		"showHolidays",
-		{
-			refresh: true,
-		},
+		{ refresh: true },
 	);
 
-	tab.addDropdown(
+	addDropdown(
+		controller,
 		containerEl,
 		"setting.holidays.weekendDays.name",
 		"setting.holidays.weekendDays.desc",
@@ -26,8 +26,6 @@ export function renderHolidaySettingsSection(
 			"thursday-friday": "setting.holidays.weekendDays.options.thursdayFriday",
 			"friday-saturday": "setting.holidays.weekendDays.options.fridaySaturday",
 		},
-		{
-			refresh: true,
-		},
+		{ refresh: true },
 	);
-}
+};
