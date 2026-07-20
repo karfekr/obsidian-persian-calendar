@@ -66,7 +66,7 @@
 			},
 			"showSeasons": {
 				"name": "Show Seasons in Calendar",
-				"desc": "Display seasonal divisions within the calendar view."
+				"desc": "* This setting is ignored when the sidebar is too narrow."
 			}
 		},
 		"paths": {
@@ -126,11 +126,11 @@
 		"extraCalendars": {
 			"showGregorian": {
 				"name": "Show Gregorian Calendar",
-				"desc": "Display Gregorian dates alongside the main calendar."
+				"desc": "* This setting is ignored when the sidebar is too narrow."
 			},
 			"showHijri": {
 				"name": "Show Hijri Calendar",
-				"desc": "Display Hijri dates alongside the main calendar."
+				"desc": "* This setting is ignored when the sidebar is too narrow."
 			},
 			"hijriBase": {
 				"name": "Hijri Calendar Base",
