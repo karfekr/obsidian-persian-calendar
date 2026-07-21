@@ -3,6 +3,21 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.8.0",
+		changes: {
+			fa: [
+				"اکنون کاربران قادر به تعیین نحوه‌ی شماره‌گذاری هفته‌ها هستند.",
+				"برطرف کردن باگ مربوط به نمایش روزنوشت باز شده در تقویم.",
+				"بهبود کد تنظیمات پلاگین و همچنین تغییر برخی از توضیحات برای شفافیت استفاده‌ی کاربران",
+			],
+			en: [
+				"Users can now customize the week numbering system.",
+				"Fixed the bug related to displaying opened diary notes in the calendar.",
+				"Improved the plugin settings code and revised some descriptions to provide clearer guidance for users.",
+			],
+		},
+	},
+	{
 		version: "4.7.2",
 		changes: {
 			fa: [

@@ -259,11 +259,11 @@ pcApi.dateToEvents(new Date(), { base: "umalqura" }); // With Umm al-Qura basis
 
 ## <a name="other"></a> Other Features
 
-- scales responsively with the sidebar width
 <div align="center">
 	<img src="Instructions/responsive.webp" alt="view" width="350px" />
 </div>
 
+- scales responsively with the sidebar width
 - Display of official Iranian holidays on the calendar
 - Display of Iran's official calendar events and international observances
 - Option to "Open today's daily note on startup," user configurable
