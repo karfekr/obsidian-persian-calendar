@@ -55,19 +55,27 @@ export default class CalendarView extends View {
 
 		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", () => {
-				this.syncActiveDailyNote();
+				this.handleWorkspaceActivityChange();
 			}),
 		);
 
 		this.registerEvent(
 			this.app.workspace.on("file-open", () => {
-				this.syncActiveDailyNote();
+				this.handleWorkspaceActivityChange();
 			}),
 		);
 
 		this.syncActiveDailyNote();
 
 		this.render();
+	}
+
+	private handleWorkspaceActivityChange() {
+		if (this.app.workspace.getActiveViewOfType(CalendarView) === this) {
+			return;
+		}
+
+		this.syncActiveDailyNote();
 	}
 
 	async onClose() {
