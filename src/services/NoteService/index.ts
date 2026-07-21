@@ -25,7 +25,7 @@ export default class NoteService {
 		);
 
 		if (existingLeaf) {
-			this.app.workspace.setActiveLeaf(existingLeaf);
+			this.app.workspace.setActiveLeaf(existingLeaf, { focus: true });
 			return;
 		}
 
@@ -34,7 +34,7 @@ export default class NoteService {
 			this.app.workspace.getMostRecentLeaf();
 
 		if (leaf) {
-			await leaf.openFile(noteFile);
+			await leaf.openFile(noteFile, { active: true });
 		}
 	}
 
