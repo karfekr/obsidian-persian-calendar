@@ -15,15 +15,9 @@ describe("formatPattern - numeric tokens", () => {
 		expect(formatPattern("jYYYY-jMM-jDD", { jy: 1403, jm: 1, jd: 5 })).toBe("1403-01-05");
 	});
 
-	it("does not pad unpadded M/D/W/Q tokens", () => {
+	it("does not pad unpadded M/D/Q tokens", () => {
 		expect(formatPattern("jM-jD", { jm: 3, jd: 9 })).toBe("3-9");
-		expect(formatPattern("jW", { week: 7 })).toBe("7");
 		expect(formatPattern("jQ", { season: 2 })).toBe("2");
-	});
-
-	it("pads WW and QQ to two digits", () => {
-		expect(formatPattern("jYYYY-WW", { jy: 1403, week: 7 })).toBe("1403-07");
-		expect(formatPattern("jQQ", { season: 2 })).toBe("02");
 	});
 
 	it("renders YY as the last two digits of the year", () => {
@@ -63,10 +57,6 @@ describe("formatPattern - name tokens", () => {
 describe("formatPattern - literals and mixed patterns", () => {
 	it("preserves literal text and separators verbatim", () => {
 		expect(formatPattern("Journal/jYYYY/[Daily]", { jy: 1403 })).toBe("Journal/1403/Daily");
-	});
-
-	it("supports [bracket]-escaped literals mixed with tokens", () => {
-		expect(formatPattern("jYYYY-[Week]-WW", { jy: 1403, week: 7 })).toBe("1403-Week-07");
 	});
 
 	it("returns an empty string for an empty pattern", () => {

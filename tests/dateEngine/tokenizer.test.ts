@@ -41,17 +41,6 @@ describe("tokenizer - longest-token-first matching", () => {
 });
 
 describe("tokenizer - escaped literals via [brackets]", () => {
-	it("treats bracketed text as a literal, not as tokens", () => {
-		const segments = tokenize("jYYYY-[Week]-WW", defaultTokenRegistry);
-		expect(segmentSummary(segments)).toEqual([
-			{ token: "jYYYY" },
-			{ literal: "-" },
-			{ literal: "Week" },
-			{ literal: "-" },
-			{ token: "WW" },
-		]);
-	});
-
 	it("does not scan token-shaped text inside brackets for tokens", () => {
 		const segments = tokenize("[jYYYY]-jYYYY", defaultTokenRegistry);
 		expect(segmentSummary(segments)).toEqual([

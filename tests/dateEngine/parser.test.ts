@@ -18,10 +18,6 @@ describe("parsePattern - round trips with formatPattern", () => {
 		expect(parsePattern("Journal/jYYYY/[Daily]", "Journal/1403/Daily")).toEqual({ jy: 1403 });
 	});
 
-	it("parses bracket-escaped literal patterns", () => {
-		expect(parsePattern("jYYYY-[Week]-WW", "1403-Week-07")).toEqual({ jy: 1403, week: 7 });
-	});
-
 	it("parses full month names back to a month index", () => {
 		expect(parsePattern("MMMM YYYY", "January 2026")).toEqual({ gm: 1, gy: 2026 });
 		expect(parsePattern("jMMMM jYYYY", "Farvardin 1403")).toEqual({ jm: 1, jy: 1403 });

@@ -22,13 +22,6 @@ describe("backward compatibility - filename generation", () => {
 		expect(formatPattern("YYYY-MM-DD", { gy: 2026, gm: 3, gd: 9 })).toBe(legacy(2026, 3, 9));
 	});
 
-	it("weekly legacy format matches jYYYY-[W]W", () => {
-		const legacy = (jy: number, weekNumber: number) => `${jy}-W${weekNumber}`;
-
-		expect(formatPattern("jYYYY-[W]W", { jy: 1403, week: 7 })).toBe(legacy(1403, 7));
-		expect(formatPattern("jYYYY-[W]W", { jy: 1403, week: 23 })).toBe(legacy(1403, 23));
-	});
-
 	it("monthly legacy format matches jYYYY-jMM", () => {
 		const legacy = (jy: number, jm: number) => `${jy}-${jm.toString().padStart(2, "0")}`;
 

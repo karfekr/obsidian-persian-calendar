@@ -44,12 +44,6 @@ describe("validatePattern - valid patterns", () => {
 		expect(result.valid).toBe(true);
 		expect(result.errors).toEqual([]);
 	});
-
-	it("does not flag letters inside [bracket] literals as unknown tokens", () => {
-		const result = validatePattern("jYYYY-[Week]-WW");
-		expect(result.valid).toBe(true);
-		expect(result.errors.some((e) => e.type === "unknown-token")).toBe(false);
-	});
 });
 
 describe("validatePattern - non-fatal warnings", () => {

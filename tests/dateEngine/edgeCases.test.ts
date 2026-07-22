@@ -103,9 +103,8 @@ describe("edge cases - single-letter tokens colliding with plain English words",
 		expect(formatPattern("Journal/jYYYY/[Daily]", { jy: 1403 })).toBe("Journal/1403/Daily");
 	});
 
-	it("also affects 'Monthly' (M) and 'Weekly' (W), but not 'Seasonal' (no colliding leading letter)", () => {
+	it("also affects 'Monthly' (M), but not 'Seasonal' (no colliding leading letter)", () => {
 		expect(() => formatPattern("Monthly", { jy: 1403 })).toThrow(DatePatternFormatError);
-		expect(() => formatPattern("Weekly", { jy: 1403 })).toThrow(DatePatternFormatError);
 		expect(formatPattern("Seasonal", {})).toBe("Seasonal");
 	});
 });
@@ -115,15 +114,3 @@ function segmentSummaryFor(segments: ReturnType<typeof tokenize>) {
 		s.type === "literal" ? { literal: s.value } : { token: s.token.token },
 	);
 }
-
-describe("edge cases - week and season fields are shared across calendars", () => {
-	it("gregorian W and jalali jW both write to the same 'week' field", () => {
-		expect(formatPattern("W", { week: 5 })).toBe("5");
-		expect(formatPattern("jW", { week: 5 })).toBe("5");
-	});
-
-	it("a pattern combining W and jW is flagged as a duplicate-field warning", () => {
-		const result = validatePattern("W-jW");
-		expect(result.errors.some((e) => e.type === "duplicate-field")).toBe(true);
-	});
-});

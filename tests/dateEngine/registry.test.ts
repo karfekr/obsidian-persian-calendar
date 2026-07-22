@@ -56,8 +56,6 @@ describe("TokenRegistry", () => {
 			"MMMM",
 			"D",
 			"DD",
-			"W",
-			"WW",
 			"jYYYY",
 			"jYY",
 			"jM",
@@ -66,8 +64,6 @@ describe("TokenRegistry", () => {
 			"jMMMM",
 			"jD",
 			"jDD",
-			"jW",
-			"jWW",
 		];
 
 		for (const token of expected) {
