@@ -14,7 +14,7 @@
 			"url": "https://github.com/xmha97"
 		},
 		{
-			"name": "Alireza Mohammadzadeh(NedaMani)",
+			"name": "Alireza Mohammadzadeh Nedamani",
 			"url": "https://nedamani.ir"
 		}
 	],
@@ -39,7 +39,7 @@
 	},
 	"dependencies": {
 		"@internationalized/date": "^3.12.2",
-		"persian-holidays": "^1.5.1"
+		"persian-holidays": "^1.5.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.4",
