@@ -221,3 +221,24 @@ export type TWeekCalculator = {
 	getStartOfWeek(jYear: number, jWeekNumber: number, weekStart?: TWeekStart): TJalali & TGregorian;
 	getEndOfWeek(jYear: number, jWeekNumber: number, weekStart?: TWeekStart): TJalali & TGregorian;
 };
+
+export type TToken =
+	| "YYYY"
+	| "YY"
+	| "jYYYY"
+	| "jYY"
+	| "jQQQQ"
+	| "jQQ"
+	| "jQ"
+	| "MMMM"
+	| "MMM"
+	| "MM"
+	| "M"
+	| "jMMMM"
+	| "jMMM"
+	| "jMM"
+	| "jM"
+	| "DD"
+	| "D"
+	| "jDD"
+	| "jD";

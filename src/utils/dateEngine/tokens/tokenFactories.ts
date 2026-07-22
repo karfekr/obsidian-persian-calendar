@@ -1,8 +1,8 @@
-import type { TCalendarFamily, TLocale, TTokenDefinition, TTokenField } from "src/types";
+import type { TCalendarFamily, TLocale, TToken, TTokenDefinition, TTokenField } from "src/types";
 import { escapeRegex } from "../utils";
 
 export function createNumericToken(opts: {
-	token: string;
+	token: TToken;
 	family: TCalendarFamily;
 	field: TTokenField;
 	digits: number;

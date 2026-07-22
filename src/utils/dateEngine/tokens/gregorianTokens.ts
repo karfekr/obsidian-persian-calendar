@@ -32,7 +32,4 @@ export const gregorianTokens: TTokenDefinition[] = [
 
 	createNumericToken({ token: "DD", family: "gregorian", field: "gd", digits: 2, pad: true }),
 	createNumericToken({ token: "D", family: "gregorian", field: "gd", digits: 2, pad: false }),
-
-	createNumericToken({ token: "WW", family: "gregorian", field: "week", digits: 2, pad: true }),
-	createNumericToken({ token: "W", family: "gregorian", field: "week", digits: 2, pad: false }),
 ];

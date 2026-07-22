@@ -33,9 +33,6 @@ export const jalaliTokens: TTokenDefinition[] = [
 	createNumericToken({ token: "jDD", family: "jalali", field: "jd", digits: 2, pad: true }),
 	createNumericToken({ token: "jD", family: "jalali", field: "jd", digits: 2, pad: false }),
 
-	createNumericToken({ token: "jWW", family: "jalali", field: "week", digits: 2, pad: true }),
-	createNumericToken({ token: "jW", family: "jalali", field: "week", digits: 2, pad: false }),
-
 	createNameToken({
 		token: "jQQQQ",
 		family: "jalali",
