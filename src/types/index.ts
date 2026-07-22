@@ -215,3 +215,9 @@ export type SectionContext = {
 };
 
 export type SectionRenderer = (ctx: SectionContext, containerEl: HTMLElement) => void;
+
+export type TWeekCalculator = {
+	getWeekNumber(date: Date, weekStart?: TWeekStart): { jy: number; weekNumber: number };
+	getStartOfWeek(jYear: number, jWeekNumber: number, weekStart?: TWeekStart): TJalali & TGregorian;
+	getEndOfWeek(jYear: number, jWeekNumber: number, weekStart?: TWeekStart): TJalali & TGregorian;
+};

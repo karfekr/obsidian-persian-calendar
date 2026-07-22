@@ -1,4 +1,4 @@
-import type { TGregorian, TJalali, TWeekCalculationMode, TWeekStart } from "src/types";
+import type { TGregorian, TJalali, TWeekCalculationMode, TWeekCalculator } from "src/types";
 
 import {
 	dateToGregorian,
@@ -19,12 +19,6 @@ import {
 	jalaliToStartDayOfWeek,
 	jalaliToStartWeek,
 } from "../jalaliUtils";
-
-export type TWeekCalculator = {
-	getWeekNumber(date: Date, weekStart?: TWeekStart): { jy: number; weekNumber: number };
-	getStartOfWeek(jYear: number, jWeekNumber: number, weekStart?: TWeekStart): TJalali & TGregorian;
-	getEndOfWeek(jYear: number, jWeekNumber: number, weekStart?: TWeekStart): TJalali & TGregorian;
-};
 
 function toJalaliAndGregorian({ gy, gm, gd }: TGregorian): TJalali & TGregorian {
 	const { jy, jm, jd } = gregorianToJalali(gy, gm, gd);

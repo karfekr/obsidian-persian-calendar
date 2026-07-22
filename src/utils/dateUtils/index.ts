@@ -58,5 +58,4 @@ export {
 	jalaliToStartDayOfWeek,
 	jalaliToStartWeek,
 } from "./jalaliUtils";
-export type { TWeekCalculator } from "./weekCalculator";
 export { getWeekStartCalculator } from "./weekCalculator";
