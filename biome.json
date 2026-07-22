@@ -13,8 +13,7 @@
 		"bracketSameLine": false,
 		"bracketSpacing": true,
 		"expand": "auto",
-		"useEditorconfig": true,
-		"includes": ["**", "!**/pnpm-lock.yaml", "!**/*.svg"]
+		"useEditorconfig": true
 	},
 	"linter": {
 		"enabled": true,
