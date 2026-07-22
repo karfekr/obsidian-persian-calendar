@@ -3,9 +3,9 @@ import { MarkdownView, TFile, TFolder } from "obsidian";
 import { createNoteModal, Notice } from "src/components";
 import type PersianCalendarPlugin from "src/main";
 import NotePathBuilder from "src/services/NotePathBuilder";
-import type { TJalali } from "src/types";
+import type { TDateEngineContext, TJalali } from "src/types";
 import { parsePattern } from "src/utils/dateEngine";
-import { gregorianToJalali, jalaliMonthLength } from "src/utils/dateUtils";
+import { gregorianToJalali, jalaliMonthLength, jalaliToGregorian } from "src/utils/dateUtils";
 
 export default class NoteService {
 	private readonly pathBuilder: NotePathBuilder;
@@ -15,6 +15,78 @@ export default class NoteService {
 		private readonly plugin: PersianCalendarPlugin,
 	) {
 		this.pathBuilder = new NotePathBuilder(plugin);
+	}
+
+	public getDailyNoteDate(file: TFile): TJalali | null {
+		const detectionPattern = this.pathBuilder.buildDetectionPattern();
+		if (!detectionPattern) return null;
+
+		const parsed = parsePattern(detectionPattern, file.path);
+		if (!parsed) return null;
+
+		const date = this.resolveJalaliFromContext(parsed);
+		if (!date) return null;
+
+		const { filePath } = this.pathBuilder.buildDailyNotePath(date.jy, date.jm, date.jd);
+		if (filePath !== file.path) return null;
+
+		return date;
+	}
+
+	private resolveJalaliFromContext(ctx: TDateEngineContext): TJalali | null {
+		if (ctx.jy !== undefined && ctx.jm !== undefined && ctx.jd !== undefined) {
+			return { jy: ctx.jy, jm: ctx.jm, jd: ctx.jd };
+		}
+		if (ctx.gy !== undefined && ctx.gm !== undefined && ctx.gd !== undefined) {
+			return gregorianToJalali(ctx.gy, ctx.gm, ctx.gd);
+		}
+
+		const hasAnyField =
+			ctx.jy !== undefined ||
+			ctx.jm !== undefined ||
+			ctx.jd !== undefined ||
+			ctx.gy !== undefined ||
+			ctx.gm !== undefined ||
+			ctx.gd !== undefined;
+		if (!hasAnyField) return null;
+
+		return this.searchMatchingDate(ctx);
+	}
+
+	private searchMatchingDate(ctx: TDateEngineContext): TJalali | null {
+		const today = gregorianToJalali(
+			new Date().getFullYear(),
+			new Date().getMonth() + 1,
+			new Date().getDate(),
+		);
+
+		const anchorJy = ctx.jy ?? (ctx.gy !== undefined ? ctx.gy - 621 : today.jy);
+
+		const YEAR_RANGE = 2;
+		let match: TJalali | null = null;
+		let matchCount = 0;
+
+		for (let jy = anchorJy - YEAR_RANGE; jy <= anchorJy + YEAR_RANGE; jy++) {
+			for (let jm = 1; jm <= 12; jm++) {
+				if (ctx.jm !== undefined && ctx.jm !== jm) continue;
+
+				const daysInMonth = jalaliMonthLength(jy, jm);
+				for (let jd = 1; jd <= daysInMonth; jd++) {
+					if (ctx.jd !== undefined && ctx.jd !== jd) continue;
+
+					const { gy, gm, gd } = jalaliToGregorian(jy, jm, jd);
+					if (ctx.gy !== undefined && ctx.gy !== gy) continue;
+					if (ctx.gm !== undefined && ctx.gm !== gm) continue;
+					if (ctx.gd !== undefined && ctx.gd !== gd) continue;
+
+					matchCount++;
+					if (matchCount > 1) return null;
+					match = { jy, jm, jd };
+				}
+			}
+		}
+
+		return matchCount === 1 ? match : null;
 	}
 
 	private async openNoteInWorkspace(noteFile: TFile) {
@@ -211,26 +283,6 @@ export default class NoteService {
 		}
 
 		return result;
-	}
-
-	public getDailyNoteDate(file: TFile): TJalali | null {
-		const parsed = parsePattern(this.plugin.setting.dailyNoteFormat, file.basename);
-		if (!parsed) return null;
-
-		let date: TJalali;
-
-		if (parsed.jy !== undefined && parsed.jm !== undefined && parsed.jd !== undefined) {
-			date = { jy: parsed.jy, jm: parsed.jm, jd: parsed.jd };
-		} else if (parsed.gy !== undefined && parsed.gm !== undefined && parsed.gd !== undefined) {
-			date = gregorianToJalali(parsed.gy, parsed.gm, parsed.gd);
-		} else {
-			return null;
-		}
-
-		const { filePath } = this.pathBuilder.buildDailyNotePath(date.jy, date.jm, date.jd);
-		if (filePath !== file.path) return null;
-
-		return date;
 	}
 
 	public async openOrCreateDailyNote(jy: number, jm: number, jd: number) {
