@@ -1,12 +1,13 @@
-import type CalendarSettingTab from "src/templates/Setting";
+import type { SectionRenderer } from "src/types";
+import { addDropdown, addHeading, addToggle } from "../controls";
 
-export function renderExtraCalendarSettingsSection(
-	tab: CalendarSettingTab,
-	containerEl: HTMLElement,
-): void {
-	tab.addHeading(containerEl, "setting.sections.extraCalendars");
+export const renderExtraCalendarSection: SectionRenderer = (ctx, containerEl) => {
+	const { controller } = ctx;
 
-	tab.addToggle(
+	addHeading(controller, containerEl, "setting.sections.extraCalendars");
+
+	addToggle(
+		controller,
 		containerEl,
 		"setting.extraCalendars.showGregorian.name",
 		"setting.extraCalendars.showGregorian.desc",
@@ -14,7 +15,8 @@ export function renderExtraCalendarSettingsSection(
 		{ refresh: true },
 	);
 
-	tab.addToggle(
+	addToggle(
+		controller,
 		containerEl,
 		"setting.extraCalendars.showHijri.name",
 		"setting.extraCalendars.showHijri.desc",
@@ -22,7 +24,8 @@ export function renderExtraCalendarSettingsSection(
 		{ refresh: true },
 	);
 
-	tab.addDropdown(
+	addDropdown(
+		controller,
 		containerEl,
 		"setting.extraCalendars.hijriBase.name",
 		"setting.extraCalendars.hijriBase.desc",
@@ -33,4 +36,4 @@ export function renderExtraCalendarSettingsSection(
 		},
 		{ refresh: true },
 	);
-}
+};

@@ -1,6 +1,6 @@
 import type { CategoryType, EventType } from "persian-holidays";
 import { getEvents } from "persian-holidays";
-import type { TDateFormat, THijriBase, TLocal, TShowEvents } from "src/types";
+import type { TDateFormat, THijriBase, TLocale, TShowEvents } from "src/types";
 import { dashToDate } from "src/utils/dashUtils";
 import { dateToGregorian, dateToHijri, dateToJalali } from "src/utils/dateUtils";
 
@@ -116,7 +116,7 @@ export function dashToEvents(
 }
 
 // (Events[]) => String(Events[])
-export function eventsToString(events: EventType[] | null, local: TLocal = "fa"): string {
+export function eventsToString(events: EventType[] | null, local: TLocale = "fa"): string {
 	if (!events || events.length === 0) {
 		return "هیچ مناسبتی برای این روز ثبت نشده است.";
 	}

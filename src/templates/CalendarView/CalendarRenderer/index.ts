@@ -1,7 +1,7 @@
-import { NoteService } from "src/services";
+import type { NoteService } from "src/services";
 import type { TSetting } from "src/types";
 
-import CalendarState from "../CalendarState";
+import type CalendarState from "../CalendarState";
 import CalendarBodyRender from "./CalendarBody";
 import CalendarHeaderRender from "./CalendarHeader";
 import CalendarNavigation from "./CalendarNavigation";

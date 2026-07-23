@@ -1,7 +1,7 @@
 import type { EditorSuggestContext } from "obsidian";
 import { SMART_DATE_LINKS, WEEKDAYS_NAME } from "src/constants";
-import PersianCalendarPlugin from "src/main";
-import type { TDateFormatWithoutHijri, TLocal, TSuggestProvider } from "src/types";
+import type PersianCalendarPlugin from "src/main";
+import type { TDateFormatWithoutHijri, TLocale, TSuggestProvider } from "src/types";
 import {
 	dateToDash,
 	dateToJMonthDash,
@@ -37,7 +37,7 @@ export default class SmartDateLinker {
 		return d;
 	}
 
-	formatSmartDate(keyword: string, date: Date, local: TLocal = "fa", link = true): string {
+	formatSmartDate(keyword: string, date: Date, local: TLocale = "fa", link = true): string {
 		const now = todayTehran();
 		const ERROR_LINK = "تاریخ شناسایی نشد";
 
@@ -84,10 +84,13 @@ export default class SmartDateLinker {
 			years?: number;
 		};
 
+		const weekDashFn = (d: Date) =>
+			dateToJWeekDash(d, undefined, { mode: this.plugin.setting.weekCalculation });
+
 		const periodMap: Partial<Record<string, PeriodConfig>> = {
-			"این هفته": { fn: dateToJWeekDash },
-			"هفته قبل": { fn: dateToJWeekDash, days: -7 },
-			"هفته بعد": { fn: dateToJWeekDash, days: 7 },
+			"این هفته": { fn: weekDashFn },
+			"هفته قبل": { fn: weekDashFn, days: -7 },
+			"هفته بعد": { fn: weekDashFn, days: 7 },
 			"این ماه": { fn: dateToJMonthDash },
 			"ماه قبل": { fn: dateToJMonthDash, months: -1 },
 			"ماه بعد": { fn: dateToJMonthDash, months: 1 },

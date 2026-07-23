@@ -1,4 +1,4 @@
-import CalendarState from "src/templates/CalendarView/CalendarState";
+import type CalendarState from "src/templates/CalendarView/CalendarState";
 import { dateToJalali, todayTehran } from "src/utils/dateUtils";
 
 export default class CalendarNavigation {

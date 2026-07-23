@@ -1,12 +1,6 @@
-import type { TDateFormat, TWeekStart } from "src/types";
+import type { TDateFormat, TWeekCalculationMode, TWeekStart } from "src/types";
 import { dashToDate, dateToDash } from "src/utils/dashUtils";
-import {
-	dateToJalali,
-	dateToJWeekNumber,
-	jalaliToDate,
-	jalaliToEndDayOfWeek,
-	jalaliToStartDayOfWeek,
-} from "src/utils/dateUtils";
+import { getWeekStartCalculator, jalaliToDate } from "src/utils/dateUtils";
 import {
 	extractWeekFormat,
 	isDayFormat,
@@ -15,25 +9,35 @@ import {
 	toWeekFormat,
 } from "src/utils/formatters";
 
+type TWeekDashOption = {
+	separator?: string;
+	mode?: TWeekCalculationMode;
+	weekStart?: TWeekStart;
+};
+
 export function dateToJWeekDash(
 	date: Date,
 	weekStart: TWeekStart = "sat",
-	option?: { separator?: string },
+	option?: TWeekDashOption,
 ) {
 	const separator = option?.separator ?? "-";
+	const calculator = getWeekStartCalculator(option?.mode);
 
-	const { jy } = dateToJalali(date);
-	const jWeekNumber = dateToJWeekNumber(date, weekStart);
+	const { jy, weekNumber } = calculator.getWeekNumber(date, weekStart);
 
-	return toWeekFormat(jy, jWeekNumber, { separator });
+	return toWeekFormat(jy, weekNumber, { separator });
 }
 
-export function dashToJWeekDash(dashDate: string, dateFormat?: TDateFormat): string | null {
+export function dashToJWeekDash(
+	dashDate: string,
+	dateFormat?: TDateFormat,
+	option?: Omit<TWeekDashOption, "separator">,
+): string | null {
 	if (isDayFormat(dashDate) && dateFormat) {
 		const date = dashToDate(dashDate, dateFormat);
 		if (!date) return null;
 
-		return dateToJWeekDash(date);
+		return dateToJWeekDash(date, option?.weekStart, { mode: option?.mode });
 	}
 
 	if (isWeekFormat(dashDate)) {
@@ -46,18 +50,18 @@ export function dashToJWeekDash(dashDate: string, dateFormat?: TDateFormat): str
 export function dashToStartDayOfWeekDash(
 	dashDate: string,
 	dateFormat: TDateFormat,
-	option?: { separator?: string },
+	option?: TWeekDashOption,
 ) {
 	const separator = option?.separator ?? "-";
+	const weekStart = option?.weekStart ?? "sat";
+	const calculator = getWeekStartCalculator(option?.mode);
 
 	if (isDayFormat(dashDate)) {
 		const date = dashToDate(dashDate, dateFormat);
 		if (!date) return;
 
-		const { jy: jYear } = dateToJalali(date);
-		const jWeekNumber = dateToJWeekNumber(date);
-
-		const { jy, jm, jd, gy, gm, gd } = jalaliToStartDayOfWeek({ jYear, jWeekNumber });
+		const { jy: jYear, weekNumber: jWeekNumber } = calculator.getWeekNumber(date, weekStart);
+		const { jy, jm, jd, gy, gm, gd } = calculator.getStartOfWeek(jYear, jWeekNumber, weekStart);
 
 		if (dateFormat === "jalali") {
 			return toDayFormat(jy, jm, jd, { separator });
@@ -70,10 +74,7 @@ export function dashToStartDayOfWeekDash(
 		const weekProps = extractWeekFormat(dashDate);
 		if (!weekProps) return;
 
-		const { jy, jm, jd } = jalaliToStartDayOfWeek({
-			jYear: weekProps.year,
-			jWeekNumber: weekProps.week,
-		});
+		const { jy, jm, jd } = calculator.getStartOfWeek(weekProps.year, weekProps.week, weekStart);
 		const date = jalaliToDate(jy, jm, jd);
 
 		return dateToDash(date, dateFormat);
@@ -85,18 +86,18 @@ export function dashToStartDayOfWeekDash(
 export function dashToEndDayOfWeekDash(
 	dashDate: string,
 	dateFormat: TDateFormat,
-	option?: { separator?: string },
+	option?: TWeekDashOption,
 ) {
 	const separator = option?.separator ?? "-";
+	const weekStart = option?.weekStart ?? "sat";
+	const calculator = getWeekStartCalculator(option?.mode);
 
 	if (isDayFormat(dashDate)) {
 		const date = dashToDate(dashDate, dateFormat);
 		if (!date) return;
 
-		const { jy: jYear } = dateToJalali(date);
-		const jWeekNumber = dateToJWeekNumber(date);
-
-		const { jy, jm, jd, gy, gm, gd } = jalaliToEndDayOfWeek({ jYear, jWeekNumber });
+		const { jy: jYear, weekNumber: jWeekNumber } = calculator.getWeekNumber(date, weekStart);
+		const { jy, jm, jd, gy, gm, gd } = calculator.getEndOfWeek(jYear, jWeekNumber, weekStart);
 
 		if (dateFormat === "jalali") {
 			return toDayFormat(jy, jm, jd, { separator });
@@ -109,10 +110,7 @@ export function dashToEndDayOfWeekDash(
 		const weekProps = extractWeekFormat(dashDate);
 		if (!weekProps) return;
 
-		const { jy, jm, jd } = jalaliToEndDayOfWeek({
-			jYear: weekProps.year,
-			jWeekNumber: weekProps.week,
-		});
+		const { jy, jm, jd } = calculator.getEndOfWeek(weekProps.year, weekProps.week, weekStart);
 		const date = jalaliToDate(jy, jm, jd);
 
 		return dateToDash(date, dateFormat);

@@ -5,7 +5,7 @@ import type PersianCalendarPlugin from "src/main";
 import {
 	addDayDate,
 	dateToJalali,
-	dateToJWeekNumber,
+	getWeekStartCalculator,
 	jalaliToSeason,
 	todayTehran,
 } from "src/utils/dateUtils";
@@ -109,9 +109,9 @@ export default class CommandRegistry {
 			name: t("command.weekly"),
 			callback: async () => {
 				const now = todayTehran();
-				const { jy } = dateToJalali(now);
-				const currentWeekNumber = dateToJWeekNumber(now);
-				await this.plugin.noteService.openOrCreateWeeklyNote(jy, currentWeekNumber);
+				const calculator = getWeekStartCalculator(this.plugin.setting.weekCalculation);
+				const { jy, weekNumber } = calculator.getWeekNumber(now);
+				await this.plugin.noteService.openOrCreateWeeklyNote(jy, weekNumber);
 			},
 		});
 

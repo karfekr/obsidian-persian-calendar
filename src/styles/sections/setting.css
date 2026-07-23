@@ -5,3 +5,7 @@
 	padding: 10px 0;
 	text-align: center;
 }
+
+.persian-calendar__setting-input--invalid {
+	border-color: var(--persian-calendar-color-red);
+}

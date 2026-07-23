@@ -1,4 +1,5 @@
-import { App, Modal } from "obsidian";
+import type { App } from "obsidian";
+import { Modal } from "obsidian";
 import { getDirection, t } from "src/languages";
 
 class ConfirmModal extends Modal {

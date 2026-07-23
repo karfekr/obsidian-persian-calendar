@@ -1,4 +1,5 @@
-import { AbstractInputSuggest, App } from "obsidian";
+import type { App } from "obsidian";
+import { AbstractInputSuggest } from "obsidian";
 import type { TPathSuggestMode } from "src/types";
 
 export class PathSuggest extends AbstractInputSuggest<string> {

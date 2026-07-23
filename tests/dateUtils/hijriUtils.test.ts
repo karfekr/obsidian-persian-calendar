@@ -1,11 +1,11 @@
 import {
+	dateToHijri,
 	gregorianToHijri,
+	hijriMonthLength,
+	hijriToDate,
 	hijriToGregorian,
 	hijriToJalali,
 	jalaliToHijri,
-	dateToHijri,
-	hijriMonthLength,
-	hijriToDate,
 } from "src/utils/dateUtils/hijriUtils";
 
 describe("gregorianToHijri", () => {

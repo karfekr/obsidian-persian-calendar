@@ -2,14 +2,14 @@ import { setIcon } from "obsidian";
 import { Notice } from "src/components";
 import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { getDirection, t } from "src/languages";
-import { NoteService } from "src/services";
-import CalendarState from "src/templates/CalendarView/CalendarState";
-import type { TLocal, TSetting } from "src/types";
+import type { NoteService } from "src/services";
+import type CalendarState from "src/templates/CalendarView/CalendarState";
+import type { TLocale, TSetting } from "src/types";
 import { jalaliToSeason } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 import { toArNumber, toFaNumber } from "src/utils/formatters";
 
-import CalendarNavigation from "../CalendarNavigation";
+import type CalendarNavigation from "../CalendarNavigation";
 import GridService from "./GridService";
 import Tooltip from "./Tooltip";
 
@@ -28,13 +28,13 @@ export default class CalendarBodyRender {
 		this.gridService = new GridService(calendarState, setting);
 	}
 
-	public renderContent(contentEl: HTMLElement, _local: TLocal = "fa") {
+	public renderContent(contentEl: HTMLElement, _local: TLocale = "fa") {
 		const { jYearState, jMonthState } = this.calendarState.getJState();
 		this.renderWeekNumbers(contentEl, { jy: jYearState, jm: jMonthState });
 		this.renderDaysGrid(contentEl, { jy: jYearState, jm: jMonthState });
 	}
 
-	public renderSeasonalNotesRow(containerEl: HTMLElement, local: TLocal = "fa") {
+	public renderSeasonalNotesRow(containerEl: HTMLElement, local: TLocale = "fa") {
 		const seasonsRow = containerEl.createEl("div", { cls: "persian-calendar__seasons-row" });
 		const { jYearState, jMonthState } = this.calendarState.getJState();
 
@@ -89,23 +89,36 @@ export default class CalendarBodyRender {
 		const weeksCount = this.calendarState.getWeeksCountForMonth(jy, jm);
 		contentEl.style.setProperty("--persian-calendar-weeks-count", String(weeksCount));
 
-		const weekNumbers = this.calendarState.getWeekNumbersForMonth(jy, jm);
-		const weeksWithNotes = this.notesService.getWeeksWithNotes(jy);
+		const weekNumbers = this.calendarState.getWeekNumbersForMonth(
+			jy,
+			jm,
+			this.setting.weekCalculation,
+		);
+
+		const weeksWithNotesCache = new Map<number, number[]>();
+		const getWeeksWithNotes = (weekYear: number) => {
+			let cached = weeksWithNotesCache.get(weekYear);
+			if (!cached) {
+				cached = this.notesService.getWeeksWithNotes(weekYear);
+				weeksWithNotesCache.set(weekYear, cached);
+			}
+			return cached;
+		};
 
 		for (let i = 0; i < weekNumbers.length; i++) {
-			const weekNumber = weekNumbers[i];
+			const { jy: weekYear, weekNumber } = weekNumbers[i];
 
 			const weekEl = weekNumbersEl.createEl("div", {
 				cls: "persian-calendar__week-number",
 			});
 			weekEl.textContent = toFaNumber(weekNumber);
 
-			if (!weeksWithNotes.includes(weekNumber)) {
+			if (!getWeeksWithNotes(weekYear).includes(weekNumber)) {
 				weekEl.addClass("persian-calendar__no-note");
 			}
 
 			weekEl.addEventListener("click", () => {
-				void this.notesService.openOrCreateWeeklyNote(jy, weekNumber);
+				void this.notesService.openOrCreateWeeklyNote(weekYear, weekNumber);
 			});
 		}
 	}

@@ -1,11 +1,5 @@
-import {
-	App,
-	Editor,
-	type EditorPosition,
-	EditorSuggest,
-	type EditorSuggestContext,
-	TFile,
-} from "obsidian";
+import type { App, Editor, EditorPosition, EditorSuggestContext } from "obsidian";
+import { EditorSuggest, TFile } from "obsidian";
 import type { TSuggestProvider } from "src/types";
 
 export default class Suggestion extends EditorSuggest<string> {

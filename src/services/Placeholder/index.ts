@@ -1,7 +1,7 @@
 import { TFile } from "obsidian";
 import { Notice } from "src/components";
 import { getDirection, t } from "src/languages";
-import PersianCalendarPlugin from "src/main";
+import type PersianCalendarPlugin from "src/main";
 import type { TBuildContext, TDateFormat, TSuggestProvider } from "src/types";
 import {
 	dashToDate,
@@ -130,7 +130,6 @@ export default class Placeholder {
 			["{{تاریخ میلادی جاری}}", dateToDash(currentDate, "gregorian")],
 			["{{تاریخ قمری جاری}}", dateToDash(currentDate, "hijri")],
 			["{{روز هفته جاری}}", dateToWeekdayName(currentDate)],
-			["{{هفته جاری}}", dateToJWeekDash(currentDate)],
 			["{{نام ماه جاری}}", dateToMonthName(currentDate)],
 			["{{روز ماه جاری}}", dateToDayOfMonth(currentDate)],
 			["{{ماه جاری}}", dateToJMonthDash(currentDate)],
@@ -151,7 +150,6 @@ export default class Placeholder {
 			["{{تاریخ میلادی یادداشت}}", fromFile((d) => dateToDash(d, "gregorian"))],
 			["{{تاریخ قمری یادداشت}}", fromFile((d) => dateToDash(d, "hijri"))],
 			["{{روز هفته یادداشت}}", fromFile(dateToWeekdayName)],
-			["{{هفته یادداشت}}", dashToJWeekDash(fileName, baseDate)],
 			["{{نام ماه یادداشت}}", dashToJMonthName(fileName, baseDate)],
 			["{{روز ماه یادداشت}}", fromFile(dateToDayOfMonth)],
 			["{{ماه یادداشت}}", dashToJMonthDash(fileName, baseDate)],
@@ -175,10 +173,29 @@ export default class Placeholder {
 			["{{روزهای گذشته ماه}}", fromFileOrToday(dateToDaysPassedJMonth)],
 			["{{روزهای باقیمانده ماه}}", fromFileOrToday(dateToDaysRemainingJMonth)],
 
+			[
+				"{{اول هفته}}",
+				dashToStartDayOfWeekDash(fileName, baseDate, {
+					mode: this.plugin.setting.weekCalculation,
+				}),
+			],
+			[
+				"{{آخر هفته}}",
+				dashToEndDayOfWeekDash(fileName, baseDate, {
+					mode: this.plugin.setting.weekCalculation,
+				}),
+			],
+			[
+				"{{هفته جاری}}",
+				dateToJWeekDash(currentDate, undefined, { mode: this.plugin.setting.weekCalculation }),
+			],
+			[
+				"{{هفته یادداشت}}",
+				dashToJWeekDash(fileName, baseDate, { mode: this.plugin.setting.weekCalculation }),
+			],
+
 			["{{اول سال}}", dashToStartDayOfYearDash(fileName, baseDate)],
 			["{{آخر سال}}", dashToEndDayOfYearDash(fileName, baseDate)],
-			["{{اول هفته}}", dashToStartDayOfWeekDash(fileName, baseDate)],
-			["{{آخر هفته}}", dashToEndDayOfWeekDash(fileName, baseDate)],
 			["{{اول ماه}}", dashToStartDayOfJMonthDash(fileName, baseDate)],
 			["{{آخر ماه}}", dashToEndDayOfJMonthDash(fileName, baseDate)],
 			["{{اول فصل}}", dashToStartDayOfSeasonDash(fileName, baseDate)],

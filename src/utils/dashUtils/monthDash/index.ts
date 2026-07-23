@@ -1,5 +1,5 @@
 import { GREGORIAN_MONTHS_NAME, HIJRI_MONTHS_NAME } from "src/constants";
-import type { TDateFormat, THijriBase, TLocal } from "src/types";
+import type { TDateFormat, THijriBase, TLocale } from "src/types";
 import { dashToDate, dateToDash } from "src/utils/dashUtils";
 import {
 	dateToEndDayOfJMonthDate,
@@ -108,7 +108,7 @@ export function dashToEndDayOfJMonthDash(dashDate: string, dateFormat: TDateForm
 export function jalaliMonthToRangeDash(
 	jy: number,
 	jm: number,
-	option: { dateFormat: Exclude<TDateFormat, "jalali">; local: TLocal; hijriBase?: THijriBase },
+	option: { dateFormat: Exclude<TDateFormat, "jalali">; local: TLocale; hijriBase?: THijriBase },
 ) {
 	const { dateFormat, local, hijriBase } = option;
 

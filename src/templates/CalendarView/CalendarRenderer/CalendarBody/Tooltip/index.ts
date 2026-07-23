@@ -1,6 +1,6 @@
 import { Platform } from "obsidian";
 import type { EventType } from "persian-holidays";
-import type { TLocal } from "src/types";
+import type { TLocale } from "src/types";
 
 export default class Tooltip {
 	private tooltipWrapperSelector = ".persian-calendar--tooltip-wrapper";
@@ -8,7 +8,7 @@ export default class Tooltip {
 	private offsetX = 10;
 	private offsetY = 10;
 
-	private getOrCreateTooltip(local: TLocal): { wrapper: HTMLElement; tooltip: HTMLElement } {
+	private getOrCreateTooltip(local: TLocale): { wrapper: HTMLElement; tooltip: HTMLElement } {
 		let wrapper = activeDocument.querySelector<HTMLElement>(this.tooltipWrapperSelector);
 
 		if (!wrapper) {
@@ -30,7 +30,7 @@ export default class Tooltip {
 		return { wrapper, tooltip };
 	}
 
-	public showTooltip(e: MouseEvent | TouchEvent, events: EventType[], local: TLocal) {
+	public showTooltip(e: MouseEvent | TouchEvent, events: EventType[], local: TLocale) {
 		const { tooltip } = this.getOrCreateTooltip(local);
 
 		while (tooltip.firstChild) {

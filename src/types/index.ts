@@ -1,5 +1,6 @@
-import type { EditorSuggestContext } from "obsidian";
+import type { App, EditorSuggestContext } from "obsidian";
 import type { IRAN_HIJRI_MONTHS } from "src/constants";
+import type { SettingsController } from "src/templates/Setting/SettingsController";
 
 // jalali = هجری شمسی/خورشیدی
 export type TJalali = {
@@ -24,7 +25,17 @@ export type THijri = {
 
 export type TWeekStart = "sat" | "sun" | "mon";
 
-export type TGetDayOfWeek = { jYear: number; jWeekNumber: number };
+export type TWeekCalculationMode =
+	| "jalali-first-day-of-year"
+	| "jalali-first-week-start"
+	| "gregorian-first-day-of-year"
+	| "gregorian-first-week-start";
+
+export type TGetJalaliDayOfWeek = { jYear: number; jWeekNumber: number };
+export type TGetGregorianDayOfWeek = {
+	gYear: number;
+	gWeekNumber: number;
+};
 
 export type TSupportedHijriYear = keyof typeof IRAN_HIJRI_MONTHS;
 
@@ -62,11 +73,16 @@ export type TBoolSettingKeys = Extract<
 
 export type TSetting = {
 	lastSeenVersion?: string;
-	language: TLocal;
+	legacyPathPatternsMigrated?: boolean;
+	language: TLocale;
 	versionUpdate: boolean;
 	askForCreateNote: boolean;
 	openDailyNoteOnStartup: boolean;
 	dateFormat: TDateFormatWithoutHijri;
+	monthlyNoteNaming: TDateFormatWithoutHijri;
+	yearlyNoteNaming: TDateFormatWithoutHijri;
+	dailyNoteFormat: string;
+	weekCalculation: TWeekCalculationMode;
 	showSeasonalNotes: boolean;
 	// show holidays
 	showHolidays: boolean;
@@ -96,7 +112,12 @@ export type TSetting = {
 	showGlobalEvents: boolean;
 };
 
-export type TLocal = "fa" | "en";
+//? Utility type that extracts the keys of TSetting whose values are assignable to V.
+type KeysOfType<V> = { [K in keyof TSetting]-?: TSetting[K] extends V ? K : never }[keyof TSetting];
+export type BoolKey = KeysOfType<boolean>;
+export type StringKey = KeysOfType<string>;
+
+export type TLocale = "fa" | "en";
 export type TDirection = "rtl" | "ltr";
 
 export type TBuildContext = {
@@ -139,13 +160,88 @@ export type TSocialLink = {
 	icon: string;
 };
 
-export type TPathTokenContext = {
-	jy?: number;
-	jm?: number;
+export type TPathSuggestMode = "folder" | "file" | "md-file";
+
+export type TCalendarFamily = "gregorian" | "jalali";
+
+export type TDateEngineContext = {
 	gy?: number;
 	gm?: number;
+	gd?: number;
+	jy?: number;
+	jm?: number;
+	jd?: number;
+	week?: number;
 	season?: number;
-	local?: TLocal;
 };
 
-export type TPathSuggestMode = "folder" | "file" | "md-file";
+export type TTokenField = keyof TDateEngineContext;
+
+export type TTokenDefinition = {
+	token: string;
+	family: TCalendarFamily;
+	field: TTokenField;
+	format: (ctx: TDateEngineContext) => string | null;
+	regexFragment: (locale: TLocale) => string;
+	parseValue: (raw: string) => number | null;
+};
+
+export type TPatternSegment =
+	| { type: "literal"; value: string; escaped?: boolean }
+	| { type: "token"; token: TTokenDefinition };
+
+export type TCompiledPattern = {
+	pattern: string;
+	locale: TLocale;
+	segments: TPatternSegment[];
+	regex: RegExp;
+	fields: TTokenField[];
+};
+
+export type TValidationSeverity = "error" | "warning";
+
+export type TValidationError = {
+	type: "empty-pattern" | "unknown-token" | "ambiguous-adjacent-numeric" | "duplicate-field";
+	severity: TValidationSeverity;
+	message: string;
+	token?: string;
+};
+
+export type TValidationResult = {
+	valid: boolean;
+	errors: TValidationError[];
+};
+
+export type SectionContext = {
+	app: App;
+	controller: SettingsController;
+};
+
+export type SectionRenderer = (ctx: SectionContext, containerEl: HTMLElement) => void;
+
+export type TWeekCalculator = {
+	getWeekNumber(date: Date, weekStart?: TWeekStart): { jy: number; weekNumber: number };
+	getStartOfWeek(jYear: number, jWeekNumber: number, weekStart?: TWeekStart): TJalali & TGregorian;
+	getEndOfWeek(jYear: number, jWeekNumber: number, weekStart?: TWeekStart): TJalali & TGregorian;
+};
+
+export type TToken =
+	| "YYYY"
+	| "YY"
+	| "jYYYY"
+	| "jYY"
+	| "jQQQQ"
+	| "jQQ"
+	| "jQ"
+	| "MMMM"
+	| "MMM"
+	| "MM"
+	| "M"
+	| "jMMMM"
+	| "jMMM"
+	| "jMM"
+	| "jM"
+	| "DD"
+	| "D"
+	| "jDD"
+	| "jD";

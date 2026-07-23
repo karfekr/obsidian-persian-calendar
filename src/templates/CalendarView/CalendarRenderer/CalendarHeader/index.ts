@@ -1,13 +1,13 @@
 import { setIcon } from "obsidian";
 import { t } from "src/languages";
-import { NoteService } from "src/services";
-import CalendarState from "src/templates/CalendarView/CalendarState";
+import type { NoteService } from "src/services";
+import type CalendarState from "src/templates/CalendarView/CalendarState";
 import type { TSetting } from "src/types";
 import { jalaliMonthToRangeDash } from "src/utils/dashUtils";
 import { jalaliMonthName } from "src/utils/dateUtils";
 import { toFaNumber } from "src/utils/formatters";
 
-import CalendarNavigation from "../CalendarNavigation";
+import type CalendarNavigation from "../CalendarNavigation";
 
 export default class CalendarHeaderRender {
 	constructor(

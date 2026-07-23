@@ -1,4 +1,5 @@
-import { App, Modal, setIcon } from "obsidian";
+import type { App } from "obsidian";
+import { Modal, setIcon } from "obsidian";
 import { JALALI_MONTHS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { t } from "src/languages";
 import type { TDateFormat, TJalali, TSetting } from "src/types";
@@ -162,13 +163,13 @@ export default class DatePicker extends Modal {
 		});
 
 		// Render weekday headers
-		this.getWeekdayLetters().forEach((weekdayLetter) =>
+		this.getWeekdayLetters().forEach((weekdayLetter) => {
 			grid.createEl("span", {
 				text: weekdayLetter,
 				cls: "persian-calendar__datepicker-weekday",
 				attr: { role: "columnheader" },
-			}),
-		);
+			});
+		});
 
 		// Calculate offset for first day of month
 		const firstDayGregorian = jalaliToGregorian(this.currentJalali.jy, this.currentJalali.jm, 1);

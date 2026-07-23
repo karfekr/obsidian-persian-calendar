@@ -1,5 +1,5 @@
-import { RELEASE_NOTES } from "../src/constants/releaseNotes/index";
 import { writeFileSync } from "fs";
+import { RELEASE_NOTES } from "../src/constants/releaseNotes/index";
 
 const version = process.env.GITHUB_REF_NAME;
 if (!version) {

@@ -1,13 +1,12 @@
 //? Combines all styles(from: src/styles/index.css) into a single file
 //? Minifies output using PostCSS + cssnano
 
-import chokidar from "chokidar";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-
-import postcss from "postcss";
+import chokidar from "chokidar";
 import cssnano from "cssnano";
+import postcss from "postcss";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);

@@ -3,6 +3,25 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.8.0",
+		changes: {
+			fa: [
+				"اکنون قادر خواهید بود که فرمت نام‌گذاری روزنوشت‌ها را طوری که دوست دارید تعیین کنید.",
+				"کاربران می‌توانند ماه‌نوشت و سال‌نوشت خود را به فرمت میلادی ثبت کنند تا با دیگر پلاگین‌های تقویمی تداخلی وجود نداشته باشد.",
+				"اکنون کاربران قادر به تعیین نحوه‌ی شماره‌گذاری هفته‌ها هستند.",
+				"برطرف کردن باگ مربوط به نمایش روزنوشت باز شده در تقویم.",
+				"بهبود کد تنظیمات پلاگین و همچنین تغییر برخی از توضیحات برای شفافیت استفاده‌ی کاربران",
+			],
+			en: [
+				"You can now customize the naming format of your daily notes.",
+				"Monthly and yearly notes can now use the Gregorian calendar format for better compatibility with other calendar plugins.",
+				"Users can now customize the week numbering system.",
+				"Fixed the bug related to displaying opened diary notes in the calendar.",
+				"Improved the plugin settings code and revised some descriptions to provide clearer guidance for users.",
+			],
+		},
+	},
+	{
 		version: "4.7.2",
 		changes: {
 			fa: [

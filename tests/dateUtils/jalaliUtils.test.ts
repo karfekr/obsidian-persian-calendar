@@ -1,34 +1,34 @@
+import { hijriToDate } from "src/utils/dateUtils";
 import {
-	checkValidJalali,
 	checkKabiseh,
+	checkValidJalali,
+	dateToDayOfMonth,
+	dateToDaysPassedJMonth,
+	dateToDaysPassedJYear,
+	dateToDaysPassedSeason,
+	dateToDaysRemainingJMonth,
+	dateToDaysRemainingJYear,
+	dateToDaysRemainingSeason,
+	dateToEndDayOfJMonthDate,
+	dateToEndDayOfSeasonDate,
 	dateToJalali,
-	jalaliToDate,
-	jalaliToGregorian,
-	gregorianToJalali,
-	jalaliMonthLength,
-	getDaysInJalaliYear,
 	dateToJWeekNumber,
-	jalaliToJWeekNumber,
-	getFirstWeekStartOfJYear,
-	jalaliToStartDayOfWeek,
-	jalaliToEndDayOfWeek,
 	dateToMonthName,
 	dateToSeasonName,
-	dateToDayOfMonth,
-	dateToDaysPassedJYear,
-	dateToDaysRemainingJYear,
-	dateToDaysPassedSeason,
-	dateToDaysRemainingSeason,
-	dateToDaysPassedJMonth,
-	dateToDaysRemainingJMonth,
 	dateToStartDayOfJMonthDate,
-	dateToEndDayOfJMonthDate,
 	dateToStartDayOfSeasonDate,
-	dateToEndDayOfSeasonDate,
+	getDaysInJalaliYear,
+	gregorianToJalali,
+	jalaliMonthLength,
 	jalaliMonthToGregorianRange,
 	jalaliMonthToHijriRange,
+	jalaliToDate,
+	jalaliToEndDayOfWeek,
+	jalaliToGregorian,
+	jalaliToJWeekNumber,
+	jalaliToStartDayOfWeek,
+	jalaliToStartWeek,
 } from "src/utils/dateUtils/jalaliUtils";
-import { hijriToDate } from "src/utils/dateUtils";
 
 describe("checkValidJalali", () => {
 	it("should return true for a valid date", () => {
@@ -204,16 +204,16 @@ describe("jalaliToJWeekNumber", () => {
 	});
 });
 
-describe("getFirstWeekStartOfJYear", () => {
+describe("jalaliToStartWeek", () => {
 	it("should return a valid Jalali date", () => {
-		const result = getFirstWeekStartOfJYear(1404);
+		const result = jalaliToStartWeek(1404);
 		expect(result.jy).toBe(1404);
 		expect(result.jm).toBeGreaterThanOrEqual(1);
 		expect(result.jd).toBeGreaterThanOrEqual(1);
 	});
 
 	it("should return a Saturday (first day of Iranian week)", () => {
-		const result = getFirstWeekStartOfJYear(1404);
+		const result = jalaliToStartWeek(1404);
 		const date = jalaliToDate(result.jy, result.jm, result.jd);
 		// Saturday = 6 in JS
 		expect(date.getUTCDay()).toBe(6);

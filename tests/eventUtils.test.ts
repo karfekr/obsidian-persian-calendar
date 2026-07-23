@@ -1,7 +1,7 @@
 import { setAdapter } from "persian-holidays";
+import { jalaliToDate } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 import { setDefaultEventAdapter } from "src/utils/eventUtils/eventAdapter";
-import { jalaliToDate } from "src/utils/dateUtils";
 
 const allEventsOff = {
 	showIROfficialEvents: false,

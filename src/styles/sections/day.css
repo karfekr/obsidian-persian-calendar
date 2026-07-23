@@ -35,7 +35,7 @@
 }
 
 .persian-calendar__day--holiday {
-	color: var(--persian-calendar-color-holiday);
+	color: var(--persian-calendar-color-red);
 	font-weight: 600;
 }
 
