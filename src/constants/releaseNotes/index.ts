@@ -11,6 +11,7 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 				"اکنون کاربران قادر به تعیین نحوه‌ی شماره‌گذاری هفته‌ها هستند.",
 				"برطرف کردن باگ مربوط به نمایش روزنوشت باز شده در تقویم.",
 				"بهبود کد تنظیمات پلاگین و همچنین تغییر برخی از توضیحات برای شفافیت استفاده‌ی کاربران",
+				"آپدیت تمام وابستگی‌های پلاگین به آخرین نسخه",
 			],
 			en: [
 				"You can now customize the naming format of your daily notes.",
@@ -18,6 +19,7 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 				"Users can now customize the week numbering system.",
 				"Fixed the bug related to displaying opened diary notes in the calendar.",
 				"Improved the plugin settings code and revised some descriptions to provide clearer guidance for users.",
+				"Updated all plugin dependencies to their latest versions.",
 			],
 		},
 	},
