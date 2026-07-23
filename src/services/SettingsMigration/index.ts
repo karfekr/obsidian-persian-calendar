@@ -1,7 +1,19 @@
 import type { TSetting } from "src/types";
 import { defaultTokenRegistry, tokenize } from "src/utils/dateEngine";
 
-const LEGACY_RECOGNIZED_TOKENS = new Set(["jYYYY", "jMMMM", "jMM", "jM", "jQQQQ", "jQQ", "jQ"]);
+const LEGACY_RECOGNIZED_TOKENS = new Set([
+	"jYYYY",
+	"jYY",
+	"jQQQQ",
+	"jQQ",
+	"jQ",
+	"jMMMM",
+	"jMMM",
+	"jMM",
+	"jM",
+	"jDD",
+	"jD",
+]);
 
 const LEGACY_PATH_KEYS = [
 	"dailyNotesPath",
@@ -41,7 +53,12 @@ export function applySettingsMigrations(
 	rawStoredData: Partial<TSetting> | null,
 	merged: TSetting,
 ): TSetting {
-	const result = migrateLegacyPathPatterns(merged);
+	let result = merged;
+
+	if (rawStoredData?.legacyPathPatternsMigrated !== true) {
+		result = migrateLegacyPathPatterns(result);
+		result.legacyPathPatternsMigrated = true;
+	}
 
 	if (rawStoredData && rawStoredData.dailyNoteFormat === undefined) {
 		result.dailyNoteFormat = result.dateFormat === "jalali" ? "jYYYY-jMM-jDD" : "YYYY-MM-DD";

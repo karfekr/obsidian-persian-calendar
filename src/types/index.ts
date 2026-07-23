@@ -73,13 +73,16 @@ export type TBoolSettingKeys = Extract<
 
 export type TSetting = {
 	lastSeenVersion?: string;
+	legacyPathPatternsMigrated?: boolean;
 	language: TLocale;
 	versionUpdate: boolean;
 	askForCreateNote: boolean;
 	openDailyNoteOnStartup: boolean;
 	dateFormat: TDateFormatWithoutHijri;
+	monthlyNoteNaming: TDateFormatWithoutHijri;
+	yearlyNoteNaming: TDateFormatWithoutHijri;
 	dailyNoteFormat: string;
-	weekCalculationMode: TWeekCalculationMode;
+	weekCalculation: TWeekCalculationMode;
 	showSeasonalNotes: boolean;
 	// show holidays
 	showHolidays: boolean;

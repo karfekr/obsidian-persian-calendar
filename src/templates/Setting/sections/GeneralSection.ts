@@ -1,7 +1,6 @@
 import { setLocal } from "src/languages";
 import type { SectionRenderer, TLocale } from "src/types";
-import { addDropdown, addHeading, addToggle, addValidatedText } from "../controls";
-import { patternValidator } from "../validation";
+import { addDropdown, addHeading, addToggle } from "../controls";
 
 export const renderGeneralSection: SectionRenderer = (ctx, containerEl) => {
 	const { controller } = ctx;
@@ -27,40 +26,14 @@ export const renderGeneralSection: SectionRenderer = (ctx, containerEl) => {
 	addDropdown(
 		controller,
 		containerEl,
-		"setting.general.dateFormat.name",
-		"setting.general.dateFormat.desc",
+		"setting.general.placeholderFormat.name",
+		"setting.general.placeholderFormat.desc",
 		"dateFormat",
 		{
-			jalali: "setting.general.dateFormat.options.jalali",
-			gregorian: "setting.general.dateFormat.options.gregorian",
+			jalali: "setting.general.placeholderFormat.options.jalali",
+			gregorian: "setting.general.placeholderFormat.options.gregorian",
 		},
 		{ refresh: true },
-	);
-
-	addDropdown(
-		controller,
-		containerEl,
-		"setting.general.weekCalculationMode.name",
-		"setting.general.weekCalculationMode.desc",
-		"weekCalculationMode",
-		{
-			"jalali-first-day-of-year": "setting.general.weekCalculationMode.options.firstDayOfYear",
-			"jalali-first-week-start": "setting.general.weekCalculationMode.options.firstWeekStart",
-			"gregorian-first-day-of-year":
-				"setting.general.weekCalculationMode.options.gregorianFirstDayOfYear",
-			"gregorian-first-week-start":
-				"setting.general.weekCalculationMode.options.gregorianFirstWeekStart",
-		},
-		{ refresh: true },
-	);
-
-	addValidatedText(
-		controller,
-		containerEl,
-		"setting.paths.daily.formatName",
-		"setting.paths.daily.formatDesc",
-		"dailyNoteFormat",
-		patternValidator,
 	);
 
 	addToggle(

@@ -92,7 +92,7 @@ export default class CalendarBodyRender {
 		const weekNumbers = this.calendarState.getWeekNumbersForMonth(
 			jy,
 			jm,
-			this.setting.weekCalculationMode,
+			this.setting.weekCalculation,
 		);
 
 		const weeksWithNotesCache = new Map<number, number[]>();

@@ -179,6 +179,10 @@ export default class PersianCalendarPlugin extends Plugin {
 		const merged = { ...DEFAULT_SETTING, ...(data || {}) };
 
 		this.setting = applySettingsMigrations(data, merged);
+
+		if (data?.legacyPathPatternsMigrated !== true) {
+			await this.saveSetting();
+		}
 	}
 
 	async saveSetting() {

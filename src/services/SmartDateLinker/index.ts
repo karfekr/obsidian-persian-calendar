@@ -85,7 +85,7 @@ export default class SmartDateLinker {
 		};
 
 		const weekDashFn = (d: Date) =>
-			dateToJWeekDash(d, undefined, { mode: this.plugin.setting.weekCalculationMode });
+			dateToJWeekDash(d, undefined, { mode: this.plugin.setting.weekCalculation });
 
 		const periodMap: Partial<Record<string, PeriodConfig>> = {
 			"این هفته": { fn: weekDashFn },

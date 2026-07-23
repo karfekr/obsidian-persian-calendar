@@ -109,7 +109,7 @@ export default class CommandRegistry {
 			name: t("command.weekly"),
 			callback: async () => {
 				const now = todayTehran();
-				const calculator = getWeekStartCalculator(this.plugin.setting.weekCalculationMode);
+				const calculator = getWeekStartCalculator(this.plugin.setting.weekCalculation);
 				const { jy, weekNumber } = calculator.getWeekNumber(now);
 				await this.plugin.noteService.openOrCreateWeeklyNote(jy, weekNumber);
 			},

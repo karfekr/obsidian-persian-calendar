@@ -176,22 +176,22 @@ export default class Placeholder {
 			[
 				"{{اول هفته}}",
 				dashToStartDayOfWeekDash(fileName, baseDate, {
-					mode: this.plugin.setting.weekCalculationMode,
+					mode: this.plugin.setting.weekCalculation,
 				}),
 			],
 			[
 				"{{آخر هفته}}",
 				dashToEndDayOfWeekDash(fileName, baseDate, {
-					mode: this.plugin.setting.weekCalculationMode,
+					mode: this.plugin.setting.weekCalculation,
 				}),
 			],
 			[
 				"{{هفته جاری}}",
-				dateToJWeekDash(currentDate, undefined, { mode: this.plugin.setting.weekCalculationMode }),
+				dateToJWeekDash(currentDate, undefined, { mode: this.plugin.setting.weekCalculation }),
 			],
 			[
 				"{{هفته یادداشت}}",
-				dashToJWeekDash(fileName, baseDate, { mode: this.plugin.setting.weekCalculationMode }),
+				dashToJWeekDash(fileName, baseDate, { mode: this.plugin.setting.weekCalculation }),
 			],
 
 			["{{اول سال}}", dashToStartDayOfYearDash(fileName, baseDate)],

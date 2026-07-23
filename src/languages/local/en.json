@@ -25,6 +25,7 @@
 		"sections": {
 			"general": "General Settings",
 			"paths": "Calendar Note Paths",
+			"names": "Calendar Note Names",
 			"templates": "Calendar Note Templates",
 			"extraCalendars": "Additional Calendars",
 			"holidays": "Holiday Display",
@@ -38,22 +39,12 @@
 					"en": "En"
 				}
 			},
-			"dateFormat": {
+			"placeholderFormat": {
 				"name": "Date Format for Natural Dates and Daily Notes",
-				"desc": "* For better compatibility with other plugins, using the Gregorian format is recommended.",
+				"desc": "Depending on the selected option, date placeholders will resolve to either Gregorian or Jalali dates.",
 				"options": {
 					"jalali": "Jalali",
 					"gregorian": "Gregorian"
-				}
-			},
-			"weekCalculationMode": {
-				"name": "Week Calculation Mode",
-				"desc": "Controls how the first week of the year and week numbers are determined.",
-				"options": {
-					"firstDayOfYear": "By first day of jalali year",
-					"firstWeekStart": "By first full jalali week",
-					"gregorianFirstDayOfYear": "By first day of gregorian year",
-					"gregorianFirstWeekStart": "By first full gregorian week"
 				}
 			},
 			"askBeforeCreate": {
@@ -72,33 +63,53 @@
 		"paths": {
 			"daily": {
 				"name": "Daily Notes Folder",
-				"desc": "Daily notes will be created in this folder.",
-				"formatName": "Daily Note Filename Format",
-				"formatDesc": "Pattern used to name daily notes (e.g. jYYYY-jMM-jDD)."
+				"desc": "Daily notes will be created in this folder."
 			},
 			"weekly": {
 				"name": "Weekly Notes Folder",
-				"desc": "Weekly notes will be created in this folder.",
-				"formatName": "Weekly Note Filename Format",
-				"formatDesc": "Pattern used to name weekly notes (e.g. jYYYY-[W]W)."
+				"desc": "Weekly notes will be created in this folder."
 			},
 			"monthly": {
 				"name": "Monthly Notes Folder",
-				"desc": "Monthly notes will be created in this folder.",
-				"formatName": "Monthly Note Filename Format",
-				"formatDesc": "Pattern used to name monthly notes (e.g. jYYYY-jMM)."
+				"desc": "Monthly notes will be created in this folder."
 			},
 			"seasonal": {
 				"name": "Seasonal Notes Folder",
-				"desc": "Seasonal notes will be created in this folder.",
-				"formatName": "Seasonal Note Filename Format",
-				"formatDesc": "Pattern used to name seasonal notes (e.g. jYYYY-[S]Q)."
+				"desc": "Seasonal notes will be created in this folder."
 			},
 			"yearly": {
 				"name": "Yearly Notes Folder",
-				"desc": "Yearly notes will be created in this folder.",
-				"formatName": "Yearly Note Filename Format",
-				"formatDesc": "Pattern used to name yearly notes (e.g. jYYYY)."
+				"desc": "Yearly notes will be created in this folder."
+			},
+			"naming": {
+				"options": {
+					"jalali": "Jalali",
+					"gregorian": "Gregorian"
+				}
+			}
+		},
+		"naming": {
+			"daily": {
+				"name": "Daily Note Naming Format",
+				"desc": "* Using a Gregorian format is recommended for better compatibility with other plugins."
+			},
+			"weekCalculation": {
+				"name": "Week Calculation Mode",
+				"desc": "Controls how the first week of the year and week numbers are determined.",
+				"options": {
+					"firstDayOfYear": "By first day of jalali year",
+					"firstWeekStart": "By first full jalali week",
+					"gregorianFirstDayOfYear": "By first day of gregorian year",
+					"gregorianFirstWeekStart": "By first full gregorian week"
+				}
+			},
+			"monthly": {
+				"name": "Monthly Note Naming",
+				"desc": "Choose how monthly note files are named and recognized."
+			},
+			"yearly": {
+				"name": "Yearly Note Naming",
+				"desc": "Choose how yearly note files are named and recognized."
 			}
 		},
 		"templates": {
