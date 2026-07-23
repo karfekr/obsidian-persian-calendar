@@ -42,21 +42,33 @@ files -`main.js`, `manifest.json` and `styles.css`- and move them to the followi
 - [Using the Dedicated API](#api)
 - [Other Features](#other)
 
-## <a name="dynamic_path"></a> Dynamic Paths
+## <a name="dynamic_path"></a> Dynamic Paths and Naming
 
-You can set the paths for your calendar notes dynamically.
+You can use dynamic placeholders to customize the paths and filenames of your calendar notes.
 
 <div align="center">
 
-| Dynamic Path | Sample Value   | Description                         |
-| :----------- | :------------- | :---------------------------------- |
-| `jYYYY`      | 1404           | Four-digit Solar Hijri year         |
-| `jQQQQ`      | پاییز (Autumn) | Full name of the Solar Hijri season |
-| `jQQ`        | 03             | Two-digit Solar Hijri season number |
-| `jQ`         | 3              | Solar Hijri season number           |
-| `jMMMM`      | آذر (Azar)     | Full name of the Solar Hijri month  |
-| `jMM`        | 09             | Two-digit Solar Hijri month number  |
-| `jM`         | 9              | Solar Hijri month number            |
+| Placeholder | Example  | Description                          |
+| :---------- | :------- | :----------------------------------- |
+| `jYYYY`     | 1404     | Four-digit Jalali year               |
+| `jYY`       | 04       | Two-digit Jalali year                |
+| `YYYY`      | 2025     | Four-digit Gregorian year            |
+| `YY`        | 25       | Two-digit Gregorian year             |
+| `jQQQQ`     | Autumn   | Full Jalali season name              |
+| `jQQ`       | 03       | Two-digit Jalali season number       |
+| `jQ`        | 3        | Jalali season number                 |
+| `jMMMM`     | Azar     | Full Jalali month name               |
+| `jMMM`      | Aza      | Abbreviated Jalali month name        |
+| `jMM`       | 09       | Two-digit Jalali month number        |
+| `jM`        | 9        | Jalali month number                  |
+| `MMMM`      | November | Full Gregorian month name            |
+| `MMM`       | Nov      | Abbreviated Gregorian month name     |
+| `MM`        | 11       | Two-digit Gregorian month number     |
+| `M`         | 11       | Gregorian month number               |
+| `jDD`       | 05       | Two-digit Jalali day of the month    |
+| `jD`        | 5        | Jalali day of the month              |
+| `DD`        | 06       | Two-digit Gregorian day of the month |
+| `D`         | 6        | Gregorian day of the month           |
 
 </div>
 
@@ -269,6 +281,8 @@ pcApi.dateToEvents(new Date(), { base: "umalqura" }); // With Umm al-Qura basis
 - Option to "Open today's daily note on startup," user configurable
 - Customizable display of calendar events
 - Option to create and display seasonal notes, user configurable
+- Choose whether weekly notes use the Gregorian or Jalali week numbering system.
+- For better compatibility with other Gregorian calendar plugins, you can use Gregorian naming for Jalali monthly and yearly notes.
 - Confirmation dialog before creating calendar notes, user configurable
 - Option to set the user interface to Persian or English
 - Ability to configure calendar note templates
