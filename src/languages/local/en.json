@@ -90,26 +90,34 @@
 		},
 		"naming": {
 			"daily": {
-				"name": "Daily Note Naming Format",
-				"desc": "* Using a Gregorian format is recommended for better compatibility with other plugins."
+				"name": "Daily note naming format",
+				"desc": "* For better compatibility with other plugins, using the Gregorian format is recommended."
 			},
 			"weekCalculation": {
-				"name": "Week Calculation Mode",
-				"desc": "Controls how the first week of the year and week numbers are determined.",
+				"name": "Calendar week calculation",
+				"desc": "Choose how the first week of the year is determined and how week numbers are calculated.",
 				"options": {
-					"firstDayOfYear": "By first day of jalali year",
-					"firstWeekStart": "By first full jalali week",
-					"gregorianFirstDayOfYear": "By first day of gregorian year",
-					"gregorianFirstWeekStart": "By first full gregorian week"
+					"firstDayOfYear": "Based on the first day of the Jalali year",
+					"firstWeekStart": "Based on the first full Jalali week",
+					"gregorianFirstDayOfYear": "Based on the first day of the Gregorian year",
+					"gregorianFirstWeekStart": "Based on the first full Gregorian week"
 				}
 			},
 			"monthly": {
-				"name": "Monthly Note Naming",
-				"desc": "Choose how monthly note files are named and recognized."
+				"name": "Monthly note naming",
+				"desc": "Choose how monthly note files are named and recognized.",
+				"options": {
+					"jalali": "Jalali",
+					"gregorian": "Gregorian"
+				}
 			},
 			"yearly": {
-				"name": "Yearly Note Naming",
-				"desc": "Choose how yearly note files are named and recognized."
+				"name": "Yearly note naming",
+				"desc": "Choose how yearly note files are named and recognized.",
+				"options": {
+					"jalali": "Jalali",
+					"gregorian": "Gregorian"
+				}
 			}
 		},
 		"templates": {
