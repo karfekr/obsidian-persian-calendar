@@ -3,7 +3,7 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
-		version: "4.8.0",
+		version: "4.8.1",
 		changes: {
 			fa: [
 				"اکنون قادر خواهید بود که فرمت نام‌گذاری روزنوشت‌ها را طوری که دوست دارید تعیین کنید.",
