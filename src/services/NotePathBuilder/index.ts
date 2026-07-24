@@ -3,7 +3,8 @@ import type PersianCalendarPlugin from "src/main";
 import type { TLocale } from "src/types";
 import type { TDateEngineContext } from "src/utils/dateEngine";
 import { formatPattern } from "src/utils/dateEngine";
-import { jalaliToGregorian, jalaliToSeason } from "src/utils/dateUtils";
+import { getWeekStartCalculator, jalaliToGregorian, jalaliToSeason } from "src/utils/dateUtils";
+import { toWeekFormat } from "src/utils/formatters";
 import { mapJalaliMonthToGregorianLabel, mapJalaliYearToGregorianLabel } from "./gregorianNaming";
 
 export default class NotePathBuilder {
@@ -46,10 +47,6 @@ export default class NotePathBuilder {
 
 	public buildDailyNotePath(jy: number, jm: number, jd: number) {
 		const dateString = this.buildDailyNoteFileName(jy, jm, jd);
-
-		// Daily Notes always use real Jalali <-> Gregorian conversion, for both
-		// the file name (above) and the folder path (below), so dynamic paths
-		// can mix Gregorian and Jalali tokens (e.g. "YYYY/jMM/jDD").
 		const { gy, gm, gd } = jalaliToGregorian(jy, jm, jd);
 		const notesLocation = this.plugin.setting.dailyNotesPath;
 		const filePath = this.buildNotePath(notesLocation, `${dateString}.md`, {
@@ -65,21 +62,24 @@ export default class NotePathBuilder {
 	}
 
 	public buildWeeklyNotePath(jy: number, weekNumber: number) {
-		const fileName = `${formatPattern("jYYYY-[W]W", {
-			jy,
-			week: weekNumber,
-		})}.md`;
+		const calculator = getWeekStartCalculator(this.plugin.setting.weekCalculation);
+		const { jy: jYear, jm, jd, gy, gm, gd } = calculator.getStartOfWeek(jy, weekNumber);
+		const fileName = `${toWeekFormat(jy, weekNumber)}.md`;
 
 		const notesLocation = this.plugin.setting.weeklyNotesPath;
-		const filePath = this.buildNotePath(notesLocation, fileName, { jy });
+		const filePath = this.buildNotePath(notesLocation, fileName, {
+			jy: jYear,
+			jm,
+			jd,
+			gy,
+			gm,
+			gd,
+		});
 
 		return { filePath, fileName };
 	}
 
 	public buildMonthlyNotePath(jy: number, jm: number, local: TLocale = "fa") {
-		// Month Notes represent a range; per the range-handling rule, dynamic
-		// folder path tokens are resolved using the start date of the range
-		// (the first day of the Jalali month), via real date conversion.
 		const { gy, gm, gd } = jalaliToGregorian(jy, jm, 1);
 
 		let fileName: string;
@@ -117,8 +117,6 @@ export default class NotePathBuilder {
 	}
 
 	public buildYearlyNotePath(jy: number) {
-		// Year Notes represent a range; resolve dynamic folder path tokens using
-		// the start date of the range (the first day of the Jalali year).
 		const { gy, gm, gd } = jalaliToGregorian(jy, 1, 1);
 
 		let fileName: string;
