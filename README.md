@@ -72,11 +72,6 @@ You can use dynamic placeholders to customize the paths and filenames of your ca
 
 </div>
 
-<div align="center">
-	<img src="Instructions/default-path-en.png" alt="default path" />
-	<div>Default note paths</div>
-</div>
-
 ## <a name="quick_reference"></a> Quick Reference to Calendar Notes
 
 Use `@` to insert a link to a calendar note, or `@/` to insert the resolved date as plain text

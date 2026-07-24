@@ -75,11 +75,6 @@
 
 </div>
 
-<div align="center">
-	<img src="Instructions/default-path-fa.png" alt="default path" />
-	<div>مسیر پیش‌فرض یادداشت‌ها</div>
-</div>
-
 ## <a name="quick_reference"></a> ارجاع سریع به یادداشت‌های تقویم
 
 از @ برای درج پیوند به یک یادداشت تقویمی و از @/ برای درج تاریخ متناظر به‌صورت متن ساده، بدون ایجاد
