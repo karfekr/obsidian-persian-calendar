@@ -5,12 +5,8 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 	{
 		version: "4.8.1",
 		changes: {
-			fa: [
-				"برطرف کردن باگ هفته‌نوشت"
-			],
-			en: [
-				"Fix weekly note generation and lookup"
-			],
+			fa: ["برطرف کردن باگ هفته‌نوشت"],
+			en: ["Fix weekly note generation and lookup"],
 		},
 	},
 	{
