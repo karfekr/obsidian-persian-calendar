@@ -85,6 +85,7 @@ jobs:
           gh release create "$TAG" \
             --title "$TAG" \
             --notes-file release_body.txt \
+            --generate-notes \
             main.js \
             manifest.json \
             styles.css
