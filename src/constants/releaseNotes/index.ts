@@ -3,6 +3,13 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.8.3",
+		changes: {
+			fa: ["برطرف کردن باگ فصل‌نوشت"],
+			en: ["Fix seasonal note generation and lookup"],
+		},
+	},
+	{
 		version: "4.8.2",
 		changes: {
 			fa: ["برطرف کردن باگ هفته‌نوشت"],

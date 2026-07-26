@@ -100,7 +100,7 @@ export default class NotePathBuilder {
 	}
 
 	public buildSeasonalNotePath(jy: number, seasonNumber: number, local: TLocale = "fa") {
-		const fileName = `${formatPattern("jYYYY-[S]Q", {
+		const fileName = `${formatPattern("jYYYY-[S]jQ", {
 			jy,
 			season: seasonNumber,
 		})}.md`;
