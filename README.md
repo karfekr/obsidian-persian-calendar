@@ -72,6 +72,12 @@ You can use dynamic placeholders to customize the paths and filenames of your ca
 
 </div>
 
+The brackets tell the path resolver to treat the content as a literal/static name, so [Daily] always resolves to Daily.
+
+Daily → interpreted as D + aily
+
+[Daily] → interpreted literally as Daily
+
 ## <a name="quick_reference"></a> Quick Reference to Calendar Notes
 
 Use `@` to insert a link to a calendar note, or `@/` to insert the resolved date as plain text
