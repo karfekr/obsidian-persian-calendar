@@ -72,7 +72,7 @@ You can use dynamic placeholders to customize the paths and filenames of your ca
 
 </div>
 
-The brackets tell the path resolver to treat the content as a literal/static name, so [Daily] always resolves to Daily.
+The brackets tell the path resolver to treat the content as a literal/static name:
 
 Daily → interpreted as D + aily
 
