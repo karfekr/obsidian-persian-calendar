@@ -74,9 +74,8 @@ You can use dynamic placeholders to customize the paths and filenames of your ca
 
 The brackets tell the path resolver to treat the content as a literal/static name:
 
-Daily → interpreted as D + aily
-
-[Daily] → interpreted literally as Daily
+- Daily → interpreted as D + aily
+- [Daily] → interpreted literally as Daily
 
 ## <a name="quick_reference"></a> Quick Reference to Calendar Notes
 
