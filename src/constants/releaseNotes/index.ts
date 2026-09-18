@@ -5,6 +5,13 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 	{
 		version: "4.9.5",
 		changes: {
+			fa: ["رفع باگ نمایش تنظیمات هفته"],
+			en: ["Fixed a bug with the display of week settings"],
+		},
+	},
+	{
+		version: "4.9.5",
+		changes: {
 			fa: [
 				"امکان تعیین نقطه‌ی مرجع شروع یا پایان هفته برای مسیرهای داینامیک یادداشت‌های هفتگی اضافه شد",
 				"توکن‌های w و ww برای شماره‌گذاری هفته‌ها اضافه شدند",
@@ -36,7 +43,9 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 		version: "4.8.7",
 		changes: {
 			fa: ["بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard"],
-			en: ["Improve the plugin based on the latest Obsidian Scorecard recommendations"],
+			en: [
+				"Improve the plugin based on the latest Obsidian Scorecard recommendations",
+			],
 		},
 	},
 	{
