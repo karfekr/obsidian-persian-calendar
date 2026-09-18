@@ -3,6 +3,21 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.9.5",
+		changes: {
+			fa: [
+				"امکان تعیین نقطه‌ی مرجع شروع یا پایان هفته برای مسیرهای داینامیک یادداشت‌های هفتگی اضافه شد",
+				"توکن‌های w و ww برای شماره‌گذاری هفته‌ها اضافه شدند",
+				"توکن‌های Q، QQ، QQQ و QQQQ برای فصل‌های میلادی اضافه شدند",
+			],
+			en: [
+				"Added support for anchoring weekly dynamic paths to the start or end of the week",
+				"Added the w and ww tokens for weekly note numbers",
+				"Added the Q, QQ, QQQ, and QQQQ tokens for Gregorian quarters",
+			],
+		},
+	},
+	{
 		version: "4.9.0",
 		changes: {
 			fa: [
@@ -23,7 +38,9 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 		version: "4.8.7",
 		changes: {
 			fa: ["بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard"],
-			en: ["Improve the plugin based on the latest Obsidian Scorecard recommendations"],
+			en: [
+				"Improve the plugin based on the latest Obsidian Scorecard recommendations",
+			],
 		},
 	},
 	{

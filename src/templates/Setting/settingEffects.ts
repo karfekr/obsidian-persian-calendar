@@ -55,7 +55,11 @@ export function getNestedValue(obj: unknown, path: string): unknown {
 	}, obj);
 }
 
-export function setNestedValue(obj: Record<string, unknown>, path: string, value: unknown): void {
+export function setNestedValue(
+	obj: Record<string, unknown>,
+	path: string,
+	value: unknown,
+): void {
 	const keys = path.split(".");
 	const lastKey = keys.pop();
 
@@ -64,7 +68,11 @@ export function setNestedValue(obj: Record<string, unknown>, path: string, value
 	let current = obj;
 
 	for (const key of keys) {
-		if (current[key] === null || typeof current[key] !== "object" || Array.isArray(current[key])) {
+		if (
+			current[key] === null ||
+			typeof current[key] !== "object" ||
+			Array.isArray(current[key])
+		) {
 			current[key] = {};
 		}
 
@@ -80,10 +88,13 @@ export function createSettingChangeHandler(
 ): (key: string, value: unknown) => Promise<void> {
 	let debounceTimer: number | undefined;
 
-	return async function applySettingChange(key: string, value: unknown): Promise<void> {
+	return async function applySettingChange(
+		key: string,
+		value: unknown,
+	): Promise<void> {
 		const settingKey = key as keyof TSetting;
 
-		setNestedValue(plugin.setting as unknown as Record<string, unknown>, key, value);
+		setNestedValue(plugin.setting, key, value);
 
 		if (settingKey === "language") {
 			setLocal(value as TLocale);

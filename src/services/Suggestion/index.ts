@@ -1,4 +1,9 @@
-import type { App, Editor, EditorPosition, EditorSuggestContext } from "obsidian";
+import type {
+	App,
+	Editor,
+	EditorPosition,
+	EditorSuggestContext,
+} from "obsidian";
 import { EditorSuggest, TFile } from "obsidian";
 import type { TSuggestProvider } from "src/types";
 
@@ -14,15 +19,16 @@ export default class Suggestion extends EditorSuggest<string> {
 	}
 
 	renderSuggestion(value: string, el: HTMLElement): void {
-		const container = document.createElement("div");
-		el.appendChild(container);
-
-		const inner = document.createElement("div");
-		inner.textContent = value;
-		container.appendChild(inner);
+		const container = el.createEl("div");
+		container.createEl("div", {
+			text: value,
+		});
 	}
 
-	onTrigger(cursor: EditorPosition, editor: Editor): EditorSuggestContext | null {
+	onTrigger(
+		cursor: EditorPosition,
+		editor: Editor,
+	): EditorSuggestContext | null {
 		const line = editor.getLine(cursor.line).substring(0, cursor.ch);
 
 		for (const provider of this.providers) {
