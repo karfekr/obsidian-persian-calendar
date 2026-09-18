@@ -1,25 +1,26 @@
-import { describe, expect, it } from "vitest";
 import NotePathBuilder from "src/services/NotePathBuilder";
+import type { TSetting } from "src/types";
 import { compilePattern } from "src/utils/dateEngine";
 import { getWeekStartCalculator, gregorianToJalali, jalaliToDate } from "src/utils/dateUtils";
-import type { TSetting } from "src/types";
+import { describe, expect, it } from "vitest";
 
 const makePlugin = (
 	weeklyNotesPath: string,
 	weeklyPathAnchor: "start" | "end" = "start",
 	weekCalculation: TSetting["weekCalculation"] = "jalali-first-day-of-year",
 	weeklyPathYearBoundaryAnchor: "start" | "end" = "start",
-) => ({
-	setting: {
-		weeklyNotesPath,
-		weeklyPathAnchor,
-		weekCalculation,
-		weeklyPathYearBoundaryAnchor,
-	} as Pick<
-		TSetting,
-		"weeklyNotesPath" | "weeklyPathAnchor" | "weekCalculation" | "weeklyPathYearBoundaryAnchor"
-	>,
-} as never);
+) =>
+	({
+		setting: {
+			weeklyNotesPath,
+			weeklyPathAnchor,
+			weekCalculation,
+			weeklyPathYearBoundaryAnchor,
+		} as Pick<
+			TSetting,
+			"weeklyNotesPath" | "weeklyPathAnchor" | "weekCalculation" | "weeklyPathYearBoundaryAnchor"
+		>,
+	}) as never;
 
 describe("Weekly path anchor visibility", () => {
 	const dateTokens = [
@@ -52,9 +53,12 @@ describe("Weekly path anchor visibility", () => {
 		expect(new NotePathBuilder(makePlugin(`${token}/ww`)).weeklyPathNeedsAnchor()).toBe(true);
 	});
 
-	it.each(["ww", "Weekly/ww", "Weekly", "", "YYYY", "jYYYY", "QQQQ"])("does not show Anchor for %s", (path) => {
-		expect(new NotePathBuilder(makePlugin(path)).weeklyPathNeedsAnchor()).toBe(false);
-	});
+	it.each(["ww", "Weekly/ww", "Weekly", "", "YYYY", "jYYYY", "QQQQ"])(
+		"does not show Anchor for %s",
+		(path) => {
+			expect(new NotePathBuilder(makePlugin(path)).weeklyPathNeedsAnchor()).toBe(false);
+		},
+	);
 
 	it("does not show Anchor when date variable is not an ancestor of week variable", () => {
 		expect(new NotePathBuilder(makePlugin("ww/jYYYY")).weeklyPathNeedsAnchor()).toBe(false);
@@ -73,19 +77,22 @@ describe("Weekly path anchor visibility", () => {
 		expect(builder.weeklyPathNeedsYearBoundaryAnchor()).toBe(true);
 
 		expect(
-			new NotePathBuilder(makePlugin("YYYY/ww", "start", "jalali-first-day-of-year"))
-				.weeklyPathNeedsYearBoundaryAnchor(),
+			new NotePathBuilder(
+				makePlugin("YYYY/ww", "start", "jalali-first-day-of-year"),
+			).weeklyPathNeedsYearBoundaryAnchor(),
 		).toBe(false);
 		expect(
-			new NotePathBuilder(makePlugin("ww", "start", "jalali-first-week-start"))
-				.weeklyPathNeedsYearBoundaryAnchor(),
+			new NotePathBuilder(
+				makePlugin("ww", "start", "jalali-first-week-start"),
+			).weeklyPathNeedsYearBoundaryAnchor(),
 		).toBe(false);
 	});
 
 	it("shows the year-boundary Anchor for Gregorian first-full-week calculations", () => {
 		expect(
-			new NotePathBuilder(makePlugin("YYYY/ww", "start", "gregorian-first-week-start"))
-				.weeklyPathNeedsYearBoundaryAnchor(),
+			new NotePathBuilder(
+				makePlugin("YYYY/ww", "start", "gregorian-first-week-start"),
+			).weeklyPathNeedsYearBoundaryAnchor(),
 		).toBe(true);
 	});
 });
@@ -95,9 +102,17 @@ describe("Weekly path anchor resolution", () => {
 
 	it("uses the Gregorian quarter at the selected anchor", () => {
 		const jalali = gregorianToJalali(2026, 3, 30);
-		const { jy: weekYear, weekNumber } = calculator.getWeekNumber(jalaliToDate(jalali.jy, jalali.jm, jalali.jd));
-		const start = new NotePathBuilder(makePlugin("YYYY/QQQQ/ww", "start")).buildWeeklyNotePath(weekYear, weekNumber);
-		const end = new NotePathBuilder(makePlugin("YYYY/QQQQ/ww", "end")).buildWeeklyNotePath(weekYear, weekNumber);
+		const { jy: weekYear, weekNumber } = calculator.getWeekNumber(
+			jalaliToDate(jalali.jy, jalali.jm, jalali.jd),
+		);
+		const start = new NotePathBuilder(makePlugin("YYYY/QQQQ/ww", "start")).buildWeeklyNotePath(
+			weekYear,
+			weekNumber,
+		);
+		const end = new NotePathBuilder(makePlugin("YYYY/QQQQ/ww", "end")).buildWeeklyNotePath(
+			weekYear,
+			weekNumber,
+		);
 
 		expect(start.filePath).toContain("2026/Spring/");
 		expect(end.filePath).toContain("2026/Summer/");
@@ -105,9 +120,17 @@ describe("Weekly path anchor resolution", () => {
 
 	it("resolves Gregorian and Jalali month from the selected anchor", () => {
 		const jalali = gregorianToJalali(2026, 3, 30);
-		const { jy: weekYear, weekNumber } = calculator.getWeekNumber(jalaliToDate(jalali.jy, jalali.jm, jalali.jd));
-		const start = new NotePathBuilder(makePlugin("YYYY/MMMM/jMM/ww", "start")).buildWeeklyNotePath(weekYear, weekNumber);
-		const end = new NotePathBuilder(makePlugin("YYYY/MMMM/jMM/ww", "end")).buildWeeklyNotePath(weekYear, weekNumber);
+		const { jy: weekYear, weekNumber } = calculator.getWeekNumber(
+			jalaliToDate(jalali.jy, jalali.jm, jalali.jd),
+		);
+		const start = new NotePathBuilder(makePlugin("YYYY/MMMM/jMM/ww", "start")).buildWeeklyNotePath(
+			weekYear,
+			weekNumber,
+		);
+		const end = new NotePathBuilder(makePlugin("YYYY/MMMM/jMM/ww", "end")).buildWeeklyNotePath(
+			weekYear,
+			weekNumber,
+		);
 
 		expect(start.filePath).toContain("2026/March/01/");
 		expect(end.filePath).toContain("2026/April/01/");
@@ -115,9 +138,17 @@ describe("Weekly path anchor resolution", () => {
 
 	it("resolves mixed Jalali and Gregorian tokens", () => {
 		const jalali = gregorianToJalali(2026, 3, 30);
-		const { jy: weekYear, weekNumber } = calculator.getWeekNumber(jalaliToDate(jalali.jy, jalali.jm, jalali.jd));
-		const start = new NotePathBuilder(makePlugin("YYYY/jMM/QQ/ww", "start")).buildWeeklyNotePath(weekYear, weekNumber);
-		const end = new NotePathBuilder(makePlugin("YYYY/jMM/QQ/ww", "end")).buildWeeklyNotePath(weekYear, weekNumber);
+		const { jy: weekYear, weekNumber } = calculator.getWeekNumber(
+			jalaliToDate(jalali.jy, jalali.jm, jalali.jd),
+		);
+		const start = new NotePathBuilder(makePlugin("YYYY/jMM/QQ/ww", "start")).buildWeeklyNotePath(
+			weekYear,
+			weekNumber,
+		);
+		const end = new NotePathBuilder(makePlugin("YYYY/jMM/QQ/ww", "end")).buildWeeklyNotePath(
+			weekYear,
+			weekNumber,
+		);
 
 		expect(start.filePath).toContain("2026/01/01/");
 		expect(end.filePath).toContain("2026/01/02/");

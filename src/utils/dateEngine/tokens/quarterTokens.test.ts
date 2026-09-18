@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { formatPattern } from "src/utils/dateEngine";
+import { describe, expect, it } from "vitest";
 
 describe("Gregorian quarter tokens", () => {
 	it.each([

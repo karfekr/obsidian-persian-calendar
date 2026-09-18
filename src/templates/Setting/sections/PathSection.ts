@@ -1,7 +1,7 @@
 import type { SettingDefinitionItem } from "obsidian";
-import NotePathBuilder from "src/services/NotePathBuilder";
-import type PersianCalendarPlugin from "src/main";
 import { t } from "src/languages";
+import type PersianCalendarPlugin from "src/main";
+import NotePathBuilder from "src/services/NotePathBuilder";
 import { NOTE_TYPES } from "../noteTypes";
 
 export function getPathSettings(plugin: PersianCalendarPlugin): SettingDefinitionItem[] {

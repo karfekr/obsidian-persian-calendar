@@ -1,9 +1,9 @@
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
-import type { TLocale, TDateEngineContext, TWeekPathAnchor } from "src/types";
+import type { TDateEngineContext, TLocale, TWeekPathAnchor } from "src/types";
 import { formatPattern } from "src/utils/dateEngine";
-import { defaultTokenRegistry } from "src/utils/dateEngine/tokens";
 import { tokenize } from "src/utils/dateEngine/tokenizer";
+import { defaultTokenRegistry } from "src/utils/dateEngine/tokens";
 import {
 	getWeekStartCalculator,
 	gregorianDayOfWeek,
@@ -15,16 +15,7 @@ import {
 import { toWeekFormat } from "src/utils/formatters";
 import { mapJalaliMonthToGregorianLabel, mapJalaliYearToGregorianLabel } from "./gregorianNaming";
 
-const WEEK_PATH_DATE_FIELDS = new Set([
-	"gy",
-	"gm",
-	"gd",
-	"jy",
-	"jm",
-	"jd",
-	"season",
-	"quarter",
-]);
+const WEEK_PATH_DATE_FIELDS = new Set(["gy", "gm", "gd", "jy", "jm", "jd", "season", "quarter"]);
 
 export default class NotePathBuilder {
 	constructor(private readonly plugin: PersianCalendarPlugin) {}
@@ -123,15 +114,13 @@ export default class NotePathBuilder {
 		const start = calculator.getStartOfWeek(jy, weekNumber);
 		const end = calculator.getEndOfWeek(jy, weekNumber);
 
-		return weekCalculation.startsWith("gregorian")
-			? start.gy !== end.gy
-			: start.jy !== end.jy;
+		return weekCalculation.startsWith("gregorian") ? start.gy !== end.gy : start.jy !== end.jy;
 	}
 
 	private getWeeklyAnchor(jy: number, weekNumber: number, anchor: TWeekPathAnchor) {
 		const calculator = getWeekStartCalculator(this.plugin.setting.weekCalculation);
 		const effectiveAnchor = this.isCrossYearFirstFullWeek(jy, weekNumber)
-			? this.plugin.setting.weeklyPathYearBoundaryAnchor ?? "start"
+			? (this.plugin.setting.weeklyPathYearBoundaryAnchor ?? "start")
 			: anchor;
 
 		return effectiveAnchor === "end"
@@ -150,7 +139,8 @@ export default class NotePathBuilder {
 		const nextYearWeekStart = calculator.getStartOfWeek(weekYear + 1, 1);
 		const nextYearWeekStartKey =
 			nextYearWeekStart.gy * 10000 + nextYearWeekStart.gm * 100 + nextYearWeekStart.gd;
-		const actualDateKey = actualGregorian.gy * 10000 + actualGregorian.gm * 100 + actualGregorian.gd;
+		const actualDateKey =
+			actualGregorian.gy * 10000 + actualGregorian.gm * 100 + actualGregorian.gd;
 
 		if (actualCalendarYear === weekYear && actualDateKey >= nextYearWeekStartKey) {
 			return { weekYear: weekYear + 1, weekNumber: 1 };

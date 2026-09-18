@@ -9,12 +9,7 @@ export default class UpdateModal extends Modal {
 	private setting: TSetting;
 	private onCloseCallback?: () => void;
 
-	constructor(
-		app: App,
-		setting: TSetting,
-		notes?: TReleaseNote[],
-		onCloseCallback?: () => void,
-	) {
+	constructor(app: App, setting: TSetting, notes?: TReleaseNote[], onCloseCallback?: () => void) {
 		super(app);
 		this.setting = setting;
 		this.notes = notes ?? RELEASE_NOTES;
@@ -25,10 +20,7 @@ export default class UpdateModal extends Modal {
 		const { contentEl } = this;
 		contentEl.replaceChildren();
 		contentEl.classList.add("persian-calendar");
-		contentEl.setAttribute(
-			"dir",
-			this.setting.language === "fa" ? "rtl" : "ltr",
-		);
+		contentEl.setAttribute("dir", this.setting.language === "fa" ? "rtl" : "ltr");
 
 		const headerEl = contentEl.createEl("div", {
 			cls: "persian-calendar__update-header",
@@ -48,9 +40,7 @@ export default class UpdateModal extends Modal {
 			const header = section.createEl("div");
 
 			const versionText =
-				this.setting.language === "fa"
-					? `نسخه ${note.version}`
-					: `Version ${note.version}`;
+				this.setting.language === "fa" ? `نسخه ${note.version}` : `Version ${note.version}`;
 
 			header.createEl("h3", {
 				text: versionText,

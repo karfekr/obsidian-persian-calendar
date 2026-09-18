@@ -1,5 +1,5 @@
 import { GREGORIAN_MONTHS_NAME, WEEKDAYS_NAME } from "src/constants";
-import type { TTokenDefinition, TLocale } from "src/types";
+import type { TLocale, TTokenDefinition } from "src/types";
 import { createNameToken, createNumericToken } from "./tokenFactories";
 
 const GREGORIAN_SEASONS_NAME: Record<TLocale, Record<number, string>> = {
