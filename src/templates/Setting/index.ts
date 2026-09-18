@@ -63,7 +63,7 @@ export default class CalendarSettingTab extends PluginSettingTab {
 			},
 
 			...getGeneralSettings(),
-			...getPathSettings(),
+			...getPathSettings(this.plugin),
 			...getNameSettings(),
 			...getTemplateSettings(),
 			...getExtraCalendarSettings(),
