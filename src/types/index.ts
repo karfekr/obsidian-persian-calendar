@@ -168,7 +168,7 @@ export type TSocialLink = {
 	icon: string;
 };
 
-export type TCalendarFamily = "gregorian" | "jalali";
+export type TCalendarFamily = "gregorian" | "jalali" | "between";
 
 export type TDateEngineContext = {
 	gy?: number;
@@ -231,10 +231,6 @@ export type TToken =
 	| "YY"
 	| "jYYYY"
 	| "jYY"
-	| "QQQQ"
-	| "QQQ"
-	| "QQ"
-	| "Q"
 	| "jQQQQ"
 	| "jQQ"
 	| "jQ"

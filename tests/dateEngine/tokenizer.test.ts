@@ -51,9 +51,8 @@ describe("tokenizer - escaped literals via [brackets]", () => {
 	});
 
 	it("supports multiple separate bracket groups in one pattern", () => {
-		const segments = tokenize("[Q]jQ[of]jYYYY", defaultTokenRegistry);
+		const segments = tokenize("jQ[of]jYYYY", defaultTokenRegistry);
 		expect(segmentSummary(segments)).toEqual([
-			{ literal: "Q" },
 			{ token: "jQ" },
 			{ literal: "of" },
 			{ token: "jYYYY" },

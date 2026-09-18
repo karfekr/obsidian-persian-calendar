@@ -8,12 +8,10 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 			fa: [
 				"امکان تعیین نقطه‌ی مرجع شروع یا پایان هفته برای مسیرهای داینامیک یادداشت‌های هفتگی اضافه شد",
 				"توکن‌های w و ww برای شماره‌گذاری هفته‌ها اضافه شدند",
-				"توکن‌های Q، QQ، QQQ و QQQQ برای فصل‌های میلادی اضافه شدند",
 			],
 			en: [
 				"Added support for anchoring weekly dynamic paths to the start or end of the week",
 				"Added the w and ww tokens for weekly note numbers",
-				"Added the Q, QQ, QQQ, and QQQQ tokens for Gregorian quarters",
 			],
 		},
 	},

@@ -57,10 +57,6 @@ You can use dynamic placeholders to customize the paths and filenames of your ca
 | `jQQQQ`     | Autumn   | Full Jalali season name              |
 | `jQQ`       | 03       | Two-digit Jalali season number       |
 | `jQ`        | 3        | Jalali season number                 |
-| `QQQQ`      | Autumn   | Full Gregorian season name           |
-| `QQQ`       | Aut      | Abbreviated Gregorian season name    |
-| `QQ`        | 03       | Two-digit Gregorian season number    |
-| `Q`         | 3        | Gregorian season number              |
 | `jMMMM`     | Azar     | Full Jalali month name               |
 | `jMMM`      | Aza      | Abbreviated Jalali month name        |
 | `jMM`       | 09       | Two-digit Jalali month number        |
@@ -83,23 +79,6 @@ The `w` and `ww` placeholders are week-number placeholders. They are resolved ac
 weekly note's configured week calculation (Jalali or Gregorian, and the selected week-start rule).
 They are useful for weekly note paths and can also be used in daily note paths to place a daily note
 under the corresponding week.
-
-When a weekly path contains `w` or `ww` together with date placeholders in an ancestor segment before
-the week segment, the plugin can use the beginning or end of the week as the date anchor. This is
-controlled by **Weekly path date anchor** in the settings. The default is **Start of week**, preserving
-the usual behavior.
-
-For weeks that cross a calendar-year boundary while using a **first full week** calculation, a separate
-**Year-boundary week anchor** setting determines whether the path's date values use the beginning or
-end of that week. This applies only to the boundary week; other weeks continue to use the normal weekly
-path date anchor.
-
-For example, with a path such as `jYYYY/jQQQQ/MM/[W]ww`, the year, season, and month are resolved from
-the selected weekly anchor while `[W]` remains a literal folder name. A cross-year boundary week can
-therefore be placed consistently under either the year in which it starts or the year in which it ends.
-
-> **Note:** Daily notes always use their actual calendar date. When **First full week** is selected,
-> using `w` or `ww` in a Daily Notes path is not recommended because a week may span two calendar years.
 
 The brackets tell the path resolver to treat the content as a literal/static name:
 

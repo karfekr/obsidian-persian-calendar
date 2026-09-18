@@ -15,7 +15,7 @@ describe("formatPattern - numeric tokens", () => {
 		expect(formatPattern("jYYYY-jMM-jDD", { jy: 1403, jm: 1, jd: 5 })).toBe("1403-01-05");
 	});
 
-	it("does not pad unpadded M/D/Q tokens", () => {
+	it("does not pad unpadded M/D tokens", () => {
 		expect(formatPattern("jM-jD", { jm: 3, jd: 9 })).toBe("3-9");
 		expect(formatPattern("jQ", { season: 2 })).toBe("2");
 	});

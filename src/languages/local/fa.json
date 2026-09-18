@@ -20,7 +20,7 @@
 	},
 	"setting": {
 		"banner": {
-			"title": "برای راهنمایی، گزارش خطا یا ارسال بازخورد"
+			"title": "برای راهنمایی، گزارش خطا یا بازخورد"
 		},
 		"sections": {
 			"general": "تنظیمات عمومی",
@@ -95,10 +95,10 @@
 				"name": "روش محاسبه هفته‌های تقویم",
 				"desc": "نحوه تعیین هفته اول سال و شماره‌گذاری هفته‌ها را مشخص می‌کند.",
 				"options": {
-					"firstDayOfYear": "بر اساس روز اول سال هجری شمسی",
-					"firstWeekStart": "بر اساس اولین هفته کامل هجری شمسی",
-					"gregorianFirstDayOfYear": "بر اساس روز اول سال میلادی",
-					"gregorianFirstWeekStart": "بر اساس اولین هفته کامل میلادی"
+					"firstDayOfYear": "روز اول سال هجری شمسی",
+					"firstWeekStart": "اولین هفته کامل هجری شمسی",
+					"gregorianFirstDayOfYear": "روز اول سال میلادی",
+					"gregorianFirstWeekStart": "اولین هفته کامل میلادی"
 				}
 			},
 			"monthly": {
