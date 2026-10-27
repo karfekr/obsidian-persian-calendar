@@ -80,6 +80,10 @@ weekly note's configured week calculation (Jalali or Gregorian, and the selected
 They are useful for weekly note paths and can also be used in daily note paths to place a daily note
 under the corresponding week.
 
+Weekly note folders take their month and season from the start of the week by default. To use the
+end of the week instead, change **Weekly note folder month** in the plugin settings. A week that
+spans two years always stays in the year it belongs to, and existing notes are never moved.
+
 The brackets tell the path resolver to treat the content as a literal/static name:
 
 - Daily → interpreted as D + aily

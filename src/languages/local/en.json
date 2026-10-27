@@ -103,6 +103,14 @@
 					"gregorianFirstWeekStart": "Based on the first full Gregorian week"
 				}
 			},
+			"weeklyPathMonth": {
+				"name": "Weekly note folder month",
+				"desc": "Choose whether the month and season in weekly note folders come from the week’s start or end. Existing notes are not moved.",
+				"options": {
+					"start": "Week start",
+					"end": "Week end"
+				}
+			},
 			"monthly": {
 				"name": "Monthly note naming",
 				"desc": "Choose how monthly note files are named and recognized.",

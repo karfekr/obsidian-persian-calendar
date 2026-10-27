@@ -73,9 +73,23 @@ export default class NotePathBuilder {
 		return resolved ? `${resolved}/${fileName}` : fileName;
 	}
 
-	private getWeeklyAnchor(jy: number, weekNumber: number) {
-		const calculator = getWeekStartCalculator(this.plugin.setting.weekCalculation);
-		return calculator.getStartOfWeek(jy, weekNumber);
+	private usesGregorianWeeks() {
+		return this.plugin.setting.weekCalculation.startsWith("gregorian");
+	}
+
+	private getWeeklyAnchor(year: number, weekNumber: number) {
+		const { weekCalculation, weeklyPathMonth } = this.plugin.setting;
+		const calculator = getWeekStartCalculator(weekCalculation);
+		const start = calculator.getStartOfWeek(year, weekNumber);
+		const end = calculator.getEndOfWeek(year, weekNumber);
+		const isGregorian = this.usesGregorianWeeks();
+		const startYear = isGregorian ? start.gy : start.jy;
+		const endYear = isGregorian ? end.gy : end.jy;
+
+		// a week between two years stays in the year it belongs to
+		if (startYear !== endYear) return startYear === year ? start : end;
+
+		return weeklyPathMonth === "end" ? end : start;
 	}
 
 	private getDailyWeekContext(jy: number, jm: number, jd: number) {
@@ -83,9 +97,7 @@ export default class NotePathBuilder {
 		const date = jalaliToDate(jy, jm, jd);
 		const { jy: weekYear, weekNumber } = calculator.getWeekNumber(date);
 		const actualGregorian = jalaliToGregorian(jy, jm, jd);
-		const actualCalendarYear = this.plugin.setting.weekCalculation.startsWith("gregorian")
-			? actualGregorian.gy
-			: jy;
+		const actualCalendarYear = this.usesGregorianWeeks() ? actualGregorian.gy : jy;
 		const nextYearWeekStart = calculator.getStartOfWeek(weekYear + 1, 1);
 		const nextYearWeekStartKey =
 			nextYearWeekStart.gy * 10000 + nextYearWeekStart.gm * 100 + nextYearWeekStart.gd;
