@@ -6,6 +6,7 @@ import {
 	dateToJalali,
 	dateToMonthName,
 	dateToStartDayOfJMonthDate,
+	gregorianToDate,
 	jalaliMonthLength,
 	jalaliMonthToGregorianRange,
 	jalaliMonthToHijriRange,
@@ -56,7 +57,10 @@ export function dashToJMonthName(dashDate: string, dateFormat?: TDateFormat) {
 		const monthProps = extractMonthFormat(dashDate);
 		if (!monthProps) return null;
 
-		const date = jalaliToDate(monthProps.year, monthProps.month, 1);
+		const date =
+			monthProps.year >= 1800
+				? gregorianToDate(monthProps.year, monthProps.month, 1)
+				: jalaliToDate(monthProps.year, monthProps.month, 1);
 		return dateToMonthName(date);
 	}
 
@@ -76,7 +80,10 @@ export function dashToStartDayOfJMonthDash(dashDate: string, dateFormat: TDateFo
 		const monthProps = extractMonthFormat(dashDate);
 		if (!monthProps) return null;
 
-		const startDate = jalaliToDate(monthProps.year, monthProps.month, 1);
+		const startDate =
+			monthProps.year >= 1800
+				? gregorianToDate(monthProps.year, monthProps.month, 1)
+				: jalaliToDate(monthProps.year, monthProps.month, 1);
 		return dateToDash(startDate, dateFormat);
 	}
 
@@ -95,6 +102,12 @@ export function dashToEndDayOfJMonthDash(dashDate: string, dateFormat: TDateForm
 	if (isMonthFormat(dashDate)) {
 		const monthProps = extractMonthFormat(dashDate);
 		if (!monthProps) return null;
+
+		if (monthProps.year >= 1800) {
+			const endDay = new Date(Date.UTC(monthProps.year, monthProps.month, 0)).getUTCDate();
+			const endDate = gregorianToDate(monthProps.year, monthProps.month, endDay);
+			return dateToDash(endDate, dateFormat);
+		}
 
 		const day = jalaliMonthLength(monthProps.year, monthProps.month);
 
