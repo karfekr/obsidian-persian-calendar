@@ -2,7 +2,14 @@ import { TFile } from "obsidian";
 import { Notice } from "src/components";
 import { getDirection, t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
-import type { TBuildContext, TDateFormat, TSuggestProvider } from "src/types";
+import NotePathBuilder from "src/services/NotePathBuilder";
+import type {
+	TBuildContext,
+	TDateEngineContext,
+	TDateFormat,
+	TJalali,
+	TSuggestProvider,
+} from "src/types";
 import {
 	dashToDate,
 	dashToEndDayOfJMonthDash,
@@ -23,8 +30,12 @@ import {
 	dateToJWeekDash,
 	dateToJYearDash,
 	dateToSeasonDash,
+	gregorianDashToDate,
 } from "src/utils/dashUtils";
+import { parsePattern } from "src/utils/dateEngine";
 import {
+	checkKabiseh,
+	checkValidJalali,
 	dateToDayOfMonth,
 	dateToDaysPassedJMonth,
 	dateToDaysPassedJYear,
@@ -32,13 +43,21 @@ import {
 	dateToDaysRemainingJMonth,
 	dateToDaysRemainingJYear,
 	dateToDaysRemainingSeason,
+	dateToEndDayOfJMonthDate,
+	dateToEndDayOfSeasonDate,
+	dateToJalali,
 	dateToMonthName,
 	dateToSeasonName,
+	dateToStartDayOfJMonthDate,
+	dateToStartDayOfSeasonDate,
 	dateToWeekdayName,
+	getWeekStartCalculator,
+	gregorianToJalali,
+	jalaliToDate,
 	todayTehran,
 } from "src/utils/dateUtils";
 import { dashToEvents, dateToEvents, eventsToString } from "src/utils/eventUtils";
-import { extractYearFormat } from "src/utils/formatters";
+import { extractYearFormat, toDayFormat } from "src/utils/formatters";
 
 export default class Placeholder {
 	plugin: PersianCalendarPlugin;
@@ -91,7 +110,7 @@ export default class Placeholder {
 		return pattern;
 	}
 
-	private processPlaceholders(file: TFile, content: string): string {
+	public processPlaceholders(file: TFile, content: string): string {
 		const context = this.buildContext(file);
 
 		let result = content;
@@ -104,19 +123,138 @@ export default class Placeholder {
 		return result;
 	}
 
-	private buildContext(file: TFile): TBuildContext {
+	private resolveJalaliFromContext(ctx: TDateEngineContext): TJalali | null {
+		if (this.plugin.noteService) {
+			return this.plugin.noteService.resolveJalaliFromContext(ctx);
+		}
+		if (ctx.jy !== undefined && ctx.jm !== undefined && ctx.jd !== undefined) {
+			if (!checkValidJalali(ctx.jy, ctx.jm, ctx.jd)) return null;
+			return { jy: ctx.jy, jm: ctx.jm, jd: ctx.jd };
+		}
+		if (ctx.gy !== undefined && ctx.gm !== undefined && ctx.gd !== undefined) {
+			try {
+				return gregorianToJalali(ctx.gy, ctx.gm, ctx.gd);
+			} catch {
+				return null;
+			}
+		}
+		return null;
+	}
+
+	public resolveNoteDate(file: TFile): Date | null {
+		try {
+			if (this.plugin.noteService) {
+				const dailyDate = this.plugin.noteService.getDailyNoteDate(file);
+				if (dailyDate) {
+					return jalaliToDate(dailyDate.jy, dailyDate.jm, dailyDate.jd);
+				}
+			}
+
+			const pathBuilder = new NotePathBuilder(this.plugin);
+			const detectionPattern = pathBuilder.buildDetectionPattern();
+			if (detectionPattern && file.path) {
+				const parsed = parsePattern(detectionPattern, file.path);
+				if (parsed) {
+					const jDate = this.resolveJalaliFromContext(parsed);
+					if (jDate) {
+						return jalaliToDate(jDate.jy, jDate.jm, jDate.jd);
+					}
+				}
+			}
+
+			const dailyNoteFormat = this.plugin.setting.dailyNoteFormat;
+			if (dailyNoteFormat && file.basename) {
+				const parsed = parsePattern(dailyNoteFormat, file.basename);
+				if (parsed) {
+					const jDate = this.resolveJalaliFromContext(parsed);
+					if (jDate) {
+						return jalaliToDate(jDate.jy, jDate.jm, jDate.jd);
+					}
+				}
+			}
+
+			if (file.basename) {
+				const match = file.basename.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/);
+				if (match) {
+					const y = Number(match[1]);
+					const m = Number(match[2]);
+					const d = Number(match[3]);
+					const padded = `${match[1]}-${match[2].padStart(2, "0")}-${match[3].padStart(2, "0")}`;
+					if (y >= 1800 && y <= 2200) {
+						return gregorianDashToDate(padded);
+					}
+					if (y >= 1200 && y < 1700 && checkValidJalali(y, m, d)) {
+						return jalaliToDate(y, m, d);
+					}
+					if (this.plugin.setting.dateFormat === "jalali" && checkValidJalali(y, m, d)) {
+						return jalaliToDate(y, m, d);
+					}
+					return gregorianDashToDate(padded);
+				}
+
+				const inTextMatch = file.basename.match(/\b(\d{4})-(\d{2})-(\d{2})\b/);
+				if (inTextMatch) {
+					const y = Number(inTextMatch[1]);
+					const m = Number(inTextMatch[2]);
+					const d = Number(inTextMatch[3]);
+					if (y >= 1800 && y <= 2200) {
+						return gregorianDashToDate(inTextMatch[0]);
+					}
+					if (y >= 1200 && y < 1700 && checkValidJalali(y, m, d)) {
+						return jalaliToDate(y, m, d);
+					}
+				}
+
+				const fromDash = dashToDate(file.basename, this.plugin.setting.dateFormat);
+				if (fromDash) return fromDash;
+			}
+
+			return null;
+		} catch {
+			return null;
+		}
+	}
+
+	public buildContext(file: TFile): TBuildContext {
 		const fileName = file.basename;
 		const baseDate = this.plugin.setting.dateFormat;
 
 		return {
 			currentDate: todayTehran(),
-			fileDate: dashToDate(fileName, baseDate),
+			fileDate: this.resolveNoteDate(file),
 			fileName,
 			baseDate,
 		};
 	}
 
-	private getPlaceholderMap({
+	private getStartOfWeekDash(date: Date, dateFormat: TDateFormat): string {
+		const calculator = getWeekStartCalculator(this.plugin.setting.weekCalculation);
+		const { jy: jYear, weekNumber } = calculator.getWeekNumber(date, "sat");
+		const { jy, jm, jd, gy, gm, gd } = calculator.getStartOfWeek(jYear, weekNumber, "sat");
+		return dateFormat === "jalali" ? toDayFormat(jy, jm, jd) : toDayFormat(gy, gm, gd);
+	}
+
+	private getEndOfWeekDash(date: Date, dateFormat: TDateFormat): string {
+		const calculator = getWeekStartCalculator(this.plugin.setting.weekCalculation);
+		const { jy: jYear, weekNumber } = calculator.getWeekNumber(date, "sat");
+		const { jy, jm, jd, gy, gm, gd } = calculator.getEndOfWeek(jYear, weekNumber, "sat");
+		return dateFormat === "jalali" ? toDayFormat(jy, jm, jd) : toDayFormat(gy, gm, gd);
+	}
+
+	private getStartOfYearDash(date: Date, dateFormat: TDateFormat): string {
+		const { jy } = dateToJalali(date);
+		const startDate = jalaliToDate(jy, 1, 1);
+		return dateToDash(startDate, dateFormat) ?? "";
+	}
+
+	private getEndOfYearDash(date: Date, dateFormat: TDateFormat): string {
+		const { jy } = dateToJalali(date);
+		const endDay = checkKabiseh(jy) ? 30 : 29;
+		const endDate = jalaliToDate(jy, 12, endDay);
+		return dateToDash(endDate, dateFormat) ?? "";
+	}
+
+	public getPlaceholderMap({
 		currentDate,
 		fileName,
 		fileDate,
@@ -150,19 +288,36 @@ export default class Placeholder {
 			["{{تاریخ میلادی یادداشت}}", fromFile((d) => dateToDash(d, "gregorian"))],
 			["{{تاریخ قمری یادداشت}}", fromFile((d) => dateToDash(d, "hijri"))],
 			["{{روز هفته یادداشت}}", fromFile(dateToWeekdayName)],
-			["{{نام ماه یادداشت}}", dashToJMonthName(fileName, baseDate)],
+			[
+				"{{نام ماه یادداشت}}",
+				fileDate ? dateToMonthName(fileDate) : dashToJMonthName(fileName, baseDate),
+			],
 			["{{روز ماه یادداشت}}", fromFile(dateToDayOfMonth)],
-			["{{ماه یادداشت}}", dashToJMonthDash(fileName, baseDate)],
-			["{{نام فصل یادداشت}}", dashToSeasonName(fileName, baseDate)],
-			["{{فصل یادداشت}}", dashToSeasonDash(fileName, baseDate)],
+			[
+				"{{ماه یادداشت}}",
+				fileDate ? dateToJMonthDash(fileDate) : dashToJMonthDash(fileName, baseDate),
+			],
+			[
+				"{{نام فصل یادداشت}}",
+				fileDate ? dateToSeasonName(fileDate) : dashToSeasonName(fileName, baseDate),
+			],
+			[
+				"{{فصل یادداشت}}",
+				fileDate ? dateToSeasonDash(fileDate) : dashToSeasonDash(fileName, baseDate),
+			],
 			["{{سال یادداشت}}", fileDate ? dateToJYearDash(fileDate) : extractYearFormat(fileName)],
 			[
 				"{{مناسبت یادداشت}}",
 				eventsToString(
-					dashToEvents(fileName, baseDate, {
-						showEvents: this.plugin.setting,
-						hijriBase: this.plugin.setting.hijriBase,
-					}),
+					fileDate
+						? dateToEvents(fileDate, {
+								showEvents: this.plugin.setting,
+								hijriBase: this.plugin.setting.hijriBase,
+							})
+						: dashToEvents(fileName, baseDate, {
+								showEvents: this.plugin.setting,
+								hijriBase: this.plugin.setting.hijriBase,
+							}),
 				),
 			],
 
@@ -175,15 +330,19 @@ export default class Placeholder {
 
 			[
 				"{{اول هفته}}",
-				dashToStartDayOfWeekDash(fileName, baseDate, {
-					mode: this.plugin.setting.weekCalculation,
-				}),
+				fileDate
+					? this.getStartOfWeekDash(fileDate, baseDate)
+					: dashToStartDayOfWeekDash(fileName, baseDate, {
+							mode: this.plugin.setting.weekCalculation,
+						}),
 			],
 			[
 				"{{آخر هفته}}",
-				dashToEndDayOfWeekDash(fileName, baseDate, {
-					mode: this.plugin.setting.weekCalculation,
-				}),
+				fileDate
+					? this.getEndOfWeekDash(fileDate, baseDate)
+					: dashToEndDayOfWeekDash(fileName, baseDate, {
+							mode: this.plugin.setting.weekCalculation,
+						}),
 			],
 			[
 				"{{هفته جاری}}",
@@ -191,15 +350,47 @@ export default class Placeholder {
 			],
 			[
 				"{{هفته یادداشت}}",
-				dashToJWeekDash(fileName, baseDate, { mode: this.plugin.setting.weekCalculation }),
+				fileDate
+					? dateToJWeekDash(fileDate, undefined, { mode: this.plugin.setting.weekCalculation })
+					: dashToJWeekDash(fileName, baseDate, { mode: this.plugin.setting.weekCalculation }),
 			],
 
-			["{{اول سال}}", dashToStartDayOfYearDash(fileName, baseDate)],
-			["{{آخر سال}}", dashToEndDayOfYearDash(fileName, baseDate)],
-			["{{اول ماه}}", dashToStartDayOfJMonthDash(fileName, baseDate)],
-			["{{آخر ماه}}", dashToEndDayOfJMonthDash(fileName, baseDate)],
-			["{{اول فصل}}", dashToStartDayOfSeasonDash(fileName, baseDate)],
-			["{{آخر فصل}}", dashToEndDayOfSeasonDash(fileName, baseDate)],
+			[
+				"{{اول سال}}",
+				fileDate
+					? this.getStartOfYearDash(fileDate, baseDate)
+					: dashToStartDayOfYearDash(fileName, baseDate),
+			],
+			[
+				"{{آخر سال}}",
+				fileDate
+					? this.getEndOfYearDash(fileDate, baseDate)
+					: dashToEndDayOfYearDash(fileName, baseDate),
+			],
+			[
+				"{{اول ماه}}",
+				fileDate
+					? dateToDash(dateToStartDayOfJMonthDate(fileDate), baseDate)
+					: dashToStartDayOfJMonthDash(fileName, baseDate),
+			],
+			[
+				"{{آخر ماه}}",
+				fileDate
+					? dateToDash(dateToEndDayOfJMonthDate(fileDate), baseDate)
+					: dashToEndDayOfJMonthDash(fileName, baseDate),
+			],
+			[
+				"{{اول فصل}}",
+				fileDate
+					? dateToDash(dateToStartDayOfSeasonDate(fileDate), baseDate)
+					: dashToStartDayOfSeasonDash(fileName, baseDate),
+			],
+			[
+				"{{آخر فصل}}",
+				fileDate
+					? dateToDash(dateToEndDayOfSeasonDate(fileDate), baseDate)
+					: dashToEndDayOfSeasonDash(fileName, baseDate),
+			],
 		]);
 	}
 

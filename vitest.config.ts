@@ -9,6 +9,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			src: path.resolve(__dirname, "./src"),
+			obsidian: path.resolve(__dirname, "./tests/__mocks__/obsidian.ts"),
 		},
 	},
 });

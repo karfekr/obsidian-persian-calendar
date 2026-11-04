@@ -3,6 +3,23 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.10.0",
+		changes: {
+			fa: [
+				"رفع مشکل جایگزین نشدن عبارات معنایی مرتبط با تاریخ یادداشت در قالب یادداشت‌های روزانه.",
+				"رفع مشکل تشخیص نادرست تاریخ یادداشت هنگام تفاوت تقویم نام فایل با تقویم عبارات معنایی.",
+				"بهبود تشخیص تاریخ یادداشت در مسیرها و فرمت‌های نام‌گذاری سفارشی.",
+				"بهبود اعتبارسنجی و تبدیل تاریخ‌های شمسی و میلادی.",
+			],
+			en: [
+				"Fixed unresolved note-date placeholders in daily note templates.",
+				"Fixed incorrect note-date parsing when the filename calendar differs from the semantic expressions calendar.",
+				"Improved note-date detection for custom paths and filename formats.",
+				"Improved Jalali and Gregorian date validation and conversion.",
+			],
+		},
+	},
+	{
 		version: "4.9.8",
 		changes: {
 			fa: [

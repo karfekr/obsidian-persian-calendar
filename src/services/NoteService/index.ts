@@ -33,7 +33,7 @@ export default class NoteService {
 		return date;
 	}
 
-	private resolveJalaliFromContext(ctx: TDateEngineContext): TJalali | null {
+	public resolveJalaliFromContext(ctx: TDateEngineContext): TJalali | null {
 		if (ctx.jy !== undefined && ctx.jm !== undefined && ctx.jd !== undefined) {
 			return { jy: ctx.jy, jm: ctx.jm, jd: ctx.jd };
 		}
