@@ -44,6 +44,18 @@ export function getNameSettings(): SettingDefinitionItem[] {
 					},
 				},
 				{
+					name: t("setting.naming.weeklyPathMonth.name"),
+					desc: t("setting.naming.weeklyPathMonth.desc"),
+					control: {
+						type: "dropdown",
+						key: "weeklyPathMonth",
+						options: {
+							start: t("setting.naming.weeklyPathMonth.options.start"),
+							end: t("setting.naming.weeklyPathMonth.options.end"),
+						},
+					},
+				},
+				{
 					name: t("setting.naming.monthly.name"),
 					desc: t("setting.naming.monthly.desc"),
 					control: {

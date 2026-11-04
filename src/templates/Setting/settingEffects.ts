@@ -27,6 +27,7 @@ const SETTING_EFFECTS: Partial<Record<keyof TSetting, EffectKind>> = {
 
 	dailyNoteFormat: "refresh-debounced",
 	weekCalculation: "refresh-immediate",
+	weeklyPathMonth: "refresh-immediate",
 	monthlyNoteNaming: "refresh-immediate",
 	yearlyNoteNaming: "refresh-immediate",
 
