@@ -10,6 +10,7 @@ import type {
 	TJalali,
 	TSuggestProvider,
 } from "src/types";
+import { getMoonScorpioNoteText } from "src/utils/astronomy";
 import {
 	dashToDate,
 	dashToEndDayOfJMonthDash,
@@ -284,6 +285,23 @@ export default class Placeholder {
 				),
 			],
 
+			[
+				"{{قمر در عقرب جاری}}",
+				getMoonScorpioNoteText(
+					currentDate,
+					this.plugin.setting.scorpioCalculationMethod ?? "both",
+					this.plugin.setting.language,
+				),
+			],
+			[
+				"{{Moon in Scorpio Current}}",
+				getMoonScorpioNoteText(
+					currentDate,
+					this.plugin.setting.scorpioCalculationMethod ?? "both",
+					"en",
+				),
+			],
+
 			["{{تاریخ شمسی یادداشت}}", fromFile((d) => dateToDash(d, "jalali"))],
 			["{{تاریخ میلادی یادداشت}}", fromFile((d) => dateToDash(d, "gregorian"))],
 			["{{تاریخ قمری یادداشت}}", fromFile((d) => dateToDash(d, "hijri"))],
@@ -318,6 +336,23 @@ export default class Placeholder {
 								showEvents: this.plugin.setting,
 								hijriBase: this.plugin.setting.hijriBase,
 							}),
+				),
+			],
+
+			[
+				"{{قمر در عقرب یادداشت}}",
+				fromFile((d) =>
+					getMoonScorpioNoteText(
+						d,
+						this.plugin.setting.scorpioCalculationMethod ?? "both",
+						this.plugin.setting.language,
+					),
+				),
+			],
+			[
+				"{{Moon in Scorpio Note}}",
+				fromFile((d) =>
+					getMoonScorpioNoteText(d, this.plugin.setting.scorpioCalculationMethod ?? "both", "en"),
 				),
 			],
 

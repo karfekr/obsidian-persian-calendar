@@ -4,7 +4,7 @@ import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { getDirection, t } from "src/languages";
 import type { NoteService } from "src/services";
 import type CalendarState from "src/templates/CalendarView/CalendarState";
-import type { TLocale, TSetting } from "src/types";
+import type { TLocale, TMoonScorpioDayInfo, TSetting } from "src/types";
 import { jalaliToSeason } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 import { toArNumber, toFaNumber } from "src/utils/formatters";
@@ -150,14 +150,24 @@ export default class CalendarBodyRender {
 
 		const cells = this.gridService.buildMonthGrid(jy, jm);
 
-		const attachTooltipListeners = (dayEl: HTMLElement, date: Date) => {
+		const attachTooltipListeners = (
+			dayEl: HTMLElement,
+			date: Date,
+			scorpioInfo?: TMoonScorpioDayInfo,
+		) => {
 			const handler = (e: MouseEvent | TouchEvent) => {
 				const events = dateToEvents(date, {
 					showEvents: this.setting,
 					hijriBase: this.setting.hijriBase,
 				});
-				if (events.length > 0) {
-					this.tooltip.showTooltip(e, events, this.setting.language);
+				const hasScorpio = Boolean(this.setting.showMoonInScorpio && scorpioInfo?.isScorpio);
+				if (events.length > 0 || hasScorpio) {
+					this.tooltip.showTooltip(
+						e,
+						events,
+						this.setting.language,
+						hasScorpio ? scorpioInfo : undefined,
+					);
 				}
 			};
 
@@ -263,6 +273,15 @@ export default class CalendarBodyRender {
 					});
 			}
 
+			if (cell.isInCurrentMonth && cell.isMoonInScorpio && this.setting.showMoonInScorpio) {
+				dayEl.addClass("persian-calendar__day--scorpio");
+				const badgeEl = dayEl.createDiv({
+					cls: "persian-calendar__scorpio-badge",
+					text: "🦂",
+				});
+				badgeEl.setAttribute("title", t("scorpioTooltip.title"));
+			}
+
 			dayEl.addClass("persian-calendar__day-grid");
 
 			dayEl.setAttribute("data-day", cell.jd.toString());
@@ -282,7 +301,7 @@ export default class CalendarBodyRender {
 			});
 
 			if (cell.isInCurrentMonth) {
-				attachTooltipListeners(dayEl, cell.date);
+				attachTooltipListeners(dayEl, cell.date, cell.moonInScorpioInfo);
 			}
 		}
 	}

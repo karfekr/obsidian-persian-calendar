@@ -29,7 +29,8 @@
 			"templates": "Calendar Note Templates",
 			"extraCalendars": "Additional Calendars",
 			"holidays": "Holiday Display",
-			"events": "Event Display"
+			"events": "Event Display",
+			"scorpio": "Moon in Scorpio"
 		},
 		"general": {
 			"language": {
@@ -215,6 +216,25 @@
 			"sunni": {
 				"name": "Show Sunni Events"
 			}
+		},
+		"scorpio": {
+			"enable": {
+				"name": "Show Moon in Scorpio",
+				"description": "Display a 🦂 badge on Moon in Scorpio days, exact entry/exit hours in tooltips, and note template placeholders."
+			},
+			"method": {
+				"name": "Calculation Method",
+				"description": "Select astronomical and traditional basis for Moon in Scorpio position",
+				"options": {
+					"both": "Combined (Sign & Constellation - Cautionary)",
+					"constellation": "Constellation Scorpius (Sidereal / Astronomical)",
+					"sign": "Scorpio Zodiac Sign (Tropical)"
+				}
+			},
+			"info": {
+				"title": "Traditional Guidance & Reasons for Caution",
+				"description": "According to traditional lore and astrological consensus, major undertakings are discouraged during Moon in Scorpio: 1. Marriage vows & weddings 2. Commencing major travels 3. Signing major contracts and deals 4. Conception 5. Non-urgent major surgery. Giving charity (Sadaqah) and prayers are advised if actions cannot be postponed."
+			}
 		}
 	},
 	"modal": {
@@ -248,5 +268,20 @@
 			"tokenLabel": "Unresolvable pattern:",
 			"hint": "Go to the plugin settings and check your note path patterns."
 		}
+	},
+	"scorpioTooltip": {
+		"title": "Moon in Scorpio",
+		"allDay": "Moon in Scorpio (All Day)",
+		"entering": "Moon enters Scorpio at {time}",
+		"exiting": "Moon exits Scorpio until {time}",
+		"enteringAndExiting": "Enters at {entryTime} | Exits at {exitTime}",
+		"cautionsTitle": "Traditional cautions:",
+		"cautions": [
+			"Marriage & weddings",
+			"Commencing long journeys",
+			"Signing major contracts",
+			"Elective surgeries"
+		],
+		"recommendation": "If action is necessary, giving charity (Sadaqah) is recommended to avert misfortune."
 	}
 }

@@ -37,6 +37,29 @@ export type TGetGregorianDayOfWeek = {
 
 export type TDateFormat = "jalali" | "gregorian" | "hijri";
 export type THijriBase = "iran" | "umalqura";
+export type TScorpioCalculationMethod = "both" | "constellation" | "sign";
+
+export type TMoonScorpioDayInfo = {
+	isScorpio: boolean;
+	isAllDay: boolean;
+	isEntering: boolean;
+	isExiting: boolean;
+	entryTime?: string;
+	exitTime?: string;
+	method: TScorpioCalculationMethod;
+	summary: {
+		fa: string;
+		en: string;
+	};
+	cautions: {
+		fa: string[];
+		en: string[];
+	};
+	recommendations: {
+		fa: string[];
+		en: string[];
+	};
+};
 
 export type TDateFormatWithoutHijri = Exclude<TDateFormat, "hijri">;
 
@@ -116,6 +139,9 @@ export type TSetting = {
 	showShiaEvents: boolean;
 	showSunniEvents: boolean;
 	showGlobalEvents: boolean;
+	// moon in scorpio
+	showMoonInScorpio: boolean;
+	scorpioCalculationMethod: TScorpioCalculationMethod;
 };
 
 //? Utility type that extracts the keys of TSetting whose values are assignable to V.
@@ -143,6 +169,8 @@ export type TMonthGridCell = TJalali & {
 	isToday: boolean;
 	isWeekend: boolean;
 	isHolidayInIran: boolean;
+	isMoonInScorpio?: boolean;
+	moonInScorpioInfo?: TMoonScorpioDayInfo;
 };
 
 export type TSuggestProvider = {

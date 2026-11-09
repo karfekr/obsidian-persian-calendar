@@ -9,6 +9,7 @@ import { getGeneralSettings } from "./sections/GeneralSection";
 import { getHolidaySettings } from "./sections/HolidaySection";
 import { getNameSettings } from "./sections/NameSection";
 import { getPathSettings } from "./sections/PathSection";
+import { getScorpioSettings } from "./sections/ScorpioSection";
 import { getTemplateSettings } from "./sections/TemplateSection";
 import { createSettingChangeHandler, getNestedValue } from "./settingEffects";
 
@@ -67,6 +68,7 @@ export default class CalendarSettingTab extends PluginSettingTab {
 			...getNameSettings(),
 			...getTemplateSettings(),
 			...getExtraCalendarSettings(),
+			...getScorpioSettings(),
 			...getHolidaySettings(),
 			...getEventSettings(),
 		];

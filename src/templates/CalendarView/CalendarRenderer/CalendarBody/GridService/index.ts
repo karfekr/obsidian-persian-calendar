@@ -1,5 +1,6 @@
 import type CalendarState from "src/templates/CalendarView/CalendarState";
-import type { TMonthGridCell, TSetting, TWeekDays } from "src/types";
+import type { TMonthGridCell, TMoonScorpioDayInfo, TSetting, TWeekDays } from "src/types";
+import { getMoonScorpioDayInfo } from "src/utils/astronomy";
 import {
 	dateToJalali,
 	jalaliMonthLength,
@@ -138,6 +139,19 @@ export default class GridService {
 				}
 			}
 
+			let isMoonInScorpio = false;
+			let moonInScorpioInfo: TMoonScorpioDayInfo | undefined;
+
+			if (this.setting.showMoonInScorpio) {
+				const scorpioInfo = getMoonScorpioDayInfo(
+					date,
+					this.setting.scorpioCalculationMethod ?? "both",
+				);
+				if (scorpioInfo.isScorpio) {
+					isMoonInScorpio = true;
+					moonInScorpioInfo = scorpioInfo;
+				}
+			}
 			const today = dateToJalali(todayTehran());
 			const isToday = isInCurrentMonth && today.jy === jy && today.jm === jm && today.jd === cellJd;
 
@@ -158,6 +172,8 @@ export default class GridService {
 				date,
 				gregorian,
 				hijri,
+				isMoonInScorpio,
+				moonInScorpioInfo,
 			});
 		}
 

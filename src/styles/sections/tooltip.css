@@ -39,3 +39,49 @@
 .persian-calendar__tooltip-event:last-child {
 	border-bottom: none;
 }
+
+.persian-calendar__tooltip-scorpio {
+	margin-top: 6px;
+	padding-top: 6px;
+	border-top: 1px solid var(--persian-calendar-color-base-1);
+}
+
+.persian-calendar__tooltip-scorpio-header {
+	font-weight: 600;
+	color: var(--color-red, #e57373);
+	margin-bottom: 2px;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.persian-calendar__tooltip-scorpio-time {
+	font-weight: 500;
+	font-size: 11.5px;
+	margin-bottom: 4px;
+	color: var(--color-base-100);
+}
+
+.persian-calendar__tooltip-scorpio-cautions-title {
+	font-size: 11px;
+	font-weight: 600;
+	opacity: 0.85;
+	margin-top: 4px;
+}
+
+.persian-calendar__tooltip-scorpio-caution-item {
+	font-size: 11px;
+	opacity: 0.8;
+	padding-inline-start: 4px;
+	line-height: 1.4;
+}
+
+.persian-calendar__tooltip-scorpio-recommendation {
+	font-size: 10.5px;
+	margin-top: 5px;
+	padding: 3px 5px;
+	background-color: color-mix(in srgb, var(--color-base-40) 30%, transparent);
+	border-radius: 4px;
+	opacity: 0.9;
+	line-height: 1.35;
+}

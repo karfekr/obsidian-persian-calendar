@@ -1,6 +1,8 @@
 import { Platform } from "obsidian";
 import type { EventType } from "persian-holidays";
-import type { TLocale } from "src/types";
+import { t } from "src/languages";
+import type { TLocale, TMoonScorpioDayInfo } from "src/types";
+import { toFaNumber } from "src/utils/formatters";
 
 export default class Tooltip {
 	private tooltipWrapperSelector = ".persian-calendar--tooltip-wrapper";
@@ -34,7 +36,12 @@ export default class Tooltip {
 		return { wrapper, tooltip };
 	}
 
-	public showTooltip(e: MouseEvent | TouchEvent, events: EventType[], local: TLocale): void {
+	public showTooltip(
+		e: MouseEvent | TouchEvent,
+		events: EventType[],
+		local: TLocale,
+		scorpioInfo?: TMoonScorpioDayInfo,
+	): void {
 		const { tooltip } = this.getOrCreateTooltip(local);
 
 		tooltip.replaceChildren();
@@ -49,6 +56,66 @@ export default class Tooltip {
 			tooltip.createDiv({
 				cls,
 				text: event.title[local],
+			});
+		}
+
+		if (scorpioInfo?.isScorpio) {
+			const scorpioEl = tooltip.createDiv({
+				cls: "persian-calendar__tooltip-scorpio",
+			});
+
+			const headerEl = scorpioEl.createDiv({
+				cls: "persian-calendar__tooltip-scorpio-header",
+			});
+			headerEl.createSpan({
+				cls: "persian-calendar__tooltip-scorpio-icon",
+				text: "🦂 ",
+			});
+			headerEl.createSpan({
+				cls: "persian-calendar__tooltip-scorpio-title",
+				text: t("scorpioTooltip.title"),
+			});
+
+			let timeText = t("scorpioTooltip.allDay");
+			if (scorpioInfo.isEntering && scorpioInfo.isExiting) {
+				const entry =
+					local === "fa" ? toFaNumber(scorpioInfo.entryTime ?? "") : (scorpioInfo.entryTime ?? "");
+				const exit =
+					local === "fa" ? toFaNumber(scorpioInfo.exitTime ?? "") : (scorpioInfo.exitTime ?? "");
+				timeText = t("scorpioTooltip.enteringAndExiting")
+					.replace("{entryTime}", entry)
+					.replace("{exitTime}", exit);
+			} else if (scorpioInfo.isEntering) {
+				const entry =
+					local === "fa" ? toFaNumber(scorpioInfo.entryTime ?? "") : (scorpioInfo.entryTime ?? "");
+				timeText = t("scorpioTooltip.entering").replace("{time}", entry);
+			} else if (scorpioInfo.isExiting) {
+				const exit =
+					local === "fa" ? toFaNumber(scorpioInfo.exitTime ?? "") : (scorpioInfo.exitTime ?? "");
+				timeText = t("scorpioTooltip.exiting").replace("{time}", exit);
+			}
+
+			scorpioEl.createDiv({
+				cls: "persian-calendar__tooltip-scorpio-time",
+				text: timeText,
+			});
+
+			scorpioEl.createDiv({
+				cls: "persian-calendar__tooltip-scorpio-cautions-title",
+				text: t("scorpioTooltip.cautionsTitle"),
+			});
+
+			const cautions = scorpioInfo.cautions[local] ?? [];
+			for (const caution of cautions) {
+				scorpioEl.createDiv({
+					cls: "persian-calendar__tooltip-scorpio-caution-item",
+					text: `• ${caution}`,
+				});
+			}
+
+			scorpioEl.createDiv({
+				cls: "persian-calendar__tooltip-scorpio-recommendation",
+				text: `💡 ${t("scorpioTooltip.recommendation")}`,
 			});
 		}
 
