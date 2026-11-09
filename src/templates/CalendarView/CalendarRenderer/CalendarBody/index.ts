@@ -273,15 +273,6 @@ export default class CalendarBodyRender {
 					});
 			}
 
-			if (cell.isInCurrentMonth && cell.isMoonInScorpio && this.setting.showMoonInScorpio) {
-				dayEl.addClass("persian-calendar__day--scorpio");
-				const badgeEl = dayEl.createDiv({
-					cls: "persian-calendar__scorpio-badge",
-					text: "🦂",
-				});
-				badgeEl.setAttribute("title", t("scorpioTooltip.title"));
-			}
-
 			dayEl.addClass("persian-calendar__day-grid");
 
 			dayEl.setAttribute("data-day", cell.jd.toString());

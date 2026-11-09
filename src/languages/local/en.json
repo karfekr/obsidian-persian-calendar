@@ -220,7 +220,7 @@
 		"scorpio": {
 			"enable": {
 				"name": "Show Moon in Scorpio",
-				"description": "Display a 🦂 badge on Moon in Scorpio days, exact entry/exit hours in tooltips, and note template placeholders."
+				"description": "Display Moon in Scorpio entry/exit status in tooltips and note placeholders."
 			},
 			"method": {
 				"name": "Calculation Method",

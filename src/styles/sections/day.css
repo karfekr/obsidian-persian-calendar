@@ -114,15 +114,3 @@
 .persian-calendar__hijri-day--corner {
 	right: 5%;
 }
-
-.persian-calendar__scorpio-badge {
-	position: absolute;
-	top: 2px;
-	left: 3px;
-	font-size: 10px;
-	line-height: 1;
-	opacity: 0.9;
-	pointer-events: none;
-	user-select: none;
-	z-index: 2;
-}

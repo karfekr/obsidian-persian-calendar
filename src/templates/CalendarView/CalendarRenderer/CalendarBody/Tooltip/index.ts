@@ -64,18 +64,6 @@ export default class Tooltip {
 				cls: "persian-calendar__tooltip-scorpio",
 			});
 
-			const headerEl = scorpioEl.createDiv({
-				cls: "persian-calendar__tooltip-scorpio-header",
-			});
-			headerEl.createSpan({
-				cls: "persian-calendar__tooltip-scorpio-icon",
-				text: "🦂 ",
-			});
-			headerEl.createSpan({
-				cls: "persian-calendar__tooltip-scorpio-title",
-				text: t("scorpioTooltip.title"),
-			});
-
 			let timeText = t("scorpioTooltip.allDay");
 			if (scorpioInfo.isEntering && scorpioInfo.isExiting) {
 				const entry =
@@ -97,25 +85,7 @@ export default class Tooltip {
 
 			scorpioEl.createDiv({
 				cls: "persian-calendar__tooltip-scorpio-time",
-				text: timeText,
-			});
-
-			scorpioEl.createDiv({
-				cls: "persian-calendar__tooltip-scorpio-cautions-title",
-				text: t("scorpioTooltip.cautionsTitle"),
-			});
-
-			const cautions = scorpioInfo.cautions[local] ?? [];
-			for (const caution of cautions) {
-				scorpioEl.createDiv({
-					cls: "persian-calendar__tooltip-scorpio-caution-item",
-					text: `• ${caution}`,
-				});
-			}
-
-			scorpioEl.createDiv({
-				cls: "persian-calendar__tooltip-scorpio-recommendation",
-				text: `💡 ${t("scorpioTooltip.recommendation")}`,
+				text: `🦂 ${timeText}`,
 			});
 		}
 
