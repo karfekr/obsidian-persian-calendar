@@ -222,6 +222,10 @@
 			"cancelBtn": "انصراف",
 			"confirmBtn": "تایید"
 		},
+		"deleteDailyNote": {
+			"title": "حذف روزنوشت",
+			"message": "روزنوشت \u202A{date}\u202C حذف شود؟"
+		},
 		"datePicker": {
 			"tooltip": "انتخاب تاریخ به هجری شمسی",
 			"jalali": "شمسی",
@@ -231,7 +235,8 @@
 	"notice": {
 		"error": {
 			"dailyNotesUnavailable": "برای استفاده از این قابلیت، روزنوشت ابسیدین یا قابلیت روزانهٔ افزونهٔ Periodic Notes را فعال و تنظیم کنید.",
-			"dailyNoteCreationFailed": "روزنوشت ابسیدین نتوانست یادداشت روزانه را ایجاد کند. تنظیمات پوشه و قالب آن را بررسی کنید."
+			"dailyNoteCreationFailed": "روزنوشت ابسیدین نتوانست یادداشت روزانه را ایجاد کند. تنظیمات پوشه و قالب آن را بررسی کنید.",
+			"dailyNoteDeleteFailed": "حذف روزنوشت انجام نشد."
 		},
 		"success": {
 			"placeholder": "عبارات معنادار با موفقیت جایگزین شد",
@@ -239,6 +244,9 @@
 		}
 	},
 	"calendarView": {
+		"contextMenu": {
+			"deleteDailyNote": "حذف"
+		},
 		"renderError": {
 			"title": "امکان نمایش درست تقویم وجود ندارد",
 			"patternBody": "یکی از الگوهای مسیردهی پویا قابل تبدیل نبود.",
