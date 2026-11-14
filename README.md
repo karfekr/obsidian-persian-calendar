@@ -71,7 +71,7 @@ You can use dynamic placeholders to customize the paths and filenames of your ca
 | `DD`        | 06       | Two-digit Gregorian day of the month |
 | `D`         | 6        | Gregorian day of the month           |
 | `ww`        | 49       | Two-digit week number                |
-| `w`         | 49       | Week number                           |
+| `w`         | 49       | Week number                          |
 
 </div>
 
@@ -118,14 +118,14 @@ _Only replaced in daily notes._
 
 <div align="center">
 
-| Placeholder                | Sample Output      | Description                        |
-| :------------------------- | :----------------- | :--------------------------------- |
-| `{{تاریخ شمسی یادداشت}}`   | 1404-11-30         | Solar Hijri date of the daily note |
+| Placeholder               | Sample Output      | Description                        |
+| :------------------------ | :----------------- | :--------------------------------- |
+| `{{تاریخ شمسی یادداشت}}`  | 1404-11-30         | Solar Hijri date of the daily note |
 | `{{تاریخ میلادی یادداشت}}` | 2026-02-19         | Gregorian date of the daily note   |
-| `{{تاریخ قمری یادداشت}}`   | 1447-09-01         | Lunar Hijri date of the daily note |
-| `{{روز هفته یادداشت}}`     | پنجشنبه (Thursday) | Name of the day of the week        |
-| `{{روز ماه یادداشت}}`      | 30                 | Day of the month                   |
-| `{{مناسبت یادداشت}}`       | Event text         | Events of the daily note's date    |
+| `{{تاریخ قمری یادداشت}}`  | 1447-09-01         | Lunar Hijri date of the daily note |
+| `{{روز هفته یادداشت}}`    | پنجشنبه (Thursday) | Name of the day of the week        |
+| `{{روز ماه یادداشت}}`     | 30                 | Day of the month                   |
+| `{{مناسبت یادداشت}}`      | Event text         | Events of the daily note's date    |
 
 </div>
 
@@ -193,20 +193,20 @@ _These always return today's date, regardless of the note type._
 
 <div align="center">
 
-| Placeholder             | Sample Output                   | Description                |
-| :---------------------- | :------------------------------ | :------------------------- |
-| `{{تاریخ شمسی جاری}}`   | 1404-11-26                      | Today's Solar Hijri date   |
+| Placeholder            | Sample Output                   | Description                |
+| :--------------------- | :------------------------------ | :------------------------- |
+| `{{تاریخ شمسی جاری}}`  | 1404-11-26                      | Today's Solar Hijri date   |
 | `{{تاریخ میلادی جاری}}` | 2026-02-15                      | Today's Gregorian date     |
-| `{{تاریخ قمری جاری}}`   | 1447-08-26                      | Today's Lunar Hijri date   |
-| `{{روز هفته جاری}}`     | یکشنبه (Sunday)                 | Name of today's weekday    |
-| `{{روز ماه جاری}}`      | 26                              | Today's day of the month   |
-| `{{هفته جاری}}`         | <span dir="ltr">1404-W49</span> | Current week identifier    |
-| `{{نام ماه جاری}}`      | بهمن (Bahman)                   | Name of the current month  |
-| `{{ماه جاری}}`          | 1404-11                         | Current month identifier   |
-| `{{نام فصل جاری}}`      | زمستان (Winter)                 | Name of the current season |
-| `{{فصل جاری}}`          | <span dir="ltr">1404-S4</span>  | Current season identifier  |
-| `{{سال جاری}}`          | 1404                            | Current year               |
-| `{{مناسبت جاری}}`       | Event text                      | Today's events             |
+| `{{تاریخ قمری جاری}}`  | 1447-08-26                      | Today's Lunar Hijri date   |
+| `{{روز هفته جاری}}`    | یکشنبه (Sunday)                 | Name of today's weekday    |
+| `{{روز ماه جاری}}`     | 26                              | Today's day of the month   |
+| `{{هفته جاری}}`        | <span dir="ltr">1404-W49</span> | Current week identifier    |
+| `{{نام ماه جاری}}`     | بهمن (Bahman)                   | Name of the current month  |
+| `{{ماه جاری}}`         | 1404-11                         | Current month identifier   |
+| `{{نام فصل جاری}}`     | زمستان (Winter)                 | Name of the current season |
+| `{{فصل جاری}}`         | <span dir="ltr">1404-S4</span>  | Current season identifier  |
+| `{{سال جاری}}`         | 1404                            | Current year               |
+| `{{مناسبت جاری}}`      | Event text                      | Today's events             |
 
 </div>
 
