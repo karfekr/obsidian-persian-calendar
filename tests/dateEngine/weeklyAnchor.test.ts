@@ -1,6 +1,10 @@
 import NotePathBuilder from "src/services/NotePathBuilder";
 import type { TSetting } from "src/types";
-import { getWeekStartCalculator, gregorianToJalali, jalaliToDate } from "src/utils/dateUtils";
+import {
+	getWeekStartCalculator,
+	gregorianToJalali,
+	jalaliToCalendarDate,
+} from "src/utils/dateUtils";
 
 const makePlugin = (
 	weeklyNotesPath: string,
@@ -19,7 +23,7 @@ describe("Weekly note path resolution", () => {
 	it("resolves Gregorian and Jalali month from the selected anchor", () => {
 		const jalali = gregorianToJalali(2026, 3, 30);
 		const { jy: weekYear, weekNumber } = calculator.getWeekNumber(
-			jalaliToDate(jalali.jy, jalali.jm, jalali.jd),
+			jalaliToCalendarDate(jalali.jy, jalali.jm, jalali.jd),
 		);
 		const start = new NotePathBuilder(makePlugin("YYYY/MMMM/jMM/ww")).buildWeeklyNotePath(
 			weekYear,

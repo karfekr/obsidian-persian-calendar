@@ -3,7 +3,7 @@ import type { TMonthGridCell, TSetting, TWeekDays } from "src/types";
 import {
 	dateToJalali,
 	jalaliMonthLength,
-	jalaliToDate,
+	jalaliToCalendarDate,
 	jalaliToGregorian,
 	jalaliToHijri,
 	todayTehran,
@@ -122,7 +122,7 @@ export default class GridService {
 				firstDayOfWeekIndex,
 			});
 
-			const date = jalaliToDate(cellJy, cellJm, cellJd);
+			const date = jalaliToCalendarDate(cellJy, cellJm, cellJd);
 			const gregorian = jalaliToGregorian(cellJy, cellJm, cellJd);
 			const hijri = jalaliToHijri(cellJy, cellJm, cellJd, { base: this.setting.hijriBase });
 

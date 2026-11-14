@@ -7,7 +7,7 @@ import {
 } from "@internationalized/date";
 import { createIranEstehlal } from "iran-estehlal";
 import type { TGregorian, THijri, THijriBase, TJalali } from "src/types";
-import { dateToGregorian, gregorianToDate, gregorianToJalali, jalaliToGregorian } from "..";
+import { dateToGregorian, gregorianToCalendarDate, gregorianToJalali, jalaliToGregorian } from "..";
 
 const umalqura = createCalendar("islamic-umalqura");
 
@@ -92,7 +92,7 @@ export function hijriToGregorian(
 }
 
 export const dateToHijri = (
-	date: Date,
+	date: CalendarDate,
 	options?: {
 		base?: THijriBase;
 	},
@@ -103,18 +103,18 @@ export const dateToHijri = (
 	return gregorianToHijri(gy, gm, gd, { base });
 };
 
-export const hijriToDate = (
+export const hijriToCalendarDate = (
 	hy: number,
 	hm: number,
 	hd: number,
 	options?: {
 		base?: THijriBase;
 	},
-): Date => {
+): CalendarDate => {
 	const base = options?.base ?? "iran";
 
 	const { gy, gm, gd } = hijriToGregorian(hy, hm, hd, { base });
-	return gregorianToDate(gy, gm, gd);
+	return gregorianToCalendarDate(gy, gm, gd);
 };
 
 export const jalaliToHijri = (

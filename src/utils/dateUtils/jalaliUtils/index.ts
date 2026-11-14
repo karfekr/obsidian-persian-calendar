@@ -7,7 +7,7 @@ import {
 import type { TGetJalaliDayOfWeek, TGregorian, THijriBase, TJalali, TWeekStart } from "src/types";
 
 import {
-	dateToGregorian,
+	calendarDaysBetween,
 	getWeekdayTehran,
 	jalaliMonthName,
 	jalaliToHijri,
@@ -20,23 +20,12 @@ import {
 const persian = new PersianCalendar();
 const gregorian = new GregorianCalendar();
 
-// CD = Calendar-Date in @internationalized/date
-function dateToGregorianCD(date: Date): CalendarDate {
-	const { gy, gm, gd } = dateToGregorian(date);
-	return new CalendarDate(gy, gm, gd);
-}
-
-function calendarDateToUTCDate(cd: CalendarDate): Date {
-	const g = cd.calendar.identifier === "gregory" ? cd : toCalendar(cd, gregorian);
-	return new Date(Date.UTC(g.year, g.month - 1, g.day, 12, 0, 0));
-}
-
-function daysBetween(from: Date, to: Date): number {
-	return Math.round((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
-}
-
-function weekNumber(targetDate: Date, firstDayOfYear: Date, weekStart: TWeekStart): number {
-	const diffInDays = daysBetween(firstDayOfYear, targetDate);
+function weekNumber(
+	targetDate: CalendarDate,
+	firstDayOfYear: CalendarDate,
+	weekStart: TWeekStart,
+): number {
+	const diffInDays = calendarDaysBetween(firstDayOfYear, targetDate);
 	const firstWeekday = getWeekdayTehran(firstDayOfYear);
 	const offset = (firstWeekday - weekStartNumber(weekStart) + 7) % 7;
 	return Math.ceil((diffInDays + offset + 1) / 7);
@@ -60,13 +49,13 @@ export function checkKabiseh(jy: number): boolean {
 	return persian.getDaysInMonth(new CalendarDate(persian, jy, 12, 1)) === 30;
 }
 
-export function dateToJalali(date: Date): TJalali {
-	const jcd = toCalendar(dateToGregorianCD(date), persian);
+export function dateToJalali(date: CalendarDate): TJalali {
+	const jcd = toCalendar(date, persian);
 	return { jy: jcd.year, jm: jcd.month, jd: jcd.day };
 }
 
-export function jalaliToDate(jy: number, jm: number, jd: number): Date {
-	return calendarDateToUTCDate(new CalendarDate(persian, jy, jm, jd));
+export function jalaliToCalendarDate(jy: number, jm: number, jd: number): CalendarDate {
+	return toCalendar(new CalendarDate(persian, jy, jm, jd), gregorian);
 }
 
 export function jalaliToGregorian(jy: number, jm: number, jd: number): TGregorian {
@@ -91,9 +80,12 @@ export function getDaysInJalaliYear(jy: number): number {
 	return totalDays;
 }
 
-export function dateToJWeekNumber(date: Date, weekStart: TWeekStart = "sat"): number {
+export function dateToJWeekNumber(date: CalendarDate, weekStart: TWeekStart = "sat"): number {
 	const { jy } = dateToJalali(date);
-	return weekNumber(date, jalaliToDate(jy, 1, 1), weekStart);
+	const next = jalaliToStartDayOfWeek({ jYear: jy + 1, jWeekNumber: 1 }, weekStart);
+	// Keep the calendar year in note names when the final week rolls over to W1.
+	if (calendarDaysBetween(jalaliToCalendarDate(next.jy, next.jm, next.jd), date) >= 0) return 1;
+	return weekNumber(date, jalaliToCalendarDate(jy, 1, 1), weekStart);
 }
 
 export function jalaliToJWeekNumber(
@@ -102,7 +94,7 @@ export function jalaliToJWeekNumber(
 	jd: number,
 	weekStart: TWeekStart = "sat",
 ): number {
-	return weekNumber(jalaliToDate(jy, jm, jd), jalaliToDate(jy, 1, 1), weekStart);
+	return dateToJWeekNumber(jalaliToCalendarDate(jy, jm, jd), weekStart);
 }
 
 export function jalaliToStartWeek(
@@ -110,7 +102,7 @@ export function jalaliToStartWeek(
 	jWeekNumber: number = 1,
 	weekStart: TWeekStart = "sat",
 ): TJalali & TGregorian {
-	const firstDayOfYear = jalaliToDate(jy, 1, 1);
+	const firstDayOfYear = jalaliToCalendarDate(jy, 1, 1);
 	const firstWeekday = getWeekdayTehran(firstDayOfYear);
 	const offset = (weekStartNumber(weekStart) - firstWeekday + 7) % 7;
 
@@ -152,13 +144,13 @@ export function jalaliToEndWeek(
 
 // occurrence of weekStart in a jalali year belong to the previous year's last week.
 export function jalaliToJWeekNumberFromFirstWeekStart(
-	date: Date,
+	date: CalendarDate,
 	weekStart: TWeekStart = "sat",
 ): { jy: number; weekNumber: number } {
 	const { jy } = dateToJalali(date);
 
 	const { gy, gm, gd } = jalaliToStartWeek(jy, 1, weekStart);
-	const diffInDays = daysBetween(calendarDateToUTCDate(new CalendarDate(gy, gm, gd)), date);
+	const diffInDays = calendarDaysBetween(new CalendarDate(gy, gm, gd), date);
 
 	if (diffInDays >= 0) {
 		return { jy, weekNumber: Math.floor(diffInDays / 7) + 1 };
@@ -166,8 +158,8 @@ export function jalaliToJWeekNumberFromFirstWeekStart(
 
 	const previousYear = jy - 1;
 	const previousStart = jalaliToStartWeek(previousYear, 1, weekStart);
-	const previousDiffInDays = daysBetween(
-		calendarDateToUTCDate(new CalendarDate(previousStart.gy, previousStart.gm, previousStart.gd)),
+	const previousDiffInDays = calendarDaysBetween(
+		new CalendarDate(previousStart.gy, previousStart.gm, previousStart.gd),
 		date,
 	);
 
@@ -181,7 +173,7 @@ export function jalaliToStartDayOfWeek(
 	{ jYear, jWeekNumber }: TGetJalaliDayOfWeek,
 	weekStart: TWeekStart = "sat",
 ): TJalali & TGregorian {
-	const firstDayOfYear = jalaliToDate(jYear, 1, 1);
+	const firstDayOfYear = jalaliToCalendarDate(jYear, 1, 1);
 	const firstDayWeekday = getWeekdayTehran(firstDayOfYear);
 	const weekStartNum = weekStartNumber(weekStart);
 
@@ -224,44 +216,44 @@ export function jalaliToEndDayOfWeek(
 	};
 }
 
-export function dateToMonthName(date: Date) {
+export function dateToMonthName(date: CalendarDate) {
 	const { jm } = dateToJalali(date);
 	return jalaliMonthName(jm);
 }
 
-export function dateToSeasonName(date: Date) {
+export function dateToSeasonName(date: CalendarDate) {
 	const { jm } = dateToJalali(date);
 	return seasonName(jalaliToSeason(jm));
 }
 
-export function dateToStartDayOfJMonthDate(date: Date): Date {
+export function dateToStartDayOfJMonthCalendarDate(date: CalendarDate): CalendarDate {
 	const { jy, jm } = dateToJalali(date);
-	return jalaliToDate(jy, jm, 1);
+	return jalaliToCalendarDate(jy, jm, 1);
 }
 
-export function dateToEndDayOfJMonthDate(date: Date): Date {
+export function dateToEndDayOfJMonthCalendarDate(date: CalendarDate): CalendarDate {
 	const { jy, jm } = dateToJalali(date);
-	return jalaliToDate(jy, jm, jalaliMonthLength(jy, jm));
+	return jalaliToCalendarDate(jy, jm, jalaliMonthLength(jy, jm));
 }
 
-export function dateToStartDayOfSeasonDate(date: Date): Date {
+export function dateToStartDayOfSeasonCalendarDate(date: CalendarDate): CalendarDate {
 	const { jy, jm } = dateToJalali(date);
 	const season = jalaliToSeason(jm);
-	return jalaliToDate(jy, 3 * (season - 1) + 1, 1);
+	return jalaliToCalendarDate(jy, 3 * (season - 1) + 1, 1);
 }
 
-export function dateToEndDayOfSeasonDate(date: Date): Date {
+export function dateToEndDayOfSeasonCalendarDate(date: CalendarDate): CalendarDate {
 	const { jy, jm } = dateToJalali(date);
 	const season = jalaliToSeason(jm);
 	const lastMonthOfSeason = 3 * season;
-	return jalaliToDate(jy, lastMonthOfSeason, jalaliMonthLength(jy, lastMonthOfSeason));
+	return jalaliToCalendarDate(jy, lastMonthOfSeason, jalaliMonthLength(jy, lastMonthOfSeason));
 }
 
-export function dateToDayOfMonth(date: Date): number {
+export function dateToDayOfMonth(date: CalendarDate): number {
 	return dateToJalali(date).jd;
 }
 
-export function dateToDaysPassedJYear(date: Date): number {
+export function dateToDaysPassedJYear(date: CalendarDate): number {
 	const { jy, jm, jd } = dateToJalali(date);
 	let daysPassed = 0;
 	for (let month = 1; month < jm; month++) {
@@ -270,11 +262,11 @@ export function dateToDaysPassedJYear(date: Date): number {
 	return daysPassed + jd;
 }
 
-export function dateToDaysRemainingJYear(date: Date): number {
+export function dateToDaysRemainingJYear(date: CalendarDate): number {
 	return getDaysInJalaliYear(dateToJalali(date).jy) - dateToDaysPassedJYear(date);
 }
 
-export function dateToDaysPassedSeason(date: Date): number {
+export function dateToDaysPassedSeason(date: CalendarDate): number {
 	const { jy, jm, jd } = dateToJalali(date);
 	const startMonth = (jalaliToSeason(jm) - 1) * 3 + 1;
 	let daysPassed = 0;
@@ -284,7 +276,7 @@ export function dateToDaysPassedSeason(date: Date): number {
 	return daysPassed + jd;
 }
 
-export function dateToDaysRemainingSeason(date: Date): number {
+export function dateToDaysRemainingSeason(date: CalendarDate): number {
 	const { jy, jm } = dateToJalali(date);
 	const season = jalaliToSeason(jm);
 	const startMonth = (season - 1) * 3 + 1;
@@ -298,11 +290,11 @@ export function dateToDaysRemainingSeason(date: Date): number {
 	return seasonLength - dateToDaysPassedSeason(date);
 }
 
-export function dateToDaysPassedJMonth(date: Date): number {
+export function dateToDaysPassedJMonth(date: CalendarDate): number {
 	return dateToJalali(date).jd;
 }
 
-export function dateToDaysRemainingJMonth(date: Date): number {
+export function dateToDaysRemainingJMonth(date: CalendarDate): number {
 	const { jy, jm, jd } = dateToJalali(date);
 	return jalaliMonthLength(jy, jm) - jd;
 }

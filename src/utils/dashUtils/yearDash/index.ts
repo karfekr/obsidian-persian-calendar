@@ -1,15 +1,21 @@
+import type { CalendarDate } from "@internationalized/date";
 import type { TDateFormat } from "src/types";
-import { dashToDate, dateToDash } from "src/utils/dashUtils";
-import { checkKabiseh, dateToJalali, gregorianToDate, jalaliToDate } from "src/utils/dateUtils";
+import { dashToCalendarDate, dateToDash } from "src/utils/dashUtils";
+import {
+	checkKabiseh,
+	dateToJalali,
+	gregorianToCalendarDate,
+	jalaliToCalendarDate,
+} from "src/utils/dateUtils";
 import { extractYearFormat, isDayFormat, isYearFormat } from "src/utils/formatters";
 
 export function dashToStartDayOfYearDash(dashDate: string, dateFormat: TDateFormat): string | null {
 	if (isDayFormat(dashDate)) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return null;
 
 		const { jy } = dateToJalali(date);
-		const startDate = jalaliToDate(jy, 1, 1);
+		const startDate = jalaliToCalendarDate(jy, 1, 1);
 
 		return dateToDash(startDate, dateFormat);
 	}
@@ -18,7 +24,8 @@ export function dashToStartDayOfYearDash(dashDate: string, dateFormat: TDateForm
 		const year = extractYearFormat(dashDate);
 		if (!year) return null;
 
-		const startDate = year >= 1800 ? gregorianToDate(year, 1, 1) : jalaliToDate(year, 1, 1);
+		const startDate =
+			year >= 1800 ? gregorianToCalendarDate(year, 1, 1) : jalaliToCalendarDate(year, 1, 1);
 
 		return dateToDash(startDate, dateFormat);
 	}
@@ -28,13 +35,13 @@ export function dashToStartDayOfYearDash(dashDate: string, dateFormat: TDateForm
 
 export function dashToEndDayOfYearDash(dashDate: string, dateFormat: TDateFormat): string | null {
 	if (isDayFormat(dashDate)) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return null;
 
 		const { jy } = dateToJalali(date);
 
 		const endDay = checkKabiseh(jy) ? 30 : 29;
-		const endDate = jalaliToDate(jy, 12, endDay);
+		const endDate = jalaliToCalendarDate(jy, 12, endDay);
 
 		return dateToDash(endDate, dateFormat);
 	}
@@ -44,12 +51,12 @@ export function dashToEndDayOfYearDash(dashDate: string, dateFormat: TDateFormat
 		if (!year) return null;
 
 		if (year >= 1800) {
-			const endDate = gregorianToDate(year, 12, 31);
+			const endDate = gregorianToCalendarDate(year, 12, 31);
 			return dateToDash(endDate, dateFormat);
 		}
 
 		const endDay = checkKabiseh(year) ? 30 : 29;
-		const endDate = jalaliToDate(year, 12, endDay);
+		const endDate = jalaliToCalendarDate(year, 12, endDay);
 
 		return dateToDash(endDate, dateFormat);
 	}
@@ -57,7 +64,7 @@ export function dashToEndDayOfYearDash(dashDate: string, dateFormat: TDateFormat
 	return null;
 }
 
-export function dateToJYearDash(date: Date) {
+export function dateToJYearDash(date: CalendarDate) {
 	const { jy } = dateToJalali(date);
 	return String(jy);
 }

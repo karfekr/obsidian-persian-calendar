@@ -1,6 +1,7 @@
+import type { CalendarDate } from "@internationalized/date";
 import type { TDateFormat, TWeekCalculationMode, TWeekStart } from "src/types";
-import { dashToDate, dateToDash } from "src/utils/dashUtils";
-import { getWeekStartCalculator, jalaliToDate } from "src/utils/dateUtils";
+import { dashToCalendarDate, dateToDash } from "src/utils/dashUtils";
+import { getWeekStartCalculator, jalaliToCalendarDate } from "src/utils/dateUtils";
 import {
 	extractWeekFormat,
 	isDayFormat,
@@ -16,7 +17,7 @@ type TWeekDashOption = {
 };
 
 export function dateToJWeekDash(
-	date: Date,
+	date: CalendarDate,
 	weekStart: TWeekStart = "sat",
 	option?: TWeekDashOption,
 ) {
@@ -34,14 +35,15 @@ export function dashToJWeekDash(
 	option?: Omit<TWeekDashOption, "separator">,
 ): string | null {
 	if (isDayFormat(dashDate) && dateFormat) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return null;
 
 		return dateToJWeekDash(date, option?.weekStart, { mode: option?.mode });
 	}
 
 	if (isWeekFormat(dashDate)) {
-		return dashDate;
+		const weekProps = extractWeekFormat(dashDate);
+		return weekProps ? toWeekFormat(weekProps.year, weekProps.week) : null;
 	}
 
 	return null;
@@ -57,7 +59,7 @@ export function dashToStartDayOfWeekDash(
 	const calculator = getWeekStartCalculator(option?.mode);
 
 	if (isDayFormat(dashDate)) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return;
 
 		const { jy: jYear, weekNumber: jWeekNumber } = calculator.getWeekNumber(date, weekStart);
@@ -75,7 +77,7 @@ export function dashToStartDayOfWeekDash(
 		if (!weekProps) return;
 
 		const { jy, jm, jd } = calculator.getStartOfWeek(weekProps.year, weekProps.week, weekStart);
-		const date = jalaliToDate(jy, jm, jd);
+		const date = jalaliToCalendarDate(jy, jm, jd);
 
 		return dateToDash(date, dateFormat);
 	}
@@ -93,7 +95,7 @@ export function dashToEndDayOfWeekDash(
 	const calculator = getWeekStartCalculator(option?.mode);
 
 	if (isDayFormat(dashDate)) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return;
 
 		const { jy: jYear, weekNumber: jWeekNumber } = calculator.getWeekNumber(date, weekStart);
@@ -111,7 +113,7 @@ export function dashToEndDayOfWeekDash(
 		if (!weekProps) return;
 
 		const { jy, jm, jd } = calculator.getEndOfWeek(weekProps.year, weekProps.week, weekStart);
-		const date = jalaliToDate(jy, jm, jd);
+		const date = jalaliToCalendarDate(jy, jm, jd);
 
 		return dateToDash(date, dateFormat);
 	}

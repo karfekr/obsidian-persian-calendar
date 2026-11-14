@@ -1,9 +1,10 @@
+import type { CalendarDate } from "@internationalized/date";
 import { DatePicker, Notice } from "src/components";
 import { dailyInTextRegex } from "src/constants";
 import { getDirection, onLocalChange, t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
 import {
-	addDayDate,
+	addCalendarDays,
 	dateToJalali,
 	getWeekStartCalculator,
 	jalaliToSeason,
@@ -90,7 +91,7 @@ export default class CommandRegistry {
 			id: "open-tomorrow-daily-note",
 			name: t("command.tomorrow"),
 			callback: async () => {
-				await this.openNoteForDate(addDayDate(todayTehran(), 1));
+				await this.openNoteForDate(addCalendarDays(todayTehran(), 1));
 			},
 		});
 
@@ -98,7 +99,7 @@ export default class CommandRegistry {
 			id: "open-yesterday-daily-note",
 			name: t("command.yesterday"),
 			callback: async () => {
-				await this.openNoteForDate(addDayDate(todayTehran(), -1));
+				await this.openNoteForDate(addCalendarDays(todayTehran(), -1));
 			},
 		});
 	}
@@ -172,7 +173,7 @@ export default class CommandRegistry {
 		});
 	}
 
-	private async openNoteForDate(date: Date) {
+	private async openNoteForDate(date: CalendarDate) {
 		const { jy, jm, jd } = dateToJalali(date);
 		await this.plugin.noteService.openOrCreateDailyNote(jy, jm, jd);
 	}

@@ -1,9 +1,10 @@
+import type { CalendarDate } from "@internationalized/date";
 import { DEFAULT_SETTING } from "src/constants";
 import type { TSetting, TWeekCalculationMode } from "src/types";
-import { dashToJWeekDash, dateToJWeekDash, jalaliDashToDate } from "src/utils/dashUtils";
+import { dashToJWeekDash, dateToJWeekDash, jalaliDashToCalendarDate } from "src/utils/dashUtils";
 import {
 	getWeekStartCalculator,
-	jalaliToDate,
+	jalaliToCalendarDate,
 	jalaliToGregorian,
 	jalaliToStartWeek,
 } from "src/utils/dateUtils";
@@ -18,7 +19,7 @@ const issue94Settings = {
 } as const satisfies Partial<TSetting>;
 
 function resolveWeekPlaceholders(
-	currentDate: Date,
+	currentDate: CalendarDate,
 	dailyNoteBasename: string,
 	settings: Pick<TSetting, "dateFormat" | "weekCalculation"> = issue94Settings,
 ) {
@@ -30,11 +31,10 @@ function resolveWeekPlaceholders(
 }
 
 function referenceJalaliFirstWeekStartId(jy: number, jm: number, jd: number): string {
-	const date = jalaliToDate(jy, jm, jd);
+	const date = jalaliToCalendarDate(jy, jm, jd);
 	const week1 = jalaliToStartWeek(jy, 1, "sat");
-	const week1Start = jalaliToDate(week1.jy, week1.jm, week1.jd);
-	const dayMs = 1000 * 60 * 60 * 24;
-	const diff = Math.round((date.getTime() - week1Start.getTime()) / dayMs);
+	const week1Start = jalaliToCalendarDate(week1.jy, week1.jm, week1.jd);
+	const diff = date.compare(week1Start);
 
 	if (diff >= 0) {
 		return toWeekFormat(jy, Math.floor(diff / 7) + 1);
@@ -42,8 +42,8 @@ function referenceJalaliFirstWeekStartId(jy: number, jm: number, jd: number): st
 
 	const previousYear = jy - 1;
 	const previousWeek1 = jalaliToStartWeek(previousYear, 1, "sat");
-	const previousStart = jalaliToDate(previousWeek1.jy, previousWeek1.jm, previousWeek1.jd);
-	const previousDiff = Math.round((date.getTime() - previousStart.getTime()) / dayMs);
+	const previousStart = jalaliToCalendarDate(previousWeek1.jy, previousWeek1.jm, previousWeek1.jd);
+	const previousDiff = date.compare(previousStart);
 	return toWeekFormat(previousYear, Math.floor(previousDiff / 7) + 1);
 }
 
@@ -56,7 +56,7 @@ describe("Issue #94: {{هفته جاری}} vs {{هفته یادداشت}}", () =
 		const jy = 1405;
 		const jm = 7;
 		const jd = 25;
-		const currentDate = jalaliToDate(jy, jm, jd);
+		const currentDate = jalaliToCalendarDate(jy, jm, jd);
 		const noteName = jalaliDash(jy, jm, jd);
 		const expected = referenceJalaliFirstWeekStartId(jy, jm, jd);
 
@@ -69,7 +69,7 @@ describe("Issue #94: {{هفته جاری}} vs {{هفته یادداشت}}", () =
 	});
 
 	it("uses current date for {{هفته جاری}} and note date for {{هفته یادداشت}} when they differ", () => {
-		const currentDate = jalaliToDate(1405, 7, 25); // 1405-W31
+		const currentDate = jalaliToCalendarDate(1405, 7, 25); // 1405-W31
 		const noteName = jalaliDash(1405, 7, 24); // previous day → 1405-W30
 
 		const { currentWeek, noteWeek } = resolveWeekPlaceholders(currentDate, noteName);
@@ -90,7 +90,7 @@ describe("Issue #94: {{هفته جاری}} vs {{هفته یادداشت}}", () =
 			const jy = 1405;
 			const jm = 7;
 			const jd = 25;
-			const currentDate = jalaliToDate(jy, jm, jd);
+			const currentDate = jalaliToCalendarDate(jy, jm, jd);
 			const noteName = jalaliDash(jy, jm, jd);
 			const calculator = getWeekStartCalculator(mode);
 			const { jy: weekYear, weekNumber } = calculator.getWeekNumber(currentDate, "sat");
@@ -115,7 +115,7 @@ describe("Week boundary identifiers (jalali-first-week-start)", () => {
 		[1405, 8, 1, "1405-W31"],
 		[1405, 8, 2, "1405-W32"],
 	] as const)("%i-%i-%i resolves to %s via both placeholder paths", (jy, jm, jd, expected) => {
-		const date = jalaliToDate(jy, jm, jd);
+		const date = jalaliToCalendarDate(jy, jm, jd);
 		const dash = jalaliDash(jy, jm, jd);
 		const { currentWeek, noteWeek } = resolveWeekPlaceholders(date, dash);
 
@@ -153,16 +153,16 @@ describe("Jalali year boundary (jalali-first-week-start)", () => {
 	it.each([
 		[1403, 12, 30, "1403-W52"],
 		[1404, 1, 1, "1403-W52"],
-		[1404, 1, 2, "1404-W1"],
-		[1404, 1, 8, "1404-W1"],
-		[1404, 1, 9, "1404-W2"],
+		[1404, 1, 2, "1404-W01"],
+		[1404, 1, 8, "1404-W01"],
+		[1404, 1, 9, "1404-W02"],
 		[1404, 12, 29, "1404-W52"],
-		[1405, 1, 1, "1405-W1"],
-		[1405, 1, 7, "1405-W1"],
+		[1405, 1, 1, "1405-W01"],
+		[1405, 1, 7, "1405-W01"],
 	] as const)("%i-%i-%i → %s", (jy, jm, jd, expected) => {
 		expect(referenceJalaliFirstWeekStartId(jy, jm, jd)).toBe(expected);
 
-		const date = jalaliToDate(jy, jm, jd);
+		const date = jalaliToCalendarDate(jy, jm, jd);
 		const dash = jalaliDash(jy, jm, jd);
 		const { currentWeek, noteWeek } = resolveWeekPlaceholders(date, dash);
 
@@ -171,21 +171,12 @@ describe("Jalali year boundary (jalali-first-week-start)", () => {
 	});
 });
 
-describe("jalaliDashToDate normalization", () => {
-	it("returns the same UTC-noon instant as jalaliToDate (not local midnight)", () => {
-		const jy = 1405;
-		const jm = 7;
-		const jd = 25;
-		const fromDash = jalaliDashToDate(jalaliDash(jy, jm, jd));
-		const fromParts = jalaliToDate(jy, jm, jd);
-
-		expect(fromDash).not.toBeNull();
-		expect(fromDash?.toISOString()).toBe(fromParts.toISOString());
-		expect(fromDash?.toISOString().endsWith("T12:00:00.000Z")).toBe(true);
-
-		const { gy, gm, gd } = jalaliToGregorian(jy, jm, jd);
-		const localMidnight = new Date(gy, gm - 1, gd);
-		expect(localMidnight.getTime()).not.toBe(fromParts.getTime());
+describe("jalaliDashToCalendarDate normalization", () => {
+	it("returns the same date-only value as jalaliToCalendarDate", () => {
+		const date = jalaliDashToCalendarDate("1405-07-25");
+		expect(date?.compare(jalaliToCalendarDate(1405, 7, 25))).toBe(0);
+		expect(date?.toString()).toBe("2026-10-17");
+		expect(date && "hour" in date).toBe(false);
 	});
 
 	it("round-trips Jalali day components through Gregorian conversion", () => {
@@ -197,10 +188,10 @@ describe("jalaliDashToDate normalization", () => {
 		] as const;
 
 		for (const [jy, jm, jd] of samples) {
-			const date = jalaliDashToDate(jalaliDash(jy, jm, jd));
+			const date = jalaliDashToCalendarDate(jalaliDash(jy, jm, jd));
 			expect(date).not.toBeNull();
 			const back = jalaliToGregorian(jy, jm, jd);
-			expect(date?.toISOString()).toBe(jalaliToDate(jy, jm, jd).toISOString());
+			expect(date?.toString()).toBe(jalaliToCalendarDate(jy, jm, jd).toString());
 			expect(back.gy).toBeGreaterThan(2000);
 		}
 	});

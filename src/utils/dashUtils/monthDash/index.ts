@@ -1,16 +1,18 @@
+import type { CalendarDate } from "@internationalized/date";
 import { GREGORIAN_MONTHS_NAME, HIJRI_MONTHS_NAME } from "src/constants";
 import type { TDateFormat, THijriBase, TLocale } from "src/types";
-import { dashToDate, dateToDash } from "src/utils/dashUtils";
+import { dashToCalendarDate, dateToDash } from "src/utils/dashUtils";
 import {
-	dateToEndDayOfJMonthDate,
+	dateToEndDayOfJMonthCalendarDate,
 	dateToJalali,
 	dateToMonthName,
-	dateToStartDayOfJMonthDate,
-	gregorianToDate,
+	dateToStartDayOfJMonthCalendarDate,
+	gregorianMonthLength,
+	gregorianToCalendarDate,
 	jalaliMonthLength,
 	jalaliMonthToGregorianRange,
 	jalaliMonthToHijriRange,
-	jalaliToDate,
+	jalaliToCalendarDate,
 } from "src/utils/dateUtils";
 import {
 	extractMonthFormat,
@@ -20,7 +22,7 @@ import {
 	toMonthFormat,
 } from "src/utils/formatters";
 
-export function dateToJMonthDash(date: Date, option?: { separator?: string }) {
+export function dateToJMonthDash(date: CalendarDate, option?: { separator?: string }) {
 	const separator = option?.separator ?? "-";
 
 	const { jy, jm } = dateToJalali(date);
@@ -30,7 +32,7 @@ export function dateToJMonthDash(date: Date, option?: { separator?: string }) {
 
 export function dashToJMonthDash(dashDate: string, dateFormat?: TDateFormat) {
 	if (isDayFormat(dashDate) && dateFormat) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return null;
 
 		const { jy, jm } = dateToJalali(date);
@@ -47,7 +49,7 @@ export function dashToJMonthDash(dashDate: string, dateFormat?: TDateFormat) {
 
 export function dashToJMonthName(dashDate: string, dateFormat?: TDateFormat) {
 	if (isDayFormat(dashDate) && dateFormat) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return null;
 
 		return dateToMonthName(date);
@@ -59,8 +61,8 @@ export function dashToJMonthName(dashDate: string, dateFormat?: TDateFormat) {
 
 		const date =
 			monthProps.year >= 1800
-				? gregorianToDate(monthProps.year, monthProps.month, 1)
-				: jalaliToDate(monthProps.year, monthProps.month, 1);
+				? gregorianToCalendarDate(monthProps.year, monthProps.month, 1)
+				: jalaliToCalendarDate(monthProps.year, monthProps.month, 1);
 		return dateToMonthName(date);
 	}
 
@@ -69,10 +71,10 @@ export function dashToJMonthName(dashDate: string, dateFormat?: TDateFormat) {
 
 export function dashToStartDayOfJMonthDash(dashDate: string, dateFormat: TDateFormat) {
 	if (isDayFormat(dashDate)) {
-		const currentDate = dashToDate(dashDate, dateFormat);
+		const currentDate = dashToCalendarDate(dashDate, dateFormat);
 		if (!currentDate) return null;
 
-		const startDate = dateToStartDayOfJMonthDate(currentDate);
+		const startDate = dateToStartDayOfJMonthCalendarDate(currentDate);
 		return dateToDash(startDate, dateFormat);
 	}
 
@@ -82,8 +84,8 @@ export function dashToStartDayOfJMonthDash(dashDate: string, dateFormat: TDateFo
 
 		const startDate =
 			monthProps.year >= 1800
-				? gregorianToDate(monthProps.year, monthProps.month, 1)
-				: jalaliToDate(monthProps.year, monthProps.month, 1);
+				? gregorianToCalendarDate(monthProps.year, monthProps.month, 1)
+				: jalaliToCalendarDate(monthProps.year, monthProps.month, 1);
 		return dateToDash(startDate, dateFormat);
 	}
 
@@ -92,10 +94,10 @@ export function dashToStartDayOfJMonthDash(dashDate: string, dateFormat: TDateFo
 
 export function dashToEndDayOfJMonthDash(dashDate: string, dateFormat: TDateFormat) {
 	if (isDayFormat(dashDate)) {
-		const currentDate = dashToDate(dashDate, dateFormat);
+		const currentDate = dashToCalendarDate(dashDate, dateFormat);
 		if (!currentDate) return null;
 
-		const endDate = dateToEndDayOfJMonthDate(currentDate);
+		const endDate = dateToEndDayOfJMonthCalendarDate(currentDate);
 		return dateToDash(endDate, dateFormat);
 	}
 
@@ -104,14 +106,14 @@ export function dashToEndDayOfJMonthDash(dashDate: string, dateFormat: TDateForm
 		if (!monthProps) return null;
 
 		if (monthProps.year >= 1800) {
-			const endDay = new Date(Date.UTC(monthProps.year, monthProps.month, 0)).getUTCDate();
-			const endDate = gregorianToDate(monthProps.year, monthProps.month, endDay);
+			const endDay = gregorianMonthLength(monthProps.year, monthProps.month);
+			const endDate = gregorianToCalendarDate(monthProps.year, monthProps.month, endDay);
 			return dateToDash(endDate, dateFormat);
 		}
 
 		const day = jalaliMonthLength(monthProps.year, monthProps.month);
 
-		const endDate = jalaliToDate(monthProps.year, monthProps.month, day);
+		const endDate = jalaliToCalendarDate(monthProps.year, monthProps.month, day);
 		return dateToDash(endDate, dateFormat);
 	}
 

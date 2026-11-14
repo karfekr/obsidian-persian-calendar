@@ -1,3 +1,4 @@
+import type { CalendarDate } from "@internationalized/date";
 import type { EditorSuggestContext } from "obsidian";
 
 // jalali = هجری شمسی/خورشیدی
@@ -126,14 +127,14 @@ export type TLocale = "fa" | "en";
 export type TDirection = "rtl" | "ltr";
 
 export type TBuildContext = {
-	currentDate: Date;
-	fileDate: Date | null;
+	currentDate: CalendarDate;
+	fileDate: CalendarDate | null;
 	fileName: string;
 	baseDate: TDateFormat;
 };
 
 export type TMonthGridCell = TJalali & {
-	date: Date;
+	date: CalendarDate;
 	gregorian: TGregorian;
 	hijri: THijri;
 	index: number;
@@ -218,7 +219,7 @@ export type TValidationResult = {
 };
 
 export type TWeekCalculator = {
-	getWeekNumber(date: Date, weekStart?: TWeekStart): { jy: number; weekNumber: number };
+	getWeekNumber(date: CalendarDate, weekStart?: TWeekStart): { jy: number; weekNumber: number };
 	getStartOfWeek(jYear: number, jWeekNumber: number, weekStart?: TWeekStart): TJalali & TGregorian;
 	getEndOfWeek(jYear: number, jWeekNumber: number, weekStart?: TWeekStart): TJalali & TGregorian;
 };

@@ -1,3 +1,4 @@
+import type { CalendarDate } from "@internationalized/date";
 import type { EditorSuggestContext } from "obsidian";
 import { SMART_DATE_LINKS, WEEKDAYS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
@@ -10,7 +11,12 @@ import {
 	dateToJYearDash,
 	dateToSeasonDash,
 } from "src/utils/dashUtils";
-import { dateToGregorian, dateToJalali, gregorianToDate, todayTehran } from "src/utils/dateUtils";
+import {
+	dateToJalali,
+	getWeekdayTehran,
+	getWeekStartCalculator,
+	todayTehran,
+} from "src/utils/dateUtils";
 
 export default class SmartDateLinker {
 	plugin: PersianCalendarPlugin;
@@ -26,11 +32,11 @@ export default class SmartDateLinker {
 		return link ? `[[${dash}|${label}]]` : dash;
 	}
 
-	private dateToDashByFormat(date: Date) {
+	private dateToDashByFormat(date: CalendarDate) {
 		return dateToDash(date, this.plugin.setting.dateFormat);
 	}
 
-	private makeDailyOutput(date: Date, label: string, link: boolean): string {
+	private makeDailyOutput(date: CalendarDate, label: string, link: boolean): string {
 		const display = this.dateToDashByFormat(date);
 		if (!link) return display ?? label;
 		const { jy, jm, jd } = dateToJalali(date);
@@ -38,17 +44,24 @@ export default class SmartDateLinker {
 		return `[[${filePath.slice(0, -3)}|${label}]]`;
 	}
 
-	private adjustedDate(base: Date, days = 0, months = 0, years = 0): Date {
-		const d = new Date(base);
-		if (days) d.setUTCDate(d.getUTCDate() + days);
-		if (months) d.setUTCMonth(d.getUTCMonth() + months);
-		if (years) d.setUTCFullYear(d.getUTCFullYear() + years);
+	private adjustedDate(base: CalendarDate, days = 0, months = 0, years = 0): CalendarDate {
+		// Match the existing Gregorian overflow semantics without introducing timestamps.
+		let d = base.add({ days });
+		if (months)
+			d = d
+				.set({ day: 1 })
+				.add({ months })
+				.add({ days: d.day - 1 });
+		if (years)
+			d = d
+				.set({ day: 1 })
+				.add({ years })
+				.add({ days: d.day - 1 });
 		return d;
 	}
 
-	formatSmartDate(keyword: string, date: Date, local: TLocale = "fa", link = true): string {
-		const { gy, gm, gd } = dateToGregorian(date);
-		const now = gregorianToDate(gy, gm, gd);
+	formatSmartDate(keyword: string, date: CalendarDate, local: TLocale = "fa", link = true): string {
+		const now = date;
 		const ERROR_LINK = "تاریخ شناسایی نشد";
 
 		const weekdaysName = WEEKDAYS_NAME[local];
@@ -61,14 +74,14 @@ export default class SmartDateLinker {
 			if (!weekdayEntry) return ERROR_LINK;
 
 			const weekdayIndex = Number(weekdayEntry[0]);
-			const todayIndex = now.getUTCDay() === 6 ? 1 : now.getUTCDay() + 2;
+			const todayIndex = getWeekdayTehran(now) === 6 ? 1 : getWeekdayTehran(now) + 2;
 			const daysOffset = (weekdayIndex - todayIndex + 7) % 7;
 			const extraWeeks = specifier.includes("بعد") ? 7 : specifier.includes("قبل") ? -7 : 0;
 
-			now.setUTCDate(now.getUTCDate() + daysOffset + extraWeeks);
+			const target = now.add({ days: daysOffset + extraWeeks });
 
 			const label = weekdayName + (specifier ? ` ${specifier.trim()}` : "");
-			return this.makeDailyOutput(now, label, link);
+			return this.makeDailyOutput(target, label, link);
 		}
 
 		const dayOffsets: Record<string, number> = {
@@ -84,19 +97,28 @@ export default class SmartDateLinker {
 		}
 
 		type PeriodConfig = {
-			fn: (d: Date) => string;
+			fn: (d: CalendarDate) => string;
 			days?: number;
 			months?: number;
 			years?: number;
 		};
 
-		const weekDashFn = (d: Date) =>
+		const weekDashFn = (d: CalendarDate) =>
 			dateToJWeekDash(d, undefined, { mode: this.plugin.setting.weekCalculation });
+		const weekOffsets: Record<string, number> = { "این هفته": 0, "هفته قبل": -7, "هفته بعد": 7 };
+		if (keyword in weekOffsets) {
+			const target = this.adjustedDate(now, weekOffsets[keyword]);
+			if (!link) return weekDashFn(target);
+			const { jy, weekNumber } = getWeekStartCalculator(
+				this.plugin.setting.weekCalculation,
+			).getWeekNumber(target);
+			const filePath =
+				this.plugin.noteService?.getWeeklyNoteFile(jy, weekNumber)?.path ??
+				this.pathBuilder.buildWeeklyNotePath(jy, weekNumber).filePath;
+			return this.makeOutput(filePath.slice(0, -3), keyword);
+		}
 
 		const periodMap: Partial<Record<string, PeriodConfig>> = {
-			"این هفته": { fn: weekDashFn },
-			"هفته قبل": { fn: weekDashFn, days: -7 },
-			"هفته بعد": { fn: weekDashFn, days: 7 },
 			"این ماه": { fn: dateToJMonthDash },
 			"ماه قبل": { fn: dateToJMonthDash, months: -1 },
 			"ماه بعد": { fn: dateToJMonthDash, months: 1 },

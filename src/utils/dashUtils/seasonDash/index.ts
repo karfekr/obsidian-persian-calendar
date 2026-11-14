@@ -1,11 +1,12 @@
+import type { CalendarDate } from "@internationalized/date";
 import type { TDateFormat } from "src/types";
-import { dashToDate, dateToDash } from "src/utils/dashUtils";
+import { dashToCalendarDate, dateToDash } from "src/utils/dashUtils";
 import {
-	dateToEndDayOfSeasonDate,
+	dateToEndDayOfSeasonCalendarDate,
 	dateToJalali,
 	dateToSeasonName,
-	dateToStartDayOfSeasonDate,
-	jalaliToDate,
+	dateToStartDayOfSeasonCalendarDate,
+	jalaliToCalendarDate,
 	jalaliToSeason,
 	seasonName,
 } from "src/utils/dateUtils";
@@ -18,7 +19,7 @@ import {
 	toSeasonFormat,
 } from "src/utils/formatters";
 
-export function dateToSeasonDash(date: Date, option?: { separator?: string }) {
+export function dateToSeasonDash(date: CalendarDate, option?: { separator?: string }) {
 	const separator = option?.separator ?? "-";
 
 	const { jy, jm } = dateToJalali(date);
@@ -29,7 +30,7 @@ export function dateToSeasonDash(date: Date, option?: { separator?: string }) {
 
 export function dashToSeasonName(dashDate: string, dateFormat: TDateFormat) {
 	if (isDayFormat(dashDate)) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return null;
 
 		return dateToSeasonName(date);
@@ -55,7 +56,7 @@ export function dashToSeasonName(dashDate: string, dateFormat: TDateFormat) {
 
 export function dashToSeasonDash(dashDate: string, dateFormat: TDateFormat) {
 	if (isDayFormat(dashDate)) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return null;
 
 		return dateToSeasonDash(date);
@@ -79,10 +80,10 @@ export function dashToSeasonDash(dashDate: string, dateFormat: TDateFormat) {
 
 export function dashToStartDayOfSeasonDash(dashDate: string, dateFormat: TDateFormat) {
 	if (isDayFormat(dashDate)) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return null;
 
-		const startDayOfSeasonDate = dateToStartDayOfSeasonDate(date);
+		const startDayOfSeasonDate = dateToStartDayOfSeasonCalendarDate(date);
 		return dateToDash(startDayOfSeasonDate, dateFormat);
 	}
 
@@ -90,9 +91,9 @@ export function dashToStartDayOfSeasonDash(dashDate: string, dateFormat: TDateFo
 		const monthProps = extractMonthFormat(dashDate);
 		if (!monthProps) return null;
 
-		const date = jalaliToDate(monthProps.year, monthProps.month, 1);
+		const date = jalaliToCalendarDate(monthProps.year, monthProps.month, 1);
 
-		const startDayOfSeasonDate = dateToStartDayOfSeasonDate(date);
+		const startDayOfSeasonDate = dateToStartDayOfSeasonCalendarDate(date);
 		return dateToDash(startDayOfSeasonDate, dateFormat);
 	}
 
@@ -101,9 +102,9 @@ export function dashToStartDayOfSeasonDash(dashDate: string, dateFormat: TDateFo
 		if (!seasonProps) return null;
 
 		const firstMonthOfSeason = 3 * (seasonProps.season - 1) + 1;
-		const date = jalaliToDate(seasonProps.year, firstMonthOfSeason, 1);
+		const date = jalaliToCalendarDate(seasonProps.year, firstMonthOfSeason, 1);
 
-		const startDayOfSeasonDate = dateToStartDayOfSeasonDate(date);
+		const startDayOfSeasonDate = dateToStartDayOfSeasonCalendarDate(date);
 		return dateToDash(startDayOfSeasonDate, dateFormat);
 	}
 
@@ -112,10 +113,10 @@ export function dashToStartDayOfSeasonDash(dashDate: string, dateFormat: TDateFo
 
 export function dashToEndDayOfSeasonDash(dashDate: string, dateFormat: TDateFormat) {
 	if (isDayFormat(dashDate)) {
-		const date = dashToDate(dashDate, dateFormat);
+		const date = dashToCalendarDate(dashDate, dateFormat);
 		if (!date) return null;
 
-		const endDayOfSeasonDate = dateToEndDayOfSeasonDate(date);
+		const endDayOfSeasonDate = dateToEndDayOfSeasonCalendarDate(date);
 		return dateToDash(endDayOfSeasonDate, dateFormat);
 	}
 
@@ -123,9 +124,9 @@ export function dashToEndDayOfSeasonDash(dashDate: string, dateFormat: TDateForm
 		const monthProps = extractMonthFormat(dashDate);
 		if (!monthProps) return null;
 
-		const date = jalaliToDate(monthProps.year, monthProps.month, 1);
+		const date = jalaliToCalendarDate(monthProps.year, monthProps.month, 1);
 
-		const endDayOfSeasonDate = dateToEndDayOfSeasonDate(date);
+		const endDayOfSeasonDate = dateToEndDayOfSeasonCalendarDate(date);
 		return dateToDash(endDayOfSeasonDate, dateFormat);
 	}
 
@@ -134,9 +135,9 @@ export function dashToEndDayOfSeasonDash(dashDate: string, dateFormat: TDateForm
 		if (!seasonProps) return null;
 
 		const lastMonthOfSeason = 3 * seasonProps.season;
-		const date = jalaliToDate(seasonProps.year, lastMonthOfSeason, 1);
+		const date = jalaliToCalendarDate(seasonProps.year, lastMonthOfSeason, 1);
 
-		const endDayOfSeasonDate = dateToEndDayOfSeasonDate(date);
+		const endDayOfSeasonDate = dateToEndDayOfSeasonCalendarDate(date);
 		return dateToDash(endDayOfSeasonDate, dateFormat);
 	}
 

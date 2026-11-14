@@ -2,11 +2,11 @@ import type { AdapterType } from "persian-holidays";
 import {
 	getWeekdayTehran,
 	gregorianMonthLength,
-	gregorianToDate,
+	gregorianToCalendarDate,
 	hijriMonthLength,
-	hijriToDate,
+	hijriToCalendarDate,
 	jalaliMonthLength,
-	jalaliToDate,
+	jalaliToCalendarDate,
 } from "src/utils/dateUtils";
 
 export function setDefaultEventAdapter(): AdapterType {
@@ -14,11 +14,11 @@ export function setDefaultEventAdapter(): AdapterType {
 		firstWeekdayOfMonth(calendar, year, month) {
 			switch (calendar) {
 				case "jalali":
-					return getWeekdayTehran(jalaliToDate(year, month, 1));
+					return getWeekdayTehran(jalaliToCalendarDate(year, month, 1));
 				case "hijri":
-					return getWeekdayTehran(hijriToDate(year, month, 1, { base: "iran" }));
+					return getWeekdayTehran(hijriToCalendarDate(year, month, 1, { base: "iran" }));
 				case "gregorian":
-					return getWeekdayTehran(gregorianToDate(year, month, 1));
+					return getWeekdayTehran(gregorianToCalendarDate(year, month, 1));
 			}
 		},
 		monthLength(calendar, year, month) {
@@ -39,22 +39,22 @@ export function setUmalquraEventAdapter(): AdapterType {
 		firstWeekdayOfMonth(calendar, year, month) {
 			switch (calendar) {
 				case "jalali":
-					return getWeekdayTehran(jalaliToDate(year, month, 1));
+					return getWeekdayTehran(jalaliToCalendarDate(year, month, 1));
 				case "hijri":
-					return getWeekdayTehran(hijriToDate(year, month, 1, { base: "umalqura" }));
+					return getWeekdayTehran(hijriToCalendarDate(year, month, 1, { base: "umalqura" }));
 				case "gregorian":
-					return getWeekdayTehran(gregorianToDate(year, month, 1));
+					return getWeekdayTehran(gregorianToCalendarDate(year, month, 1));
 			}
 		},
 
 		monthLength(calendar, year, month) {
 			switch (calendar) {
 				case "jalali":
-					return getWeekdayTehran(jalaliToDate(year, month, 1));
+					return getWeekdayTehran(jalaliToCalendarDate(year, month, 1));
 				case "hijri":
-					return getWeekdayTehran(hijriToDate(year, month, 1, { base: "umalqura" }));
+					return getWeekdayTehran(hijriToCalendarDate(year, month, 1, { base: "umalqura" }));
 				case "gregorian":
-					return getWeekdayTehran(gregorianToDate(year, month, 1));
+					return getWeekdayTehran(gregorianToCalendarDate(year, month, 1));
 			}
 		},
 	};

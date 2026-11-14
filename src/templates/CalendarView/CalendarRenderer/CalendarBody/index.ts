@@ -1,3 +1,4 @@
+import type { CalendarDate } from "@internationalized/date";
 import { Menu, setIcon } from "obsidian";
 import { Notice } from "src/components";
 import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
@@ -114,7 +115,7 @@ export default class CalendarBodyRender {
 
 			const weekEl = weekNumbersEl.createDiv({
 				cls: "persian-calendar__week-number",
-				text: toFaNumber(weekNumber),
+				text: toFaNumber(String(weekNumber).padStart(2, "0")),
 			});
 
 			if (!getWeeksWithNotes(weekYear).includes(weekNumber)) {
@@ -150,7 +151,7 @@ export default class CalendarBodyRender {
 
 		const cells = this.gridService.buildMonthGrid(jy, jm);
 
-		const attachTooltipListeners = (dayEl: HTMLElement, date: Date) => {
+		const attachTooltipListeners = (dayEl: HTMLElement, date: CalendarDate) => {
 			const handler = (e: MouseEvent | TouchEvent) => {
 				const events = dateToEvents(date, {
 					showEvents: this.setting,

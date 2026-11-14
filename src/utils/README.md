@@ -7,6 +7,13 @@
 
 This file is a complete reference for all utility functions in the `utils` folder.
 
+Internal date-only values use `CalendarDate` from `@internationalized/date`.
+`todayTehran()` uses `today(TEHRAN_TZ)` and `nowTehran()` uses `now(TEHRAN_TZ)`;
+`TEHRAN_TZ` is always `Asia/Tehran`. Use immutable `.add`, `.set`, and `.compare`
+operations for calendar arithmetic. Native `Date` conversion belongs at the public
+API boundary; the documented `plugin.api` method names and Date-based signatures
+are preserved.
+
 ## dateUtils
 
 ### 1. Jalali(Solar Hijri) Functions
@@ -15,30 +22,30 @@ This file is a complete reference for all utility functions in the `utils` folde
 | ----------------------------- | -------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `checkValidJalali`            | `(jy: number, jm: number, jd: number)` | `boolean`                                       | Checks if a Jalali date is valid (e.g., 1404/12/29 is valid, 1404/12/30 is not)                       |
 | `checkKabiseh`                | `(jy: number)`                         | `boolean`                                       | Returns `true` if the Jalali year is a leap year                                                      |
-| `dateToJalali`                | `(date: Date)`                         | `{jy, jm, jd}`                                  | Converts a Gregorian `Date` object to a Jalali date                                                   |
-| `jalaliToDate`                | `(jy: number, jm: number, jd: number)` | `Date`                                          | Converts a Jalali date to a Gregorian `Date` object (UTC midnight)                                    |
+| `dateToJalali`                | `(date: CalendarDate)`                         | `{jy, jm, jd}`                                  | Converts a Gregorian `CalendarDate` object to a Jalali date                                                   |
+| `jalaliToCalendarDate`                | `(jy: number, jm: number, jd: number)` | `CalendarDate`                                          | Converts a Jalali date to a Gregorian `CalendarDate` object (date only)                                    |
 | `jalaliToGregorian`           | `(jy, jm, jd)`                         | `{gy, gm, gd}`                                  | Converts Jalali to Gregorian                                                                          |
 | `gregorianToJalali`           | `(gy, gm, gd)`                         | `{jy, jm, jd}`                                  | Converts Gregorian to Jalali                                                                          |
 | `jalaliMonthLength`           | `(jy: number, jm: number)`             | `number`                                        | Returns the number of days in a given Jalali month (29–31)                                            |
 | `getDaysInJalaliYear`         | `(jy: number)`                         | `number`                                        | Returns the number of days in a Jalali year (365 or 366)                                              |
-| `dateToJWeekNumber`           | `(date: Date)`                         | `number`                                        | Returns the Jalali week number (1–53) from a Gregorian `Date`                                         |
+| `dateToJWeekNumber`           | `(date: CalendarDate)`                         | `number`                                        | Returns the Jalali week number (1–53) from a Gregorian `CalendarDate`                                         |
 | `jalaliToJWeekNumber`         | `(jy, jm, jd)`                         | `number`                                        | Returns the Jalali week number from a Jalali date                                                     |
 | `jalaliToStartWeek`    | `(jy: number)`                         | `{jy, jm, jd}`                                  | Returns the first day of the first week of a Jalali year (first Saturday of the year)                 |
 | `jalaliToStartDayOfWeek`      | `({jYear, jWeekNumber})`               | `{jy, jm, jd, gy, gm, gd}`                      | Returns the first day (Saturday) of a given Jalali week                                               |
 | `jalaliToEndDayOfWeek`        | `({jYear, jWeekNumber})`               | `{jy, jm, jd, gy, gm, gd}`                      | Returns the last day (Friday) of a given Jalali week                                                  |
-| `dateToMonthName`             | `(date: Date)`                         | `string`                                        | Persian name of the Jalali month – e.g., "اسفند" (Esfand)                                             |
-| `dateToSeasonName`            | `(date: Date)`                         | `string`                                        | Persian name of the season – "بهار" (Spring), "تابستان" (Summer), "پاییز" (Autumn), "زمستان" (Winter) |
-| `dateToDayOfMonth`            | `(date: Date)`                         | `number`                                        | Day of the month (1–31) in the Jalali calendar                                                        |
-| `dateToDaysPassedJYear`       | `(date: Date)`                         | `number`                                        | Number of days passed since the start of the Jalali year (0–365)                                      |
-| `dateToDaysRemainingJYear`    | `(date: Date)`                         | `number`                                        | Number of days remaining in the Jalali year                                                           |
-| `dateToDaysPassedSeason`      | `(date: Date)`                         | `number`                                        | Number of days passed since the start of the current season                                           |
-| `dateToDaysRemainingSeason`   | `(date: Date)`                         | `number`                                        | Number of days remaining in the current season                                                        |
-| `dateToDaysPassedJMonth`      | `(date: Date)`                         | `number`                                        | Number of days passed since the start of the Jalali month                                             |
-| `dateToDaysRemainingJMonth`   | `(date: Date)`                         | `number`                                        | Number of days remaining in the Jalali month                                                          |
-| `dateToStartDayOfJMonthDate`  | `(date: Date)`                         | `Date`                                          | `Date` object for the first day of the current Jalali month                                           |
-| `dateToEndDayOfJMonthDate`    | `(date: Date)`                         | `Date`                                          | `Date` object for the last day of the current Jalali month                                            |
-| `dateToStartDayOfSeasonDate`  | `(date: Date)`                         | `Date`                                          | `Date` object for the first day of the current season                                                 |
-| `dateToEndDayOfSeasonDate`    | `(date: Date)`                         | `Date`                                          | `Date` object for the last day of the current season                                                  |
+| `dateToMonthName`             | `(date: CalendarDate)`                         | `string`                                        | Persian name of the Jalali month – e.g., "اسفند" (Esfand)                                             |
+| `dateToSeasonName`            | `(date: CalendarDate)`                         | `string`                                        | Persian name of the season – "بهار" (Spring), "تابستان" (Summer), "پاییز" (Autumn), "زمستان" (Winter) |
+| `dateToDayOfMonth`            | `(date: CalendarDate)`                         | `number`                                        | Day of the month (1–31) in the Jalali calendar                                                        |
+| `dateToDaysPassedJYear`       | `(date: CalendarDate)`                         | `number`                                        | Number of days passed since the start of the Jalali year (0–365)                                      |
+| `dateToDaysRemainingJYear`    | `(date: CalendarDate)`                         | `number`                                        | Number of days remaining in the Jalali year                                                           |
+| `dateToDaysPassedSeason`      | `(date: CalendarDate)`                         | `number`                                        | Number of days passed since the start of the current season                                           |
+| `dateToDaysRemainingSeason`   | `(date: CalendarDate)`                         | `number`                                        | Number of days remaining in the current season                                                        |
+| `dateToDaysPassedJMonth`      | `(date: CalendarDate)`                         | `number`                                        | Number of days passed since the start of the Jalali month                                             |
+| `dateToDaysRemainingJMonth`   | `(date: CalendarDate)`                         | `number`                                        | Number of days remaining in the Jalali month                                                          |
+| `dateToStartDayOfJMonthCalendarDate`  | `(date: CalendarDate)`                         | `CalendarDate`                                          | `CalendarDate` object for the first day of the current Jalali month                                           |
+| `dateToEndDayOfJMonthCalendarDate`    | `(date: CalendarDate)`                         | `CalendarDate`                                          | `CalendarDate` object for the last day of the current Jalali month                                            |
+| `dateToStartDayOfSeasonCalendarDate`  | `(date: CalendarDate)`                         | `CalendarDate`                                          | `CalendarDate` object for the first day of the current season                                                 |
+| `dateToEndDayOfSeasonCalendarDate`    | `(date: CalendarDate)`                         | `CalendarDate`                                          | `CalendarDate` object for the last day of the current season                                                  |
 | `jalaliMonthToGregorianRange` | `(jYear: number, jMonth: number)`      | `{ firstDay: {gy,gm,gd}, lastDay: {gy,gm,gd} }` | Returns the Gregorian equivalent (first and last day) of a given Jalali month                         |
 | `jalaliMonthToHijriRange`     | `(jYear: number, jMonth: number)`      | `{ firstDay: {gy,gm,gd}, lastDay: {gy,gm,gd} }` | Returns the Hijri equivalent (as Gregorian dates – note the output!) of a given Jalali month          |
 
@@ -46,16 +53,16 @@ This file is a complete reference for all utility functions in the `utils` folde
 
 | Function               | Input                                  | Output         | Description                                                                                     |
 | ---------------------- | -------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------- |
-| `gregorianToDate`      | `(gy: number, gm: number, gd: number)` | `Date \| null` | Validates a Gregorian date and converts it to a `Date` object (or `null` if invalid)            |
+| `gregorianToCalendarDate`      | `(gy: number, gm: number, gd: number)` | `CalendarDate` | Creates a Gregorian `CalendarDate`; validate untrusted components before constructing it            |
 | `weekStartNumber`      | `("sat" \| "sun" \| "mon")`            | `number`       | Converts a weekday name to its JavaScript weekday number (Saturday = 6, Sunday = 0, Monday = 1) |
 | `jalaliMonthName`      | `(jm: number)`                         | `string`       | Persian name of a Jalali month from its number (1–12) – e.g., `jalaliMonthName(12)` → `"اسفند"` |
 | `gregorianMonthLength` | `(jy: number, jm: number)`             | `number`       | Returns the number of days in a given gregorian month                                           |
 | `seasonName`           | `(seasonNumber: number)`               | `string`       | Persian name of a season from its number (1–4) – e.g., `seasonName(3)` → `"پاییز"`              |
-| `dateToGregorian`      | `(date: Date)`                         | `{gy, gm, gd}` | Extracts Gregorian year, month, day from a `Date` object                                        |
-| `dateToWeekdayName`    | `(date: Date)`                         | `string`       | Persian name of the weekday (Saturday to Friday)                                                |
-| `addDayDate`           | `(date: Date, days: number)`           | `Date`         | Adds (or subtracts) a number of days to/from a date – returns a new `Date` object               |
-| `getWeekdayTehran`     | `(date: Date)`                         | `number`       | Returns the weekday number based on the Tehran timezone (0–6, but check: Saturday=6?)           |
-| `todayTehran`          | `()`                                   | `Date`         | Returns today’s date based on the Tehran timezone (no manual setup required)                    |
+| `dateToGregorian`      | `(date: CalendarDate)`                         | `{gy, gm, gd}` | Extracts Gregorian year, month, day from a `CalendarDate` object                                        |
+| `dateToWeekdayName`    | `(date: CalendarDate)`                         | `string`       | Persian name of the weekday (Saturday to Friday)                                                |
+| `addCalendarDays`           | `(date: Date, days: number)`           | `CalendarDate`         | Adds (or subtracts) a number of days to/from a date – returns a new `CalendarDate` object               |
+| `getWeekdayTehran`     | `(date: CalendarDate)`                         | `number`       | Returns the weekday number based on the Tehran timezone (0–6, but check: Saturday=6?)           |
+| `todayTehran`          | `()`                                   | `CalendarDate`         | Returns today’s date based on the Tehran timezone (no manual setup required)                    |
 
 ### 3. Hijri(Islamic Lunar) Functions
 
@@ -65,9 +72,9 @@ This file is a complete reference for all utility functions in the `utils` folde
 | `hijriToGregorian` | `(hy, hm, hd)`             | `{gy, gm, gd}` | Converts a Hijri date to Gregorian                            |
 | `hijriToJalali`    | `(hy, hm, hd)`             | `{jy, jm, jd}` | Converts a Hijri date to Jalali                               |
 | `jalaliToHijri`    | `(jy, jm, jd)`             | `{hy, hm, hd}` | Converts a Jalali date to Hijri                               |
-| `dateToHijri`      | `(date: Date)`             | `{hy, hm, hd}` | Converts a Gregorian `Date` object to Hijri                   |
+| `dateToHijri`      | `(date: CalendarDate)`             | `{hy, hm, hd}` | Converts a Gregorian `CalendarDate` object to Hijri                   |
 | `hijriMonthLength` | `(hy: number, hm: number)` | `number`       | Returns the number of days in a given Hijri month (29 or 30)  |
-| `hijriToDate`      | `(hy, hm, hd)`             | `Date`         | Converts a Hijri date to a Gregorian `Date` object            |
+| `hijriToCalendarDate`      | `(hy, hm, hd)`             | `CalendarDate`         | Converts a Hijri date to a Gregorian `CalendarDate` object            |
 
 ## formatters
 

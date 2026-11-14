@@ -1,4 +1,5 @@
-import { hijriToDate } from "src/utils/dateUtils";
+import { parseDate } from "@internationalized/date";
+import { hijriToCalendarDate } from "src/utils/dateUtils";
 import {
 	checkKabiseh,
 	checkValidJalali,
@@ -9,20 +10,20 @@ import {
 	dateToDaysRemainingJMonth,
 	dateToDaysRemainingJYear,
 	dateToDaysRemainingSeason,
-	dateToEndDayOfJMonthDate,
-	dateToEndDayOfSeasonDate,
+	dateToEndDayOfJMonthCalendarDate,
+	dateToEndDayOfSeasonCalendarDate,
 	dateToJalali,
 	dateToJWeekNumber,
 	dateToMonthName,
 	dateToSeasonName,
-	dateToStartDayOfJMonthDate,
-	dateToStartDayOfSeasonDate,
+	dateToStartDayOfJMonthCalendarDate,
+	dateToStartDayOfSeasonCalendarDate,
 	getDaysInJalaliYear,
 	gregorianToJalali,
 	jalaliMonthLength,
 	jalaliMonthToGregorianRange,
 	jalaliMonthToHijriRange,
-	jalaliToDate,
+	jalaliToCalendarDate,
 	jalaliToEndDayOfWeek,
 	jalaliToGregorian,
 	jalaliToJWeekNumber,
@@ -95,7 +96,7 @@ describe("checkKabiseh", () => {
 describe("dateToJalali", () => {
 	it("should convert Gregorian date to Jalali correctly", () => {
 		// 2024-03-20 = 1403/01/01
-		const result = dateToJalali(new Date("2024-03-20"));
+		const result = dateToJalali(parseDate("2024-03-20"));
 		expect(result.jy).toBe(1403);
 		expect(result.jm).toBe(1);
 		expect(result.jd).toBe(1);
@@ -103,19 +104,19 @@ describe("dateToJalali", () => {
 
 	it("should handle end of year correctly", () => {
 		// 2025-03-19 = 1403/12/29
-		const result = dateToJalali(new Date("2025-03-19"));
+		const result = dateToJalali(parseDate("2025-03-19"));
 		expect(result.jy).toBe(1403);
 		expect(result.jm).toBe(12);
 		expect(result.jd).toBe(29);
 	});
 });
 
-describe("jalaliToDate", () => {
+describe("jalaliToCalendarDate", () => {
 	it("should convert 1403/01/01 to 2024-03-20", () => {
-		const date = jalaliToDate(1403, 1, 1);
-		expect(date.getUTCFullYear()).toBe(2024);
-		expect(date.getUTCMonth() + 1).toBe(3);
-		expect(date.getUTCDate()).toBe(20);
+		const date = jalaliToCalendarDate(1403, 1, 1);
+		expect(date.year).toBe(2024);
+		expect(date.month).toBe(3);
+		expect(date.day).toBe(20);
 	});
 });
 
@@ -185,7 +186,7 @@ describe("getDaysInJalaliYear", () => {
 
 describe("dateToJWeekNumber", () => {
 	it("should return a number between 1 and 53", () => {
-		const weekNum = dateToJWeekNumber(new Date("2024-06-01"));
+		const weekNum = dateToJWeekNumber(parseDate("2024-06-01"));
 		expect(weekNum).toBeGreaterThanOrEqual(1);
 		expect(weekNum).toBeLessThanOrEqual(53);
 	});
@@ -194,7 +195,7 @@ describe("dateToJWeekNumber", () => {
 describe("jalaliToJWeekNumber", () => {
 	it("should match dateToJWeekNumber for the same date", () => {
 		// 2024-06-01 = 1403/03/12
-		const fromDate = dateToJWeekNumber(new Date("2024-06-01"));
+		const fromDate = dateToJWeekNumber(parseDate("2024-06-01"));
 		const fromJalali = jalaliToJWeekNumber(1403, 3, 12);
 		expect(fromJalali).toBe(fromDate);
 	});
@@ -208,25 +209,25 @@ describe("jalaliToJWeekNumber", () => {
 describe("jalaliToJWeekNumberFromFirstWeekStart", () => {
 	it("attributes days before the first weekStart to the previous year", () => {
 		// 1404 week 1 starts on 1404-01-02 (Saturday); 1404-01-01 is still 1403-W52
-		expect(jalaliToJWeekNumberFromFirstWeekStart(jalaliToDate(1404, 1, 1))).toEqual({
+		expect(jalaliToJWeekNumberFromFirstWeekStart(jalaliToCalendarDate(1404, 1, 1))).toEqual({
 			jy: 1403,
 			weekNumber: 52,
 		});
-		expect(jalaliToJWeekNumberFromFirstWeekStart(jalaliToDate(1404, 1, 2))).toEqual({
+		expect(jalaliToJWeekNumberFromFirstWeekStart(jalaliToCalendarDate(1404, 1, 2))).toEqual({
 			jy: 1404,
 			weekNumber: 1,
 		});
 	});
 
 	it("keeps a Nowruz Saturday in week 1 of the new year", () => {
-		expect(jalaliToJWeekNumberFromFirstWeekStart(jalaliToDate(1405, 1, 1))).toEqual({
+		expect(jalaliToJWeekNumberFromFirstWeekStart(jalaliToCalendarDate(1405, 1, 1))).toEqual({
 			jy: 1405,
 			weekNumber: 1,
 		});
 	});
 
 	it("returns week 31 for 1405-07-25 (Saturday week boundary)", () => {
-		expect(jalaliToJWeekNumberFromFirstWeekStart(jalaliToDate(1405, 7, 25))).toEqual({
+		expect(jalaliToJWeekNumberFromFirstWeekStart(jalaliToCalendarDate(1405, 7, 25))).toEqual({
 			jy: 1405,
 			weekNumber: 31,
 		});
@@ -243,17 +244,17 @@ describe("jalaliToStartWeek", () => {
 
 	it("should return a Saturday (first day of Iranian week)", () => {
 		const result = jalaliToStartWeek(1404);
-		const date = jalaliToDate(result.jy, result.jm, result.jd);
+		const date = jalaliToCalendarDate(result.jy, result.jm, result.jd);
 		// Saturday = 6 in JS
-		expect(date.getUTCDay()).toBe(6);
+		expect(date.toDate("UTC").getUTCDay()).toBe(6);
 	});
 });
 
 describe("jalaliToStartDayOfWeek", () => {
 	it("should return the Saturday of the given week", () => {
 		const result = jalaliToStartDayOfWeek({ jYear: 1404, jWeekNumber: 1 });
-		const date = jalaliToDate(result.jy, result.jm, result.jd);
-		expect(date.getUTCDay()).toBe(6); // Saturday
+		const date = jalaliToCalendarDate(result.jy, result.jm, result.jd);
+		expect(date.toDate("UTC").getUTCDay()).toBe(6); // Saturday
 	});
 
 	it("should contain both Jalali and Gregorian fields", () => {
@@ -270,16 +271,16 @@ describe("jalaliToStartDayOfWeek", () => {
 describe("jalaliToEndDayOfWeek", () => {
 	it("should return the Friday of the given week", () => {
 		const result = jalaliToEndDayOfWeek({ jYear: 1404, jWeekNumber: 1 });
-		const date = jalaliToDate(result.jy, result.jm, result.jd);
-		expect(date.getUTCDay()).toBe(5); // Friday
+		const date = jalaliToCalendarDate(result.jy, result.jm, result.jd);
+		expect(date.toDate("UTC").getUTCDay()).toBe(5); // Friday
 	});
 
 	it("end day should be 6 days after start day", () => {
 		const start = jalaliToStartDayOfWeek({ jYear: 1404, jWeekNumber: 3 });
 		const end = jalaliToEndDayOfWeek({ jYear: 1404, jWeekNumber: 3 });
-		const startDate = jalaliToDate(start.jy, start.jm, start.jd);
-		const endDate = jalaliToDate(end.jy, end.jm, end.jd);
-		const diffDays = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+		const startDate = jalaliToCalendarDate(start.jy, start.jm, start.jd);
+		const endDate = jalaliToCalendarDate(end.jy, end.jm, end.jd);
+		const diffDays = endDate.compare(startDate);
 		expect(diffDays).toBe(6);
 	});
 });
@@ -287,40 +288,40 @@ describe("jalaliToEndDayOfWeek", () => {
 describe("dateToMonthName", () => {
 	it('should return "فروردین" for first month', () => {
 		// 2024-04-01 = 1403/01/13
-		expect(dateToMonthName(new Date("2024-04-01"))).toBe("فروردین");
+		expect(dateToMonthName(parseDate("2024-04-01"))).toBe("فروردین");
 	});
 
 	it('should return "اسفند" for last month', () => {
 		// 2025-03-01 = 1403/12/10
-		expect(dateToMonthName(new Date("2025-03-01"))).toBe("اسفند");
+		expect(dateToMonthName(parseDate("2025-03-01"))).toBe("اسفند");
 	});
 });
 
 describe("dateToSeasonName", () => {
 	it('should return "بهار" for spring', () => {
-		expect(dateToSeasonName(new Date("2024-04-15"))).toBe("بهار");
+		expect(dateToSeasonName(parseDate("2024-04-15"))).toBe("بهار");
 	});
 
 	it('should return "تابستان" for summer', () => {
-		expect(dateToSeasonName(new Date("2024-07-15"))).toBe("تابستان");
+		expect(dateToSeasonName(parseDate("2024-07-15"))).toBe("تابستان");
 	});
 
 	it('should return "پاییز" for autumn', () => {
-		expect(dateToSeasonName(new Date("2024-10-15"))).toBe("پاییز");
+		expect(dateToSeasonName(parseDate("2024-10-15"))).toBe("پاییز");
 	});
 
 	it('should return "زمستان" for winter', () => {
-		expect(dateToSeasonName(new Date("2025-01-15"))).toBe("زمستان");
+		expect(dateToSeasonName(parseDate("2025-01-15"))).toBe("زمستان");
 	});
 });
 
 describe("dateToDayOfMonth", () => {
 	it("should return 1 for first day of Farvardin 1403", () => {
-		expect(dateToDayOfMonth(new Date("2024-03-20"))).toBe(1);
+		expect(dateToDayOfMonth(parseDate("2024-03-20"))).toBe(1);
 	});
 
 	it("should return a value between 1 and 31", () => {
-		const day = dateToDayOfMonth(new Date("2024-06-15"));
+		const day = dateToDayOfMonth(parseDate("2024-06-15"));
 		expect(day).toBeGreaterThanOrEqual(1);
 		expect(day).toBeLessThanOrEqual(31);
 	});
@@ -328,22 +329,22 @@ describe("dateToDayOfMonth", () => {
 
 describe("dateToDaysPassedJYear", () => {
 	it("should return 1 for the first day of the year", () => {
-		expect(dateToDaysPassedJYear(new Date("2024-03-20"))).toBe(1);
+		expect(dateToDaysPassedJYear(parseDate("2024-03-20"))).toBe(1);
 	});
 
 	it("should return 2 for the second day of the year", () => {
-		expect(dateToDaysPassedJYear(new Date("2024-03-21"))).toBe(2);
+		expect(dateToDaysPassedJYear(parseDate("2024-03-21"))).toBe(2);
 	});
 });
 
 describe("dateToDaysRemainingJYear", () => {
 	it("should return 364 for the first day of a non-leap year", () => {
 		// 1404 starts 2025-03-21, which is non-leap (365 days)
-		expect(dateToDaysRemainingJYear(new Date("2025-03-21"))).toBe(364);
+		expect(dateToDaysRemainingJYear(parseDate("2025-03-21"))).toBe(364);
 	});
 
 	it("passed + remaining should equal total days in year", () => {
-		const date = new Date("2024-07-10");
+		const date = parseDate("2024-07-10");
 		const passed = dateToDaysPassedJYear(date);
 		const remaining = dateToDaysRemainingJYear(date);
 		const { jy } = dateToJalali(date);
@@ -354,21 +355,21 @@ describe("dateToDaysRemainingJYear", () => {
 
 describe("dateToDaysPassedSeason", () => {
 	it("should return 1 on the first day of Spring (Farvardin 1)", () => {
-		expect(dateToDaysPassedSeason(new Date("2024-03-20"))).toBe(1);
+		expect(dateToDaysPassedSeason(parseDate("2024-03-20"))).toBe(1);
 	});
 
 	it("should return a non-negative number", () => {
-		expect(dateToDaysPassedSeason(new Date("2024-05-15"))).toBeGreaterThanOrEqual(0);
+		expect(dateToDaysPassedSeason(parseDate("2024-05-15"))).toBeGreaterThanOrEqual(0);
 	});
 });
 
 describe("dateToDaysRemainingSeason", () => {
 	it("should return a non-negative number", () => {
-		expect(dateToDaysRemainingSeason(new Date("2024-05-15"))).toBeGreaterThanOrEqual(0);
+		expect(dateToDaysRemainingSeason(parseDate("2024-05-15"))).toBeGreaterThanOrEqual(0);
 	});
 
 	it("passed + remaining should equal total days in the season minus 1", () => {
-		const date = new Date("2024-05-15");
+		const date = parseDate("2024-05-15");
 		const passed = dateToDaysPassedSeason(date);
 		const remaining = dateToDaysRemainingSeason(date);
 		// Spring = 3 months × 31 days = 93 days
@@ -378,70 +379,70 @@ describe("dateToDaysRemainingSeason", () => {
 
 describe("dateToDaysPassedJMonth", () => {
 	it("should return 1 for the first day of a month", () => {
-		expect(dateToDaysPassedJMonth(new Date("2024-03-20"))).toBe(1);
+		expect(dateToDaysPassedJMonth(parseDate("2024-03-20"))).toBe(1);
 	});
 
 	it("should return 14 for the 15th day of a month", () => {
 		// 2024-04-03 = 1403/01/15
-		expect(dateToDaysPassedJMonth(new Date("2024-04-02"))).toBe(14);
+		expect(dateToDaysPassedJMonth(parseDate("2024-04-02"))).toBe(14);
 	});
 });
 
 describe("dateToDaysRemainingJMonth", () => {
 	it("should return 30 for the first day of a 31-day month", () => {
 		// 1403/01/01 → month has 31 days → remaining = 30
-		expect(dateToDaysRemainingJMonth(new Date("2024-03-20"))).toBe(30);
+		expect(dateToDaysRemainingJMonth(parseDate("2024-03-20"))).toBe(30);
 	});
 
 	it("passed + remaining should equal month length minus 1", () => {
-		const date = new Date("2024-03-25");
+		const date = parseDate("2024-03-25");
 		const passed = dateToDaysPassedJMonth(date);
 		const remaining = dateToDaysRemainingJMonth(date);
 		expect(passed + remaining).toBe(jalaliMonthLength(1403, 2));
 	});
 });
 
-describe("dateToStartDayOfJMonthDate", () => {
+describe("dateToStartDayOfJMonthCalendarDate", () => {
 	it("should return a Date with jd = 1", () => {
-		const start = dateToStartDayOfJMonthDate(new Date("2024-05-10"));
+		const start = dateToStartDayOfJMonthCalendarDate(parseDate("2024-05-10"));
 		expect(dateToJalali(start).jd).toBe(1);
 	});
 
 	it("should be in the same Jalali month as the input", () => {
-		const input = new Date("2024-05-10");
-		const start = dateToStartDayOfJMonthDate(input);
+		const input = parseDate("2024-05-10");
+		const start = dateToStartDayOfJMonthCalendarDate(input);
 		expect(dateToJalali(start).jm).toBe(dateToJalali(input).jm);
 	});
 });
 
-describe("dateToEndDayOfJMonthDate", () => {
+describe("dateToEndDayOfJMonthCalendarDate", () => {
 	it("should return the last day of the month", () => {
-		const input = new Date("2024-04-15"); // somewhere in Farvardin
-		const end = dateToEndDayOfJMonthDate(input);
+		const input = parseDate("2024-04-15"); // somewhere in Farvardin
+		const end = dateToEndDayOfJMonthCalendarDate(input);
 		const { jy, jm, jd } = dateToJalali(end);
 		expect(jd).toBe(jalaliMonthLength(jy, jm));
 	});
 });
 
-describe("dateToStartDayOfSeasonDate", () => {
+describe("dateToStartDayOfSeasonCalendarDate", () => {
 	it("should return Farvardin 1 for a Spring date", () => {
-		const start = dateToStartDayOfSeasonDate(new Date("2024-05-01"));
+		const start = dateToStartDayOfSeasonCalendarDate(parseDate("2024-05-01"));
 		const { jm, jd } = dateToJalali(start);
 		expect(jm).toBe(1);
 		expect(jd).toBe(1);
 	});
 });
 
-describe("dateToEndDayOfSeasonDate", () => {
+describe("dateToEndDayOfSeasonCalendarDate", () => {
 	it("should return Khordad 31 for a Spring date", () => {
-		const end = dateToEndDayOfSeasonDate(new Date("2024-05-01"));
+		const end = dateToEndDayOfSeasonCalendarDate(parseDate("2024-05-01"));
 		const { jm, jd } = dateToJalali(end);
 		expect(jm).toBe(3);
 		expect(jd).toBe(31);
 	});
 
 	it("should return the last day of Winter (Esfand 29 or 30)", () => {
-		const end = dateToEndDayOfSeasonDate(new Date("2025-01-15"));
+		const end = dateToEndDayOfSeasonCalendarDate(parseDate("2025-01-15"));
 		const { jy, jm, jd } = dateToJalali(end);
 		expect(jm).toBe(12);
 		expect(jd).toBe(jalaliMonthLength(jy, 12));
@@ -480,9 +481,9 @@ describe("jalaliMonthToHijriRange", () => {
 	it("firstDay should come before lastDay", () => {
 		const { firstDay, lastDay } = jalaliMonthToHijriRange(1403, 6);
 
-		const first = hijriToDate(firstDay.hy, firstDay.hm, firstDay.hd);
-		const last = hijriToDate(lastDay.hy, lastDay.hm, lastDay.hd);
+		const first = hijriToCalendarDate(firstDay.hy, firstDay.hm, firstDay.hd);
+		const last = hijriToCalendarDate(lastDay.hy, lastDay.hm, lastDay.hd);
 
-		expect(first.getTime()).toBeLessThan(last.getTime());
+		expect(first.compare(last)).toBeLessThan(0);
 	});
 });
