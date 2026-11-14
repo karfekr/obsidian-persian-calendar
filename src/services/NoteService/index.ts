@@ -130,7 +130,7 @@ export default class NoteService {
 				await this.app.vault.modify(file, templateContent);
 			}
 		} catch (error) {
-			Notice(`Error applying template for ${noteType}: ${error}`);
+			Notice(`Error applying template for ${noteType}: ${String(error)}`);
 		}
 	}
 
