@@ -1,4 +1,4 @@
-import { setIcon } from "obsidian";
+import { Menu, setIcon } from "obsidian";
 import { Notice } from "src/components";
 import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { getDirection, t } from "src/languages";
@@ -279,6 +279,25 @@ export default class CalendarBodyRender {
 					this.navigation.changeMonth("next");
 					return;
 				}
+			});
+
+			dayEl.addEventListener("contextmenu", (event) => {
+				const file = this.notesService.getDailyNoteFile(cell.jy, cell.jm, cell.jd);
+				if (!file) return;
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				const menu = new Menu();
+				menu.addItem((item) =>
+					item
+						.setTitle(t("calendarView.contextMenu.deleteDailyNote"))
+						.setIcon("trash")
+						.onClick(() => {
+							void this.notesService.deleteDailyNote(cell.jy, cell.jm, cell.jd);
+						}),
+				);
+				menu.showAtMouseEvent(event);
 			});
 
 			if (cell.isInCurrentMonth) {

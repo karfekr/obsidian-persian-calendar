@@ -224,6 +224,10 @@
 			"cancelBtn": "Cancel",
 			"confirmBtn": "Confirm"
 		},
+		"deleteDailyNote": {
+			"title": "Delete Daily Note",
+			"message": "Delete daily note for {date}?"
+		},
 		"datePicker": {
 			"tooltip": "Choose Jalali Date",
 			"jalali": "Jalali",
@@ -233,7 +237,8 @@
 	"notice": {
 		"error": {
 			"dailyNotesUnavailable": "Enable and configure Obsidian Daily Notes or the daily feature in Periodic Notes to use this integration.",
-			"dailyNoteCreationFailed": "Obsidian Daily Notes could not create the daily note. Check its folder and template settings."
+			"dailyNoteCreationFailed": "Obsidian Daily Notes could not create the daily note. Check its folder and template settings.",
+			"dailyNoteDeleteFailed": "Failed to delete the daily note."
 		},
 		"success": {
 			"placeholder": "Meaningful phrases replaced successfully",
@@ -241,6 +246,9 @@
 		}
 	},
 	"calendarView": {
+		"contextMenu": {
+			"deleteDailyNote": "Delete"
+		},
 		"renderError": {
 			"title": "The calendar could not be displayed correctly",
 			"patternBody": "One of the dynamic note-path patterns could not be resolved.",

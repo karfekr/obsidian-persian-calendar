@@ -1,6 +1,7 @@
 import type { App } from "obsidian";
 import { MarkdownView, TFile, TFolder } from "obsidian";
 import { createNoteModal, Notice } from "src/components";
+import { t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
 import NotePathBuilder from "src/services/NotePathBuilder";
 import type { TDateEngineContext, TJalali } from "src/types";
@@ -267,6 +268,32 @@ export default class NoteService {
 		}
 
 		return result;
+	}
+
+	public getDailyNoteFile(jy: number, jm: number, jd: number): TFile | null {
+		const { filePath } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
+		const file = this.app.vault.getAbstractFileByPath(filePath);
+		return file instanceof TFile ? file : null;
+	}
+
+	public async deleteDailyNote(jy: number, jm: number, jd: number) {
+		const file = this.getDailyNoteFile(jy, jm, jd);
+		if (!file) return;
+
+		const { dateString } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
+		const confirmed = await createNoteModal(this.app, {
+			title: t("modal.deleteDailyNote.title"),
+			message: t("modal.deleteDailyNote.message").replace("{date}", dateString),
+		});
+
+		if (!confirmed) return;
+
+		try {
+			await this.app.fileManager.trashFile(file);
+			this.plugin.refreshViews();
+		} catch {
+			Notice(t("notice.error.dailyNoteDeleteFailed"));
+		}
 	}
 
 	public getDaysWithNotes(jy: number, jm: number): number[] {
