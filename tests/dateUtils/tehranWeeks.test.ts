@@ -178,6 +178,17 @@ describe.each(modes)("shared week identity: %s", (mode) => {
 		expect(getWeekStartCalculator(mode).getWeekNumber(calendarDateFromDate(evening))).toEqual(
 			result,
 		);
+		const plugin = makePlugin({ weekCalculation: mode });
+		const placeholders = new Placeholder(plugin);
+		const map = placeholders.getPlaceholderMap({
+			currentDate: date,
+			fileDate: date,
+			fileName: iso,
+			baseDate: "gregorian",
+		});
+		const expectedWeek = Number(expected[modes.indexOf(mode)].split("W")[1]);
+		expect(map.get("{{شماره هفته جاری}}")).toBe(expectedWeek);
+		expect(map.get("{{شماره هفته یادداشت}}")).toBe(expectedWeek);
 	});
 
 	it("agrees across paths, mentions, calendar rows and daily/weekly placeholders", () => {
@@ -211,6 +222,7 @@ describe.each(modes)("shared week identity: %s", (mode) => {
 			baseDate: "gregorian",
 		});
 		expect(weeklyMap.get("{{هفته یادداشت}}")).toBe(id);
+		expect(weeklyMap.get("{{شماره هفته یادداشت}}")).toBe(weekNumber);
 		expect(weeklyMap.get("{{اول هفته}}")).toBe(map.get("{{اول هفته}}"));
 		expect(weeklyMap.get("{{آخر هفته}}")).toBe(map.get("{{آخر هفته}}"));
 		const state = new CalendarState({ jYear: 1403, jMonth: 12 });
@@ -240,9 +252,9 @@ it("reads week-mode changes without reconstructing consumers", async () => {
 		expect(
 			placeholders.processPlaceholders(
 				Object.assign(new TFile(), { path: "2025-03-20.md", basename: "2025-03-20" }),
-				"{{هفته یادداشت}}",
+				"{{هفته یادداشت}} | {{شماره هفته یادداشت}}",
 			),
-		).toBe(expected);
+		).toBe(`${expected} | ${week}`);
 	}
 	expect(plugin.saveSetting).toHaveBeenCalledTimes(4);
 	expect(dateToDash(date, "gregorian")).toBe("2025-03-20");

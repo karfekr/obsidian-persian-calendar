@@ -58,7 +58,7 @@ import {
 	todayTehran,
 } from "src/utils/dateUtils";
 import { dashToEvents, dateToEvents, eventsToString } from "src/utils/eventUtils";
-import { extractYearFormat, toDayFormat } from "src/utils/formatters";
+import { extractWeekFormat, extractYearFormat, toDayFormat } from "src/utils/formatters";
 
 export default class Placeholder {
 	plugin: PersianCalendarPlugin;
@@ -263,12 +263,15 @@ export default class Placeholder {
 	}: TBuildContext): Map<string, string | number | boolean | null | undefined> {
 		const fromFile = <T>(fn: (d: CalendarDate) => T): T | null => (fileDate ? fn(fileDate) : null);
 		const fromFileOrToday = <T>(fn: (d: CalendarDate) => T): T => fn(fileDate ?? currentDate);
+		const weekNumber = (date: CalendarDate) =>
+			getWeekStartCalculator(this.plugin.setting.weekCalculation).getWeekNumber(date).weekNumber;
 
 		return new Map<string, string | number | null | undefined>([
 			["{{تاریخ شمسی جاری}}", dateToDash(currentDate, "jalali")],
 			["{{تاریخ میلادی جاری}}", dateToDash(currentDate, "gregorian")],
 			["{{تاریخ قمری جاری}}", dateToDash(currentDate, "hijri")],
 			["{{روز هفته جاری}}", dateToWeekdayName(currentDate)],
+			["{{شماره هفته جاری}}", weekNumber(currentDate)],
 			["{{نام ماه جاری}}", dateToMonthName(currentDate)],
 			["{{روز ماه جاری}}", dateToDayOfMonth(currentDate)],
 			["{{ماه جاری}}", dateToJMonthDash(currentDate)],
@@ -289,6 +292,10 @@ export default class Placeholder {
 			["{{تاریخ میلادی یادداشت}}", fromFile((d) => dateToDash(d, "gregorian"))],
 			["{{تاریخ قمری یادداشت}}", fromFile((d) => dateToDash(d, "hijri"))],
 			["{{روز هفته یادداشت}}", fromFile(dateToWeekdayName)],
+			[
+				"{{شماره هفته یادداشت}}",
+				fileDate ? weekNumber(fileDate) : (extractWeekFormat(fileName)?.week ?? null),
+			],
 			[
 				"{{نام ماه یادداشت}}",
 				fileDate ? dateToMonthName(fileDate) : dashToJMonthName(fileName, baseDate),

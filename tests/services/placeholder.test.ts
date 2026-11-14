@@ -386,6 +386,44 @@ describe("Non-dated files behavior", () => {
 	});
 });
 
+describe("week number placeholders", () => {
+	afterEach(() => vi.useRealTimers());
+
+	it.each(["fa", "en"] as const)(
+		"uses English digits and independent dates in %s",
+		async (language) => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2025-03-20T20:30:00Z"));
+			const template = "{{شماره هفته یادداشت}} | {{شماره هفته جاری}} | {{هفته یادداشت}}";
+			const { placeholder } = createMockPlugin(
+				{ language, weekCalculation: "jalali-first-week-start" },
+				{ "template.md": template },
+			);
+			const daily = Object.assign(new TFile(), { path: "2025-03-22.md", basename: "2025-03-22" });
+			expect(await placeholder.getTemplateContent("template.md", daily)).toBe("1 | 52 | 1404-W01");
+			const weekly = Object.assign(new TFile(), { path: "1404-W09.md", basename: "1404-W09" });
+			expect(placeholder.processPlaceholders(weekly, template)).toBe("9 | 52 | 1404-W09");
+			const keys = placeholder.getAllPlaceholderKeys(daily);
+			expect(keys).toContain("{{شماره هفته یادداشت}}");
+			expect(keys).toContain("{{شماره هفته جاری}}");
+			expect(placeholder.toProvider().getSuggestions("شماره هفته")).toEqual([
+				"{{شماره هفته جاری}}",
+				"{{شماره هفته یادداشت}}",
+			]);
+		},
+	);
+
+	it("leaves the note placeholder unchanged when the note date is unresolved", () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2025-03-22T12:00:00Z"));
+		const { placeholder } = createMockPlugin({ weekCalculation: "jalali-first-week-start" });
+		const file = Object.assign(new TFile(), { path: "project.md", basename: "project" });
+		expect(
+			placeholder.processPlaceholders(file, "{{شماره هفته یادداشت}} | {{شماره هفته جاری}}"),
+		).toBe("{{شماره هفته یادداشت}} | 1");
+	});
+});
+
 describe("dashToCalendarDate calendar detection", () => {
 	it("detects 2024-11-02 as Gregorian even if dateFormat is jalali", () => {
 		const date = dashToCalendarDate("2024-11-02", "jalali");
