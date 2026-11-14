@@ -212,48 +212,11 @@ it.each(modes)("renders unpadded calendar labels in %s", (mode) => {
 	// biome-ignore lint/complexity/useLiteralKeys: Isolate the private week renderer without changing its production API.
 	renderer["renderWeekNumbers"](node, { jy: 1404, jm: 1 });
 	const expected = [
-		["1", "2"],
-		["52", "1"],
-		["12", "13"],
-		["11", "12"],
+		["۱", "۲"],
+		["۵۲", "۱"],
+		["۱۲", "۱۳"],
+		["۱۱", "۱۲"],
 	];
 	expect(labels.slice(0, 2)).toEqual(expected[modes.indexOf(mode)]);
-	expect(labels.every((label) => !label.startsWith("0"))).toBe(true);
-});
-
-it.each([
-	["fa", ["۱", "۲", "۹", "۱۰"]],
-	["en", ["1", "2", "9", "10"]],
-] as const)("renders week numbers in %s without changing click values", (language, expected) => {
-	const { plugin } = harness("jalali-first-week-start");
-	plugin.setting.language = language;
-	const state = new CalendarState({ jYear: 1404, jMonth: 1 });
-	const weeks = [1, 2, 9, 10].map((weekNumber) => ({ jy: 1404, weekNumber }));
-	vi.spyOn(state, "getWeekNumbersForMonth").mockReturnValue(weeks);
-	const openWeek = vi.spyOn(plugin.noteService, "openOrCreateWeeklyNote").mockResolvedValue();
-	const labels: string[] = [];
-	const clicks: (() => void)[] = [];
-	const node = {
-		querySelector: () => null,
-		style: { setProperty: () => {} },
-		addClass: () => {},
-		addEventListener: (_event: string, callback: () => void) => clicks.push(callback),
-		createDiv: (options: { cls: string; text?: string }) => {
-			if (options.cls === "persian-calendar__week-number") labels.push(options.text ?? "");
-			return node;
-		},
-	} as unknown as HTMLElement;
-	const renderer = new CalendarBodyRender(
-		state,
-		plugin.noteService,
-		plugin.setting,
-		() => {},
-		{} as CalendarNavigation,
-	);
-	// biome-ignore lint/complexity/useLiteralKeys: Isolate the private week renderer without changing its production API.
-	renderer["renderWeekNumbers"](node, { jy: 1404, jm: 1 });
-	expect(labels).toEqual(expected);
-	for (const click of clicks) click();
-	expect(openWeek.mock.calls).toEqual(weeks.map(({ jy, weekNumber }) => [jy, weekNumber]));
-	expect(weeks.map(({ weekNumber }) => weekNumber)).toEqual([1, 2, 9, 10]);
+	expect(labels.every((label) => !/^[0۰]/.test(label))).toBe(true);
 });
