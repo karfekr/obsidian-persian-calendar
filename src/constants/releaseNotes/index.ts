@@ -7,9 +7,15 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 		changes: {
 			fa: [
 				"افزودن قابلیت حذف یادداشت روزانه از طریق منوی راست‌کلیک روی روزهای تقویم، همراه با تأیید پیش از انتقال فایل به سطل زباله.",
+				"بهبود یکپارچه‌سازی نام هفته‌نوشت به صورت دورقمه",
+				"برطرف کردن باگ پلاگین روی زمانبندی تهران",
+				"حالا عبارات @ به نوع نام‌گذاری روزنوشت وابسته هستند",
 			],
 			en: [
 				"Added the ability to delete daily notes from the calendar's right-click context menu, with confirmation before moving the file to the trash.",
+				"Standardized weekly note naming with consistent two-digit week numbers.",
+				"Fixed timezone-related issues by consistently using the Asia/Tehran timezone.",
+				"Updated @ date mentions to respect the configured daily note naming format.",
 			],
 		},
 	},
