@@ -40,8 +40,8 @@
 				}
 			},
 			"placeholderFormat": {
-				"name": "Date Format for Natural Dates and Daily Notes",
-				"desc": "Depending on the selected option, date placeholders will resolve to either Gregorian or Jalali dates.",
+				"name": "Date format for natural dates and placeholders",
+				"desc": "Controls date output for natural dates and placeholders. Daily note filenames are configured separately under naming.",
 				"options": {
 					"jalali": "Jalali",
 					"gregorian": "Gregorian"

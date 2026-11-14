@@ -3,6 +3,17 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.11.0",
+		changes: {
+			fa: [
+				"افزودن قابلیت حذف یادداشت روزانه از طریق منوی راست‌کلیک روی روزهای تقویم، همراه با تأیید پیش از انتقال فایل به سطل زباله.",
+			],
+			en: [
+				"Added the ability to delete daily notes from the calendar's right-click context menu, with confirmation before moving the file to the trash.",
+			],
+		},
+	},
+	{
 		version: "4.10.0",
 		changes: {
 			fa: [

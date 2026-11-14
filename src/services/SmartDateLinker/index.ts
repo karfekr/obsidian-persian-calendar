@@ -1,7 +1,8 @@
 import type { EditorSuggestContext } from "obsidian";
 import { SMART_DATE_LINKS, WEEKDAYS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
-import type { TDateFormatWithoutHijri, TLocale, TSuggestProvider } from "src/types";
+import NotePathBuilder from "src/services/NotePathBuilder";
+import type { TLocale, TSuggestProvider } from "src/types";
 import {
 	dateToDash,
 	dateToJMonthDash,
@@ -9,15 +10,15 @@ import {
 	dateToJYearDash,
 	dateToSeasonDash,
 } from "src/utils/dashUtils";
-import { todayTehran } from "src/utils/dateUtils";
+import { dateToGregorian, dateToJalali, gregorianToDate, todayTehran } from "src/utils/dateUtils";
 
 export default class SmartDateLinker {
 	plugin: PersianCalendarPlugin;
-	dateFormat: TDateFormatWithoutHijri;
+	private readonly pathBuilder: NotePathBuilder;
 
 	constructor(plugin: PersianCalendarPlugin) {
 		this.plugin = plugin;
-		this.dateFormat = plugin.setting.dateFormat;
+		this.pathBuilder = new NotePathBuilder(plugin);
 	}
 
 	private makeOutput(dash: string | null, label: string, link = true): string {
@@ -26,19 +27,28 @@ export default class SmartDateLinker {
 	}
 
 	private dateToDashByFormat(date: Date) {
-		return dateToDash(date, this.dateFormat === "gregorian" ? "gregorian" : "jalali");
+		return dateToDash(date, this.plugin.setting.dateFormat);
+	}
+
+	private makeDailyOutput(date: Date, label: string, link: boolean): string {
+		const display = this.dateToDashByFormat(date);
+		if (!link) return display ?? label;
+		const { jy, jm, jd } = dateToJalali(date);
+		const { filePath } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
+		return `[[${filePath.slice(0, -3)}|${label}]]`;
 	}
 
 	private adjustedDate(base: Date, days = 0, months = 0, years = 0): Date {
 		const d = new Date(base);
-		if (days) d.setDate(d.getDate() + days);
-		if (months) d.setMonth(d.getMonth() + months);
-		if (years) d.setFullYear(d.getFullYear() + years);
+		if (days) d.setUTCDate(d.getUTCDate() + days);
+		if (months) d.setUTCMonth(d.getUTCMonth() + months);
+		if (years) d.setUTCFullYear(d.getUTCFullYear() + years);
 		return d;
 	}
 
 	formatSmartDate(keyword: string, date: Date, local: TLocale = "fa", link = true): string {
-		const now = todayTehran();
+		const { gy, gm, gd } = dateToGregorian(date);
+		const now = gregorianToDate(gy, gm, gd);
 		const ERROR_LINK = "تاریخ شناسایی نشد";
 
 		const weekdaysName = WEEKDAYS_NAME[local];
@@ -51,14 +61,14 @@ export default class SmartDateLinker {
 			if (!weekdayEntry) return ERROR_LINK;
 
 			const weekdayIndex = Number(weekdayEntry[0]);
-			const todayIndex = now.getDay() === 6 ? 1 : now.getDay() + 2;
+			const todayIndex = now.getUTCDay() === 6 ? 1 : now.getUTCDay() + 2;
 			const daysOffset = (weekdayIndex - todayIndex + 7) % 7;
 			const extraWeeks = specifier.includes("بعد") ? 7 : specifier.includes("قبل") ? -7 : 0;
 
-			now.setDate(now.getDate() + daysOffset + extraWeeks);
+			now.setUTCDate(now.getUTCDate() + daysOffset + extraWeeks);
 
 			const label = weekdayName + (specifier ? ` ${specifier.trim()}` : "");
-			return this.makeOutput(this.dateToDashByFormat(now), label, link);
+			return this.makeDailyOutput(now, label, link);
 		}
 
 		const dayOffsets: Record<string, number> = {
@@ -70,11 +80,7 @@ export default class SmartDateLinker {
 		};
 
 		if (keyword in dayOffsets) {
-			return this.makeOutput(
-				this.dateToDashByFormat(this.adjustedDate(date, dayOffsets[keyword])),
-				keyword,
-				link,
-			);
+			return this.makeDailyOutput(this.adjustedDate(now, dayOffsets[keyword]), keyword, link);
 		}
 
 		type PeriodConfig = {
@@ -124,10 +130,9 @@ export default class SmartDateLinker {
 
 			onSelect: (value: string, ctx: EditorSuggestContext) => {
 				const query = typeof ctx === "string" ? ctx : ctx.query;
-				const normalized = query.startsWith("/") ? query.slice(1) : query;
 				const isPlain = query.startsWith("/");
 
-				return this.formatSmartDate(normalized || value, todayTehran(), "fa", !isPlain);
+				return this.formatSmartDate(value, todayTehran(), "fa", !isPlain);
 			},
 		};
 	}
