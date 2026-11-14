@@ -7,7 +7,7 @@ export function safeRender(containerEl: HTMLElement, label: string, fn: () => vo
 		fn();
 		return true;
 	} catch (error) {
-		Notice(`[Persian Calendar] Failed to render ${label}: ${error}`);
+		Notice(`[Persian Calendar] Failed to render ${label}: ${String(error)}`);
 		renderCalendarError(containerEl, error);
 		return false;
 	}

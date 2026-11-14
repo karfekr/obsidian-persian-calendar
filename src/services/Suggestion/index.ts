@@ -14,8 +14,8 @@ export default class Suggestion extends EditorSuggest<string> {
 	}
 
 	renderSuggestion(value: string, el: HTMLElement): void {
-		const container = el.createEl("div");
-		container.createEl("div", {
+		const container = el.createDiv();
+		container.createDiv({
 			text: value,
 		});
 	}

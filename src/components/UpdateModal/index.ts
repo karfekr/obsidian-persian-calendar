@@ -22,7 +22,7 @@ export default class UpdateModal extends Modal {
 		contentEl.classList.add("persian-calendar");
 		contentEl.setAttribute("dir", this.setting.language === "fa" ? "rtl" : "ltr");
 
-		const headerEl = contentEl.createEl("div", {
+		const headerEl = contentEl.createDiv({
 			cls: "persian-calendar__update-header",
 		});
 		setIcon(headerEl, "calendar-heart");
@@ -35,8 +35,8 @@ export default class UpdateModal extends Modal {
 		SocialLinks(contentEl);
 
 		this.notes.forEach((note) => {
-			const section = contentEl.createEl("div");
-			const header = section.createEl("div");
+			const section = contentEl.createDiv();
+			const header = section.createDiv();
 
 			const versionText =
 				this.setting.language === "fa" ? `نسخه ${note.version}` : `Version ${note.version}`;
@@ -49,7 +49,7 @@ export default class UpdateModal extends Modal {
 			const changesArray = note.changes[this.setting.language];
 
 			if (changesArray.length > 0) {
-				const changesContainer = section.createEl("div", {
+				const changesContainer = section.createDiv({
 					cls: "persian-calendar__update-body",
 				});
 
