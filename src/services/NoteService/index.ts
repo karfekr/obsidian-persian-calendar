@@ -292,13 +292,15 @@ export default class NoteService {
 		const file = this.getDailyNoteFile(jy, jm, jd);
 		if (!file) return;
 
-		const { dateString } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
-		const confirmed = await createNoteModal(this.app, {
-			title: t("modal.deleteDailyNote.title"),
-			message: t("modal.deleteDailyNote.message").replace("{date}", dateString),
-		});
+		if (this.plugin.setting.askForDeleteNote) {
+			const { dateString } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
+			const confirmed = await createNoteModal(this.app, {
+				title: t("modal.deleteDailyNote.title"),
+				message: t("modal.deleteDailyNote.message").replace("{date}", dateString),
+			});
 
-		if (!confirmed) return;
+			if (!confirmed) return;
+		}
 
 		try {
 			await this.app.fileManager.trashFile(file);

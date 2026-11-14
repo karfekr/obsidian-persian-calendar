@@ -51,6 +51,10 @@
 				"name": "Confirm Before Creating Notes",
 				"desc": "When enabled, a confirmation dialog will appear before creating any note."
 			},
+			"askBeforeDelete": {
+				"name": "Confirm Before Deleting Notes",
+				"desc": "Ask for confirmation before deleting calendar notes."
+			},
 			"openDailyOnStartup": {
 				"name": "Open Today's Daily Note on Startup",
 				"desc": "When enabled, Obsidian will automatically open today's daily note on launch."

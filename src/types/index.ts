@@ -65,6 +65,7 @@ export type TBoolSettingKeys = Extract<
 	| "showSunniEvents"
 	| "showGlobalEvents"
 	| "askForCreateNote"
+	| "askForDeleteNote"
 	| "openDailyNoteOnStartup"
 >;
 
@@ -84,6 +85,7 @@ export type TSetting = {
 	language: TLocale;
 	versionUpdate: boolean;
 	askForCreateNote: boolean;
+	askForDeleteNote: boolean;
 	openDailyNoteOnStartup: boolean;
 	dateFormat: TDateFormatWithoutHijri;
 	monthlyNoteNaming: TDateFormatWithoutHijri;
