@@ -115,7 +115,7 @@ export default class CalendarBodyRender {
 
 			const weekEl = weekNumbersEl.createDiv({
 				cls: "persian-calendar__week-number",
-				text: toFaNumber(String(weekNumber).padStart(2, "0")),
+				text: toFaNumber(weekNumber),
 			});
 
 			if (!getWeeksWithNotes(weekYear).includes(weekNumber)) {
