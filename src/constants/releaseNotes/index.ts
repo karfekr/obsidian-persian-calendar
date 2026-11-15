@@ -3,6 +3,13 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.13.0",
+		changes: {
+			fa: ["امکان باز کردن یادداشت‌ها از طریق منوی راست‌کلیک"],
+			en: ["open notes via right-click context menu"],
+		},
+	},
+	{
 		version: "4.12.0",
 		changes: {
 			fa: [
