@@ -241,6 +241,11 @@
 		}
 	},
 	"calendarView": {
+		"contextMenu": {
+			"openInNewTab": "Open in new tab",
+			"openInHorizontalSplit": "Open in horizontal split view",
+			"openInVerticalSplit": "Open in vertical split view"
+		},
 		"renderError": {
 			"title": "The calendar could not be displayed correctly",
 			"patternBody": "One of the dynamic note-path patterns could not be resolved.",
