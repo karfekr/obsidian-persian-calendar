@@ -251,6 +251,9 @@
 	},
 	"calendarView": {
 		"contextMenu": {
+			"openInNewTab": "Open in new tab",
+			"openInHorizontalSplit": "Open in horizontal split view",
+			"openInVerticalSplit": "Open in vertical split view",
 			"deleteDailyNote": "Delete"
 		},
 		"renderError": {

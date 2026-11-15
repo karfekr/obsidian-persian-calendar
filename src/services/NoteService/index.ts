@@ -4,7 +4,7 @@ import { createNoteModal, Notice } from "src/components";
 import { t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
 import NotePathBuilder from "src/services/NotePathBuilder";
-import type { TDateEngineContext, TJalali } from "src/types";
+import type { TDateEngineContext, TJalali, TOpenNoteMode } from "src/types";
 import { parsePattern } from "src/utils/dateEngine";
 import {
 	dateToJalali,
@@ -92,25 +92,51 @@ export default class NoteService {
 		return matchCount === 1 ? match : null;
 	}
 
-	private async openNoteInWorkspace(noteFile: TFile) {
-		const markdownLeaves = this.app.workspace.getLeavesOfType("markdown");
+	private async openNoteInWorkspace(noteFile: TFile, openMode: TOpenNoteMode = "current") {
+		if (openMode === "current") {
+			const markdownLeaves = this.app.workspace.getLeavesOfType("markdown");
 
-		const existingLeaf = markdownLeaves.find(
-			(leaf) => leaf.view instanceof MarkdownView && leaf.view.file === noteFile,
-		);
+			const existingLeaf = markdownLeaves.find(
+				(leaf) => leaf.view instanceof MarkdownView && leaf.view.file === noteFile,
+			);
 
-		if (existingLeaf) {
-			this.app.workspace.setActiveLeaf(existingLeaf, { focus: true });
+			if (existingLeaf) {
+				this.app.workspace.setActiveLeaf(existingLeaf, { focus: true });
+				return;
+			}
+
+			const leaf =
+				this.app.workspace.getActiveViewOfType(MarkdownView)?.leaf ??
+				this.app.workspace.getMostRecentLeaf();
+
+			if (leaf) {
+				await leaf.openFile(noteFile, { active: true });
+			}
 			return;
 		}
 
-		const leaf =
-			this.app.workspace.getActiveViewOfType(MarkdownView)?.leaf ??
-			this.app.workspace.getMostRecentLeaf();
-
-		if (leaf) {
-			await leaf.openFile(noteFile, { active: true });
+		const targetLeaf = this.getTargetLeafForOpenMode(openMode);
+		if (targetLeaf) {
+			await targetLeaf.openFile(noteFile, { active: true });
+			this.app.workspace.setActiveLeaf(targetLeaf, { focus: true });
 		}
+	}
+
+	private getTargetLeafForOpenMode(openMode: Exclude<TOpenNoteMode, "current">) {
+		if (openMode === "tab") {
+			return this.app.workspace.getLeaf("tab");
+		}
+
+		const direction = openMode === "split-horizontal" ? "horizontal" : "vertical";
+		const baseLeaf =
+			this.app.workspace.getActiveViewOfType(MarkdownView)?.leaf ??
+			this.app.workspace.getMostRecentLeaf(this.app.workspace.rootSplit);
+
+		if (baseLeaf) {
+			return this.app.workspace.createLeafBySplit(baseLeaf, direction);
+		}
+
+		return this.app.workspace.getLeaf("split", direction);
 	}
 
 	private async applyTemplateIfConfigured(
@@ -183,13 +209,14 @@ export default class NoteService {
 		confirmTitle: string;
 		confirmMessage: string;
 		noteType?: "daily" | "weekly" | "monthly" | "seasonal" | "yearly";
+		openMode?: TOpenNoteMode;
 	}) {
-		const { filePath, confirmTitle, confirmMessage, noteType } = options;
+		const { filePath, confirmTitle, confirmMessage, noteType, openMode = "current" } = options;
 
 		const existing = this.app.vault.getAbstractFileByPath(filePath);
 
 		if (existing instanceof TFile) {
-			await this.openNoteInWorkspace(existing);
+			await this.openNoteInWorkspace(existing, openMode);
 			return;
 		}
 
@@ -240,7 +267,7 @@ export default class NoteService {
 			}
 		}
 
-		await this.openNoteInWorkspace(createdFile);
+		await this.openNoteInWorkspace(createdFile, openMode);
 		this.plugin.refreshViews();
 	}
 
@@ -326,7 +353,12 @@ export default class NoteService {
 		return result;
 	}
 
-	public async openOrCreateDailyNote(jy: number, jm: number, jd: number) {
+	public async openOrCreateDailyNote(
+		jy: number,
+		jm: number,
+		jd: number,
+		openMode: TOpenNoteMode = "current",
+	) {
 		const { filePath, dateString } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
 
 		const lang = this.plugin.setting.language;
@@ -341,10 +373,15 @@ export default class NoteService {
 			confirmTitle,
 			confirmMessage,
 			noteType: "daily",
+			openMode,
 		});
 	}
 
-	public async openOrCreateWeeklyNote(jy: number, weekNumber: number) {
+	public async openOrCreateWeeklyNote(
+		jy: number,
+		weekNumber: number,
+		openMode: TOpenNoteMode = "current",
+	) {
 		const filePath =
 			this.getWeeklyNoteFile(jy, weekNumber)?.path ??
 			this.pathBuilder.buildWeeklyNotePath(jy, weekNumber).filePath;
@@ -362,10 +399,15 @@ export default class NoteService {
 			confirmTitle,
 			confirmMessage,
 			noteType: "weekly",
+			openMode,
 		});
 	}
 
-	public async openOrCreateMonthlyNote(jy: number, jm: number) {
+	public async openOrCreateMonthlyNote(
+		jy: number,
+		jm: number,
+		openMode: TOpenNoteMode = "current",
+	) {
 		const { filePath, jMonthName } = this.pathBuilder.buildMonthlyNotePath(jy, jm);
 
 		const lang = this.plugin.setting.language;
@@ -380,10 +422,15 @@ export default class NoteService {
 			confirmTitle,
 			confirmMessage,
 			noteType: "monthly",
+			openMode,
 		});
 	}
 
-	public async openOrCreateSeasonalNote(jy: number, seasonNumber: number) {
+	public async openOrCreateSeasonalNote(
+		jy: number,
+		seasonNumber: number,
+		openMode: TOpenNoteMode = "current",
+	) {
 		const { filePath, seasonName } = this.pathBuilder.buildSeasonalNotePath(jy, seasonNumber);
 
 		const lang = this.plugin.setting.language;
@@ -398,10 +445,11 @@ export default class NoteService {
 			confirmTitle,
 			confirmMessage,
 			noteType: "seasonal",
+			openMode,
 		});
 	}
 
-	public async openOrCreateYearlyNote(jy: number) {
+	public async openOrCreateYearlyNote(jy: number, openMode: TOpenNoteMode = "current") {
 		const { filePath } = this.pathBuilder.buildYearlyNotePath(jy);
 
 		const lang = this.plugin.setting.language;
@@ -414,6 +462,7 @@ export default class NoteService {
 			confirmTitle,
 			confirmMessage,
 			noteType: "yearly",
+			openMode,
 		});
 	}
 }

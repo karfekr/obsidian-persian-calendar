@@ -1,5 +1,5 @@
 import type { CalendarDate } from "@internationalized/date";
-import { Menu, setIcon } from "obsidian";
+import { setIcon } from "obsidian";
 import { Notice } from "src/components";
 import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { getDirection, t } from "src/languages";
@@ -11,6 +11,7 @@ import { dateToEvents } from "src/utils/eventUtils";
 import { toArNumber, toFaNumber } from "src/utils/formatters";
 
 import type CalendarNavigation from "../CalendarNavigation";
+import { openNoteContextMenu } from "../noteContextMenu";
 import GridService from "./GridService";
 import Tooltip from "./Tooltip";
 
@@ -62,6 +63,12 @@ export default class CalendarBodyRender {
 
 			seasonEl.addEventListener("click", () => {
 				void this.notesService.openOrCreateSeasonalNote(jYearState, seasonNumber);
+			});
+
+			seasonEl.addEventListener("contextmenu", (e) => {
+				openNoteContextMenu(e, (openMode) => {
+					void this.notesService.openOrCreateSeasonalNote(jYearState, seasonNumber, openMode);
+				});
 			});
 		}
 	}
@@ -124,6 +131,12 @@ export default class CalendarBodyRender {
 
 			weekEl.addEventListener("click", () => {
 				void this.notesService.openOrCreateWeeklyNote(weekYear, weekNumber);
+			});
+
+			weekEl.addEventListener("contextmenu", (e) => {
+				openNoteContextMenu(e, (openMode) => {
+					void this.notesService.openOrCreateWeeklyNote(weekYear, weekNumber, openMode);
+				});
 			});
 		}
 	}
@@ -282,23 +295,20 @@ export default class CalendarBodyRender {
 				}
 			});
 
-			dayEl.addEventListener("contextmenu", (event) => {
+			dayEl.addEventListener("contextmenu", (e) => {
+				this.tooltip.hideTooltip();
 				const file = this.notesService.getDailyNoteFile(cell.jy, cell.jm, cell.jd);
-				if (!file) return;
-
-				event.preventDefault();
-				event.stopPropagation();
-
-				const menu = new Menu();
-				menu.addItem((item) =>
-					item
-						.setTitle(t("calendarView.contextMenu.deleteDailyNote"))
-						.setIcon("trash")
-						.onClick(() => {
-							void this.notesService.deleteDailyNote(cell.jy, cell.jm, cell.jd);
-						}),
+				openNoteContextMenu(
+					e,
+					(openMode) => {
+						void this.notesService.openOrCreateDailyNote(cell.jy, cell.jm, cell.jd, openMode);
+					},
+					file
+						? () => {
+								void this.notesService.deleteDailyNote(cell.jy, cell.jm, cell.jd);
+							}
+						: undefined,
 				);
-				menu.showAtMouseEvent(event);
 			});
 
 			if (cell.isInCurrentMonth) {

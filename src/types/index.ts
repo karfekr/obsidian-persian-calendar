@@ -249,3 +249,5 @@ export type TToken =
 	| "jD"
 	| "ww"
 	| "w";
+
+export type TOpenNoteMode = "current" | "tab" | "split-horizontal" | "split-vertical";

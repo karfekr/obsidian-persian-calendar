@@ -249,6 +249,9 @@
 	},
 	"calendarView": {
 		"contextMenu": {
+			"openInNewTab": "باز کردن در تب جدید",
+			"openInHorizontalSplit": "باز کردن در نمای دوتایی افقی",
+			"openInVerticalSplit": "باز کردن در نمای دوتایی عمودی",
 			"deleteDailyNote": "حذف"
 		},
 		"renderError": {
