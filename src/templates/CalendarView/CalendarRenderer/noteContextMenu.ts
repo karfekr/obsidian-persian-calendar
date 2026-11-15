@@ -1,5 +1,5 @@
 import { Menu } from "obsidian";
-import { t } from "src/languages";
+import { getDirection, t } from "src/languages";
 import type { TOpenNoteMode } from "src/types";
 
 export function openNoteContextMenu(
@@ -11,6 +11,10 @@ export function openNoteContextMenu(
 	event.stopPropagation();
 
 	const menu = new Menu();
+	menu.setUseNativeMenu(false);
+	const menuEl = (menu as Menu & { dom: HTMLElement }).dom;
+	menuEl.setAttribute("dir", getDirection());
+	menuEl.style.textAlign = "start";
 
 	menu.addItem((item) => {
 		item
