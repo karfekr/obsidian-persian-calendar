@@ -10,6 +10,7 @@ import { dateToEvents } from "src/utils/eventUtils";
 import { toArNumber, toFaNumber } from "src/utils/formatters";
 
 import type CalendarNavigation from "../CalendarNavigation";
+import { openNoteContextMenu } from "../noteContextMenu";
 import GridService from "./GridService";
 import Tooltip from "./Tooltip";
 
@@ -61,6 +62,12 @@ export default class CalendarBodyRender {
 
 			seasonEl.addEventListener("click", () => {
 				void this.notesService.openOrCreateSeasonalNote(jYearState, seasonNumber);
+			});
+
+			seasonEl.addEventListener("contextmenu", (e) => {
+				openNoteContextMenu(e, (openMode) => {
+					void this.notesService.openOrCreateSeasonalNote(jYearState, seasonNumber, openMode);
+				});
 			});
 		}
 	}
@@ -123,6 +130,12 @@ export default class CalendarBodyRender {
 
 			weekEl.addEventListener("click", () => {
 				void this.notesService.openOrCreateWeeklyNote(weekYear, weekNumber);
+			});
+
+			weekEl.addEventListener("contextmenu", (e) => {
+				openNoteContextMenu(e, (openMode) => {
+					void this.notesService.openOrCreateWeeklyNote(weekYear, weekNumber, openMode);
+				});
 			});
 		}
 	}
@@ -279,6 +292,13 @@ export default class CalendarBodyRender {
 					this.navigation.changeMonth("next");
 					return;
 				}
+			});
+
+			dayEl.addEventListener("contextmenu", (e) => {
+				this.tooltip.hideTooltip();
+				openNoteContextMenu(e, (openMode) => {
+					void this.notesService.openOrCreateDailyNote(cell.jy, cell.jm, cell.jd, openMode);
+				});
 			});
 
 			if (cell.isInCurrentMonth) {

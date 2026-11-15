@@ -8,6 +8,7 @@ import { jalaliMonthName } from "src/utils/dateUtils";
 import { toFaNumber } from "src/utils/formatters";
 
 import type CalendarNavigation from "../CalendarNavigation";
+import { openNoteContextMenu } from "../noteContextMenu";
 
 export default class CalendarHeaderRender {
 	constructor(
@@ -85,12 +86,24 @@ export default class CalendarHeaderRender {
 			void this.notesService.openOrCreateYearlyNote(jYearState);
 		});
 
+		yearEl.addEventListener("contextmenu", (e) => {
+			openNoteContextMenu(e, (openMode) => {
+				void this.notesService.openOrCreateYearlyNote(jYearState, openMode);
+			});
+		});
+
 		const monthName = jalaliMonthName(jMonthState, this.setting.language);
 		monthEl.textContent = monthName;
 
 		monthEl.addEventListener("click", (e) => {
 			e.stopPropagation();
 			void this.notesService.openOrCreateMonthlyNote(jYearState, jMonthState);
+		});
+
+		monthEl.addEventListener("contextmenu", (e) => {
+			openNoteContextMenu(e, (openMode) => {
+				void this.notesService.openOrCreateMonthlyNote(jYearState, jMonthState, openMode);
+			});
 		});
 
 		const navContainerEl = stateControlEl.createDiv({

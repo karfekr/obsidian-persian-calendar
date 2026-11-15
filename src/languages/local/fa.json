@@ -239,6 +239,11 @@
 		}
 	},
 	"calendarView": {
+		"contextMenu": {
+			"openInNewTab": "باز کردن در تب جدید",
+			"openInHorizontalSplit": "باز کردن در نمای دوتایی افقی",
+			"openInVerticalSplit": "باز کردن در نمای دوتایی عمودی"
+		},
 		"renderError": {
 			"title": "امکان نمایش درست تقویم وجود ندارد",
 			"patternBody": "یکی از الگوهای مسیردهی پویا قابل تبدیل نبود.",
