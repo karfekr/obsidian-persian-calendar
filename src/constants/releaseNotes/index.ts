@@ -3,19 +3,53 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "4.12.0",
+		changes: {
+			fa: [
+				"افزودن تنظیم تأیید پیش از حذف یادداشت‌های تقویمی",
+				"حذف صفر ابتدایی از شماره هفته‌ها در نمایش تقویم",
+				"افزودن عبارات معنادار جدید: {{شماره هفته یادداشت}} و {{شماره هفته جاری}}",
+				"بهبود پلاگین طبق پیشنهادات جدید Obsidian Scorecard",
+			],
+			en: [
+				"Added a setting to confirm before deleting calendar notes",
+				"Removed leading zeros from week numbers in the calendar",
+				"Added {{شماره هفته یادداشت}} and {{شماره هفته جاری}} placeholders",
+				"Improve the plugin based on the latest Obsidian Scorecard recommendations",
+			],
+		},
+	},
+	{
+		version: "4.11.0",
+		changes: {
+			fa: [
+				"افزودن قابلیت حذف یادداشت روزانه از طریق منوی راست‌کلیک روی روزهای تقویم، همراه با تأیید پیش از انتقال فایل به سطل زباله.",
+				"بهبود یکپارچه‌سازی نام هفته‌نوشت به صورت دورقمه",
+				"برطرف کردن باگ پلاگین روی زمانبندی تهران",
+				"حالا عبارات @ به نوع نام‌گذاری روزنوشت وابسته هستند",
+			],
+			en: [
+				"Added the ability to delete daily notes from the calendar's right-click context menu, with confirmation before moving the file to the trash.",
+				"Standardized weekly note naming with consistent two-digit week numbers.",
+				"Fixed timezone-related issues by consistently using the Asia/Tehran timezone.",
+				"Updated @ date mentions to respect the configured daily note naming format.",
+			],
+		},
+	},
+	{
 		version: "4.10.0",
 		changes: {
 			fa: [
-				"رفع مشکل جایگزین نشدن عبارات معنایی مرتبط با تاریخ یادداشت در قالب یادداشت‌های روزانه.",
-				"رفع مشکل تشخیص نادرست تاریخ یادداشت هنگام تفاوت تقویم نام فایل با تقویم عبارات معنایی.",
-				"بهبود تشخیص تاریخ یادداشت در مسیرها و فرمت‌های نام‌گذاری سفارشی.",
-				"بهبود اعتبارسنجی و تبدیل تاریخ‌های شمسی و میلادی.",
+				"رفع مشکل جایگزین نشدن عبارات معنادار مرتبط با تاریخ یادداشت در روزنوشت‌ها",
+				"رفع مشکل تشخیص نادرست تاریخ یادداشت هنگام تفاوت نام فایل با عبارات معنایی",
+				"بهبود تشخیص تاریخ یادداشت در مسیرها و فرمت‌های نام‌گذاری سفارشی",
+				"بهبود اعتبارسنجی و تبدیل تاریخ‌های شمسی و میلادی",
 			],
 			en: [
-				"Fixed unresolved note-date placeholders in daily note templates.",
-				"Fixed incorrect note-date parsing when the filename calendar differs from the semantic expressions calendar.",
-				"Improved note-date detection for custom paths and filename formats.",
-				"Improved Jalali and Gregorian date validation and conversion.",
+				"Fixed unresolved note-date placeholders in daily note templates",
+				"Fixed incorrect note-date parsing when the filename calendar differs from the semantic expressions calendar",
+				"Improved note-date detection for custom paths and filename formats",
+				"Improved Jalali and Gregorian date validation and conversion",
 			],
 		},
 	},

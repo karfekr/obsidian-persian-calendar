@@ -1,11 +1,18 @@
 import type { App } from "obsidian";
 import { MarkdownView, TFile, TFolder } from "obsidian";
 import { createNoteModal, Notice } from "src/components";
+import { t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
 import NotePathBuilder from "src/services/NotePathBuilder";
 import type { TDateEngineContext, TJalali, TOpenNoteMode } from "src/types";
 import { parsePattern } from "src/utils/dateEngine";
-import { gregorianToJalali, jalaliMonthLength, jalaliToGregorian } from "src/utils/dateUtils";
+import {
+	dateToJalali,
+	gregorianToJalali,
+	jalaliMonthLength,
+	jalaliToGregorian,
+	todayTehran,
+} from "src/utils/dateUtils";
 
 export default class NoteService {
 	private readonly pathBuilder: NotePathBuilder;
@@ -54,11 +61,7 @@ export default class NoteService {
 	}
 
 	private searchMatchingDate(ctx: TDateEngineContext): TJalali | null {
-		const today = gregorianToJalali(
-			new Date().getFullYear(),
-			new Date().getMonth() + 1,
-			new Date().getDate(),
-		);
+		const today = dateToJalali(todayTehran());
 
 		const anchorJy = ctx.jy ?? (ctx.gy !== undefined ? ctx.gy - 621 : today.jy);
 
@@ -153,7 +156,7 @@ export default class NoteService {
 				await this.app.vault.modify(file, templateContent);
 			}
 		} catch (error) {
-			Notice(`Error applying template for ${noteType}: ${error}`);
+			Notice(`Error applying template for ${noteType}: ${String(error)}`);
 		}
 	}
 
@@ -272,14 +275,24 @@ export default class NoteService {
 		const result: number[] = [];
 
 		for (let weekNumber = 1; weekNumber <= 53; weekNumber++) {
-			const { filePath } = this.pathBuilder.buildWeeklyNotePath(jy, weekNumber);
-			const file = this.app.vault.getAbstractFileByPath(filePath);
-			if (file instanceof TFile) {
+			if (this.getWeeklyNoteFile(jy, weekNumber)) {
 				result.push(weekNumber);
 			}
 		}
 
 		return result;
+	}
+
+	public getWeeklyNoteFile(jy: number, weekNumber: number): TFile | null {
+		const { filePath, fileName } = this.pathBuilder.buildWeeklyNotePath(jy, weekNumber);
+		const file = this.app.vault.getAbstractFileByPath(filePath);
+		if (file instanceof TFile) return file;
+		if (weekNumber >= 10) return null;
+
+		// Reuse older unpadded filenames without renaming notes.
+		const legacyPath = `${filePath.slice(0, -fileName.length)}${jy}-W${weekNumber}.md`;
+		const legacy = this.app.vault.getAbstractFileByPath(legacyPath);
+		return legacy instanceof TFile ? legacy : null;
 	}
 
 	public getSeasonsWithNotes(jy: number): number[] {
@@ -294,6 +307,34 @@ export default class NoteService {
 		}
 
 		return result;
+	}
+
+	public getDailyNoteFile(jy: number, jm: number, jd: number): TFile | null {
+		const { filePath } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
+		const file = this.app.vault.getAbstractFileByPath(filePath);
+		return file instanceof TFile ? file : null;
+	}
+
+	public async deleteDailyNote(jy: number, jm: number, jd: number) {
+		const file = this.getDailyNoteFile(jy, jm, jd);
+		if (!file) return;
+
+		if (this.plugin.setting.askForDeleteNote) {
+			const { dateString } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
+			const confirmed = await createNoteModal(this.app, {
+				title: t("modal.deleteDailyNote.title"),
+				message: t("modal.deleteDailyNote.message").replace("{date}", dateString),
+			});
+
+			if (!confirmed) return;
+		}
+
+		try {
+			await this.app.fileManager.trashFile(file);
+			this.plugin.refreshViews();
+		} catch {
+			Notice(t("notice.error.dailyNoteDeleteFailed"));
+		}
 	}
 
 	public getDaysWithNotes(jy: number, jm: number): number[] {
@@ -341,14 +382,17 @@ export default class NoteService {
 		weekNumber: number,
 		openMode: TOpenNoteMode = "current",
 	) {
-		const { filePath } = this.pathBuilder.buildWeeklyNotePath(jy, weekNumber);
+		const filePath =
+			this.getWeeklyNoteFile(jy, weekNumber)?.path ??
+			this.pathBuilder.buildWeeklyNotePath(jy, weekNumber).filePath;
+		const weekLabel = String(weekNumber).padStart(2, "0");
 
 		const lang = this.plugin.setting.language;
 		const confirmTitle = lang === "fa" ? "ایجاد هفته‌نوشت جدید" : "Create New Weekly Note";
 		const confirmMessage =
 			lang === "fa"
-				? `هفته‌نوشت هفته‌ی ${weekNumber}ام سال ${jy} ایجاد شود؟`
-				: `Create weekly note for week ${weekNumber} of ${jy}?`;
+				? `هفته‌نوشت هفته‌ی ${weekLabel}ام سال ${jy} ایجاد شود؟`
+				: `Create weekly note for week ${weekLabel} of ${jy}?`;
 
 		await this.openOrCreateNoteWithConfirm({
 			filePath,

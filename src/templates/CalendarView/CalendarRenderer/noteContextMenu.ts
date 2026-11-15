@@ -5,6 +5,7 @@ import type { TOpenNoteMode } from "src/types";
 export function openNoteContextMenu(
 	event: MouseEvent,
 	onOpen: (openMode: TOpenNoteMode) => void,
+	onDelete?: () => void,
 ): void {
 	event.preventDefault();
 	event.stopPropagation();
@@ -37,6 +38,18 @@ export function openNoteContextMenu(
 				onOpen("split-vertical");
 			});
 	});
+
+	if (onDelete) {
+		menu.addSeparator();
+		menu.addItem((item) => {
+			item
+				.setTitle(t("calendarView.contextMenu.deleteDailyNote"))
+				.setIcon("trash")
+				.onClick(() => {
+					onDelete();
+				});
+		});
+	}
 
 	menu.showAtMouseEvent(event);
 }

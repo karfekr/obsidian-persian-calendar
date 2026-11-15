@@ -10,6 +10,7 @@ const SETTING_EFFECTS: Partial<Record<keyof TSetting, EffectKind>> = {
 	language: "language",
 	dateFormat: "refresh-immediate",
 	askForCreateNote: "refresh-immediate",
+	askForDeleteNote: "refresh-immediate",
 	openDailyNoteOnStartup: "refresh-immediate",
 	showSeasonalNotes: "refresh-immediate",
 

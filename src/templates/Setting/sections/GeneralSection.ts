@@ -36,6 +36,11 @@ export function getGeneralSettings(): SettingDefinitionItem[] {
 					control: { type: "toggle", key: "askForCreateNote" },
 				},
 				{
+					name: t("setting.general.askBeforeDelete.name"),
+					desc: t("setting.general.askBeforeDelete.desc"),
+					control: { type: "toggle", key: "askForDeleteNote" },
+				},
+				{
 					name: t("setting.general.openDailyOnStartup.name"),
 					desc: t("setting.general.openDailyOnStartup.desc"),
 					control: { type: "toggle", key: "openDailyNoteOnStartup" },

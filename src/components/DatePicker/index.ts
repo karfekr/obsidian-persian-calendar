@@ -1,21 +1,25 @@
+import { CalendarDate, PersianCalendar, toCalendar } from "@internationalized/date";
 import type { App } from "obsidian";
 import { Modal, setIcon } from "obsidian";
 import { JALALI_MONTHS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { t } from "src/languages";
-import type { TDateFormat, TJalali, TSetting } from "src/types";
+import type { TDateFormat, TSetting } from "src/types";
 import {
 	dateToJalali,
-	gregorianToDate,
-	gregorianToJalali,
+	getWeekdayTehran,
+	gregorianToCalendarDate,
 	jalaliMonthLength,
+	jalaliToCalendarDate,
 	jalaliToGregorian,
 	todayTehran,
 } from "src/utils/dateUtils";
 import { extractDayFormat, toDayFormat, toFaNumber } from "src/utils/formatters";
 
+const persian = new PersianCalendar();
+
 export default class DatePicker extends Modal {
 	private setting: TSetting;
-	private currentJalali: TJalali;
+	private currentJalali: CalendarDate;
 	private onSelect: (val: string) => void;
 	private outputMode: TDateFormat;
 
@@ -29,39 +33,26 @@ export default class DatePicker extends Modal {
 			const parsedDate = extractDayFormat(initial);
 			if (parsedDate) {
 				if (parsedDate.year > 1700) {
-					const gregorianDate = gregorianToDate(parsedDate.year, parsedDate.month, parsedDate.day);
-					if (!Number.isNaN(gregorianDate.getTime())) {
-						const jalaliDate = gregorianToJalali(
-							gregorianDate.getFullYear(),
-							gregorianDate.getMonth() + 1,
-							gregorianDate.getDate(),
-						);
-						this.currentJalali = {
-							jy: jalaliDate.jy,
-							jm: jalaliDate.jm,
-							jd: jalaliDate.jd,
-						};
-						this.outputMode = "gregorian";
-					} else {
-						this.currentJalali = dateToJalali(todayTehran());
-					}
+					const gregorianDate = gregorianToCalendarDate(
+						parsedDate.year,
+						parsedDate.month,
+						parsedDate.day,
+					);
+					this.currentJalali = toCalendar(gregorianDate, persian);
+					this.outputMode = "gregorian";
 				} else {
 					const jalaliMonth = Math.min(Math.max(1, parsedDate.month), 12);
 					const maxDaysInMonth = jalaliMonthLength(parsedDate.year, jalaliMonth);
 					const jalaliDay = Math.min(Math.max(1, parsedDate.day), maxDaysInMonth);
-					this.currentJalali = {
-						jy: parsedDate.year,
-						jm: jalaliMonth,
-						jd: jalaliDay,
-					};
+					this.currentJalali = new CalendarDate(persian, parsedDate.year, jalaliMonth, jalaliDay);
 					this.outputMode = "jalali";
 				}
 			} else {
-				this.currentJalali = dateToJalali(todayTehran());
+				this.currentJalali = toCalendar(todayTehran(), persian);
 				this.outputMode = "gregorian";
 			}
 		} else {
-			this.currentJalali = dateToJalali(todayTehran());
+			this.currentJalali = toCalendar(todayTehran(), persian);
 			this.outputMode = "gregorian";
 		}
 
@@ -139,7 +130,7 @@ export default class DatePicker extends Modal {
 		// Month and year title
 		header.createSpan({
 			cls: "persian-calendar__datepicker-jmonth",
-			text: `${this.getMonthName(this.currentJalali.jm)} ${this.getYear(this.currentJalali.jy)}`,
+			text: `${this.getMonthName(this.currentJalali.month)} ${this.getYear(this.currentJalali.year)}`,
 		});
 
 		// Next month button
@@ -181,20 +172,16 @@ export default class DatePicker extends Modal {
 			weekdayEl.setAttribute("role", "columnheader");
 		});
 
-		const firstDayGregorian = jalaliToGregorian(this.currentJalali.jy, this.currentJalali.jm, 1);
-
-		const firstDayJavascript = new Date(
-			firstDayGregorian.gy,
-			firstDayGregorian.gm - 1,
-			firstDayGregorian.gd,
-		).getDay();
+		const firstDayJavascript = getWeekdayTehran(
+			jalaliToCalendarDate(this.currentJalali.year, this.currentJalali.month, 1),
+		);
 
 		const startDayOffset = (firstDayJavascript + 1) % 7;
 
 		const previousMonth = this.currentJalali;
-		const previousMonthLength = jalaliMonthLength(previousMonth.jy, previousMonth.jm);
+		const previousMonthLength = jalaliMonthLength(previousMonth.year, previousMonth.month);
 
-		const currentMonthLength = jalaliMonthLength(this.currentJalali.jy, this.currentJalali.jm);
+		const currentMonthLength = jalaliMonthLength(this.currentJalali.year, this.currentJalali.month);
 
 		const totalCells = 42;
 		const currentMonthCells = currentMonthLength;
@@ -215,11 +202,11 @@ export default class DatePicker extends Modal {
 		const today = dateToJalali(todayTehran());
 
 		for (let day = 1; day <= currentMonthLength; day++) {
-			const isSelected = day === this.currentJalali.jd;
+			const isSelected = day === this.currentJalali.day;
 
 			const isToday =
-				today.jy === this.currentJalali.jy &&
-				today.jm === this.currentJalali.jm &&
+				today.jy === this.currentJalali.year &&
+				today.jm === this.currentJalali.month &&
 				today.jd === day;
 
 			const classList = ["persian-calendar__datepicker-day"];
@@ -299,56 +286,30 @@ export default class DatePicker extends Modal {
 	}
 
 	private selectDay(day: number) {
-		this.currentJalali.jd = day;
-		const gregorianDate = jalaliToGregorian(this.currentJalali.jy, this.currentJalali.jm, day);
+		this.currentJalali = this.currentJalali.set({ day });
+		const gregorianDate = jalaliToGregorian(this.currentJalali.year, this.currentJalali.month, day);
 
 		const formattedOutput =
 			this.outputMode === "gregorian"
 				? toDayFormat(gregorianDate.gy, gregorianDate.gm, gregorianDate.gd)
-				: toDayFormat(this.currentJalali.jy, this.currentJalali.jm, day);
+				: toDayFormat(this.currentJalali.year, this.currentJalali.month, day);
 
 		this.onSelect(formattedOutput);
 		this.close();
 	}
 
 	private goToCurrent() {
-		const today = dateToJalali(todayTehran());
-		this.currentJalali = { jy: today.jy, jm: today.jm, jd: today.jd };
+		this.currentJalali = toCalendar(todayTehran(), persian);
 		this.render();
 	}
 
 	private shiftMonth(delta: number) {
-		let { jy: year, jm: month, jd: day } = this.currentJalali;
-
-		month += delta;
-
-		if (month < 1) {
-			month = 12;
-			year--;
-		} else if (month > 12) {
-			month = 1;
-			year++;
-		}
-
-		// Adjust day if it exceeds the maximum for the new month
-		const maxDaysInMonth = jalaliMonthLength(year, month);
-		day = Math.min(day, maxDaysInMonth);
-
-		this.currentJalali = { jy: year, jm: month, jd: day };
+		this.currentJalali = this.currentJalali.add({ months: delta });
 		this.render();
 	}
 
 	private shiftYear(delta: number) {
-		let { jy: year, jd: day } = this.currentJalali;
-		const { jm: month } = this.currentJalali;
-
-		year += delta;
-
-		// Adjust day if it exceeds the maximum for the new month in the new year
-		const maxDaysInMonth = jalaliMonthLength(year, month);
-		day = Math.min(day, maxDaysInMonth);
-
-		this.currentJalali = { jy: year, jm: month, jd: day };
+		this.currentJalali = this.currentJalali.add({ years: delta });
 		this.render();
 	}
 }

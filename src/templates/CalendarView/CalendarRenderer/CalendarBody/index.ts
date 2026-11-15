@@ -1,3 +1,4 @@
+import type { CalendarDate } from "@internationalized/date";
 import { setIcon } from "obsidian";
 import { Notice } from "src/components";
 import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
@@ -163,7 +164,7 @@ export default class CalendarBodyRender {
 
 		const cells = this.gridService.buildMonthGrid(jy, jm);
 
-		const attachTooltipListeners = (dayEl: HTMLElement, date: Date) => {
+		const attachTooltipListeners = (dayEl: HTMLElement, date: CalendarDate) => {
 			const handler = (e: MouseEvent | TouchEvent) => {
 				const events = dateToEvents(date, {
 					showEvents: this.setting,
@@ -296,9 +297,18 @@ export default class CalendarBodyRender {
 
 			dayEl.addEventListener("contextmenu", (e) => {
 				this.tooltip.hideTooltip();
-				openNoteContextMenu(e, (openMode) => {
-					void this.notesService.openOrCreateDailyNote(cell.jy, cell.jm, cell.jd, openMode);
-				});
+				const file = this.notesService.getDailyNoteFile(cell.jy, cell.jm, cell.jd);
+				openNoteContextMenu(
+					e,
+					(openMode) => {
+						void this.notesService.openOrCreateDailyNote(cell.jy, cell.jm, cell.jd, openMode);
+					},
+					file
+						? () => {
+								void this.notesService.deleteDailyNote(cell.jy, cell.jm, cell.jd);
+							}
+						: undefined,
+				);
 			});
 
 			if (cell.isInCurrentMonth) {

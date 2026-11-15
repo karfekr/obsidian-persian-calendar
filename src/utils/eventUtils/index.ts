@@ -1,7 +1,8 @@
+import type { CalendarDate } from "@internationalized/date";
 import type { CategoryType, EventType } from "persian-holidays";
 import { getEvents } from "persian-holidays";
 import type { TDateFormat, THijriBase, TLocale, TShowEvents } from "src/types";
-import { dashToDate } from "src/utils/dashUtils";
+import { dashToCalendarDate } from "src/utils/dashUtils";
 import { dateToGregorian, dateToHijri, dateToJalali } from "src/utils/dateUtils";
 
 import { setUmalquraEventAdapter } from "./eventAdapter";
@@ -31,9 +32,9 @@ function uniqueEvents(events: EventType[]): EventType[] {
 	});
 }
 
-// (Date) => Events[]
+// (CalendarDate) => Events[]
 export function dateToEvents(
-	date: Date,
+	date: CalendarDate,
 	option?: { showEvents?: TShowEvents; hijriBase?: THijriBase },
 ): EventType[] {
 	const showEvents = option?.showEvents ?? {
@@ -88,8 +89,8 @@ export function dateToEvents(
 	return uniqueEvents([...jalaliEvents, ...hijriEvents, ...gregorianEvents]);
 }
 
-// (Date) => (is holiday?)true|false
-export function checkHoliday(date: Date): boolean {
+// (CalendarDate) => (is holiday?)true|false
+export function checkHoliday(date: CalendarDate): boolean {
 	const showEvents: TShowEvents = {
 		showIROfficialEvents: true,
 		showIRHistoricalEvents: true,
@@ -109,7 +110,7 @@ export function dashToEvents(
 	dateFormat: TDateFormat,
 	option?: { showEvents?: TShowEvents; hijriBase?: THijriBase },
 ): EventType[] | null {
-	const date = dashToDate(dashDate, dateFormat);
+	const date = dashToCalendarDate(dashDate, dateFormat);
 	if (!date) return null;
 
 	return dateToEvents(date, { showEvents: option?.showEvents, hijriBase: option?.hijriBase });

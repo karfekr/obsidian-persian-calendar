@@ -1,52 +1,35 @@
-import { CalendarDate, now } from "@internationalized/date";
+import { CalendarDate, GregorianCalendar, getDayOfWeek, toCalendar } from "@internationalized/date";
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 import type { TGetGregorianDayOfWeek, TGregorian, TLocale, TWeekStart } from "src/types";
+import { TEHRAN_TZ } from "../tehran";
 
-const TEHRAN_TZ = "Asia/Tehran";
+const gregorian = new GregorianCalendar();
 
-export function todayTehran(): Date {
-	const zdt = now(TEHRAN_TZ);
-	return new Date(Date.UTC(zdt.year, zdt.month - 1, zdt.day, 12, 0, 0));
+export { todayTehran } from "../tehran";
+
+export function gregorianToCalendarDate(gy: number, gm: number, gd: number): CalendarDate {
+	return new CalendarDate(gy, 1, 1).add({ months: gm - 1, days: gd - 1 });
 }
 
-export function gregorianToDate(gy: number, gm: number, gd: number) {
-	return new Date(Date.UTC(gy, gm - 1, gd, 12, 0, 0));
-}
-
-export function dateToGregorian(date: Date): TGregorian {
-	const parts = new Intl.DateTimeFormat("en-US", {
-		timeZone: TEHRAN_TZ,
-		year: "numeric",
-		month: "numeric",
-		day: "numeric",
-	}).formatToParts(date);
-
-	const get = (t: string) => Number(parts.find((p) => p.type === t)?.value);
-
-	return {
-		gy: get("year"),
-		gm: get("month"),
-		gd: get("day"),
-	};
+export function dateToGregorian(date: CalendarDate): TGregorian {
+	const g = toCalendar(date, gregorian);
+	return { gy: g.year, gm: g.month, gd: g.day };
 }
 
 export function gregorianDayOfWeek(gy: number, gm: number, gd: number): number {
-	const jsDay = gregorianToDate(gy, gm, gd).getUTCDay();
-	return jsDay === 6 ? 1 : jsDay + 2;
+	const day = getWeekdayTehran(new CalendarDate(gy, gm, gd));
+	return day === 6 ? 1 : day + 2;
 }
 
-export function dateToWeekdayName(date: Date, local: TLocale = "fa"): string {
-	const locale = local === "fa" ? "fa-IR" : "en-US";
-
-	return new Intl.DateTimeFormat(locale, {
+export function dateToWeekdayName(date: CalendarDate, local: TLocale = "fa"): string {
+	return new Intl.DateTimeFormat(local === "fa" ? "fa-IR" : "en-US", {
 		weekday: "long",
 		timeZone: TEHRAN_TZ,
-	}).format(date);
+	}).format(date.toDate(TEHRAN_TZ));
 }
 
-export function getWeekdayTehran(date: Date): number {
-	const tehranDate = new Date(date.toLocaleString("en-US", { timeZone: TEHRAN_TZ }));
-	return tehranDate.getDay();
+export function getWeekdayTehran(date: CalendarDate): number {
+	return getDayOfWeek(date, "en-US", "sun");
 }
 
 export const weekStartNumber = (weekStart: TWeekStart): number =>
@@ -70,10 +53,8 @@ export function seasonName(season: number, local: TLocale = "fa") {
 	return SEASONS_NAME[local][season];
 }
 
-export function addDayDate(date: Date, days: number): Date {
-	const result = new Date(date);
-	result.setUTCDate(result.getUTCDate() + days);
-	return result;
+export function addCalendarDays(date: CalendarDate, days: number): CalendarDate {
+	return date.add({ days });
 }
 
 export function jalaliToSeason(jm: number): number {
@@ -81,31 +62,37 @@ export function jalaliToSeason(jm: number): number {
 }
 
 export function gregorianMonthLength(gy: number, gm: number) {
-	return new Date(gy, gm, 0).getDate();
+	return gregorian.getDaysInMonth(new CalendarDate(gy, gm, 1));
 }
 
-function daysBetweenDates(from: Date, to: Date): number {
-	return Math.round((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+export function calendarDaysBetween(from: CalendarDate, to: CalendarDate): number {
+	return to.compare(from);
 }
 
-function gWeekNumberInYear(targetDate: Date, firstDayOfYear: Date, weekStart: TWeekStart): number {
-	const diffInDays = daysBetweenDates(firstDayOfYear, targetDate);
+function gWeekNumberInYear(
+	targetDate: CalendarDate,
+	firstDayOfYear: CalendarDate,
+	weekStart: TWeekStart,
+): number {
+	const diffInDays = calendarDaysBetween(firstDayOfYear, targetDate);
 	const firstWeekday = getWeekdayTehran(firstDayOfYear);
 	const offset = (firstWeekday - weekStartNumber(weekStart) + 7) % 7;
 	return Math.ceil((diffInDays + offset + 1) / 7);
 }
 
 // gregorian week 1 is the week containing 1 January.
-export function dateToGWeekNumber(date: Date, weekStart: TWeekStart = "sat"): number {
+export function dateToGWeekNumber(date: CalendarDate, weekStart: TWeekStart = "sat"): number {
 	const { gy } = dateToGregorian(date);
-	return gWeekNumberInYear(date, gregorianToDate(gy, 1, 1), weekStart);
+	const next = gregorianToStartDayOfWeek({ gYear: gy + 1, gWeekNumber: 1 }, weekStart);
+	if (calendarDaysBetween(gregorianToCalendarDate(next.gy, next.gm, next.gd), date) >= 0) return 1;
+	return gWeekNumberInYear(date, gregorianToCalendarDate(gy, 1, 1), weekStart);
 }
 
 export function gregorianToStartDayOfWeek(
 	{ gYear, gWeekNumber }: TGetGregorianDayOfWeek,
 	weekStart: TWeekStart = "sat",
 ): TGregorian {
-	const firstDayOfYear = new Date(Date.UTC(gYear, 0, 1));
+	const firstDayOfYear = new CalendarDate(gYear, 1, 1);
 	const firstDayWeekday = getWeekdayTehran(firstDayOfYear);
 	const weekStartNum = weekStartNumber(weekStart);
 
@@ -145,7 +132,7 @@ export function gregorianToStartWeek(
 	gWeekNumber: number = 1,
 	weekStart: TWeekStart = "sat",
 ): TGregorian {
-	const firstDayOfYear = new Date(Date.UTC(gy, 0, 1));
+	const firstDayOfYear = new CalendarDate(gy, 1, 1);
 	const firstWeekday = getWeekdayTehran(firstDayOfYear);
 	const offset = (weekStartNumber(weekStart) - firstWeekday + 7) % 7;
 
@@ -174,14 +161,14 @@ export function gregorianToEndWeek(
 }
 
 export function gregorianToGWeekNumberFromFirstWeekStart(
-	date: Date,
+	date: CalendarDate,
 	weekStart: TWeekStart = "sat",
 ): { gy: number; weekNumber: number } {
 	const { gy } = dateToGregorian(date);
 
 	const start = gregorianToStartWeek(gy, 1, weekStart);
-	const startDate = gregorianToDate(start.gy, start.gm, start.gd);
-	const diffInDays = daysBetweenDates(startDate, date);
+	const startDate = gregorianToCalendarDate(start.gy, start.gm, start.gd);
+	const diffInDays = calendarDaysBetween(startDate, date);
 
 	if (diffInDays >= 0) {
 		return { gy, weekNumber: Math.floor(diffInDays / 7) + 1 };
@@ -189,8 +176,12 @@ export function gregorianToGWeekNumberFromFirstWeekStart(
 
 	const previousYear = gy - 1;
 	const previousStart = gregorianToStartWeek(previousYear, 1, weekStart);
-	const previousStartDate = gregorianToDate(previousStart.gy, previousStart.gm, previousStart.gd);
-	const previousDiffInDays = daysBetweenDates(previousStartDate, date);
+	const previousStartDate = gregorianToCalendarDate(
+		previousStart.gy,
+		previousStart.gm,
+		previousStart.gd,
+	);
+	const previousDiffInDays = calendarDaysBetween(previousStartDate, date);
 
 	return { gy: previousYear, weekNumber: Math.floor(previousDiffInDays / 7) + 1 };
 }

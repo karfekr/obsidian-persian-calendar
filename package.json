@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-persian-calendar",
-	"version": "4.10.0",
+	"version": "4.12.0",
 	"description": "Persian/Jalali calendar integration featuring dynamic note paths, placeholders, API access, and event display.",
 	"license": "GPL-3.0-only",
 	"main": "main.js",
@@ -9,6 +9,14 @@
 		"url": "http://karfekr.ir"
 	},
 	"contributors": [
+		{
+			"name": "Hamid Reza Ashkiyan",
+			"url": "https://github.com/HamidRezaAshkiyan"
+		},
+		{
+			"name": "MmdAmir",
+			"url": "https://github.com/MmdxAmir"
+		},
 		{
 			"name": "Sina Moraddar",
 			"url": "https://github.com/sinamoraddar"
@@ -34,7 +42,7 @@
 	"scripts": {
 		"lint": "biome check --write .",
 		"clean": "node scripts/clean.mjs",
-		"version": "node scripts/sync-version.mjs",
+		"version": "node scripts/sync-version.mjs && pnpm run lint",
 		"dev": "node esbuild.config.mjs && node scripts/build-styles.mjs --watch",
 		"build": "pnpm run clean && pnpm run build:style && node esbuild.config.mjs production && tsc -noEmit -skipLibCheck",
 		"build:style": "node scripts/build-styles.mjs",
@@ -47,20 +55,20 @@
 		"persian-holidays": "^1.6.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.5.12",
-		"@types/node": "^26.5.0",
-		"chokidar": "^5.0.0",
-		"cssnano": "^8.0.10",
-		"esbuild": "0.28.1",
-		"obsidian": "^1.13.1",
-		"postcss": "^8.5.28",
+		"@biomejs/biome": "^2.6.7",
+		"@types/node": "^26.6.6",
+		"chokidar": "^6.0.0",
+		"cssnano": "^9.9.0",
+		"esbuild": "0.28.2",
+		"obsidian": "^1.14.4",
+		"postcss": "^8.5.32",
 		"simple-git-hooks": "^2.14.0",
-		"tslib": "2.8.1",
-		"tsx": "^4.23.13",
+		"tslib": "2.9.1",
+		"tsx": "^4.23.15",
 		"typescript": "^7.0.2",
-		"vitest": "^4.1.11"
+		"vitest": "^5.1.0"
 	},
-	"packageManager": "pnpm@12.14.0+sha512.c18ba6d87993d3d164cb5e8948f32b2c06ee854487e06cd8d86781342fb3e5bb4634367034711e86802baa9c37bea906ce1929ad08d70884c97d801df13389a6",
+	"packageManager": "pnpm@12.18.0+sha512.9d7882d5dc82147ecfc4e062aa34834e0ad0296710a1837a1115ae012127d36b7109e321ac1598a1dd0a65597681b1e99917e12ed0d749eae91187943363beb3",
 	"simple-git-hooks": {
 		"pre-commit": "pnpm run lint && git add -A",
 		"pre-push": "pnpm run build && pnpm run test"

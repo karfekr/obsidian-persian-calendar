@@ -1,38 +1,42 @@
+import type { CalendarDate } from "@internationalized/date";
 import type { TDateFormat, TJalali } from "src/types";
 import {
 	checkValidJalali,
 	dateToGregorian,
 	dateToHijri,
 	dateToJalali,
-	gregorianToDate,
+	gregorianToCalendarDate,
 	gregorianToJalali,
-	jalaliToDate,
+	jalaliToCalendarDate,
 	jalaliToGregorian,
 } from "src/utils/dateUtils";
 import { extractDayFormat, isDayFormat, toDayFormat } from "src/utils/formatters";
 
-export function dashToDate(dashDate: string, dateFormat?: TDateFormat): Date | null {
+export function dashToCalendarDate(
+	dashDate: string,
+	dateFormat?: TDateFormat,
+): CalendarDate | null {
 	if (!isDayFormat(dashDate)) return null;
 
 	const dayProps = extractDayFormat(dashDate);
 	if (!dayProps) return null;
 
 	if (dayProps.year >= 1800 && dayProps.year <= 2200) {
-		return gregorianDashToDate(dashDate);
+		return gregorianDashToCalendarDate(dashDate);
 	}
 	if (dayProps.year >= 1200 && dayProps.year < 1700) {
-		return jalaliDashToDate(dashDate);
+		return jalaliDashToCalendarDate(dashDate);
 	}
 
 	if (dateFormat === "jalali") {
-		return jalaliDashToDate(dashDate);
+		return jalaliDashToCalendarDate(dashDate);
 	}
 
-	return gregorianDashToDate(dashDate);
+	return gregorianDashToCalendarDate(dashDate);
 }
 
 export function dateToDash(
-	date: Date,
+	date: CalendarDate,
 	dateFormat: TDateFormat,
 	option?: { separator?: string },
 ): string | null {
@@ -65,7 +69,7 @@ export function gregorianDashToJalaliDash(
 	const gm = dayProps.month;
 	const gd = dayProps.day;
 
-	const date = gregorianToDate(gy, gm, gd);
+	const date = gregorianToCalendarDate(gy, gm, gd);
 	const { jy, jm, jd } = dateToJalali(date);
 
 	return toDayFormat(jy, jm, jd, { separator });
@@ -116,7 +120,7 @@ export function gregorianDashToJalali(dashDate: string): TJalali | null {
 	return gregorianToJalali(gy, gm, gd);
 }
 
-export function gregorianDashToDate(dashDate: string): Date | null {
+export function gregorianDashToCalendarDate(dashDate: string): CalendarDate | null {
 	const dayProps = extractDayFormat(dashDate);
 	if (!dayProps) return null;
 
@@ -126,15 +130,15 @@ export function gregorianDashToDate(dashDate: string): Date | null {
 
 	if (gm < 1 || gm > 12 || gd < 1 || gd > 31) return null;
 
-	const date = gregorianToDate(gy, gm, gd);
-	if (date.getUTCMonth() !== gm - 1 || date.getUTCDate() !== gd) {
+	const date = gregorianToCalendarDate(gy, gm, gd);
+	if (date.month !== gm || date.day !== gd) {
 		return null;
 	}
 
 	return date;
 }
 
-export function jalaliDashToDate(dashDate: string): Date | null {
+export function jalaliDashToCalendarDate(dashDate: string): CalendarDate | null {
 	const dayProps = extractDayFormat(dashDate);
 	if (!dayProps) return null;
 
@@ -144,6 +148,5 @@ export function jalaliDashToDate(dashDate: string): Date | null {
 
 	if (!checkValidJalali(jy, jm, jd)) return null;
 
-	// Match jalaliToDate / todayTehran (UTC noon). Local midnight breaks week day-math on Asia/Tehran.
-	return jalaliToDate(jy, jm, jd);
+	return jalaliToCalendarDate(jy, jm, jd);
 }

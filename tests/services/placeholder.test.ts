@@ -6,7 +6,7 @@ import type PersianCalendarPlugin from "src/main";
 import NoteService from "src/services/NoteService";
 import Placeholder from "src/services/Placeholder";
 import type { TSetting } from "src/types";
-import { dashToDate, dateToDash } from "src/utils/dashUtils";
+import { dashToCalendarDate, dateToDash } from "src/utils/dashUtils";
 import { clearCompiledPatternCache } from "src/utils/dateEngine/compiler";
 import { todayTehran } from "src/utils/dateUtils";
 import { setDefaultEventAdapter } from "src/utils/eventUtils/eventAdapter";
@@ -386,27 +386,65 @@ describe("Non-dated files behavior", () => {
 	});
 });
 
-describe("dashToDate calendar detection", () => {
+describe("week number placeholders", () => {
+	afterEach(() => vi.useRealTimers());
+
+	it.each(["fa", "en"] as const)(
+		"uses English digits and independent dates in %s",
+		async (language) => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2025-03-20T20:30:00Z"));
+			const template = "{{شماره هفته یادداشت}} | {{شماره هفته جاری}} | {{هفته یادداشت}}";
+			const { placeholder } = createMockPlugin(
+				{ language, weekCalculation: "jalali-first-week-start" },
+				{ "template.md": template },
+			);
+			const daily = Object.assign(new TFile(), { path: "2025-03-22.md", basename: "2025-03-22" });
+			expect(await placeholder.getTemplateContent("template.md", daily)).toBe("1 | 52 | 1404-W01");
+			const weekly = Object.assign(new TFile(), { path: "1404-W09.md", basename: "1404-W09" });
+			expect(placeholder.processPlaceholders(weekly, template)).toBe("9 | 52 | 1404-W09");
+			const keys = placeholder.getAllPlaceholderKeys(daily);
+			expect(keys).toContain("{{شماره هفته یادداشت}}");
+			expect(keys).toContain("{{شماره هفته جاری}}");
+			expect(placeholder.toProvider().getSuggestions("شماره هفته")).toEqual([
+				"{{شماره هفته جاری}}",
+				"{{شماره هفته یادداشت}}",
+			]);
+		},
+	);
+
+	it("leaves the note placeholder unchanged when the note date is unresolved", () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date("2025-03-22T12:00:00Z"));
+		const { placeholder } = createMockPlugin({ weekCalculation: "jalali-first-week-start" });
+		const file = Object.assign(new TFile(), { path: "project.md", basename: "project" });
+		expect(
+			placeholder.processPlaceholders(file, "{{شماره هفته یادداشت}} | {{شماره هفته جاری}}"),
+		).toBe("{{شماره هفته یادداشت}} | 1");
+	});
+});
+
+describe("dashToCalendarDate calendar detection", () => {
 	it("detects 2024-11-02 as Gregorian even if dateFormat is jalali", () => {
-		const date = dashToDate("2024-11-02", "jalali");
+		const date = dashToCalendarDate("2024-11-02", "jalali");
 		expect(date).not.toBeNull();
-		expect(date?.toISOString().startsWith("2024-11-02")).toBe(true);
+		expect(date?.toString().startsWith("2024-11-02")).toBe(true);
 	});
 
 	it("detects 1403-08-12 as Jalali even if dateFormat is gregorian", () => {
-		const date = dashToDate("1403-08-12", "gregorian");
+		const date = dashToCalendarDate("1403-08-12", "gregorian");
 		expect(date).not.toBeNull();
 		// Jalali 1403-08-12 is Gregorian 2024-11-02
-		expect(date?.toISOString().startsWith("2024-11-02")).toBe(true);
+		expect(date?.toString().startsWith("2024-11-02")).toBe(true);
 	});
 
 	it("returns null for invalid Gregorian dates", () => {
-		expect(dashToDate("2024-02-30", "gregorian")).toBeNull();
-		expect(dashToDate("2024-13-01", "gregorian")).toBeNull();
+		expect(dashToCalendarDate("2024-02-30", "gregorian")).toBeNull();
+		expect(dashToCalendarDate("2024-13-01", "gregorian")).toBeNull();
 	});
 
 	it("returns null for invalid Jalali dates", () => {
-		expect(dashToDate("1403-12-31", "jalali")).toBeNull(); // 1403 is not leap, Esfand has 29 days
-		expect(dashToDate("1403-07-31", "jalali")).toBeNull(); // Mehr has 30 days
+		expect(dashToCalendarDate("1403-12-31", "jalali")).toBeNull(); // 1403 is not leap, Esfand has 29 days
+		expect(dashToCalendarDate("1403-07-31", "jalali")).toBeNull(); // Mehr has 30 days
 	});
 });

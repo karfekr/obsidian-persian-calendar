@@ -1,10 +1,10 @@
 export {
-	dashToDate,
+	dashToCalendarDate,
 	dateToDash,
-	gregorianDashToDate,
+	gregorianDashToCalendarDate,
 	gregorianDashToJalali,
 	gregorianDashToJalaliDash,
-	jalaliDashToDate,
+	jalaliDashToCalendarDate,
 	jalaliDashToGregorianDash,
 	jalaliDashToJalali,
 } from "./baseDash";

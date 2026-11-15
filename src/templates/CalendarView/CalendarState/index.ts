@@ -1,13 +1,11 @@
 import type { TJalali, TWeekCalculationMode, TWeekStart } from "src/types";
 import {
-	addDayDate,
-	dateToGregorian,
+	addCalendarDays,
 	dateToJalali,
+	getWeekdayTehran,
 	getWeekStartCalculator,
-	gregorianToDate,
 	jalaliMonthLength,
-	jalaliToDate,
-	jalaliToGregorian,
+	jalaliToCalendarDate,
 	todayTehran,
 } from "src/utils/dateUtils";
 
@@ -105,10 +103,7 @@ export default class CalendarState {
 	}
 
 	public calculateFirstDayOfWeekIndex(jy: number, jm: number): number {
-		const { gy, gm, gd } = jalaliToGregorian(jy, jm, 1);
-		const firstDayDate = new Date(gy, gm - 1, gd);
-
-		const dayOfWeek = firstDayDate.getDay();
+		const dayOfWeek = getWeekdayTehran(jalaliToCalendarDate(jy, jm, 1));
 		const adjustedDayOfWeek = dayOfWeek === 6 ? 0 : dayOfWeek + 1;
 
 		return adjustedDayOfWeek;
@@ -123,38 +118,17 @@ export default class CalendarState {
 		const calculator = getWeekStartCalculator(mode);
 		const weeks = this.getWeeksCountForMonth(jy, jm);
 
-		const startOfMonthDate = jalaliToDate(jy, jm, 1);
+		const startOfMonthDate = jalaliToCalendarDate(jy, jm, 1);
 		const firstDayOfWeekIndex = this.calculateFirstDayOfWeekIndex(jy, jm);
-		const gridStartDate = addDayDate(startOfMonthDate, -firstDayOfWeekIndex);
-
-		const isFirstDayOfYearMode =
-			mode === "jalali-first-day-of-year" || mode === "gregorian-first-day-of-year";
 
 		const weekNumbers: { jy: number; weekNumber: number }[] = [];
 
 		for (let i = 0; i < weeks; i++) {
-			const rowStartDate = addDayDate(gridStartDate, i * 7);
-
-			if (isFirstDayOfYearMode) {
-				const rowEndDate = addDayDate(rowStartDate, 6);
-
-				const crossesIntoNewYear =
-					mode === "jalali-first-day-of-year"
-						? dateToJalali(rowEndDate).jy > dateToJalali(rowStartDate).jy
-						: dateToGregorian(rowEndDate).gy > dateToGregorian(rowStartDate).gy;
-
-				if (crossesIntoNewYear) {
-					const newYearDay1 =
-						mode === "jalali-first-day-of-year"
-							? jalaliToDate(dateToJalali(rowEndDate).jy, 1, 1)
-							: gregorianToDate(dateToGregorian(rowEndDate).gy, 1, 1);
-
-					weekNumbers.push(calculator.getWeekNumber(newYearDay1, weekStart));
-					continue;
-				}
-			}
-
-			weekNumbers.push(calculator.getWeekNumber(rowStartDate, weekStart));
+			// Use a day in the displayed month for a row shared by two calendar years.
+			const offset = Math.max(0, i * 7 - firstDayOfWeekIndex);
+			weekNumbers.push(
+				calculator.getWeekNumber(addCalendarDays(startOfMonthDate, offset), weekStart),
+			);
 		}
 
 		return weekNumbers;

@@ -40,8 +40,8 @@
 				}
 			},
 			"placeholderFormat": {
-				"name": "Date Format for Natural Dates and Daily Notes",
-				"desc": "Depending on the selected option, date placeholders will resolve to either Gregorian or Jalali dates.",
+				"name": "Date format for natural dates and placeholders",
+				"desc": "Controls date output for natural dates and placeholders. Daily note filenames are configured separately under naming.",
 				"options": {
 					"jalali": "Jalali",
 					"gregorian": "Gregorian"
@@ -50,6 +50,10 @@
 			"askBeforeCreate": {
 				"name": "Confirm Before Creating Notes",
 				"desc": "When enabled, a confirmation dialog will appear before creating any note."
+			},
+			"askBeforeDelete": {
+				"name": "Confirm Before Deleting Notes",
+				"desc": "Ask for confirmation before deleting calendar notes."
 			},
 			"openDailyOnStartup": {
 				"name": "Open Today's Daily Note on Startup",
@@ -224,6 +228,10 @@
 			"cancelBtn": "Cancel",
 			"confirmBtn": "Confirm"
 		},
+		"deleteDailyNote": {
+			"title": "Delete Daily Note",
+			"message": "Delete daily note for {date}?"
+		},
 		"datePicker": {
 			"tooltip": "Choose Jalali Date",
 			"jalali": "Jalali",
@@ -233,7 +241,8 @@
 	"notice": {
 		"error": {
 			"dailyNotesUnavailable": "Enable and configure Obsidian Daily Notes or the daily feature in Periodic Notes to use this integration.",
-			"dailyNoteCreationFailed": "Obsidian Daily Notes could not create the daily note. Check its folder and template settings."
+			"dailyNoteCreationFailed": "Obsidian Daily Notes could not create the daily note. Check its folder and template settings.",
+			"dailyNoteDeleteFailed": "Failed to delete the daily note."
 		},
 		"success": {
 			"placeholder": "Meaningful phrases replaced successfully",
@@ -244,7 +253,8 @@
 		"contextMenu": {
 			"openInNewTab": "Open in new tab",
 			"openInHorizontalSplit": "Open in horizontal split view",
-			"openInVerticalSplit": "Open in vertical split view"
+			"openInVerticalSplit": "Open in vertical split view",
+			"deleteDailyNote": "Delete"
 		},
 		"renderError": {
 			"title": "The calendar could not be displayed correctly",

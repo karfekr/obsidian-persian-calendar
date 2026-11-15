@@ -1,8 +1,9 @@
+import { CalendarDate, parseDate } from "@internationalized/date";
 import {
 	dateToHijri,
 	gregorianToHijri,
 	hijriMonthLength,
-	hijriToDate,
+	hijriToCalendarDate,
 	hijriToGregorian,
 	hijriToJalali,
 	jalaliToHijri,
@@ -97,14 +98,14 @@ describe("jalaliToHijri", () => {
 
 describe("dateToHijri", () => {
 	it("should convert a Date object to Hijri", () => {
-		const { hy, hm, hd } = dateToHijri(new Date("2024-03-20"));
+		const { hy, hm, hd } = dateToHijri(parseDate("2024-03-20"));
 		expect(hy).toBe(1445);
 		expect(hm).toBe(9);
 		expect(hd).toBeGreaterThanOrEqual(1);
 	});
 
 	it("should be consistent with gregorianToHijri", () => {
-		const date = new Date("2023-10-10");
+		const date = parseDate("2023-10-10");
 		const fromDate = dateToHijri(date);
 		const fromGregorian = gregorianToHijri(2023, 10, 10);
 		expect(fromDate.hy).toBe(fromGregorian.hy);
@@ -113,7 +114,7 @@ describe("dateToHijri", () => {
 	});
 
 	it("should return valid Hijri month range", () => {
-		const { hm } = dateToHijri(new Date("2025-01-01"));
+		const { hm } = dateToHijri(parseDate("2025-01-01"));
 		expect(hm).toBeGreaterThanOrEqual(1);
 		expect(hm).toBeLessThanOrEqual(12);
 	});
@@ -128,26 +129,26 @@ describe("hijriMonthLength", () => {
 	});
 });
 
-describe("hijriToDate", () => {
+describe("hijriToCalendarDate", () => {
 	it("should return a Date object", () => {
-		const date = hijriToDate(1445, 9, 10);
-		expect(date).toBeInstanceOf(Date);
+		const date = hijriToCalendarDate(1445, 9, 10);
+		expect(date).toBeInstanceOf(CalendarDate);
 	});
 
 	it("should be consistent with hijriToGregorian", () => {
 		const { gy, gm, gd } = hijriToGregorian(1445, 1, 1);
-		const date = hijriToDate(1445, 1, 1);
-		expect(date.getUTCFullYear()).toBe(gy);
-		expect(date.getUTCMonth() + 1).toBe(gm);
-		expect(date.getUTCDate()).toBe(gd);
+		const date = hijriToCalendarDate(1445, 1, 1);
+		expect(date.year).toBe(gy);
+		expect(date.month).toBe(gm);
+		expect(date.day).toBe(gd);
 	});
 
 	it("should round-trip with dateToHijri", () => {
-		const originalDate = new Date("2024-07-07");
+		const originalDate = parseDate("2024-07-07");
 		const hijri = dateToHijri(originalDate);
-		const backToDate = hijriToDate(hijri.hy, hijri.hm, hijri.hd);
-		expect(backToDate.getUTCFullYear()).toBe(originalDate.getUTCFullYear());
-		expect(backToDate.getUTCMonth()).toBe(originalDate.getUTCMonth());
-		expect(backToDate.getUTCDate()).toBe(originalDate.getUTCDate());
+		const backToDate = hijriToCalendarDate(hijri.hy, hijri.hm, hijri.hd);
+		expect(backToDate.year).toBe(originalDate.year);
+		expect(backToDate.month).toBe(originalDate.month);
+		expect(backToDate.day).toBe(originalDate.day);
 	});
 });

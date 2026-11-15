@@ -9,6 +9,7 @@ export const DEFAULT_SETTING: TSetting = {
 	yearlyNoteNaming: "jalali",
 	weekCalculation: "jalali-first-week-start",
 	askForCreateNote: true,
+	askForDeleteNote: true,
 	openDailyNoteOnStartup: false,
 	showSeasonalNotes: true,
 	showHolidays: true,
