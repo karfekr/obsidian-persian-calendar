@@ -17,6 +17,11 @@ import {
 	getWeekStartCalculator,
 	todayTehran,
 } from "src/utils/dateUtils";
+import {
+	getNaturalDateSuggestions,
+	normalizePersianQuery,
+	parseNaturalPersianDate,
+} from "./naturalDateParser";
 
 export default class SmartDateLinker {
 	plugin: PersianCalendarPlugin;
@@ -63,10 +68,75 @@ export default class SmartDateLinker {
 	formatSmartDate(keyword: string, date: CalendarDate, local: TLocale = "fa", link = true): string {
 		const now = date;
 		const ERROR_LINK = "تاریخ شناسایی نشد";
+		const trimmed = keyword.trim();
+		const normalized = normalizePersianQuery(trimmed);
+
+		type PeriodConfig = {
+			fn: (d: CalendarDate) => string;
+			days?: number;
+			months?: number;
+			years?: number;
+		};
+
+		const weekDashFn = (d: CalendarDate) =>
+			dateToJWeekDash(d, undefined, { mode: this.plugin.setting.weekCalculation });
+		const weekOffsets: Record<string, number> = {
+			"این هفته": 0,
+			"هفته قبل": -7,
+			"هفته گذشته": -7,
+			"هفته پیش": -7,
+			"هفته بعد": 7,
+			"هفته آینده": 7,
+		};
+		if (normalized in weekOffsets) {
+			const target = this.adjustedDate(now, weekOffsets[normalized]);
+			if (!link) return weekDashFn(target);
+			const { jy, weekNumber } = getWeekStartCalculator(
+				this.plugin.setting.weekCalculation,
+			).getWeekNumber(target);
+			const filePath =
+				this.plugin.noteService?.getWeeklyNoteFile(jy, weekNumber)?.path ??
+				this.pathBuilder.buildWeeklyNotePath(jy, weekNumber).filePath;
+			return this.makeOutput(filePath.slice(0, -3), trimmed);
+		}
+
+		const periodMap: Partial<Record<string, PeriodConfig>> = {
+			"این ماه": { fn: dateToJMonthDash },
+			"ماه قبل": { fn: dateToJMonthDash, months: -1 },
+			"ماه گذشته": { fn: dateToJMonthDash, months: -1 },
+			"ماه پیش": { fn: dateToJMonthDash, months: -1 },
+			"ماه بعد": { fn: dateToJMonthDash, months: 1 },
+			"ماه آینده": { fn: dateToJMonthDash, months: 1 },
+			"این فصل": { fn: dateToSeasonDash },
+			"فصل قبل": { fn: dateToSeasonDash, months: -3 },
+			"فصل گذشته": { fn: dateToSeasonDash, months: -3 },
+			"فصل پیش": { fn: dateToSeasonDash, months: -3 },
+			"فصل بعد": { fn: dateToSeasonDash, months: 3 },
+			"فصل آینده": { fn: dateToSeasonDash, months: 3 },
+			امسال: { fn: dateToJYearDash },
+			"سال قبل": { fn: dateToJYearDash, years: -1 },
+			"سال گذشته": { fn: dateToJYearDash, years: -1 },
+			"سال پیش": { fn: dateToJYearDash, years: -1 },
+			"سال بعد": { fn: dateToJYearDash, years: 1 },
+			"سال آینده": { fn: dateToJYearDash, years: 1 },
+		};
+
+		const period = periodMap[normalized];
+
+		if (period) {
+			const { fn, days, months, years } = period;
+
+			return this.makeOutput(fn(this.adjustedDate(now, days, months, years)), trimmed, link);
+		}
+
+		const naturalDate = parseNaturalPersianDate(trimmed, now);
+		if (naturalDate) {
+			return this.makeDailyOutput(naturalDate, trimmed, link);
+		}
 
 		const weekdaysName = WEEKDAYS_NAME[local];
 		const regex = /(دوشنبه|یکشنبه|سه‌شنبه|چهارشنبه|پنج‌شنبه|شنبه|جمعه)( بعد| قبل)?/;
-		const match = keyword.match(regex);
+		const match = trimmed.match(regex);
 
 		if (match) {
 			const [, weekdayName, specifier = ""] = match;
@@ -84,70 +154,40 @@ export default class SmartDateLinker {
 			return this.makeDailyOutput(target, label, link);
 		}
 
-		const dayOffsets: Record<string, number> = {
-			امروز: 0,
-			فردا: 1,
-			دیروز: -1,
-			پریروز: -2,
-			پس‌فردا: 2,
-		};
-
-		if (keyword in dayOffsets) {
-			return this.makeDailyOutput(this.adjustedDate(now, dayOffsets[keyword]), keyword, link);
-		}
-
-		type PeriodConfig = {
-			fn: (d: CalendarDate) => string;
-			days?: number;
-			months?: number;
-			years?: number;
-		};
-
-		const weekDashFn = (d: CalendarDate) =>
-			dateToJWeekDash(d, undefined, { mode: this.plugin.setting.weekCalculation });
-		const weekOffsets: Record<string, number> = { "این هفته": 0, "هفته قبل": -7, "هفته بعد": 7 };
-		if (keyword in weekOffsets) {
-			const target = this.adjustedDate(now, weekOffsets[keyword]);
-			if (!link) return weekDashFn(target);
-			const { jy, weekNumber } = getWeekStartCalculator(
-				this.plugin.setting.weekCalculation,
-			).getWeekNumber(target);
-			const filePath =
-				this.plugin.noteService?.getWeeklyNoteFile(jy, weekNumber)?.path ??
-				this.pathBuilder.buildWeeklyNotePath(jy, weekNumber).filePath;
-			return this.makeOutput(filePath.slice(0, -3), keyword);
-		}
-
-		const periodMap: Partial<Record<string, PeriodConfig>> = {
-			"این ماه": { fn: dateToJMonthDash },
-			"ماه قبل": { fn: dateToJMonthDash, months: -1 },
-			"ماه بعد": { fn: dateToJMonthDash, months: 1 },
-			"این فصل": { fn: dateToSeasonDash },
-			"فصل قبل": { fn: dateToSeasonDash, months: -3 },
-			"فصل بعد": { fn: dateToSeasonDash, months: 3 },
-			امسال: { fn: dateToJYearDash },
-			"سال قبل": { fn: dateToJYearDash, years: -1 },
-			"سال بعد": { fn: dateToJYearDash, years: 1 },
-		};
-
-		const period = periodMap[keyword];
-
-		if (period) {
-			const { fn, days, months, years } = period;
-
-			return this.makeOutput(fn(this.adjustedDate(now, days, months, years)), keyword, link);
-		}
-
 		return ERROR_LINK;
 	}
 
 	public toProvider(): TSuggestProvider {
 		return {
-			trigger: /@\/?[^@\s]*$/,
+			trigger: /(?<=^|[\s([«])@\/?(?:[^\s@]+(?:\s+[^\s@]+){0,4}\s*)?$/,
 
 			getSuggestions: (query: string) => {
-				const normalized = query.startsWith("/") ? query.slice(1) : query;
-				return SMART_DATE_LINKS.filter((s) => s.startsWith(normalized));
+				const raw = query.startsWith("/") ? query.slice(1) : query;
+				const trimmed = raw.trim();
+				if (!trimmed) {
+					return [...SMART_DATE_LINKS];
+				}
+
+				const normalizedQuery = normalizePersianQuery(trimmed);
+				const staticMatches = SMART_DATE_LINKS.filter(
+					(s) => s.startsWith(trimmed) || normalizePersianQuery(s).startsWith(normalizedQuery),
+				);
+
+				const dynamicMatches = getNaturalDateSuggestions(trimmed, todayTehran());
+				const combined = [...staticMatches];
+				for (const item of dynamicMatches) {
+					if (
+						!combined.some(
+							(existing) => normalizePersianQuery(existing) === normalizePersianQuery(item),
+						)
+					) {
+						combined.push(item);
+					} else if (item === trimmed && !combined.includes(trimmed)) {
+						combined.unshift(trimmed);
+					}
+				}
+
+				return combined;
 			},
 
 			onSelect: (value: string, ctx: EditorSuggestContext) => {
