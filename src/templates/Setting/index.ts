@@ -7,6 +7,7 @@ import { getEventSettings } from "./sections/EventSection";
 import { getExtraCalendarSettings } from "./sections/ExtraCalendarSection";
 import { getGeneralSettings } from "./sections/GeneralSection";
 import { getHolidaySettings } from "./sections/HolidaySection";
+import { getLiveExpressionSettings } from "./sections/LiveExpressionSection";
 import { getNameSettings } from "./sections/NameSection";
 import { getPathSettings } from "./sections/PathSection";
 import { getTemplateSettings } from "./sections/TemplateSection";
@@ -25,7 +26,11 @@ export default class CalendarSettingTab extends PluginSettingTab {
 	}
 
 	getControlValue(key: string): unknown {
-		return getNestedValue(this.plugin.setting, key);
+		const val = getNestedValue(this.plugin.setting, key);
+		if (key === "liveExpressionsInterval" && typeof val === "number") {
+			return String(val);
+		}
+		return val;
 	}
 
 	private renderBanner(setting: Setting): void {
@@ -66,6 +71,7 @@ export default class CalendarSettingTab extends PluginSettingTab {
 			...getPathSettings(),
 			...getNameSettings(),
 			...getTemplateSettings(),
+			...getLiveExpressionSettings(),
 			...getExtraCalendarSettings(),
 			...getHolidaySettings(),
 			...getEventSettings(),

@@ -41,6 +41,9 @@ export type THijriBase = "iran" | "umalqura";
 
 export type TDateFormatWithoutHijri = Exclude<TDateFormat, "hijri">;
 
+export type TLiveExpressionMode = "disabled" | "dashboard" | "all";
+export type TLiveExpressionInterval = 1000 | 5000 | 30000 | 60000;
+
 export type TShowEvents = {
 	showIROfficialEvents?: boolean;
 	showIRHistoricalEvents?: boolean;
@@ -119,6 +122,10 @@ export type TSetting = {
 	showShiaEvents: boolean;
 	showSunniEvents: boolean;
 	showGlobalEvents: boolean;
+	// live expressions
+	liveExpressionsMode: TLiveExpressionMode;
+	liveExpressionsDashboardPath: string;
+	liveExpressionsInterval: TLiveExpressionInterval;
 };
 
 //? Utility type that extracts the keys of TSetting whose values are assignable to V.

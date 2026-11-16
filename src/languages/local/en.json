@@ -27,6 +27,7 @@
 			"paths": "Calendar Note Paths",
 			"names": "Calendar Note Names",
 			"templates": "Calendar Note Templates",
+			"liveExpressions": "Live Expressions",
 			"extraCalendars": "Additional Calendars",
 			"holidays": "Holiday Display",
 			"events": "Event Display"
@@ -144,6 +145,31 @@
 			"yearly": {
 				"name": "Yearly Note Template",
 				"desc": "Template used when creating yearly notes."
+			}
+		},
+		"liveExpressions": {
+			"mode": {
+				"name": "Live Expressions Scope",
+				"desc": "Choose where live expressions ({#expression}) are converted and dynamically refreshed.",
+				"options": {
+					"disabled": "Disabled",
+					"dashboard": "Single file (Dashboard)",
+					"all": "All files"
+				}
+			},
+			"dashboardPath": {
+				"name": "Dashboard File",
+				"desc": "The note where live expressions are active when scope is set to 'Single file (Dashboard)'."
+			},
+			"interval": {
+				"name": "Update Interval",
+				"desc": "How often live expression values are refreshed in the view.",
+				"options": {
+					"1000": "1 second",
+					"5000": "5 seconds",
+					"30000": "30 seconds",
+					"60000": "60 seconds"
+				}
 			}
 		},
 		"extraCalendars": {
