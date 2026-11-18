@@ -12,6 +12,11 @@ export default class CalendarNavigation {
 		void this.rerender();
 	}
 
+	public changeYear(direction: "prev" | "next") {
+		this.calendarState.changeJMonthState(direction === "prev" ? -12 : 12);
+		void this.rerender();
+	}
+
 	public async goToToday() {
 		const { jy, jm } = dateToJalali(todayTehran());
 		this.calendarState.setJState(jy, jm);
