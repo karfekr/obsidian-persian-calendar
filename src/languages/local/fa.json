@@ -232,6 +232,22 @@
 					"gregorian": "میلادی",
 					"hijri": "قمری"
 				}
+			},
+			"vault": {
+				"heading": "مناسبت‌ها از یادداشت‌های خزانه",
+				"addBtn": "افزودن منبع خزانه",
+				"empty": "هنوز منبعی از خزانه تعریف نشده است.",
+				"allVault": "کل خزانه",
+				"types": {
+					"frontmatter": "ویژگی یادداشت",
+					"note": "فایل یادداشت"
+				},
+				"calendars": {
+					"auto": "تشخیص خودکار",
+					"jalali": "شمسی",
+					"gregorian": "میلادی",
+					"hijri": "قمری"
+				}
 			}
 		}
 	},
@@ -268,6 +284,32 @@
 				"emptyTitle": "لطفاً عنوان مناسبت را وارد کنید.",
 				"invalidYear": "لطفاً یک سال معتبر وارد کنید.",
 				"invalidDay": "روز باید بین ۱ تا {max} باشد."
+			}
+		},
+		"vaultEvent": {
+			"addTitle": "افزودن منبع مناسبت از خزانه",
+			"editTitle": "ویرایش منبع مناسبت از خزانه",
+			"typeLabel": "نوع منبع",
+			"typeFrontmatter": "ویژگی فرانت‌متر (پوشه یا یادداشت)",
+			"typeNote": "یادداشت خزانه (خطوط تاریخ‌دار)",
+			"folderPathLabel": "مسیر پوشه یا یادداشت",
+			"folderPathDesc": "برای بررسی کل خزانه خالی بگذارید (مثلاً People/).",
+			"folderPathPlaceholder": "مثلاً People/",
+			"notePathLabel": "مسیر یادداشت",
+			"notePathDesc": "یادداشتی شامل خطوط تاریخ‌دار تکرارشونده (مثلاً - 1375-06-12 | تولد علی).",
+			"notePathPlaceholder": "مثلاً Occasions.md",
+			"propertyLabel": "نام ویژگی فرانت‌متر",
+			"propertyPlaceholder": "مثلاً birthday یا anniversary",
+			"titleTemplateLabel": "الگوی عنوان (اختیاری)",
+			"titleTemplateDesc": "از {name}، {property} و {year} پشتیبانی می‌کند. پیش‌فرض: «{name} ({property})».",
+			"titleTemplatePlaceholder": "مثلاً تولد {name}",
+			"calendarLabel": "نوع تقویم",
+			"holidayLabel": "تعطیل رسمی/شخصی",
+			"saveBtn": "ذخیره",
+			"cancelBtn": "انصراف",
+			"errors": {
+				"emptyProperty": "لطفاً نام ویژگی فرانت‌متر را وارد کنید.",
+				"emptyNotePath": "لطفاً مسیر یادداشت را وارد کنید."
 			}
 		}
 	},

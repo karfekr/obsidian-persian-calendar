@@ -234,6 +234,22 @@
 					"gregorian": "Gregorian",
 					"hijri": "Hijri"
 				}
+			},
+			"vault": {
+				"heading": "Vault Event Sources",
+				"addBtn": "Add Vault Source",
+				"empty": "No vault event sources configured yet.",
+				"allVault": "Entire vault",
+				"types": {
+					"frontmatter": "Frontmatter",
+					"note": "Vault Note"
+				},
+				"calendars": {
+					"auto": "Auto-detect",
+					"jalali": "Jalali",
+					"gregorian": "Gregorian",
+					"hijri": "Hijri"
+				}
 			}
 		}
 	},
@@ -270,6 +286,32 @@
 				"emptyTitle": "Please enter an event title.",
 				"invalidYear": "Please enter a valid year.",
 				"invalidDay": "Day must be between 1 and {max}."
+			}
+		},
+		"vaultEvent": {
+			"addTitle": "Add Vault Event Source",
+			"editTitle": "Edit Vault Event Source",
+			"typeLabel": "Source Type",
+			"typeFrontmatter": "Frontmatter property (folder or note)",
+			"typeNote": "Vault note (date lines)",
+			"folderPathLabel": "Folder or Note Path",
+			"folderPathDesc": "Leave empty to scan the entire vault (e.g. People/).",
+			"folderPathPlaceholder": "e.g. People/",
+			"notePathLabel": "Note Path",
+			"notePathDesc": "Markdown note containing recurring event lines (e.g. - 1375-06-12 | Birthday).",
+			"notePathPlaceholder": "e.g. Occasions.md",
+			"propertyLabel": "Frontmatter Property",
+			"propertyPlaceholder": "e.g. birthday, anniversary",
+			"titleTemplateLabel": "Title Template (optional)",
+			"titleTemplateDesc": "Supports {name}, {property}, and {year}. Defaults to \"{name} ({property})\".",
+			"titleTemplatePlaceholder": "e.g. Birthday: {name}",
+			"calendarLabel": "Calendar",
+			"holidayLabel": "Mark as holiday",
+			"saveBtn": "Save",
+			"cancelBtn": "Cancel",
+			"errors": {
+				"emptyProperty": "Please enter a frontmatter property name.",
+				"emptyNotePath": "Please enter a note path."
 			}
 		}
 	},

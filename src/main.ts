@@ -14,11 +14,12 @@ import {
 	Placeholder,
 	SmartDateLinker,
 	Suggestion,
+	VaultEventService,
 	VersionChecker,
 } from "./services";
 import CalendarView from "./templates/CalendarView";
 import CalendarSettingTab from "./templates/Setting";
-import type { TSetting } from "./types";
+import type { TCustomEvent, TSetting } from "./types";
 import { dateToJalali, todayTehran } from "./utils/dateUtils";
 import { setDefaultEventAdapter } from "./utils/eventUtils/eventAdapter";
 
@@ -34,6 +35,7 @@ export default class PersianCalendarPlugin extends Plugin {
 	// Managers
 	commandRegistry!: CommandRegistry;
 	eventManager!: EventManager;
+	vaultEventService!: VaultEventService;
 	versionChecker!: VersionChecker;
 
 	private apiService!: ApiService;
@@ -55,7 +57,10 @@ export default class PersianCalendarPlugin extends Plugin {
 		setAdapter(setDefaultEventAdapter());
 
 		// Initialize api service
-		this.apiService = new ApiService(() => this.setting);
+		this.apiService = new ApiService(
+			() => this.setting,
+			() => this.getAllCustomEvents(),
+		);
 
 		// Initialize note service
 		this.noteService = new NoteService(this.app, this);
@@ -66,6 +71,9 @@ export default class PersianCalendarPlugin extends Plugin {
 		// Activate view if not already active
 		this.app.workspace.onLayoutReady(() => {
 			void this.openDailyNoteOnStartup();
+			void this.vaultEventService.refresh().then(() => {
+				this.refreshCalendarViews();
+			});
 
 			if (this.app.workspace.getLeavesOfType("persian-calendar").length === 0) {
 				void this.activateView();
@@ -113,7 +121,21 @@ export default class PersianCalendarPlugin extends Plugin {
 	private initializeServices() {
 		this.commandRegistry = new CommandRegistry(this);
 		this.eventManager = new EventManager(this);
+		this.vaultEventService = new VaultEventService(this);
 		this.versionChecker = new VersionChecker(this);
+	}
+
+	public getAllCustomEvents(): TCustomEvent[] {
+		return [...(this.setting.customEvents ?? []), ...this.vaultEventService.getEvents()];
+	}
+
+	public refreshCalendarViews(): void {
+		const leaves = this.app.workspace.getLeavesOfType("persian-calendar");
+		for (const leaf of leaves) {
+			if (leaf.view instanceof CalendarView) {
+				leaf.view.refreshCalendar();
+			}
+		}
 	}
 
 	private async openDailyNoteOnStartup() {

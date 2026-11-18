@@ -52,6 +52,21 @@ export type TCustomEvent = {
 	enabled: boolean;
 };
 
+export type TVaultEventSourceType = "frontmatter" | "note";
+
+export type TVaultEventCalendar = TDateFormat | "auto";
+
+export type TVaultEventSource = {
+	id: string;
+	type: TVaultEventSourceType;
+	path: string;
+	property?: string;
+	titleTemplate?: string;
+	calendar: TVaultEventCalendar;
+	isHoliday: boolean;
+	enabled: boolean;
+};
+
 export type TShowEvents = {
 	showIROfficialEvents?: boolean;
 	showIRHistoricalEvents?: boolean;
@@ -134,6 +149,7 @@ export type TSetting = {
 	showGlobalEvents: boolean;
 	showCustomEvents: boolean;
 	customEvents: TCustomEvent[];
+	vaultEventSources: TVaultEventSource[];
 };
 
 //? Utility type that extracts the keys of TSetting whose values are assignable to V.

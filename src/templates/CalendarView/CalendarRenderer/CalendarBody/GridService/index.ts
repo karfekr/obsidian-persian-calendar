@@ -1,5 +1,5 @@
 import type CalendarState from "src/templates/CalendarView/CalendarState";
-import type { TMonthGridCell, TSetting, TWeekDays } from "src/types";
+import type { TCustomEvent, TMonthGridCell, TSetting, TWeekDays } from "src/types";
 import {
 	dateToJalali,
 	jalaliMonthLength,
@@ -14,6 +14,7 @@ export default class GridService {
 	constructor(
 		private readonly calendarState: CalendarState,
 		private readonly setting: TSetting,
+		private readonly getCustomEvents?: () => TCustomEvent[],
 	) {}
 
 	private isWeekend(dayOfWeek: number): boolean {
@@ -137,7 +138,7 @@ export default class GridService {
 					showHolidays &&
 					checkHoliday(date, {
 						hijriBase: this.setting.hijriBase,
-						customEvents: this.setting.customEvents,
+						customEvents: this.getCustomEvents?.() ?? this.setting.customEvents,
 						showCustomEvents: this.setting.showCustomEvents,
 					})
 				) {

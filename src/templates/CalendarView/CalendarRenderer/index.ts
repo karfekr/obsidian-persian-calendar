@@ -1,5 +1,5 @@
 import type { NoteService } from "src/services";
-import type { TSetting } from "src/types";
+import type { TCustomEvent, TSetting } from "src/types";
 import type CalendarState from "../CalendarState";
 import CalendarBodyRender from "./CalendarBody";
 import CalendarHeaderRender from "./CalendarHeader";
@@ -16,6 +16,7 @@ export default class CalendarRenderer {
 		private readonly calendarState: CalendarState,
 		private readonly notesService: NoteService,
 		private readonly setting: TSetting,
+		private readonly getCustomEvents?: () => TCustomEvent[],
 	) {
 		this.navigation = new CalendarNavigation(this.calendarState, () => {
 			this.render();
@@ -36,6 +37,7 @@ export default class CalendarRenderer {
 				this.render();
 			},
 			this.navigation,
+			this.getCustomEvents,
 		);
 	}
 

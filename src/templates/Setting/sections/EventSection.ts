@@ -1,10 +1,11 @@
 import type { SettingDefinitionItem } from "obsidian";
 import { Setting } from "obsidian";
 import CustomEventModal from "src/components/CustomEventModal";
+import VaultEventModal from "src/components/VaultEventModal";
 import { GREGORIAN_MONTHS_NAME, HIJRI_MONTHS_NAME, JALALI_MONTHS_NAME } from "src/constants";
 import { t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
-import type { TCustomEvent, TDateFormat, TLocale } from "src/types";
+import type { TCustomEvent, TDateFormat, TLocale, TVaultEventSource } from "src/types";
 
 function getMonthName(calendar: TDateFormat, month: number, language: TLocale): string {
 	switch (calendar) {
@@ -37,10 +38,43 @@ function formatCustomEventMeta(event: TCustomEvent, language: TLocale): string {
 	return parts.join(" · ");
 }
 
+function formatVaultSourceTitle(source: TVaultEventSource): string {
+	if (source.type === "note") {
+		return source.path;
+	}
+
+	const pathLabel = source.path.trim() || t("setting.events.vault.allVault");
+	return source.property ? `${pathLabel} · ${source.property}` : pathLabel;
+}
+
+function formatVaultSourceMeta(source: TVaultEventSource): string {
+	const typeLabel = t(`setting.events.vault.types.${source.type}`);
+	const calendarLabel = t(`setting.events.vault.calendars.${source.calendar}`);
+	const parts = [typeLabel, calendarLabel];
+	if (source.isHoliday) {
+		parts.push(t("setting.events.custom.holiday"));
+	}
+	return parts.join(" · ");
+}
+
 export function getEventSettings(
 	plugin: PersianCalendarPlugin,
 	onCustomEventsChange: (events: TCustomEvent[]) => Promise<void>,
+	onVaultEventSourcesChange: (sources: TVaultEventSource[]) => Promise<void>,
 ): SettingDefinitionItem[] {
+	const openVaultSourceModal = (existingSource?: TVaultEventSource) => {
+		new VaultEventModal(plugin.app, {
+			source: existingSource,
+			onSave: async (savedSource) => {
+				const current = plugin.setting.vaultEventSources ?? [];
+				const updated = existingSource
+					? current.map((item) => (item.id === savedSource.id ? savedSource : item))
+					: [...current, savedSource];
+				await onVaultEventSourcesChange(updated);
+			},
+		}).open();
+	};
+
 	const openEventModal = (existingEvent?: TCustomEvent) => {
 		new CustomEventModal(plugin.app, {
 			language: plugin.setting.language,
@@ -159,6 +193,81 @@ export function getEventSettings(
 
 							itemSetting.settingEl.addClass("persian-calendar-custom-events__item");
 							if (event.isHoliday) {
+								itemSetting.settingEl.addClass("persian-calendar-custom-events__item--holiday");
+							}
+						}
+					},
+				},
+			],
+		},
+		{
+			type: "group",
+			heading: t("setting.events.vault.heading"),
+			items: [
+				{
+					name: "",
+					searchable: false,
+					render: (setting: Setting) => {
+						setting.settingEl.empty();
+						setting.settingEl.addClass("persian-calendar-custom-events");
+
+						const headerSetting = new Setting(setting.settingEl)
+							.setName(t("setting.events.vault.heading"))
+							.addButton((btn) => {
+								btn
+									.setButtonText(t("setting.events.vault.addBtn"))
+									.setCta()
+									.onClick(() => {
+										openVaultSourceModal();
+									});
+							});
+						headerSetting.settingEl.addClass("persian-calendar-custom-events__header");
+
+						const listEl = setting.settingEl.createDiv({
+							cls: "persian-calendar-custom-events__list",
+						});
+
+						const sources = plugin.setting.vaultEventSources ?? [];
+						if (sources.length === 0) {
+							listEl.createDiv({
+								cls: "persian-calendar-custom-events__empty",
+								text: t("setting.events.vault.empty"),
+							});
+							return;
+						}
+
+						for (const source of sources) {
+							const itemSetting = new Setting(listEl)
+								.setName(formatVaultSourceTitle(source))
+								.setDesc(formatVaultSourceMeta(source))
+								.addToggle((toggle) => {
+									toggle.setValue(source.enabled).onChange(async (value) => {
+										const updated = sources.map((item) =>
+											item.id === source.id ? { ...item, enabled: value } : item,
+										);
+										await onVaultEventSourcesChange(updated);
+									});
+								})
+								.addExtraButton((btn) => {
+									btn
+										.setIcon("pencil")
+										.setTooltip(t("setting.events.custom.edit"))
+										.onClick(() => {
+											openVaultSourceModal(source);
+										});
+								})
+								.addExtraButton((btn) => {
+									btn
+										.setIcon("trash")
+										.setTooltip(t("setting.events.custom.delete"))
+										.onClick(async () => {
+											const updated = sources.filter((item) => item.id !== source.id);
+											await onVaultEventSourcesChange(updated);
+										});
+								});
+
+							itemSetting.settingEl.addClass("persian-calendar-custom-events__item");
+							if (source.isHoliday) {
 								itemSetting.settingEl.addClass("persian-calendar-custom-events__item--holiday");
 							}
 						}

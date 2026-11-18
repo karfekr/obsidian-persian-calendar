@@ -43,4 +43,5 @@ export const DEFAULT_SETTING: TSetting = {
 	showSunniEvents: false,
 	showCustomEvents: true,
 	customEvents: [],
+	vaultEventSources: [],
 };

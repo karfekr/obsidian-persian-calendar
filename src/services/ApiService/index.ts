@@ -1,4 +1,4 @@
-import type { THijriBase, TSetting } from "src/types";
+import type { TCustomEvent, THijriBase, TSetting } from "src/types";
 import {
 	calendarDateFromDate,
 	calendarDateToDate,
@@ -23,7 +23,10 @@ import { checkHoliday, dateToEvents } from "src/utils/eventUtils";
 import { toEnNumber, toFaNumber } from "src/utils/formatters";
 
 export default class ApiService {
-	constructor(private readonly getSetting?: () => TSetting) {}
+	constructor(
+		private readonly getSetting?: () => TSetting,
+		private readonly getCustomEvents?: () => TCustomEvent[],
+	) {}
 
 	build() {
 		return Object.freeze({
@@ -53,7 +56,7 @@ export default class ApiService {
 				const setting = this.getSetting?.();
 				return checkHoliday(calendarDateFromDate(date), {
 					hijriBase: setting?.hijriBase,
-					customEvents: setting?.customEvents,
+					customEvents: this.getCustomEvents?.() ?? setting?.customEvents,
 					showCustomEvents: setting?.showCustomEvents,
 				});
 			},
@@ -70,7 +73,7 @@ export default class ApiService {
 						showCustomEvents: setting?.showCustomEvents ?? true,
 					},
 					hijriBase: options?.base ?? setting?.hijriBase ?? "iran",
-					customEvents: setting?.customEvents,
+					customEvents: this.getCustomEvents?.() ?? setting?.customEvents,
 				});
 			},
 		});
