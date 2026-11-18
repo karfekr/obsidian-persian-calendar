@@ -3,6 +3,7 @@ export type {
 	TCompiledPattern,
 	TDateEngineContext,
 	TLocale,
+	TPatternMode,
 	TPatternSegment,
 	TTokenDefinition,
 	TTokenField,

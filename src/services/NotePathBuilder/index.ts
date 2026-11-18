@@ -1,7 +1,7 @@
 import { JALALI_MONTHS_NAME, SEASONS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
 import type { TDateEngineContext, TLocale } from "src/types";
-import { formatPattern } from "src/utils/dateEngine";
+import { defaultTokenRegistry, formatPattern, tokenize } from "src/utils/dateEngine";
 import {
 	getWeekStartCalculator,
 	gregorianDayOfWeek,
@@ -60,7 +60,26 @@ export default class NotePathBuilder {
 
 	private resolveFolderPattern(path: string | undefined, context: TDateEngineContext) {
 		const normalized = this.normalizeFolderPath(path);
-		return normalized ? formatPattern(normalized, this.buildEngineContext(context)) : "";
+		return normalized
+			? formatPattern(normalized, this.buildEngineContext(context), "bracketed")
+			: "";
+	}
+
+	private bracketedToStandardPattern(pattern: string): string {
+		const segments = tokenize(pattern, defaultTokenRegistry, "bracketed");
+
+		return segments
+			.map((segment) => {
+				if (segment.type === "token") {
+					return segment.token.token;
+				}
+
+				return segment.value
+					.split("]")
+					.map((part) => (part ? `[${part}]` : ""))
+					.join("]");
+			})
+			.join("");
 	}
 
 	public buildNotePath(
@@ -218,6 +237,9 @@ export default class NotePathBuilder {
 
 		if (!filePattern) return null;
 
-		return folderPattern ? `${folderPattern}/${filePattern}.md` : `${filePattern}.md`;
+		if (!folderPattern) return `${filePattern}.md`;
+
+		const standardFolderPattern = this.bracketedToStandardPattern(folderPattern);
+		return `${standardFolderPattern}/${filePattern}.md`;
 	}
 }

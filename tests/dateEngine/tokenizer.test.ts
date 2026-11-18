@@ -82,3 +82,46 @@ describe("tokenizer - unknown text", () => {
 		expect(tokenize("", defaultTokenRegistry)).toEqual([]);
 	});
 });
+
+describe("tokenizer - bracketed mode (v5 dynamic folder paths)", () => {
+	it("treats plain text outside brackets as literal without scanning for tokens", () => {
+		expect(segmentSummary(tokenize("Daily", defaultTokenRegistry, "bracketed"))).toEqual([
+			{ literal: "Daily" },
+		]);
+		expect(segmentSummary(tokenize("Monthly", defaultTokenRegistry, "bracketed"))).toEqual([
+			{ literal: "Monthly" },
+		]);
+	});
+
+	it("interprets tokens inside brackets while leaving surrounding text literal", () => {
+		expect(segmentSummary(tokenize("[D]aily", defaultTokenRegistry, "bracketed"))).toEqual([
+			{ token: "D" },
+			{ literal: "aily" },
+		]);
+		expect(
+			segmentSummary(tokenize("Journal/[jYYYY]/Daily", defaultTokenRegistry, "bracketed")),
+		).toEqual([{ literal: "Journal/" }, { token: "jYYYY" }, { literal: "/Daily" }]);
+	});
+
+	it("supports multiple tokens and separators inside a single bracket group", () => {
+		expect(
+			segmentSummary(tokenize("Journal/[jMM - jMMMM]/Daily", defaultTokenRegistry, "bracketed")),
+		).toEqual([
+			{ literal: "Journal/" },
+			{ token: "jMM" },
+			{ literal: " - " },
+			{ token: "jMMMM" },
+			{ literal: "/Daily" },
+		]);
+	});
+
+	it("ignores empty brackets and treats unterminated brackets as literal text", () => {
+		expect(segmentSummary(tokenize("Daily[]Notes", defaultTokenRegistry, "bracketed"))).toEqual([
+			{ literal: "Daily" },
+			{ literal: "Notes" },
+		]);
+		expect(
+			segmentSummary(tokenize("Journal/[jYYYY/Daily", defaultTokenRegistry, "bracketed")),
+		).toEqual([{ literal: "Journal/[jYYYY/Daily" }]);
+	});
+});

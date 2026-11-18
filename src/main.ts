@@ -194,7 +194,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		this.setting = applySettingsMigrations(data);
 		setLocal(this.setting.language);
 
-		if (data?.legacyPathPatternsMigrated !== true) {
+		if (data?.legacyPathPatternsMigrated !== true || data?.bracketedPathPatternsMigrated !== true) {
 			await this.saveSetting();
 		}
 	}

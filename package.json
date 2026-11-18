@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-persian-calendar",
-	"version": "4.13.0",
+	"version": "5.0.0",
 	"description": "Persian/Jalali calendar integration featuring dynamic note paths, placeholders, API access, and event display.",
 	"license": "GPL-3.0-only",
 	"main": "main.js",

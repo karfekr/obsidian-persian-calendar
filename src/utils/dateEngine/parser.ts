@@ -1,8 +1,12 @@
-import type { TDateEngineContext } from "src/types";
+import type { TDateEngineContext, TPatternMode } from "src/types";
 import { compilePattern } from "./compiler";
 
-export function parsePattern(pattern: string, input: string): TDateEngineContext | null {
-	const compiled = compilePattern(pattern);
+export function parsePattern(
+	pattern: string,
+	input: string,
+	mode: TPatternMode = "standard",
+): TDateEngineContext | null {
+	const compiled = compilePattern(pattern, mode);
 	const match = compiled.regex.exec(input);
 	if (!match) return null;
 

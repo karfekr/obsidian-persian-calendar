@@ -1,9 +1,13 @@
-import type { TDateEngineContext } from "src/types";
+import type { TDateEngineContext, TPatternMode } from "src/types";
 import { compilePattern } from "./compiler";
 import { DatePatternFormatError } from "./errors";
 
-export function formatPattern(pattern: string, context: TDateEngineContext): string {
-	const compiled = compilePattern(pattern);
+export function formatPattern(
+	pattern: string,
+	context: TDateEngineContext,
+	mode: TPatternMode = "standard",
+): string {
+	const compiled = compilePattern(pattern, mode);
 	let result = "";
 
 	for (const segment of compiled.segments) {
