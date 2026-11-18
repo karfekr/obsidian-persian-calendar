@@ -10,6 +10,7 @@ import {
 	applySettingsMigrations,
 	CommandRegistry,
 	EventManager,
+	HeatmapService,
 	NoteService,
 	Placeholder,
 	SmartDateLinker,
@@ -37,6 +38,7 @@ export default class PersianCalendarPlugin extends Plugin {
 	commandRegistry!: CommandRegistry;
 	eventManager!: EventManager;
 	vaultEventService!: VaultEventService;
+	heatmapService!: HeatmapService;
 	versionChecker!: VersionChecker;
 
 	private apiService!: ApiService;
@@ -111,6 +113,9 @@ export default class PersianCalendarPlugin extends Plugin {
 		// Register commands
 		this.commandRegistry.init();
 
+		// Register persian-heatmap code block processor
+		this.heatmapService.register();
+
 		// Check for version updates
 		await this.versionChecker.checkForVersionUpdate();
 
@@ -121,6 +126,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		this.commandRegistry = new CommandRegistry(this);
 		this.eventManager = new EventManager(this);
 		this.vaultEventService = new VaultEventService(this);
+		this.heatmapService = new HeatmapService(this);
 		this.versionChecker = new VersionChecker(this);
 	}
 

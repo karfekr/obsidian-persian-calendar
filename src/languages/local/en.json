@@ -283,5 +283,51 @@
 			"tokenLabel": "Unresolvable pattern:",
 			"hint": "Go to the plugin settings and check your note path patterns."
 		}
+	},
+	"heatmap": {
+		"titleDefault": "{year} Activity",
+		"metrics": {
+			"words": "Word count",
+			"tasks": "Completed tasks",
+			"tasks-open": "Open tasks",
+			"tasks-ratio": "Task completion",
+			"property": "{property}"
+		},
+		"weekdaysShort": {
+			"0": "Sat",
+			"1": "Sun",
+			"2": "Mon",
+			"3": "Tue",
+			"4": "Wed",
+			"5": "Thu",
+			"6": "Fri"
+		},
+		"legend": {
+			"less": "Less",
+			"more": "More"
+		},
+		"summary": {
+			"activeDays": "{count} active days",
+			"totalWords": "{count} words",
+			"tasksSummary": "{completed} completed · {open} open",
+			"average": "Avg {value}",
+			"longestStreak": "Best streak: {count}d",
+			"currentStreak": "Streak: {count}d"
+		},
+		"tooltip": {
+			"noNote": "No daily note",
+			"words": "{count} words",
+			"tasks": "{completed} completed, {open} open",
+			"tasksRatio": "{percent}% ({completed}/{total} tasks)",
+			"property": "{property}: {value}",
+			"noProperty": "{property}: —"
+		},
+		"nav": {
+			"prevYear": "Previous Jalali year",
+			"nextYear": "Next Jalali year"
+		},
+		"errors": {
+			"missingProperty": "Specify a frontmatter property name (e.g. property: mood) when metric is \"property\"."
+		}
 	}
 }

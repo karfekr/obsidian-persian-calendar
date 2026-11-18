@@ -1,0 +1,309 @@
+.persian-heatmap {
+	--heatmap-cell-size: 12px;
+	--heatmap-cell-gap: 3px;
+	--heatmap-level-0: var(--background-modifier-border);
+	--heatmap-level-1: #9be9a8;
+	--heatmap-level-2: #40c463;
+	--heatmap-level-3: #30a14e;
+	--heatmap-level-4: #216e39;
+
+	background-color: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	padding: 14px 16px;
+	font-size: 12px;
+	color: var(--text-normal);
+	box-sizing: border-box;
+}
+
+.theme-dark .persian-heatmap {
+	--heatmap-level-0: rgba(255, 255, 255, 0.06);
+	--heatmap-level-1: #0e4429;
+	--heatmap-level-2: #006d32;
+	--heatmap-level-3: #26a641;
+	--heatmap-level-4: #39d353;
+}
+
+.persian-heatmap[data-color="blue"] {
+	--heatmap-level-1: #b6d7ff;
+	--heatmap-level-2: #6cb0ff;
+	--heatmap-level-3: #2f81f7;
+	--heatmap-level-4: #1158c7;
+}
+
+.theme-dark .persian-heatmap[data-color="blue"] {
+	--heatmap-level-1: #0c2d6b;
+	--heatmap-level-2: #1158c7;
+	--heatmap-level-3: #2f81f7;
+	--heatmap-level-4: #58a6ff;
+}
+
+.persian-heatmap[data-color="purple"] {
+	--heatmap-level-1: #e2c5ff;
+	--heatmap-level-2: #c297ff;
+	--heatmap-level-3: #8957e5;
+	--heatmap-level-4: #5e35b1;
+}
+
+.theme-dark .persian-heatmap[data-color="purple"] {
+	--heatmap-level-1: #2b184c;
+	--heatmap-level-2: #553098;
+	--heatmap-level-3: #8957e5;
+	--heatmap-level-4: #b88bff;
+}
+
+.persian-heatmap[data-color="orange"] {
+	--heatmap-level-1: #ffd8b5;
+	--heatmap-level-2: #ffa657;
+	--heatmap-level-3: #e16f24;
+	--heatmap-level-4: #bc4c00;
+}
+
+.theme-dark .persian-heatmap[data-color="orange"] {
+	--heatmap-level-1: #4d2207;
+	--heatmap-level-2: #9a4408;
+	--heatmap-level-3: #e16f24;
+	--heatmap-level-4: #ffa657;
+}
+
+.persian-heatmap[data-color="red"] {
+	--heatmap-level-1: #ffc1c0;
+	--heatmap-level-2: #ff8182;
+	--heatmap-level-3: #da3633;
+	--heatmap-level-4: #a40e26;
+}
+
+.theme-dark .persian-heatmap[data-color="red"] {
+	--heatmap-level-1: #490b12;
+	--heatmap-level-2: #8e1519;
+	--heatmap-level-3: #da3633;
+	--heatmap-level-4: #ff7b72;
+}
+
+.persian-heatmap--error {
+	color: var(--text-error);
+	font-weight: 500;
+}
+
+.persian-heatmap__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	margin-bottom: 12px;
+	flex-wrap: wrap;
+}
+
+.persian-heatmap__title-group {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.persian-heatmap__title {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--text-normal);
+}
+
+.persian-heatmap__metric-badge {
+	font-size: 11px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background-color: var(--background-modifier-hover);
+	color: var(--text-muted);
+}
+
+.persian-heatmap__nav {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.persian-heatmap__nav-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 5px;
+	background-color: var(--background-primary);
+	color: var(--text-muted);
+	cursor: pointer;
+}
+
+.persian-heatmap__nav-btn:hover {
+	color: var(--text-normal);
+	background-color: var(--background-modifier-hover);
+}
+
+.persian-heatmap__nav-btn svg {
+	width: 14px;
+	height: 14px;
+}
+
+.persian-heatmap__year-label {
+	min-width: 36px;
+	text-align: center;
+	font-weight: 600;
+	font-size: 12px;
+	color: var(--text-normal);
+}
+
+.persian-heatmap__scroll {
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding-bottom: 4px;
+}
+
+.persian-heatmap__graph {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: max-content;
+}
+
+.persian-heatmap__months {
+	display: flex;
+	align-items: center;
+}
+
+.persian-heatmap__months.has-weekdays {
+	padding-inline-start: 34px;
+}
+
+.persian-heatmap__months-track {
+	display: grid;
+	grid-template-columns: repeat(var(--heatmap-weeks, 53), var(--heatmap-cell-size));
+	gap: var(--heatmap-cell-gap);
+	font-size: 11px;
+	color: var(--text-muted);
+	line-height: 1.2;
+}
+
+.persian-heatmap__month-label {
+	grid-row: 1;
+	white-space: nowrap;
+}
+
+.persian-heatmap__body {
+	display: flex;
+	align-items: flex-start;
+	gap: 6px;
+}
+
+.persian-heatmap__weekdays {
+	display: grid;
+	grid-template-rows: repeat(7, var(--heatmap-cell-size));
+	gap: var(--heatmap-cell-gap);
+	width: 28px;
+	flex-shrink: 0;
+}
+
+.persian-heatmap__weekday-label {
+	font-size: 10px;
+	line-height: var(--heatmap-cell-size);
+	color: var(--text-muted);
+	text-align: end;
+	user-select: none;
+}
+
+.persian-heatmap__cells {
+	display: grid;
+	grid-template-columns: repeat(var(--heatmap-weeks, 53), var(--heatmap-cell-size));
+	grid-template-rows: repeat(7, var(--heatmap-cell-size));
+	gap: var(--heatmap-cell-gap);
+}
+
+.persian-heatmap__cell {
+	width: var(--heatmap-cell-size);
+	height: var(--heatmap-cell-size);
+	border-radius: 2px;
+	background-color: var(--heatmap-level-0);
+	cursor: pointer;
+	transition:
+		transform 0.1s ease,
+		outline-color 0.1s ease;
+	box-sizing: border-box;
+}
+
+.persian-heatmap__cell[data-level="1"] {
+	background-color: var(--heatmap-level-1);
+}
+
+.persian-heatmap__cell[data-level="2"] {
+	background-color: var(--heatmap-level-2);
+}
+
+.persian-heatmap__cell[data-level="3"] {
+	background-color: var(--heatmap-level-3);
+}
+
+.persian-heatmap__cell[data-level="4"] {
+	background-color: var(--heatmap-level-4);
+}
+
+.persian-heatmap__cell[data-today="true"] {
+	outline: 1.5px solid var(--interactive-accent);
+	outline-offset: 1px;
+}
+
+.persian-heatmap__cell:hover,
+.persian-heatmap__cell:focus-visible {
+	outline: 1.5px solid var(--text-normal);
+	outline-offset: 1px;
+	transform: scale(1.12);
+}
+
+.persian-heatmap__footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-top: 10px;
+	padding-top: 8px;
+	border-top: 1px solid var(--background-modifier-border);
+	flex-wrap: wrap;
+	font-size: 11px;
+	color: var(--text-muted);
+}
+
+.persian-heatmap__summary {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.persian-heatmap__legend {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.persian-heatmap__legend-cell {
+	cursor: default;
+}
+
+.persian-heatmap__legend-cell:hover {
+	outline: none;
+	transform: none;
+}
+
+.persian-heatmap__tooltip {
+	position: fixed;
+	z-index: 9999;
+	padding: 5px 9px;
+	border-radius: 5px;
+	background-color: var(--background-primary);
+	color: var(--text-normal);
+	border: 1px solid var(--background-modifier-border);
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+	font-size: 12px;
+	line-height: 1.4;
+	pointer-events: none;
+	white-space: nowrap;
+}

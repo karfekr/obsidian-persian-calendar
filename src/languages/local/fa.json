@@ -281,5 +281,52 @@
 			"tokenLabel": "عبارت غیرقابل‌تبدیل:",
 			"hint": "به تنظیمات افزونه بروید و الگوهای مسیردهی یادداشت‌ها را بررسی کنید."
 		}
+	},
+	"heatmap": {
+		"titleDefault": "فعالیت سال {year}",
+		"metrics": {
+			"words": "تعداد کلمات",
+			"tasks": "کارهای انجام‌شده",
+			"tasks-open": "کارهای باز",
+			"tasks-ratio": "نرخ انجام کارها",
+			"property": "{property}"
+		},
+		"weekdaysShort": {
+			"0": "ش",
+			"1": "ی",
+			"2": "د",
+			"3": "س",
+			"4": "چ",
+			"5": "پ",
+			"6": "ج"
+		},
+		"legend": {
+			"less": "کمتر",
+			"more": "بیشتر"
+		},
+		"summary": {
+			"activeDays": "{count} روز فعال",
+			"totalWords": "{count} کلمه",
+			"tasksSummary": "{completed} انجام‌شده · {open} باز",
+			"average": "میانگین {value}",
+			"longestStreak": "بهترین زنجیره: {count} روز",
+			"currentStreak": "زنجیره فعلی: {count} روز"
+		},
+		"tooltip": {
+			"noNote": "بدون روزنوشت",
+			"words": "{count} کلمه",
+			"tasks": "{completed} انجام‌شده، {open} باز",
+			"tasksRatio": "{percent}٪ ({completed} از {total} کار)",
+			"property": "{property}: {value}",
+			"noProperty": "{property}: —"
+		},
+		"nav": {
+			"prevYear": "سال شمسی قبل",
+			"nextYear": "سال شمسی بعد",
+			"currentYear": "امسال"
+		},
+		"errors": {
+			"missingProperty": "هنگام استفاده از معیار «property»، نام فیلد فرانت‌متر را مشخص کنید (مثلاً: property: mood)."
+		}
 	}
 }

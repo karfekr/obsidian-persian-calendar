@@ -1,6 +1,7 @@
 export { default as ApiService } from "./ApiService";
 export { default as CommandRegistry } from "./CommandRegistry";
 export { default as EventManager } from "./EventManager";
+export { default as HeatmapService } from "./HeatmapService";
 export { default as NoteService } from "./NoteService";
 export { default as Placeholder } from "./Placeholder";
 export { applySettingsMigrations, migrateLegacyPathPatterns } from "./SettingsMigration";
