@@ -133,7 +133,14 @@ export default class GridService {
 				const dayOfWeek = (firstDayOfWeekIndex + dayIndex) % 7;
 				isWeekendFlag = this.isWeekend(dayOfWeek);
 
-				if (showHolidays && checkHoliday(date)) {
+				if (
+					showHolidays &&
+					checkHoliday(date, {
+						hijriBase: this.setting.hijriBase,
+						customEvents: this.setting.customEvents,
+						showCustomEvents: this.setting.showCustomEvents,
+					})
+				) {
 					isHolidayInIran = true;
 				}
 			}

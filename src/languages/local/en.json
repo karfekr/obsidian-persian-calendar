@@ -218,6 +218,22 @@
 			},
 			"sunni": {
 				"name": "Show Sunni Events"
+			},
+			"custom": {
+				"name": "Show Custom Events",
+				"heading": "Custom Events",
+				"addBtn": "Add Custom Event",
+				"empty": "No custom events defined yet.",
+				"annual": "Annual",
+				"oneTime": "One-time",
+				"holiday": "Holiday",
+				"edit": "Edit",
+				"delete": "Delete",
+				"calendars": {
+					"jalali": "Jalali",
+					"gregorian": "Gregorian",
+					"hijri": "Hijri"
+				}
 			}
 		}
 	},
@@ -236,6 +252,25 @@
 			"tooltip": "Choose Jalali Date",
 			"jalali": "Jalali",
 			"gregorian": "Gregorian"
+		},
+		"customEvent": {
+			"addTitle": "Add Custom Event",
+			"editTitle": "Edit Custom Event",
+			"titleLabel": "Event Title",
+			"titlePlaceholder": "e.g. Birthday, Anniversary...",
+			"calendarLabel": "Calendar",
+			"repeatLabel": "Repeat every year",
+			"yearLabel": "Year",
+			"monthLabel": "Month",
+			"dayLabel": "Day",
+			"holidayLabel": "Mark as holiday",
+			"saveBtn": "Save",
+			"cancelBtn": "Cancel",
+			"errors": {
+				"emptyTitle": "Please enter an event title.",
+				"invalidYear": "Please enter a valid year.",
+				"invalidDay": "Day must be between 1 and {max}."
+			}
 		}
 	},
 	"notice": {

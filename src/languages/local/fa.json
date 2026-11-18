@@ -216,6 +216,22 @@
 			},
 			"sunni": {
 				"name": "نمایش مناسبت‌های اهل تسنن"
+			},
+			"custom": {
+				"name": "نمایش مناسبت‌های سفارشی",
+				"heading": "مناسبت‌های سفارشی",
+				"addBtn": "افزودن مناسبت",
+				"empty": "هنوز مناسبت سفارشی ثبت نشده است.",
+				"annual": "سالانه",
+				"oneTime": "یک‌بار",
+				"holiday": "تعطیل",
+				"edit": "ویرایش",
+				"delete": "حذف",
+				"calendars": {
+					"jalali": "شمسی",
+					"gregorian": "میلادی",
+					"hijri": "قمری"
+				}
 			}
 		}
 	},
@@ -234,6 +250,25 @@
 			"tooltip": "انتخاب تاریخ به هجری شمسی",
 			"jalali": "شمسی",
 			"gregorian": "میلادی"
+		},
+		"customEvent": {
+			"addTitle": "افزودن مناسبت سفارشی",
+			"editTitle": "ویرایش مناسبت سفارشی",
+			"titleLabel": "عنوان مناسبت",
+			"titlePlaceholder": "مثلاً تولد، سالگرد...",
+			"calendarLabel": "نوع تقویم",
+			"repeatLabel": "تکرار سالانه",
+			"yearLabel": "سال",
+			"monthLabel": "ماه",
+			"dayLabel": "روز",
+			"holidayLabel": "تعطیل رسمی/شخصی",
+			"saveBtn": "ذخیره",
+			"cancelBtn": "انصراف",
+			"errors": {
+				"emptyTitle": "لطفاً عنوان مناسبت را وارد کنید.",
+				"invalidYear": "لطفاً یک سال معتبر وارد کنید.",
+				"invalidDay": "روز باید بین ۱ تا {max} باشد."
+			}
 		}
 	},
 	"notice": {

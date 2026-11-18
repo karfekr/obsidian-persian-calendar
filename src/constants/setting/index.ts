@@ -41,4 +41,6 @@ export const DEFAULT_SETTING: TSetting = {
 	showGlobalEvents: true,
 	showShiaEvents: false,
 	showSunniEvents: false,
+	showCustomEvents: true,
+	customEvents: [],
 };

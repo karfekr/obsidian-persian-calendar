@@ -68,7 +68,10 @@ export default class CalendarSettingTab extends PluginSettingTab {
 			...getTemplateSettings(),
 			...getExtraCalendarSettings(),
 			...getHolidaySettings(),
-			...getEventSettings(),
+			...getEventSettings(this.plugin, async (events) => {
+				await this.applySettingChange("customEvents", events);
+				this.update();
+			}),
 		];
 	}
 }

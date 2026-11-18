@@ -284,6 +284,7 @@ export default class Placeholder {
 					dateToEvents(currentDate, {
 						showEvents: this.plugin.setting,
 						hijriBase: this.plugin.setting.hijriBase,
+						customEvents: this.plugin.setting.customEvents,
 					}),
 				),
 			],
@@ -321,10 +322,12 @@ export default class Placeholder {
 						? dateToEvents(fileDate, {
 								showEvents: this.plugin.setting,
 								hijriBase: this.plugin.setting.hijriBase,
+								customEvents: this.plugin.setting.customEvents,
 							})
 						: dashToEvents(fileName, baseDate, {
 								showEvents: this.plugin.setting,
 								hijriBase: this.plugin.setting.hijriBase,
+								customEvents: this.plugin.setting.customEvents,
 							}),
 				),
 			],

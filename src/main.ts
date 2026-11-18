@@ -55,7 +55,7 @@ export default class PersianCalendarPlugin extends Plugin {
 		setAdapter(setDefaultEventAdapter());
 
 		// Initialize api service
-		this.apiService = new ApiService();
+		this.apiService = new ApiService(() => this.setting);
 
 		// Initialize note service
 		this.noteService = new NoteService(this.app, this);
