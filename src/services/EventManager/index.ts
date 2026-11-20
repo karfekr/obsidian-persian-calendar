@@ -26,21 +26,20 @@ export default class EventManager {
 		this.registerFileModifyEvent();
 		this.registerFileDeleteEvent();
 		this.registerFileRenameEvent();
-		this.registerMetadataChangeEvent();
 	}
 
 	private registerFileCreateEvent() {
 		this.plugin.registerEvent(
 			this.plugin.app.vault.on("create", (file: TAbstractFile) => {
 				if (file instanceof TFile && file.path.endsWith(".md")) {
+					if (this.plugin.vaultEventService.isRelevantFile(file.path)) {
+						this.debouncedVaultEventsRefresh();
+					}
 					if (!this.isLayoutReady) return;
 
 					window.setTimeout(() => {
 						void this.plugin.placeholder.insertPersianDate(file);
 					}, 300);
-					if (this.plugin.vaultEventService.isRelevantFile(file.path)) {
-						this.debouncedVaultEventsRefresh();
-					}
 					this.handleFileUpdate();
 				}
 			}),
@@ -81,26 +80,18 @@ export default class EventManager {
 
 	private registerFileRenameEvent() {
 		this.plugin.registerEvent(
-			this.plugin.app.vault.on("rename", (file, oldPath) => {
-				if (
-					file instanceof TFolder ||
-					(file instanceof TFile &&
-						file.path.endsWith(".md") &&
-						(this.plugin.vaultEventService.isRelevantFile(file.path) ||
-							this.plugin.vaultEventService.isRelevantFile(oldPath)))
-				) {
-					this.debouncedVaultEventsRefresh();
-				}
-			}),
-		);
-	}
+			this.plugin.app.vault.on("rename", async (file, oldPath) => {
+				const isFolder = file instanceof TFolder;
+				const isMarkdown = file instanceof TFile && file.path.endsWith(".md");
+				const service = this.plugin.vaultEventService;
+				const wasRelevant = service.isRelevantFile(oldPath);
+				const moved = (isFolder || isMarkdown) && service.moveSources(oldPath, file.path, isFolder);
 
-	private registerMetadataChangeEvent() {
-		this.plugin.registerEvent(
-			this.plugin.app.metadataCache.on("changed", (file) => {
-				if (file instanceof TFile && this.plugin.vaultEventService.isRelevantFile(file.path)) {
+				if (isFolder || wasRelevant || (isMarkdown && service.isRelevantFile(file.path))) {
 					this.debouncedVaultEventsRefresh();
 				}
+
+				if (moved) await this.plugin.saveSetting();
 			}),
 		);
 	}

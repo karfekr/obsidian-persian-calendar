@@ -1,3 +1,4 @@
+import { DEFAULT_SETTING } from "src/constants/setting";
 import type { TSetting, TWeekDays } from "src/types";
 import { defaultTokenRegistry, tokenize } from "src/utils/dateEngine";
 
@@ -51,7 +52,7 @@ export function migrateLegacyPathPatterns(setting: TSetting): TSetting {
 
 type LegacyWeekendDays = "thursday-friday" | "friday" | "friday-saturday";
 
-type RawStoredSettings = Omit<Partial<TSetting>, "weekendDays"> & {
+export type RawStoredSettings = Omit<Partial<TSetting>, "weekendDays"> & {
 	weekendDays?: TWeekDays | LegacyWeekendDays;
 };
 
@@ -97,11 +98,13 @@ function migrateWeekendDays(rawStoredData: RawStoredSettings, merged: TSetting):
 	};
 }
 
-export function applySettingsMigrations(
-	rawStoredData: RawStoredSettings | null,
-	merged: TSetting,
-): TSetting {
-	let result = merged;
+export function applySettingsMigrations(rawStoredData: RawStoredSettings | null): TSetting {
+	const { weekendDays, ...stored } = rawStoredData ?? {};
+	let result = {
+		...DEFAULT_SETTING,
+		...stored,
+		...(typeof weekendDays === "object" ? { weekendDays } : {}),
+	};
 
 	if (rawStoredData?.legacyPathPatternsMigrated !== true) {
 		result = migrateLegacyPathPatterns(result);
