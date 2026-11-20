@@ -27,7 +27,6 @@
 			"paths": "مسیر یادداشت‌های تقویم",
 			"names": "نام‌گذاری یادداشت‌های تقویم",
 			"templates": "قالب یادداشت‌های تقویم",
-			"liveExpressions": "عبارات زنده",
 			"extraCalendars": "تقویم‌های مکمل",
 			"holidays": "نمایش تعطیلات",
 			"events": "نمایش مناسبت‌ها"
@@ -145,31 +144,6 @@
 				"desc": "قالبی که هنگام ایجاد سال‌نوشت استفاده می‌شود."
 			}
 		},
-		"liveExpressions": {
-			"mode": {
-				"name": "وضعیت عبارات زنده",
-				"desc": "تعیین کنید عبارات زنده ({#عبارت}) در چه یادداشت‌هایی فعال و به‌روزرسانی شوند.",
-				"options": {
-					"disabled": "غیرفعال",
-					"dashboard": "تنها در یک فایل (داشبورد)",
-					"all": "همه فایل‌ها"
-				}
-			},
-			"dashboardPath": {
-				"name": "فایل داشبورد",
-				"desc": "یادداشتی که در حالت «تنها در یک فایل (داشبورد)» عبارات زنده در آن رندر می‌شوند."
-			},
-			"interval": {
-				"name": "فاصله زمانی به‌روزرسانی",
-				"desc": "فاصله زمانی تازه‌سازی مقادیر عبارات زنده در صفحه.",
-				"options": {
-					"1000": "۱ ثانیه",
-					"5000": "۵ ثانیه",
-					"30000": "۳۰ ثانیه",
-					"60000": "۶۰ ثانیه"
-				}
-			}
-		},
 		"extraCalendars": {
 			"showGregorian": {
 				"name": "نمایش تقویم میلادی",
@@ -242,6 +216,38 @@
 			},
 			"sunni": {
 				"name": "نمایش مناسبت‌های اهل تسنن"
+			},
+			"custom": {
+				"name": "نمایش مناسبت‌های سفارشی",
+				"heading": "مناسبت‌های سفارشی",
+				"addBtn": "افزودن مناسبت",
+				"empty": "هنوز مناسبت سفارشی ثبت نشده است.",
+				"annual": "سالانه",
+				"oneTime": "یک‌بار",
+				"holiday": "تعطیل",
+				"edit": "ویرایش",
+				"delete": "حذف",
+				"calendars": {
+					"jalali": "شمسی",
+					"gregorian": "میلادی",
+					"hijri": "قمری"
+				}
+			},
+			"vault": {
+				"heading": "مناسبت‌ها از یادداشت‌های خزانه",
+				"addBtn": "افزودن منبع خزانه",
+				"empty": "هنوز منبعی از خزانه تعریف نشده است.",
+				"allVault": "کل خزانه",
+				"types": {
+					"frontmatter": "ویژگی یادداشت",
+					"note": "فایل یادداشت"
+				},
+				"calendars": {
+					"auto": "تشخیص خودکار",
+					"jalali": "شمسی",
+					"gregorian": "میلادی",
+					"hijri": "قمری"
+				}
 			}
 		}
 	},
@@ -260,6 +266,51 @@
 			"tooltip": "انتخاب تاریخ به هجری شمسی",
 			"jalali": "شمسی",
 			"gregorian": "میلادی"
+		},
+		"customEvent": {
+			"addTitle": "افزودن مناسبت سفارشی",
+			"editTitle": "ویرایش مناسبت سفارشی",
+			"titleLabel": "عنوان مناسبت",
+			"titlePlaceholder": "مثلاً تولد، سالگرد...",
+			"calendarLabel": "نوع تقویم",
+			"repeatLabel": "تکرار سالانه",
+			"yearLabel": "سال",
+			"monthLabel": "ماه",
+			"dayLabel": "روز",
+			"holidayLabel": "تعطیل رسمی/شخصی",
+			"saveBtn": "ذخیره",
+			"cancelBtn": "انصراف",
+			"errors": {
+				"emptyTitle": "لطفاً عنوان مناسبت را وارد کنید.",
+				"invalidYear": "لطفاً یک سال معتبر وارد کنید.",
+				"invalidDay": "روز باید بین ۱ تا {max} باشد."
+			}
+		},
+		"vaultEvent": {
+			"addTitle": "افزودن منبع مناسبت از خزانه",
+			"editTitle": "ویرایش منبع مناسبت از خزانه",
+			"typeLabel": "نوع منبع",
+			"typeFrontmatter": "ویژگی فرانت‌متر (پوشه یا یادداشت)",
+			"typeNote": "یادداشت خزانه (خطوط تاریخ‌دار)",
+			"folderPathLabel": "مسیر پوشه یا یادداشت",
+			"folderPathDesc": "برای بررسی کل خزانه خالی بگذارید (مثلاً People/).",
+			"folderPathPlaceholder": "مثلاً People/",
+			"notePathLabel": "مسیر یادداشت",
+			"notePathDesc": "یادداشتی شامل خطوط تاریخ‌دار تکرارشونده (مثلاً - 1375-06-12 | تولد علی).",
+			"notePathPlaceholder": "مثلاً Occasions.md",
+			"propertyLabel": "نام ویژگی فرانت‌متر",
+			"propertyPlaceholder": "مثلاً birthday یا anniversary",
+			"titleTemplateLabel": "الگوی عنوان (اختیاری)",
+			"titleTemplateDesc": "از {name}، {property} و {year} پشتیبانی می‌کند. پیش‌فرض: «{name} ({property})».",
+			"titleTemplatePlaceholder": "مثلاً تولد {name}",
+			"calendarLabel": "نوع تقویم",
+			"holidayLabel": "تعطیل رسمی/شخصی",
+			"saveBtn": "ذخیره",
+			"cancelBtn": "انصراف",
+			"errors": {
+				"emptyProperty": "لطفاً نام ویژگی فرانت‌متر را وارد کنید.",
+				"emptyNotePath": "لطفاً مسیر یادداشت را وارد کنید."
+			}
 		}
 	},
 	"notice": {

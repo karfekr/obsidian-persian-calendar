@@ -1,11 +1,21 @@
 import type { CalendarDate } from "@internationalized/date";
 import type { CategoryType, EventType } from "persian-holidays";
 import { getEvents } from "persian-holidays";
-import type { TDateFormat, THijriBase, TLocale, TShowEvents } from "src/types";
+import type { TCustomEvent, TDateFormat, THijriBase, TLocale, TShowEvents } from "src/types";
 import { dashToCalendarDate } from "src/utils/dashUtils";
 import { dateToGregorian, dateToHijri, dateToJalali } from "src/utils/dateUtils";
 
 import { setUmalquraEventAdapter } from "./eventAdapter";
+
+export type TCalendarEvent = EventType & {
+	isCustom?: boolean;
+};
+
+type TEventQueryOption = {
+	showEvents?: TShowEvents;
+	hijriBase?: THijriBase;
+	customEvents?: TCustomEvent[];
+};
 
 function buildCategories(showEvents: TShowEvents): CategoryType[] {
 	const map: [boolean | undefined, CategoryType][] = [
@@ -20,7 +30,7 @@ function buildCategories(showEvents: TShowEvents): CategoryType[] {
 	return map.filter(([flag]) => flag).map(([, cat]) => cat);
 }
 
-function uniqueEvents(events: EventType[]): EventType[] {
+function uniqueEvents(events: TCalendarEvent[]): TCalendarEvent[] {
 	const seen = new Set<string>();
 
 	return events.filter((e) => {
@@ -32,11 +42,51 @@ function uniqueEvents(events: EventType[]): EventType[] {
 	});
 }
 
-// (CalendarDate) => Events[]
-export function dateToEvents(
+function getMatchingCustomEvents(
 	date: CalendarDate,
-	option?: { showEvents?: TShowEvents; hijriBase?: THijriBase },
-): EventType[] {
+	customEvents: TCustomEvent[],
+	hijriBase: THijriBase,
+): TCalendarEvent[] {
+	if (customEvents.length === 0) return [];
+
+	const { jy, jm, jd } = dateToJalali(date);
+	const { gy, gm, gd } = dateToGregorian(date);
+	const { hy, hm, hd } = dateToHijri(date, { base: hijriBase });
+
+	return customEvents
+		.filter((event) => {
+			if (!event.enabled) return false;
+
+			const matchesDate = (year: number, month: number, day: number) =>
+				event.month === month &&
+				event.day === day &&
+				(event.year === undefined || event.year === year);
+
+			switch (event.calendar) {
+				case "jalali":
+					return matchesDate(jy, jm, jd);
+				case "gregorian":
+					return matchesDate(gy, gm, gd);
+				case "hijri":
+					return matchesDate(hy, hm, hd);
+				default:
+					return false;
+			}
+		})
+		.map((event) => ({
+			id: `custom-${event.id}`,
+			title: { fa: event.title, en: event.title },
+			categories: [],
+			isHolidayInIran: event.isHoliday,
+			calendar: event.calendar,
+			type: "fixed",
+			date: { month: event.month, day: event.day },
+			isCustom: true,
+		}));
+}
+
+// (CalendarDate) => Events[]
+export function dateToEvents(date: CalendarDate, option?: TEventQueryOption): TCalendarEvent[] {
 	const showEvents = option?.showEvents ?? {
 		showIROfficialEvents: false,
 		showIRHistoricalEvents: false,
@@ -44,53 +94,65 @@ export function dateToEvents(
 		showShiaEvents: false,
 		showSunniEvents: false,
 		showGlobalEvents: false,
+		showCustomEvents: true,
 	};
 	const hijriBase = option?.hijriBase ?? "iran";
+	const customEvents = option?.customEvents ?? [];
 
 	const categories = buildCategories(showEvents);
-	if (categories.length === 0) {
-		return [];
-	}
+	const builtInEvents: TCalendarEvent[] = [];
 
-	const { jy, jm, jd } = dateToJalali(date);
-	const jalaliEvents = getEvents("jalali", jm, jd, {
-		year: jy,
-		categories,
-	});
-
-	const { hy, hm, hd } = dateToHijri(date, { base: hijriBase });
-	const hijriBaseEvents = getEvents("hijri", hm, hd, {
-		year: hy,
-		categories,
-	});
-
-	let hijriEvents: EventType[] = hijriBaseEvents;
-
-	if (option?.hijriBase === "umalqura" && showEvents.showSunniEvents) {
-		const { hy, hm, hd } = dateToHijri(date, { base: "umalqura" });
-
-		const umalquraEvents = getEvents("hijri", hm, hd, {
-			year: hy,
+	if (categories.length > 0) {
+		const { jy, jm, jd } = dateToJalali(date);
+		const jalaliEvents = getEvents("jalali", jm, jd, {
+			year: jy,
 			categories,
-			adapter: setUmalquraEventAdapter(),
-			trueHolidays: false,
 		});
 
-		// merge + dedupe
-		hijriEvents = uniqueEvents([...hijriBaseEvents, ...umalquraEvents]);
+		const { hy, hm, hd } = dateToHijri(date, { base: hijriBase });
+		const hijriBaseEvents = getEvents("hijri", hm, hd, {
+			year: hy,
+			categories,
+		});
+
+		let hijriEvents: EventType[] = hijriBaseEvents;
+
+		if (option?.hijriBase === "umalqura" && showEvents.showSunniEvents) {
+			const { hy, hm, hd } = dateToHijri(date, { base: "umalqura" });
+
+			const umalquraEvents = getEvents("hijri", hm, hd, {
+				year: hy,
+				categories,
+				adapter: setUmalquraEventAdapter(),
+				trueHolidays: false,
+			});
+
+			// merge + dedupe
+			hijriEvents = uniqueEvents([...hijriBaseEvents, ...umalquraEvents]);
+		}
+
+		const { gy, gm, gd } = dateToGregorian(date);
+		const gregorianEvents = getEvents("gregorian", gm, gd, {
+			year: gy,
+			categories,
+		});
+
+		builtInEvents.push(...jalaliEvents, ...hijriEvents, ...gregorianEvents);
 	}
 
-	const { gy, gm, gd } = dateToGregorian(date);
-	const gregorianEvents = getEvents("gregorian", gm, gd, {
-		year: gy,
-		categories,
-	});
+	const matchingCustomEvents =
+		showEvents.showCustomEvents !== false
+			? getMatchingCustomEvents(date, customEvents, hijriBase)
+			: [];
 
-	return uniqueEvents([...jalaliEvents, ...hijriEvents, ...gregorianEvents]);
+	return uniqueEvents([...builtInEvents, ...matchingCustomEvents]);
 }
 
 // (CalendarDate) => (is holiday?)true|false
-export function checkHoliday(date: CalendarDate): boolean {
+export function checkHoliday(
+	date: CalendarDate,
+	option?: { hijriBase?: THijriBase; customEvents?: TCustomEvent[]; showCustomEvents?: boolean },
+): boolean {
 	const showEvents: TShowEvents = {
 		showIROfficialEvents: true,
 		showIRHistoricalEvents: true,
@@ -98,9 +160,14 @@ export function checkHoliday(date: CalendarDate): boolean {
 		showShiaEvents: true,
 		showSunniEvents: true,
 		showGlobalEvents: true,
+		showCustomEvents: option?.showCustomEvents ?? true,
 	};
 
-	const events = dateToEvents(date, { showEvents });
+	const events = dateToEvents(date, {
+		showEvents,
+		hijriBase: option?.hijriBase,
+		customEvents: option?.customEvents,
+	});
 	return events.some((event) => event.isHolidayInIran);
 }
 
@@ -108,16 +175,20 @@ export function checkHoliday(date: CalendarDate): boolean {
 export function dashToEvents(
 	dashDate: string,
 	dateFormat: TDateFormat,
-	option?: { showEvents?: TShowEvents; hijriBase?: THijriBase },
-): EventType[] | null {
+	option?: TEventQueryOption,
+): TCalendarEvent[] | null {
 	const date = dashToCalendarDate(dashDate, dateFormat);
 	if (!date) return null;
 
-	return dateToEvents(date, { showEvents: option?.showEvents, hijriBase: option?.hijriBase });
+	return dateToEvents(date, {
+		showEvents: option?.showEvents,
+		hijriBase: option?.hijriBase,
+		customEvents: option?.customEvents,
+	});
 }
 
 // (Events[]) => String(Events[])
-export function eventsToString(events: EventType[] | null, local: TLocale = "fa"): string {
+export function eventsToString(events: TCalendarEvent[] | null, local: TLocale = "fa"): string {
 	if (!events || events.length === 0) {
 		return "هیچ مناسبتی برای این روز ثبت نشده است.";
 	}

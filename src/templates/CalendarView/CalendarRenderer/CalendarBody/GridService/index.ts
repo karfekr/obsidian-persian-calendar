@@ -1,5 +1,5 @@
 import type CalendarState from "src/templates/CalendarView/CalendarState";
-import type { TMonthGridCell, TSetting, TWeekDays } from "src/types";
+import type { TCustomEvent, TMonthGridCell, TSetting, TWeekDays } from "src/types";
 import {
 	dateToJalali,
 	jalaliMonthLength,
@@ -14,6 +14,7 @@ export default class GridService {
 	constructor(
 		private readonly calendarState: CalendarState,
 		private readonly setting: TSetting,
+		private readonly getCustomEvents?: () => TCustomEvent[],
 	) {}
 
 	private isWeekend(dayOfWeek: number): boolean {
@@ -133,7 +134,14 @@ export default class GridService {
 				const dayOfWeek = (firstDayOfWeekIndex + dayIndex) % 7;
 				isWeekendFlag = this.isWeekend(dayOfWeek);
 
-				if (showHolidays && checkHoliday(date)) {
+				if (
+					showHolidays &&
+					checkHoliday(date, {
+						hijriBase: this.setting.hijriBase,
+						customEvents: this.getCustomEvents?.() ?? this.setting.customEvents,
+						showCustomEvents: this.setting.showCustomEvents,
+					})
+				) {
 					isHolidayInIran = true;
 				}
 			}

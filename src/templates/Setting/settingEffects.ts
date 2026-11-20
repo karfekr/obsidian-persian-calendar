@@ -44,10 +44,9 @@ const SETTING_EFFECTS: Partial<Record<keyof TSetting, EffectKind>> = {
 	showIRAncientEvents: "refresh-immediate",
 	showShiaEvents: "refresh-immediate",
 	showSunniEvents: "refresh-immediate",
-
-	liveExpressionsMode: "refresh-immediate",
-	liveExpressionsDashboardPath: "refresh-debounced",
-	liveExpressionsInterval: "refresh-immediate",
+	showCustomEvents: "refresh-immediate",
+	customEvents: "refresh-immediate",
+	vaultEventSources: "refresh-immediate",
 };
 
 export function getNestedValue(obj: unknown, path: string): unknown {
@@ -87,18 +86,12 @@ export function createSettingChangeHandler(
 
 	return async function applySettingChange(key: string, value: unknown): Promise<void> {
 		const settingKey = key as keyof TSetting;
-		const normalizedValue = settingKey === "liveExpressionsInterval" ? Number(value) : value;
 
-		setNestedValue(plugin.setting, key, normalizedValue);
+		setNestedValue(plugin.setting, key, value);
 
 		if (settingKey === "language") {
-			setLocal(normalizedValue as TLocale);
+			setLocal(value as TLocale);
 		}
-
-		const isLiveExpressionSetting =
-			settingKey === "liveExpressionsMode" ||
-			settingKey === "liveExpressionsDashboardPath" ||
-			settingKey === "liveExpressionsInterval";
 
 		const effect = SETTING_EFFECTS[settingKey] ?? "refresh-immediate";
 
@@ -112,10 +105,6 @@ export function createSettingChangeHandler(
 
 				void plugin.saveSetting().then(() => {
 					plugin.refreshViews();
-					if (isLiveExpressionSetting) {
-						plugin.liveExpression?.configureTimer();
-						plugin.liveExpression?.refreshWorkspaceLeaves();
-					}
 				});
 			}, REFRESH_DEBOUNCE_MS);
 
@@ -129,11 +118,6 @@ export function createSettingChangeHandler(
 
 		await plugin.saveSetting();
 		plugin.refreshViews();
-
-		if (isLiveExpressionSetting) {
-			plugin.liveExpression?.configureTimer();
-			plugin.liveExpression?.refreshWorkspaceLeaves();
-		}
 
 		if (effect === "language") {
 			onLocaleChange();

@@ -7,7 +7,6 @@ import { getEventSettings } from "./sections/EventSection";
 import { getExtraCalendarSettings } from "./sections/ExtraCalendarSection";
 import { getGeneralSettings } from "./sections/GeneralSection";
 import { getHolidaySettings } from "./sections/HolidaySection";
-import { getLiveExpressionSettings } from "./sections/LiveExpressionSection";
 import { getNameSettings } from "./sections/NameSection";
 import { getPathSettings } from "./sections/PathSection";
 import { getTemplateSettings } from "./sections/TemplateSection";
@@ -26,11 +25,7 @@ export default class CalendarSettingTab extends PluginSettingTab {
 	}
 
 	getControlValue(key: string): unknown {
-		const val = getNestedValue(this.plugin.setting, key);
-		if (key === "liveExpressionsInterval" && typeof val === "number") {
-			return String(val);
-		}
-		return val;
+		return getNestedValue(this.plugin.setting, key);
 	}
 
 	private renderBanner(setting: Setting): void {
@@ -71,10 +66,21 @@ export default class CalendarSettingTab extends PluginSettingTab {
 			...getPathSettings(),
 			...getNameSettings(),
 			...getTemplateSettings(),
-			...getLiveExpressionSettings(),
 			...getExtraCalendarSettings(),
 			...getHolidaySettings(),
-			...getEventSettings(),
+			...getEventSettings(
+				this.plugin,
+				async (events) => {
+					await this.applySettingChange("customEvents", events);
+					this.update();
+				},
+				async (sources) => {
+					this.plugin.setting.vaultEventSources = sources;
+					await this.plugin.vaultEventService.refresh();
+					await this.applySettingChange("vaultEventSources", sources);
+					this.update();
+				},
+			),
 		];
 	}
 }

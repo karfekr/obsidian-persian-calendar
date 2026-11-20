@@ -7,4 +7,5 @@ export { default as Placeholder } from "./Placeholder";
 export { applySettingsMigrations, migrateLegacyPathPatterns } from "./SettingsMigration";
 export { default as SmartDateLinker } from "./SmartDateLinker";
 export { default as Suggestion } from "./Suggestion";
+export { default as VaultEventService } from "./VaultEventService";
 export { default as VersionChecker } from "./VersionChecker";

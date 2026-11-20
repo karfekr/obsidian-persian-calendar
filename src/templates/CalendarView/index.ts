@@ -31,6 +31,7 @@ export default class CalendarView extends View {
 			this.calendarState,
 			this.notesService,
 			this.setting,
+			() => this.plugin.getAllCustomEvents(),
 		);
 		this.calendarNavigation = new CalendarNavigation(
 			this.calendarState,

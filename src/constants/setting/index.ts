@@ -41,7 +41,7 @@ export const DEFAULT_SETTING: TSetting = {
 	showGlobalEvents: true,
 	showShiaEvents: false,
 	showSunniEvents: false,
-	liveExpressionsMode: "disabled",
-	liveExpressionsDashboardPath: "",
-	liveExpressionsInterval: 1000,
+	showCustomEvents: true,
+	customEvents: [],
+	vaultEventSources: [],
 };

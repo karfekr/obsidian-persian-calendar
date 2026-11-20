@@ -27,7 +27,6 @@
 			"paths": "Calendar Note Paths",
 			"names": "Calendar Note Names",
 			"templates": "Calendar Note Templates",
-			"liveExpressions": "Live Expressions",
 			"extraCalendars": "Additional Calendars",
 			"holidays": "Holiday Display",
 			"events": "Event Display"
@@ -147,31 +146,6 @@
 				"desc": "Template used when creating yearly notes."
 			}
 		},
-		"liveExpressions": {
-			"mode": {
-				"name": "Live Expressions Scope",
-				"desc": "Choose where live expressions ({#expression}) are converted and dynamically refreshed.",
-				"options": {
-					"disabled": "Disabled",
-					"dashboard": "Single file (Dashboard)",
-					"all": "All files"
-				}
-			},
-			"dashboardPath": {
-				"name": "Dashboard File",
-				"desc": "The note where live expressions are active when scope is set to 'Single file (Dashboard)'."
-			},
-			"interval": {
-				"name": "Update Interval",
-				"desc": "How often live expression values are refreshed in the view.",
-				"options": {
-					"1000": "1 second",
-					"5000": "5 seconds",
-					"30000": "30 seconds",
-					"60000": "60 seconds"
-				}
-			}
-		},
 		"extraCalendars": {
 			"showGregorian": {
 				"name": "Show Gregorian Calendar",
@@ -244,6 +218,38 @@
 			},
 			"sunni": {
 				"name": "Show Sunni Events"
+			},
+			"custom": {
+				"name": "Show Custom Events",
+				"heading": "Custom Events",
+				"addBtn": "Add Custom Event",
+				"empty": "No custom events defined yet.",
+				"annual": "Annual",
+				"oneTime": "One-time",
+				"holiday": "Holiday",
+				"edit": "Edit",
+				"delete": "Delete",
+				"calendars": {
+					"jalali": "Jalali",
+					"gregorian": "Gregorian",
+					"hijri": "Hijri"
+				}
+			},
+			"vault": {
+				"heading": "Vault Event Sources",
+				"addBtn": "Add Vault Source",
+				"empty": "No vault event sources configured yet.",
+				"allVault": "Entire vault",
+				"types": {
+					"frontmatter": "Frontmatter",
+					"note": "Vault Note"
+				},
+				"calendars": {
+					"auto": "Auto-detect",
+					"jalali": "Jalali",
+					"gregorian": "Gregorian",
+					"hijri": "Hijri"
+				}
 			}
 		}
 	},
@@ -262,6 +268,51 @@
 			"tooltip": "Choose Jalali Date",
 			"jalali": "Jalali",
 			"gregorian": "Gregorian"
+		},
+		"customEvent": {
+			"addTitle": "Add Custom Event",
+			"editTitle": "Edit Custom Event",
+			"titleLabel": "Event Title",
+			"titlePlaceholder": "e.g. Birthday, Anniversary...",
+			"calendarLabel": "Calendar",
+			"repeatLabel": "Repeat every year",
+			"yearLabel": "Year",
+			"monthLabel": "Month",
+			"dayLabel": "Day",
+			"holidayLabel": "Mark as holiday",
+			"saveBtn": "Save",
+			"cancelBtn": "Cancel",
+			"errors": {
+				"emptyTitle": "Please enter an event title.",
+				"invalidYear": "Please enter a valid year.",
+				"invalidDay": "Day must be between 1 and {max}."
+			}
+		},
+		"vaultEvent": {
+			"addTitle": "Add Vault Event Source",
+			"editTitle": "Edit Vault Event Source",
+			"typeLabel": "Source Type",
+			"typeFrontmatter": "Frontmatter property (folder or note)",
+			"typeNote": "Vault note (date lines)",
+			"folderPathLabel": "Folder or Note Path",
+			"folderPathDesc": "Leave empty to scan the entire vault (e.g. People/).",
+			"folderPathPlaceholder": "e.g. People/",
+			"notePathLabel": "Note Path",
+			"notePathDesc": "Markdown note containing recurring event lines (e.g. - 1375-06-12 | Birthday).",
+			"notePathPlaceholder": "e.g. Occasions.md",
+			"propertyLabel": "Frontmatter Property",
+			"propertyPlaceholder": "e.g. birthday, anniversary",
+			"titleTemplateLabel": "Title Template (optional)",
+			"titleTemplateDesc": "Supports {name}, {property}, and {year}. Defaults to \"{name} ({property})\".",
+			"titleTemplatePlaceholder": "e.g. Birthday: {name}",
+			"calendarLabel": "Calendar",
+			"holidayLabel": "Mark as holiday",
+			"saveBtn": "Save",
+			"cancelBtn": "Cancel",
+			"errors": {
+				"emptyProperty": "Please enter a frontmatter property name.",
+				"emptyNotePath": "Please enter a note path."
+			}
 		}
 	},
 	"notice": {
