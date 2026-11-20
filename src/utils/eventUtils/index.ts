@@ -9,6 +9,7 @@ import { setUmalquraEventAdapter } from "./eventAdapter";
 
 export type TCalendarEvent = EventType & {
 	isCustom?: boolean;
+	color?: TCustomEvent["color"];
 };
 
 type TEventQueryOption = {
@@ -60,7 +61,7 @@ function getMatchingCustomEvents(
 			const matchesDate = (year: number, month: number, day: number) =>
 				event.month === month &&
 				event.day === day &&
-				(event.year === undefined || event.year === year);
+				(event.originYear === undefined || event.originYear === year);
 
 			switch (event.calendar) {
 				case "jalali":
@@ -76,6 +77,7 @@ function getMatchingCustomEvents(
 		.map((event) => ({
 			id: `custom-${event.id}`,
 			title: { fa: event.title, en: event.title },
+			...(event.color ? { color: event.color } : {}),
 			categories: [],
 			isHolidayInIran: event.isHoliday,
 			calendar: event.calendar,
