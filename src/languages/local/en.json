@@ -49,11 +49,11 @@
 			},
 			"askBeforeCreate": {
 				"name": "Confirm Before Creating Notes",
-				"desc": "When enabled, a confirmation dialog will appear before creating any note."
+				"desc": "Show a confirmation dialog before creating a note."
 			},
 			"askBeforeDelete": {
 				"name": "Confirm Before Deleting Notes",
-				"desc": "Ask for confirmation before deleting calendar notes."
+				"desc": "Show a confirmation dialog before deleting a note."
 			},
 			"openDailyOnStartup": {
 				"name": "Open Today's Daily Note on Startup",
@@ -220,32 +220,20 @@
 				"name": "Show Sunni Events"
 			},
 			"custom": {
-				"name": "Show Custom Events",
-				"heading": "Custom Events",
-				"addBtn": "Add Custom Event",
-				"empty": "No custom events defined yet.",
-				"annual": "Annual",
-				"oneTime": "One-time",
-				"holiday": "Holiday",
-				"edit": "Edit",
-				"delete": "Delete",
-				"calendars": {
-					"jalali": "Jalali",
-					"gregorian": "Gregorian",
-					"hijri": "Hijri"
-				}
+				"name": "Show Custom Events"
 			},
 			"vault": {
-				"heading": "Vault Event Sources",
-				"addBtn": "Add Vault Source",
-				"empty": "No vault event sources configured yet.",
-				"allVault": "Entire vault",
-				"types": {
-					"frontmatter": "Frontmatter",
-					"note": "Vault Note"
-				},
+				"addBtn": "Add Custom Events",
+				"empty": "No event repository notes registered yet.",
+				"edit": "Edit repository",
+				"delete": "Remove repository",
+				"notePathLabel": "Repository note",
+				"notePathDesc": "Use plain lines: MM-DD or YYYY-MM-DD | title | color | تعطیل. Dates use ASCII digits and hyphens. Color and holiday are optional; use | | تعطیل for a holiday with the default accent.",
+				"calendarLabel": "Calendar",
+				"saveBtn": "Save",
+				"cancelBtn": "Cancel",
+				"emptyNotePath": "Please choose a repository note.",
 				"calendars": {
-					"auto": "Auto-detect",
 					"jalali": "Jalali",
 					"gregorian": "Gregorian",
 					"hijri": "Hijri"
@@ -268,51 +256,6 @@
 			"tooltip": "Choose Jalali Date",
 			"jalali": "Jalali",
 			"gregorian": "Gregorian"
-		},
-		"customEvent": {
-			"addTitle": "Add Custom Event",
-			"editTitle": "Edit Custom Event",
-			"titleLabel": "Event Title",
-			"titlePlaceholder": "e.g. Birthday, Anniversary...",
-			"calendarLabel": "Calendar",
-			"repeatLabel": "Repeat every year",
-			"yearLabel": "Year",
-			"monthLabel": "Month",
-			"dayLabel": "Day",
-			"holidayLabel": "Mark as holiday",
-			"saveBtn": "Save",
-			"cancelBtn": "Cancel",
-			"errors": {
-				"emptyTitle": "Please enter an event title.",
-				"invalidYear": "Please enter a valid year.",
-				"invalidDay": "Day must be between 1 and {max}."
-			}
-		},
-		"vaultEvent": {
-			"addTitle": "Add Vault Event Source",
-			"editTitle": "Edit Vault Event Source",
-			"typeLabel": "Source Type",
-			"typeFrontmatter": "Frontmatter property (folder or note)",
-			"typeNote": "Vault note (date lines)",
-			"folderPathLabel": "Folder or Note Path",
-			"folderPathDesc": "Leave empty to scan the entire vault (e.g. People/).",
-			"folderPathPlaceholder": "e.g. People/",
-			"notePathLabel": "Note Path",
-			"notePathDesc": "Markdown note containing recurring event lines (e.g. - 1375-06-12 | Birthday).",
-			"notePathPlaceholder": "e.g. Occasions.md",
-			"propertyLabel": "Frontmatter Property",
-			"propertyPlaceholder": "e.g. birthday, anniversary",
-			"titleTemplateLabel": "Title Template (optional)",
-			"titleTemplateDesc": "Supports {name}, {property}, and {year}. Defaults to \"{name} ({property})\".",
-			"titleTemplatePlaceholder": "e.g. Birthday: {name}",
-			"calendarLabel": "Calendar",
-			"holidayLabel": "Mark as holiday",
-			"saveBtn": "Save",
-			"cancelBtn": "Cancel",
-			"errors": {
-				"emptyProperty": "Please enter a frontmatter property name.",
-				"emptyNotePath": "Please enter a note path."
-			}
 		}
 	},
 	"notice": {
