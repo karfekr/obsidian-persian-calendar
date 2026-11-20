@@ -45,7 +45,6 @@ const SETTING_EFFECTS: Partial<Record<keyof TSetting, EffectKind>> = {
 	showShiaEvents: "refresh-immediate",
 	showSunniEvents: "refresh-immediate",
 	showCustomEvents: "refresh-immediate",
-	customEvents: "refresh-immediate",
 	vaultEventSources: "refresh-immediate",
 };
 
@@ -116,7 +115,11 @@ export function createSettingChangeHandler(
 			debounceTimer = undefined;
 		}
 
-		await plugin.saveSetting();
+		const refreshEvents =
+			settingKey === "vaultEventSources" || settingKey === "hijriBase"
+				? plugin.vaultEventService.refresh()
+				: undefined;
+		await Promise.all([plugin.saveSetting(), refreshEvents]);
 		plugin.refreshViews();
 
 		if (effect === "language") {

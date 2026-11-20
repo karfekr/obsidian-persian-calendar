@@ -44,7 +44,9 @@ export default class CalendarSettingTab extends PluginSettingTab {
 	}
 
 	async setControlValue(key: string, value: unknown): Promise<void> {
-		await this.applySettingChange(key, value);
+		const change = this.applySettingChange(key, value);
+		if (key === "showCustomEvents") this.update();
+		await change;
 	}
 
 	getSettingDefinitions(): SettingDefinitionItem[] {
@@ -68,19 +70,10 @@ export default class CalendarSettingTab extends PluginSettingTab {
 			...getTemplateSettings(),
 			...getExtraCalendarSettings(),
 			...getHolidaySettings(),
-			...getEventSettings(
-				this.plugin,
-				async (events) => {
-					await this.applySettingChange("customEvents", events);
-					this.update();
-				},
-				async (sources) => {
-					this.plugin.setting.vaultEventSources = sources;
-					await this.plugin.vaultEventService.refresh();
-					await this.applySettingChange("vaultEventSources", sources);
-					this.update();
-				},
-			),
+			...getEventSettings(this.plugin, async (sources) => {
+				await this.applySettingChange("vaultEventSources", sources);
+				this.update();
+			}),
 		];
 	}
 }
