@@ -3,6 +3,13 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "5.0.0",
+		changes: {
+			fa: ["امکان تعریف مناسبت‌های سفارشی از طریق یادداشت‌های ابسیدین"],
+			en: ["Added support for custom events through Obsidian notes"],
+		},
+	},
+	{
 		version: "4.13.0",
 		changes: {
 			fa: ["امکان باز کردن یادداشت‌ها از طریق منوی راست‌کلیک"],
