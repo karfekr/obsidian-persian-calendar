@@ -1,205 +1,102 @@
-import type { App } from "obsidian";
-import { Modal, Setting } from "obsidian";
+import { Modal, PluginSettingTab, Setting } from "obsidian";
 import { getDirection, t } from "src/languages";
-import type { TVaultEventCalendar, TVaultEventSource, TVaultEventSourceType } from "src/types";
-
-type TVaultEventModalOptions = {
-	source?: TVaultEventSource;
-	onSave: (source: TVaultEventSource) => Promise<void> | void;
-};
+import type PersianCalendarPlugin from "src/main";
+import type { TVaultEventSource } from "src/types";
 
 function generateVaultSourceId(): string {
-	if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-		return crypto.randomUUID();
-	}
-
-	return `vault-src-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+	return (
+		globalThis.crypto?.randomUUID?.() ??
+		`vault-src-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+	);
 }
 
 export default class VaultEventModal extends Modal {
-	private sourceType: TVaultEventSourceType;
-	private pathValue: string;
-	private propertyValue: string;
-	private titleTemplateValue: string;
-	private calendarValue: TVaultEventCalendar;
-	private isHolidayValue: boolean;
-
-	private errorEl: HTMLElement | null = null;
-	private readonly isEditMode: boolean;
-
 	constructor(
-		app: App,
-		private readonly options: TVaultEventModalOptions,
+		private readonly plugin: PersianCalendarPlugin,
+		private readonly source: TVaultEventSource | undefined,
+		private readonly onSave: (source: TVaultEventSource) => Promise<void>,
 	) {
-		super(app);
-
-		const existing = options.source;
-		this.isEditMode = Boolean(existing);
-		this.sourceType = existing?.type ?? "frontmatter";
-		this.pathValue = existing?.path ?? "";
-		this.propertyValue = existing?.property ?? "birthday";
-		this.titleTemplateValue = existing?.titleTemplate ?? "";
-		this.calendarValue = existing?.calendar ?? "auto";
-		this.isHolidayValue = existing?.isHoliday ?? false;
+		super(plugin.app);
 	}
 
-	onOpen() {
+	onOpen(): void {
 		this.modalEl.addClass("persian-calendar");
 		this.modalEl.setAttr("dir", getDirection());
+		this.setTitle(t(this.source ? "setting.events.vault.edit" : "setting.events.vault.addBtn"));
 
-		this.titleEl.setText(
-			this.isEditMode ? t("modal.vaultEvent.editTitle") : t("modal.vaultEvent.addTitle"),
-		);
-
-		this.renderForm();
-	}
-
-	private renderForm() {
-		const { contentEl } = this;
-		contentEl.empty();
-
-		new Setting(contentEl).setName(t("modal.vaultEvent.typeLabel")).addDropdown((dropdown) => {
-			dropdown
-				.addOption("frontmatter", t("modal.vaultEvent.typeFrontmatter"))
-				.addOption("note", t("modal.vaultEvent.typeNote"))
-				.setValue(this.sourceType)
-				.onChange((value) => {
-					this.sourceType = value as TVaultEventSourceType;
-					this.renderForm();
-				});
+		const draft: TVaultEventSource = this.source
+			? { ...this.source }
+			: { id: generateVaultSourceId(), path: "", calendar: "jalali", enabled: true };
+		const pickerEl = this.contentEl.createDiv();
+		const errorEl = this.contentEl.createDiv({
+			cls: "setting-item-description",
+			attr: { role: "alert" },
 		});
 
-		const isFrontmatter = this.sourceType === "frontmatter";
+		// shortcut: Render the native file control through a detached tab until modals expose it directly.
+		const picker = new (class extends PluginSettingTab {
+			getControlValue(): string {
+				return draft.path;
+			}
 
-		new Setting(contentEl)
-			.setName(
-				isFrontmatter ? t("modal.vaultEvent.folderPathLabel") : t("modal.vaultEvent.notePathLabel"),
-			)
-			.setDesc(
-				isFrontmatter ? t("modal.vaultEvent.folderPathDesc") : t("modal.vaultEvent.notePathDesc"),
-			)
-			.addText((text) => {
-				text
-					.setPlaceholder(
-						isFrontmatter
-							? t("modal.vaultEvent.folderPathPlaceholder")
-							: t("modal.vaultEvent.notePathPlaceholder"),
-					)
-					.setValue(this.pathValue)
-					.onChange((value) => {
-						this.pathValue = value;
-						this.clearError();
+			setControlValue(_key: string, path: string): void {
+				draft.path = path;
+				errorEl.setText("");
+			}
+		})(this.app, this.plugin);
+		picker.containerEl = pickerEl;
+		picker.settingItems = [
+			{
+				name: t("setting.events.vault.notePathLabel"),
+				desc: t("setting.events.vault.notePathDesc"),
+				control: {
+					type: "file",
+					key: "path",
+					filter: (file) => file.extension === "md",
+				},
+			},
+		];
+		picker.display();
+
+		new Setting(this.contentEl)
+			.setName(t("setting.events.vault.calendarLabel"))
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption("jalali", t("setting.events.vault.calendars.jalali"))
+					.addOption("gregorian", t("setting.events.vault.calendars.gregorian"))
+					.addOption("hijri", t("setting.events.vault.calendars.hijri"))
+					.setValue(draft.calendar)
+					.onChange((calendar) => {
+						draft.calendar = calendar as TVaultEventSource["calendar"];
 					});
 			});
 
-		if (isFrontmatter) {
-			new Setting(contentEl).setName(t("modal.vaultEvent.propertyLabel")).addText((text) => {
-				text
-					.setPlaceholder(t("modal.vaultEvent.propertyPlaceholder"))
-					.setValue(this.propertyValue)
-					.onChange((value) => {
-						this.propertyValue = value;
-						this.clearError();
-					});
-			});
-
-			new Setting(contentEl)
-				.setName(t("modal.vaultEvent.titleTemplateLabel"))
-				.setDesc(t("modal.vaultEvent.titleTemplateDesc"))
-				.addText((text) => {
-					text
-						.setPlaceholder(t("modal.vaultEvent.titleTemplatePlaceholder"))
-						.setValue(this.titleTemplateValue)
-						.onChange((value) => {
-							this.titleTemplateValue = value;
-						});
-				});
-		}
-
-		new Setting(contentEl).setName(t("modal.vaultEvent.calendarLabel")).addDropdown((dropdown) => {
-			dropdown
-				.addOption("auto", t("setting.events.vault.calendars.auto"))
-				.addOption("jalali", t("setting.events.vault.calendars.jalali"))
-				.addOption("gregorian", t("setting.events.vault.calendars.gregorian"))
-				.addOption("hijri", t("setting.events.vault.calendars.hijri"))
-				.setValue(this.calendarValue)
-				.onChange((value) => {
-					this.calendarValue = value as TVaultEventCalendar;
-				});
-		});
-
-		new Setting(contentEl).setName(t("modal.vaultEvent.holidayLabel")).addToggle((toggle) => {
-			toggle.setValue(this.isHolidayValue).onChange((value) => {
-				this.isHolidayValue = value;
-			});
-		});
-
-		this.errorEl = contentEl.createDiv({
-			cls: "persian-calendar__custom-event-error",
-		});
-
-		new Setting(contentEl)
-			.addButton((btn) => {
-				btn.setButtonText(t("modal.vaultEvent.cancelBtn")).onClick(() => {
-					this.close();
-				});
+		new Setting(this.contentEl)
+			.addButton((button) => {
+				button.setButtonText(t("setting.events.vault.cancelBtn")).onClick(() => this.close());
 			})
-			.addButton((btn) => {
-				btn
-					.setButtonText(t("modal.vaultEvent.saveBtn"))
+			.addButton((button) => {
+				button
+					.setButtonText(t("setting.events.vault.saveBtn"))
 					.setCta()
-					.onClick(() => {
-						void this.handleSave();
+					.onClick(async () => {
+						if (!draft.path) {
+							errorEl.setText(t("setting.events.vault.emptyNotePath"));
+							return;
+						}
+
+						button.setDisabled(true);
+						try {
+							await this.onSave({ ...draft });
+							this.close();
+						} finally {
+							button.setDisabled(false);
+						}
 					});
 			});
 	}
 
-	private clearError() {
-		if (this.errorEl) {
-			this.errorEl.setText("");
-		}
-	}
-
-	private showError(message: string) {
-		if (this.errorEl) {
-			this.errorEl.setText(message);
-		}
-	}
-
-	private async handleSave() {
-		const trimmedPath = this.pathValue.trim();
-		const trimmedProperty = this.propertyValue.trim();
-
-		if (this.sourceType === "frontmatter" && !trimmedProperty) {
-			this.showError(t("modal.vaultEvent.errors.emptyProperty"));
-			return;
-		}
-
-		if (this.sourceType === "note" && !trimmedPath) {
-			this.showError(t("modal.vaultEvent.errors.emptyNotePath"));
-			return;
-		}
-
-		const savedSource: TVaultEventSource = {
-			id: this.options.source?.id ?? generateVaultSourceId(),
-			type: this.sourceType,
-			path: trimmedPath,
-			...(this.sourceType === "frontmatter"
-				? {
-						property: trimmedProperty,
-						titleTemplate: this.titleTemplateValue.trim() || undefined,
-					}
-				: {}),
-			calendar: this.calendarValue,
-			isHoliday: this.isHolidayValue,
-			enabled: this.options.source?.enabled ?? true,
-		};
-
-		await this.options.onSave(savedSource);
-		this.close();
-	}
-
-	onClose() {
+	onClose(): void {
 		this.contentEl.empty();
 	}
 }
