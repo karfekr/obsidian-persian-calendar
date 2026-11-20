@@ -44,3 +44,9 @@ export function debounce<T extends (...args: unknown[]) => unknown>(fn: T): T {
 	return fn;
 }
 export const Platform = { isMobile: false };
+export function normalizePath(path: string): string {
+	return path
+		.replace(/\\/g, "/")
+		.replace(/\/{2,}/g, "/")
+		.replace(/^\/|\/$/g, "");
+}
