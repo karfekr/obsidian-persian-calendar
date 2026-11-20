@@ -1,5 +1,6 @@
 import type { CalendarDate } from "@internationalized/date";
 import type { EditorSuggestContext } from "obsidian";
+import type { TCustomEventColor } from "src/constants/customEventColors";
 
 // jalali = هجری شمسی/خورشیدی
 export type TJalali = {
@@ -47,23 +48,16 @@ export type TCustomEvent = {
 	calendar: TDateFormat;
 	month: number;
 	day: number;
-	year?: number;
+	originYear?: number;
+	color?: TCustomEventColor;
 	isHoliday: boolean;
 	enabled: boolean;
 };
 
-export type TVaultEventSourceType = "frontmatter" | "note";
-
-export type TVaultEventCalendar = TDateFormat | "auto";
-
 export type TVaultEventSource = {
 	id: string;
-	type: TVaultEventSourceType;
 	path: string;
-	property?: string;
-	titleTemplate?: string;
-	calendar: TVaultEventCalendar;
-	isHoliday: boolean;
+	calendar: TDateFormat;
 	enabled: boolean;
 };
 
@@ -148,7 +142,6 @@ export type TSetting = {
 	showSunniEvents: boolean;
 	showGlobalEvents: boolean;
 	showCustomEvents: boolean;
-	customEvents: TCustomEvent[];
 	vaultEventSources: TVaultEventSource[];
 };
 
