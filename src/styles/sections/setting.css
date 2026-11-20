@@ -61,44 +61,60 @@
 	}
 }
 
-.persian-calendar-custom-events {
+.persian-calendar-event-repositories,
+.persian-calendar-event-repositories > .setting-item-control {
 	display: block;
-	padding-top: 0;
-	border-top: none;
 }
 
-.persian-calendar-custom-events > .setting-item-info,
-.persian-calendar-custom-events > .setting-item-control {
+.persian-calendar-event-repositories > .setting-item-info {
 	display: none;
 }
 
-.persian-calendar-custom-events__header {
-	border-top: none;
+.persian-calendar-event-repositories > .setting-item-control > .setting-item:first-child {
+	border-top: 0;
 	padding-top: 0;
 }
 
-.persian-calendar-custom-events__list {
+.persian-calendar-event-repository {
 	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.persian-calendar-event-repository > .setting-item-info {
+	display: flex;
+	flex: 1 1 0;
 	flex-direction: column;
-	gap: 4px;
+	align-items: flex-start;
+	min-width: 0;
+	margin-inline-end: var(--size-4-3);
+	text-align: start;
 }
 
-.persian-calendar-custom-events__empty {
-	padding: 12px;
-	text-align: center;
-	color: var(--text-muted);
-	font-size: var(--font-ui-small);
-	border: 1px dashed var(--background-modifier-border);
-	border-radius: 6px;
+.persian-calendar-event-repository .setting-item-name {
+	display: flex;
+	justify-content: flex-start;
+	min-width: 0;
+	overflow-wrap: anywhere;
 }
 
-.persian-calendar-custom-events__item--holiday .setting-item-name {
-	color: var(--persian-calendar-color-red);
+.persian-calendar-event-repository .setting-item-name bdi {
+	min-width: 0;
 }
 
-.persian-calendar__custom-event-error {
-	min-height: 18px;
-	margin-top: 8px;
-	color: var(--text-error);
-	font-size: var(--font-ui-small);
+.persian-calendar-event-repository > .setting-item-info > .setting-item-name,
+.persian-calendar-event-repository > .setting-item-info > .setting-item-description {
+	align-self: stretch;
+	text-align: start;
+}
+
+.persian-calendar-event-repository > .setting-item-control {
+	flex: 0 0 auto;
+	width: auto;
+	justify-content: flex-end;
+}
+
+.persian-calendar-event-repositories .setting-item.is-disabled .setting-item-info,
+.persian-calendar-event-repositories .extra-setting-button.is-disabled {
+	opacity: 0.5;
 }
