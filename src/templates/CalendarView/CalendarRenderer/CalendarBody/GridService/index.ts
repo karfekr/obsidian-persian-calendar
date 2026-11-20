@@ -138,7 +138,7 @@ export default class GridService {
 					showHolidays &&
 					checkHoliday(date, {
 						hijriBase: this.setting.hijriBase,
-						customEvents: this.getCustomEvents?.() ?? this.setting.customEvents,
+						customEvents: this.getCustomEvents?.(),
 						showCustomEvents: this.setting.showCustomEvents,
 					})
 				) {

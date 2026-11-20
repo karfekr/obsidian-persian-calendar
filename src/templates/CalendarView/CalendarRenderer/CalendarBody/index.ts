@@ -170,7 +170,7 @@ export default class CalendarBodyRender {
 				const events = dateToEvents(date, {
 					showEvents: this.setting,
 					hijriBase: this.setting.hijriBase,
-					customEvents: this.getCustomEvents?.() ?? this.setting.customEvents,
+					customEvents: this.getCustomEvents?.(),
 				});
 				if (events.length > 0) {
 					this.tooltip.showTooltip(e, events, this.setting.language);

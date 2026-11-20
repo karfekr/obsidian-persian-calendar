@@ -1,4 +1,5 @@
 import { Platform } from "obsidian";
+import { isCustomEventColor } from "src/constants/customEventColors";
 import type { TLocale } from "src/types";
 import type { TCalendarEvent } from "src/utils/eventUtils";
 
@@ -50,10 +51,16 @@ export default class Tooltip {
 				cls.push("persian-calendar__day--holiday");
 			}
 
-			tooltip.createDiv({
+			const row = tooltip.createDiv({
 				cls,
 				text: event.title[local],
 			});
+			if (event.isCustom && isCustomEventColor(event.color)) {
+				row.style.setProperty(
+					"--persian-calendar-tooltip-event-accent",
+					`var(--color-${event.color})`,
+				);
+			}
 		}
 
 		let x: number | undefined;
