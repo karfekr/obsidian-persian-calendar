@@ -60,3 +60,45 @@
 		left: 150%;
 	}
 }
+
+.persian-calendar-custom-events {
+	display: block;
+	padding-top: 0;
+	border-top: none;
+}
+
+.persian-calendar-custom-events > .setting-item-info,
+.persian-calendar-custom-events > .setting-item-control {
+	display: none;
+}
+
+.persian-calendar-custom-events__header {
+	border-top: none;
+	padding-top: 0;
+}
+
+.persian-calendar-custom-events__list {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.persian-calendar-custom-events__empty {
+	padding: 12px;
+	text-align: center;
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+	border: 1px dashed var(--background-modifier-border);
+	border-radius: 6px;
+}
+
+.persian-calendar-custom-events__item--holiday .setting-item-name {
+	color: var(--persian-calendar-color-red);
+}
+
+.persian-calendar__custom-event-error {
+	min-height: 18px;
+	margin-top: 8px;
+	color: var(--text-error);
+	font-size: var(--font-ui-small);
+}

@@ -44,6 +44,9 @@ const SETTING_EFFECTS: Partial<Record<keyof TSetting, EffectKind>> = {
 	showIRAncientEvents: "refresh-immediate",
 	showShiaEvents: "refresh-immediate",
 	showSunniEvents: "refresh-immediate",
+	showCustomEvents: "refresh-immediate",
+	customEvents: "refresh-immediate",
+	vaultEventSources: "refresh-immediate",
 };
 
 export function getNestedValue(obj: unknown, path: string): unknown {

@@ -1,4 +1,4 @@
-import type { THijriBase } from "src/types";
+import type { TCustomEvent, THijriBase, TSetting } from "src/types";
 import {
 	calendarDateFromDate,
 	calendarDateToDate,
@@ -23,6 +23,11 @@ import { checkHoliday, dateToEvents } from "src/utils/eventUtils";
 import { toEnNumber, toFaNumber } from "src/utils/formatters";
 
 export default class ApiService {
+	constructor(
+		private readonly getSetting?: () => TSetting,
+		private readonly getCustomEvents?: () => TCustomEvent[],
+	) {}
+
 	build() {
 		return Object.freeze({
 			toEnNumber,
@@ -47,9 +52,17 @@ export default class ApiService {
 			hijriMonthLength,
 			jalaliMonthName,
 			seasonName,
-			checkHoliday: (date: Date) => checkHoliday(calendarDateFromDate(date)),
-			dateToEvents: (date: Date, options?: { base?: THijriBase }) =>
-				dateToEvents(calendarDateFromDate(date), {
+			checkHoliday: (date: Date) => {
+				const setting = this.getSetting?.();
+				return checkHoliday(calendarDateFromDate(date), {
+					hijriBase: setting?.hijriBase,
+					customEvents: this.getCustomEvents?.() ?? setting?.customEvents,
+					showCustomEvents: setting?.showCustomEvents,
+				});
+			},
+			dateToEvents: (date: Date, options?: { base?: THijriBase }) => {
+				const setting = this.getSetting?.();
+				return dateToEvents(calendarDateFromDate(date), {
 					showEvents: {
 						showIROfficialEvents: true,
 						showIRHistoricalEvents: true,
@@ -57,9 +70,12 @@ export default class ApiService {
 						showGlobalEvents: true,
 						showShiaEvents: true,
 						showSunniEvents: true,
+						showCustomEvents: setting?.showCustomEvents ?? true,
 					},
-					hijriBase: options?.base ?? "iran",
-				}),
+					hijriBase: options?.base ?? setting?.hijriBase ?? "iran",
+					customEvents: this.getCustomEvents?.() ?? setting?.customEvents,
+				});
+			},
 		});
 	}
 }

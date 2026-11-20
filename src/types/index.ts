@@ -41,6 +41,32 @@ export type THijriBase = "iran" | "umalqura";
 
 export type TDateFormatWithoutHijri = Exclude<TDateFormat, "hijri">;
 
+export type TCustomEvent = {
+	id: string;
+	title: string;
+	calendar: TDateFormat;
+	month: number;
+	day: number;
+	year?: number;
+	isHoliday: boolean;
+	enabled: boolean;
+};
+
+export type TVaultEventSourceType = "frontmatter" | "note";
+
+export type TVaultEventCalendar = TDateFormat | "auto";
+
+export type TVaultEventSource = {
+	id: string;
+	type: TVaultEventSourceType;
+	path: string;
+	property?: string;
+	titleTemplate?: string;
+	calendar: TVaultEventCalendar;
+	isHoliday: boolean;
+	enabled: boolean;
+};
+
 export type TShowEvents = {
 	showIROfficialEvents?: boolean;
 	showIRHistoricalEvents?: boolean;
@@ -48,6 +74,7 @@ export type TShowEvents = {
 	showShiaEvents?: boolean;
 	showSunniEvents?: boolean;
 	showGlobalEvents?: boolean;
+	showCustomEvents?: boolean;
 };
 
 export type THijriAnchor = TGregorian & THijri;
@@ -64,6 +91,7 @@ export type TBoolSettingKeys = Extract<
 	| "showShiaEvents"
 	| "showSunniEvents"
 	| "showGlobalEvents"
+	| "showCustomEvents"
 	| "askForCreateNote"
 	| "askForDeleteNote"
 	| "openDailyNoteOnStartup"
@@ -119,6 +147,9 @@ export type TSetting = {
 	showShiaEvents: boolean;
 	showSunniEvents: boolean;
 	showGlobalEvents: boolean;
+	showCustomEvents: boolean;
+	customEvents: TCustomEvent[];
+	vaultEventSources: TVaultEventSource[];
 };
 
 //? Utility type that extracts the keys of TSetting whose values are assignable to V.

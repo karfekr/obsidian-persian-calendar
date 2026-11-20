@@ -5,7 +5,7 @@ import { SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
 import { getDirection, t } from "src/languages";
 import type { NoteService } from "src/services";
 import type CalendarState from "src/templates/CalendarView/CalendarState";
-import type { TLocale, TSetting } from "src/types";
+import type { TCustomEvent, TLocale, TSetting } from "src/types";
 import { jalaliToSeason } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 import { toArNumber, toFaNumber } from "src/utils/formatters";
@@ -25,9 +25,10 @@ export default class CalendarBodyRender {
 		private readonly setting: TSetting,
 		private readonly onRefresh: () => Promise<void> | void,
 		private readonly navigation: CalendarNavigation,
+		private readonly getCustomEvents?: () => TCustomEvent[],
 	) {
 		this.tooltip = new Tooltip();
-		this.gridService = new GridService(calendarState, setting);
+		this.gridService = new GridService(calendarState, setting, getCustomEvents);
 	}
 
 	public renderContent(contentEl: HTMLElement, _local: TLocale = "fa") {
@@ -169,6 +170,7 @@ export default class CalendarBodyRender {
 				const events = dateToEvents(date, {
 					showEvents: this.setting,
 					hijriBase: this.setting.hijriBase,
+					customEvents: this.getCustomEvents?.() ?? this.setting.customEvents,
 				});
 				if (events.length > 0) {
 					this.tooltip.showTooltip(e, events, this.setting.language);

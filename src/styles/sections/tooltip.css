@@ -39,3 +39,8 @@
 .persian-calendar__tooltip-event:last-child {
 	border-bottom: none;
 }
+
+.persian-calendar__tooltip-event--custom {
+	border-inline-start: 2px solid var(--persian-calendar-color-primary);
+	padding-inline-start: 6px;
+}

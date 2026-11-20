@@ -1,6 +1,6 @@
 import { Platform } from "obsidian";
-import type { EventType } from "persian-holidays";
 import type { TLocale } from "src/types";
+import type { TCalendarEvent } from "src/utils/eventUtils";
 
 export default class Tooltip {
 	private tooltipWrapperSelector = ".persian-calendar--tooltip-wrapper";
@@ -34,13 +34,17 @@ export default class Tooltip {
 		return { wrapper, tooltip };
 	}
 
-	public showTooltip(e: MouseEvent | TouchEvent, events: EventType[], local: TLocale): void {
+	public showTooltip(e: MouseEvent | TouchEvent, events: TCalendarEvent[], local: TLocale): void {
 		const { tooltip } = this.getOrCreateTooltip(local);
 
 		tooltip.replaceChildren();
 
 		for (const event of events) {
 			const cls = ["persian-calendar__tooltip-event"];
+
+			if (event.isCustom) {
+				cls.push("persian-calendar__tooltip-event--custom");
+			}
 
 			if (event.isHolidayInIran) {
 				cls.push("persian-calendar__day--holiday");
