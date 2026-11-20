@@ -56,7 +56,7 @@ export default class ApiService {
 				const setting = this.getSetting?.();
 				return checkHoliday(calendarDateFromDate(date), {
 					hijriBase: setting?.hijriBase,
-					customEvents: this.getCustomEvents?.() ?? setting?.customEvents,
+					customEvents: this.getCustomEvents?.(),
 					showCustomEvents: setting?.showCustomEvents,
 				});
 			},
@@ -73,7 +73,7 @@ export default class ApiService {
 						showCustomEvents: setting?.showCustomEvents ?? true,
 					},
 					hijriBase: options?.base ?? setting?.hijriBase ?? "iran",
-					customEvents: this.getCustomEvents?.() ?? setting?.customEvents,
+					customEvents: this.getCustomEvents?.(),
 				});
 			},
 		});
