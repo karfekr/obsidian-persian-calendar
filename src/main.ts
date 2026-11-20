@@ -110,16 +110,11 @@ export default class PersianCalendarPlugin extends Plugin {
 			]),
 		);
 
-		// Register live expressions
-		this.registerEvent(
-			this.app.workspace.on("editor-change", (editor, info) => {
-				this.liveExpression.handleEditorChange(editor, info.file);
-			}),
-		);
+		// Register live expressions (Reading View + Live Preview)
 		this.registerMarkdownPostProcessor((element, context) => {
 			this.liveExpression.handlePostProcess(element, context);
 		});
-		this.liveExpression.configureTimer();
+		this.registerEditorExtension(this.liveExpression.createEditorExtension());
 
 		// Register events
 		this.eventManager.registerEvents();

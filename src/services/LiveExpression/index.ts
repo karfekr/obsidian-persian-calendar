@@ -1,5 +1,6 @@
-import type { Editor, MarkdownPostProcessorContext } from "obsidian";
-import { MarkdownView, TFile } from "obsidian";
+import type { Extension } from "@codemirror/state";
+import type { MarkdownPostProcessorContext } from "obsidian";
+import { MarkdownRenderChild, TFile } from "obsidian";
 import {
 	HIJRI_MONTHS_NAME,
 	JALALI_MONTHS_NAME,
@@ -29,6 +30,14 @@ import {
 } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 
+import { createLiveExpressionEditorExtension } from "./livePreviewExtension";
+
+export type TLiveExpressionCadence = "second" | "minute" | "day";
+
+export const LIVE_EXPRESSION_PATTERN = /\{#([^{}#]+)\}/g;
+
+const SKIPPED_TAG_NAMES = new Set(["CODE", "PRE", "SCRIPT", "STYLE", "TEXTAREA", "INPUT"]);
+
 const SEASON_EMOJIS = ["🌸", "☀️", "🍂", "❄️"] as const;
 const MONTH_EMOJIS = [
 	"🌷",
@@ -46,8 +55,39 @@ const MONTH_EMOJIS = [
 ] as const;
 const DAY_EMOJIS = ["📅", "📆", "📋", "📊", "📈", "🎉", "🕌"] as const;
 
+const SECOND_CADENCE_KEYS = new Set<string>([
+	"ساعت",
+	"ساعت_en",
+	"ساعت_۱۲",
+	"ثانیه",
+	"ثانیه_۲رقم",
+	"زمان_کامل",
+	"timestamp_unix",
+]);
+
+const MINUTE_CADENCE_KEYS = new Set<string>([
+	"ساعت_عدد",
+	"ساعت_۲رقم",
+	"دقیقه",
+	"دقیقه_۲رقم",
+	"زمان_کوتاه",
+	"تاریخ_ساعت",
+	"تا_پایان_ماه_ساعت",
+	"تا_آخر_ماه_ساعت",
+	"تا_پایان_روز_ساعت",
+	"تا_پایان_روز_دقیقه",
+	"از_آغاز_روز_ساعت",
+	"از_آغاز_روز_دقیقه",
+	"درصد_روز",
+	"درصد_روز_عدد",
+	"پیشرفت_روز",
+	"روز_شب_emoji",
+	"امضا_تاریخ",
+	"تایمر_روز",
+]);
+
 export const LIVE_EXPRESSION_KEYS = [
-	// Time & Clock
+	// Time & Clock (second / minute cadence, no sub-second counters)
 	"ساعت",
 	"ساعت_en",
 	"ساعت_۱۲",
@@ -57,8 +97,6 @@ export const LIVE_EXPRESSION_KEYS = [
 	"دقیقه_۲رقم",
 	"ثانیه",
 	"ثانیه_۲رقم",
-	"میلی_ثانیه",
-	"timestamp",
 	"timestamp_unix",
 	"زمان_کوتاه",
 	"زمان_کامل",
@@ -196,14 +234,6 @@ export const LIVE_EXPRESSION_KEYS = [
 	"وضعیت_کامل",
 ] as const;
 
-export function escapeHtml(value: string): string {
-	return value
-		.replace(/&/g, "&amp;")
-		.replace(/"/g, "&quot;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;");
-}
-
 export function createProgressBar(ratio: number): string {
 	const clamped = Math.max(0, Math.min(1, ratio));
 	const filled = Math.round(clamped * 10);
@@ -211,29 +241,180 @@ export function createProgressBar(ratio: number): string {
 	return `${"█".repeat(filled)}${"░".repeat(empty)} ${(clamped * 100).toFixed(0)}%`;
 }
 
+type RenderedExpressionEntry = {
+	el: HTMLElement;
+	key: string;
+	cadence: TLiveExpressionCadence;
+};
+
+class LiveExpressionRenderChild extends MarkdownRenderChild {
+	constructor(
+		containerEl: HTMLElement,
+		private readonly entries: RenderedExpressionEntry[],
+		private readonly liveExpression: LiveExpression,
+		private readonly filePath: string,
+	) {
+		super(containerEl);
+	}
+
+	onload(): void {
+		for (const entry of this.entries) {
+			const unsubscribe = this.liveExpression.subscribe(entry.cadence, () => {
+				const file = this.liveExpression.resolveFile(this.filePath);
+				const nextValue = this.liveExpression.calculateValue(entry.key, file);
+				if (nextValue !== null && entry.el.textContent !== String(nextValue)) {
+					entry.el.textContent = String(nextValue);
+				}
+			});
+			this.register(unsubscribe);
+		}
+	}
+}
+
+function shouldSkipElement(el: Element | null): boolean {
+	let current: Element | null = el;
+	while (current) {
+		if (SKIPPED_TAG_NAMES.has(current.tagName)) return true;
+		if (current.classList?.contains("persian-live-expression")) return true;
+		current = current.parentElement;
+	}
+	return false;
+}
+
 export default class LiveExpression {
 	plugin: PersianCalendarPlugin;
-	private timerId: number | null = null;
+
+	private readonly listeners: Record<TLiveExpressionCadence, Set<() => void>> = {
+		second: new Set(),
+		minute: new Set(),
+		day: new Set(),
+	};
+
+	private secondInterval: ReturnType<typeof globalThis.setInterval> | null = null;
+	private minuteAlignTimeout: ReturnType<typeof globalThis.setTimeout> | null = null;
+	private minuteInterval: ReturnType<typeof globalThis.setInterval> | null = null;
+	private dayTimeout: ReturnType<typeof globalThis.setTimeout> | null = null;
 
 	constructor(plugin: PersianCalendarPlugin) {
 		this.plugin = plugin;
 	}
 
-	public isFileAllowed(filePath?: string | null): boolean {
-		const mode = this.plugin.setting.liveExpressionsMode;
-		if (mode === "disabled") return false;
-		if (mode === "all") return true;
-
-		const dashboardPath = this.plugin.setting.liveExpressionsDashboardPath?.trim();
-		if (!dashboardPath || !filePath) return false;
-
-		return filePath === dashboardPath;
+	public getCadence(keyword: string): TLiveExpressionCadence {
+		const trimmed = keyword.trim();
+		if (SECOND_CADENCE_KEYS.has(trimmed)) return "second";
+		if (MINUTE_CADENCE_KEYS.has(trimmed)) return "minute";
+		return "day";
 	}
 
-	public formatDynamicSpan(keyword: string, value: string | number): string {
-		const escapedKey = escapeHtml(keyword);
-		const escapedVal = escapeHtml(String(value));
-		return `<span class="persian-dynamic-tag" data-key="${escapedKey}">${escapedVal}</span>`;
+	public getActiveListenerCount(cadence?: TLiveExpressionCadence): number {
+		if (cadence) return this.listeners[cadence].size;
+		return this.listeners.second.size + this.listeners.minute.size + this.listeners.day.size;
+	}
+
+	public subscribe(cadence: TLiveExpressionCadence, listener: () => void): () => void {
+		const bucket = this.listeners[cadence];
+		bucket.add(listener);
+
+		if (bucket.size === 1) {
+			this.startCadenceTimer(cadence);
+		}
+
+		return () => {
+			bucket.delete(listener);
+			if (bucket.size === 0) {
+				this.stopCadenceTimer(cadence);
+			}
+		};
+	}
+
+	private notifyCadence(cadence: TLiveExpressionCadence): void {
+		for (const listener of this.listeners[cadence]) {
+			listener();
+		}
+	}
+
+	private startCadenceTimer(cadence: TLiveExpressionCadence): void {
+		if (cadence === "second") {
+			if (this.secondInterval !== null) return;
+			this.secondInterval = globalThis.setInterval(() => {
+				this.notifyCadence("second");
+			}, 1000);
+			return;
+		}
+
+		if (cadence === "minute") {
+			if (this.minuteAlignTimeout !== null || this.minuteInterval !== null) return;
+			const zdt = nowTehran();
+			const msUntilNextMinute = Math.max(50, (60 - zdt.second) * 1000 - zdt.millisecond);
+			this.minuteAlignTimeout = globalThis.setTimeout(() => {
+				this.minuteAlignTimeout = null;
+				this.notifyCadence("minute");
+				if (this.listeners.minute.size > 0) {
+					this.minuteInterval = globalThis.setInterval(() => {
+						this.notifyCadence("minute");
+					}, 60_000);
+				}
+			}, msUntilNextMinute);
+			return;
+		}
+
+		this.scheduleNextDayTick();
+	}
+
+	private scheduleNextDayTick(): void {
+		if (this.dayTimeout !== null || this.listeners.day.size === 0) return;
+
+		const zdt = nowTehran();
+		const secondsUntilMidnight = (24 - zdt.hour) * 3600 - zdt.minute * 60 - zdt.second;
+		const msUntilMidnight = Math.max(1000, secondsUntilMidnight * 1000 - zdt.millisecond + 100);
+
+		this.dayTimeout = globalThis.setTimeout(() => {
+			this.dayTimeout = null;
+			this.notifyCadence("day");
+			this.scheduleNextDayTick();
+		}, msUntilMidnight);
+	}
+
+	private stopCadenceTimer(cadence: TLiveExpressionCadence): void {
+		if (cadence === "second") {
+			if (this.secondInterval !== null) {
+				globalThis.clearInterval(this.secondInterval);
+				this.secondInterval = null;
+			}
+			return;
+		}
+
+		if (cadence === "minute") {
+			if (this.minuteAlignTimeout !== null) {
+				globalThis.clearTimeout(this.minuteAlignTimeout);
+				this.minuteAlignTimeout = null;
+			}
+			if (this.minuteInterval !== null) {
+				globalThis.clearInterval(this.minuteInterval);
+				this.minuteInterval = null;
+			}
+			return;
+		}
+
+		if (this.dayTimeout !== null) {
+			globalThis.clearTimeout(this.dayTimeout);
+			this.dayTimeout = null;
+		}
+	}
+
+	public destroy(): void {
+		this.stopCadenceTimer("second");
+		this.stopCadenceTimer("minute");
+		this.stopCadenceTimer("day");
+		this.listeners.second.clear();
+		this.listeners.minute.clear();
+		this.listeners.day.clear();
+	}
+
+	public resolveFile(filePath?: string | null): TFile | null {
+		if (!filePath) return null;
+		const abstractFile = this.plugin.app.vault.getAbstractFileByPath(filePath);
+		return abstractFile instanceof TFile ? abstractFile : null;
 	}
 
 	public getAllExpressionKeys(file?: TFile | null): string[] {
@@ -281,6 +462,7 @@ export default class LiveExpression {
 			dateToEvents(currentDate, {
 				showEvents: this.plugin.setting,
 				hijriBase: this.plugin.setting.hijriBase,
+				customEvents: this.plugin.getAllCustomEvents?.() ?? this.plugin.setting.customEvents,
 			});
 
 		const locale = this.plugin.setting.language ?? "fa";
@@ -315,10 +497,6 @@ export default class LiveExpression {
 				return zdt.second;
 			case "ثانیه_۲رقم":
 				return ss;
-			case "میلی_ثانیه":
-				return zdt.millisecond;
-			case "timestamp":
-				return nowDate.getTime();
 			case "timestamp_unix":
 				return Math.floor(nowDate.getTime() / 1000);
 			case "زمان_کوتاه":
@@ -365,7 +543,7 @@ export default class LiveExpression {
 			case "شماره_ماه":
 				return j.jm;
 			case "شماره_ماه_۲رقم":
-				return String(j.jm).padStart(2, "0");
+				return jmm;
 			case "ماه_قمری":
 			case "نام_ماه_قمری":
 				return HIJRI_MONTHS_NAME.fa[h.hm].trim();
@@ -394,7 +572,7 @@ export default class LiveExpression {
 			case "شماره_روز":
 				return j.jd;
 			case "شماره_روز_۲رقم":
-				return String(j.jd).padStart(2, "0");
+				return jdd;
 			case "شماره_روز_هفته":
 				return weekdayIndex;
 			case "شماره_روز_میلادی":
@@ -617,85 +795,77 @@ export default class LiveExpression {
 		}
 	}
 
-	public refreshElement(root: ParentNode, filePath?: string | null): number {
-		if (!this.isFileAllowed(filePath)) return 0;
-
-		const abstractFile = filePath ? this.plugin.app.vault.getAbstractFileByPath(filePath) : null;
-		const file = abstractFile instanceof TFile ? abstractFile : null;
-
-		let changed = 0;
-		root.querySelectorAll<HTMLElement>("span.persian-dynamic-tag").forEach((tag) => {
-			const key = tag.dataset.key ?? "";
-			const value = this.calculateValue(key, file);
-			if (value !== null && tag.textContent !== String(value)) {
-				tag.textContent = String(value);
-				changed++;
-			}
-		});
-		return changed;
-	}
-
-	public refreshWorkspaceLeaves(): void {
-		if (this.plugin.setting.liveExpressionsMode === "disabled") return;
-
-		this.plugin.app.workspace.iterateAllLeaves((leaf) => {
-			if (leaf.view instanceof MarkdownView && leaf.view.file) {
-				const filePath = leaf.view.file.path;
-				if (this.isFileAllowed(filePath)) {
-					this.refreshElement(leaf.view.contentEl, filePath);
-				}
-			}
-		});
-	}
-
 	public handlePostProcess(element: HTMLElement, context: MarkdownPostProcessorContext): void {
-		this.refreshElement(element, context.sourcePath);
-	}
+		const ownerDoc = element.ownerDocument;
+		if (!ownerDoc) return;
 
-	public handleEditorChange(editor: Editor, file?: TFile | null): void {
-		const targetFile = file ?? this.plugin.app.workspace.getActiveFile();
-		if (!this.isFileAllowed(targetFile?.path)) return;
+		const file = this.resolveFile(context.sourcePath);
+		const textNodes: Text[] = [];
+		const walker = ownerDoc.createTreeWalker(element, 4 /* NodeFilter.SHOW_TEXT */);
 
-		const cursor = editor.getCursor();
-		const line = editor.getLine(cursor.line);
-		const matches = line.matchAll(/\{#([^{}#]+)\}/g);
+		let currentNode = walker.nextNode();
+		while (currentNode) {
+			const textNode = currentNode as Text;
+			if (textNode.nodeValue?.includes("{#") && !shouldSkipElement(textNode.parentElement)) {
+				textNodes.push(textNode);
+			}
+			currentNode = walker.nextNode();
+		}
 
-		for (const match of matches) {
-			const index = match.index ?? 0;
-			const end = index + match[0].length;
-			if (cursor.ch !== end) continue;
+		if (textNodes.length === 0) return;
 
-			const key = match[1];
-			const value = this.calculateValue(key, targetFile);
-			if (value === null) return;
+		const renderedEntries: RenderedExpressionEntry[] = [];
 
-			const replacement = this.formatDynamicSpan(key, value);
-			editor.replaceRange(
-				replacement,
-				{ line: cursor.line, ch: index },
-				{ line: cursor.line, ch: end },
+		for (const textNode of textNodes) {
+			const rawText = textNode.nodeValue ?? "";
+			const regex = new RegExp(LIVE_EXPRESSION_PATTERN.source, "g");
+			let lastIndex = 0;
+			let hasReplacement = false;
+			const fragment = ownerDoc.createDocumentFragment();
+
+			for (const match of rawText.matchAll(regex)) {
+				const matchIndex = match.index ?? 0;
+				const key = match[1];
+				const value = this.calculateValue(key, file);
+				if (value === null) continue;
+
+				if (matchIndex > lastIndex) {
+					fragment.appendChild(ownerDoc.createTextNode(rawText.slice(lastIndex, matchIndex)));
+				}
+
+				const span = ownerDoc.createElement("span");
+				span.className = "persian-live-expression";
+				span.dataset.key = key;
+				span.textContent = String(value);
+				fragment.appendChild(span);
+
+				renderedEntries.push({
+					el: span,
+					key,
+					cadence: this.getCadence(key),
+				});
+
+				lastIndex = matchIndex + match[0].length;
+				hasReplacement = true;
+			}
+
+			if (hasReplacement) {
+				if (lastIndex < rawText.length) {
+					fragment.appendChild(ownerDoc.createTextNode(rawText.slice(lastIndex)));
+				}
+				textNode.parentNode?.replaceChild(fragment, textNode);
+			}
+		}
+
+		if (renderedEntries.length > 0) {
+			context.addChild(
+				new LiveExpressionRenderChild(element, renderedEntries, this, context.sourcePath),
 			);
-			return;
 		}
 	}
 
-	public configureTimer(): void {
-		this.destroy();
-
-		if (this.plugin.setting.liveExpressionsMode === "disabled") return;
-
-		const interval = this.plugin.setting.liveExpressionsInterval || 1000;
-		this.timerId = window.setInterval(() => {
-			this.refreshWorkspaceLeaves();
-		}, interval);
-		this.plugin.registerInterval(this.timerId);
-	}
-
-	public destroy(): void {
-		if (this.timerId !== null) {
-			window.clearInterval(this.timerId);
-			this.timerId = null;
-		}
+	public createEditorExtension(): Extension {
+		return createLiveExpressionEditorExtension(this);
 	}
 
 	public toProvider(): TSuggestProvider {
@@ -703,18 +873,11 @@ export default class LiveExpression {
 			trigger: /(?<!\{)\{#[^}]*$/,
 			getSuggestions: (query: string) => {
 				const activeFile = this.plugin.app.workspace.getActiveFile();
-				if (!this.isFileAllowed(activeFile?.path)) return [];
-
 				return this.getAllExpressionKeys(activeFile)
 					.filter((key) => key.includes(query))
 					.map((key) => `{#${key}}`);
 			},
-			onSelect: (value: string, ctx) => {
-				const key = value.replace(/^\{#|\}$/g, "");
-				const valueResult = this.calculateValue(key, ctx?.file);
-				if (valueResult === null) return value;
-				return this.formatDynamicSpan(key, valueResult);
-			},
+			onSelect: (value: string) => value,
 		};
 	}
 }

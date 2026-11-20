@@ -34,6 +34,6 @@
 	font-family: var(--persian-calendar-font);
 }
 
-.persian-dynamic-tag {
+.persian-live-expression {
 	unicode-bidi: plaintext;
 }

@@ -1,9 +1,12 @@
-import type { App, Editor } from "obsidian";
+import type { App } from "obsidian";
 import { TFile } from "obsidian";
 import { setAdapter } from "persian-holidays";
 import { DEFAULT_SETTING } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
-import LiveExpression, { createProgressBar, escapeHtml } from "src/services/LiveExpression";
+import LiveExpression, {
+	createProgressBar,
+	LIVE_EXPRESSION_KEYS,
+} from "src/services/LiveExpression";
 import NoteService from "src/services/NoteService";
 import Placeholder from "src/services/Placeholder";
 import type { TSetting } from "src/types";
@@ -37,14 +40,13 @@ function createMockEnv(
 		},
 		workspace: {
 			getActiveFile: () => activeFile,
-			iterateAllLeaves: vi.fn(),
 		},
 	};
 
 	const plugin = {
 		app: mockApp,
 		setting: { ...DEFAULT_SETTING, ...settingOverrides },
-		registerInterval: vi.fn(),
+		getAllCustomEvents: () => settingOverrides.customEvents ?? [],
 	} as unknown as PersianCalendarPlugin;
 
 	plugin.placeholder = new Placeholder(plugin);
@@ -60,13 +62,7 @@ describe("LiveExpression service", () => {
 		vi.useRealTimers();
 	});
 
-	describe("escapeHtml and createProgressBar", () => {
-		it("escapes HTML special characters", () => {
-			expect(escapeHtml(`<span class="x">&</span>`)).toBe(
-				"&lt;span class=&quot;x&quot;&gt;&amp;&lt;/span&gt;",
-			);
-		});
-
+	describe("createProgressBar", () => {
 		it("creates a 10-block progress bar with percentage", () => {
 			expect(createProgressBar(0)).toBe("░░░░░░░░░░ 0%");
 			expect(createProgressBar(0.4)).toBe("████░░░░░░ 40%");
@@ -74,37 +70,101 @@ describe("LiveExpression service", () => {
 		});
 	});
 
-	describe("isFileAllowed scope checks (Issue #112)", () => {
-		it("disallows all files when mode is 'disabled'", () => {
-			const { liveExpression } = createMockEnv({
-				liveExpressionsMode: "disabled",
-				liveExpressionsDashboardPath: "Dashboard.md",
-			});
+	describe("sub-second expressions are excluded", () => {
+		it("does not expose millisecond or sub-second expressions", () => {
+			const { liveExpression } = createMockEnv();
+			expect(LIVE_EXPRESSION_KEYS).not.toContain("میلی_ثانیه");
+			expect(LIVE_EXPRESSION_KEYS).not.toContain("timestamp");
+			expect(liveExpression.calculateValue("میلی_ثانیه")).toBeNull();
+			expect(liveExpression.calculateValue("timestamp")).toBeNull();
+		});
+	});
 
-			expect(liveExpression.isFileAllowed("Dashboard.md")).toBe(false);
-			expect(liveExpression.isFileAllowed("Other.md")).toBe(false);
-			expect(liveExpression.isFileAllowed(null)).toBe(false);
+	describe("per-expression refresh cadence", () => {
+		it("classifies expressions into second, minute, and day cadences", () => {
+			const { liveExpression } = createMockEnv();
+
+			// Second-level expressions
+			expect(liveExpression.getCadence("ساعت")).toBe("second");
+			expect(liveExpression.getCadence("زمان_کامل")).toBe("second");
+			expect(liveExpression.getCadence("ثانیه")).toBe("second");
+			expect(liveExpression.getCadence("timestamp_unix")).toBe("second");
+
+			// Minute-level expressions
+			expect(liveExpression.getCadence("زمان_کوتاه")).toBe("minute");
+			expect(liveExpression.getCadence("دقیقه")).toBe("minute");
+			expect(liveExpression.getCadence("تاریخ_ساعت")).toBe("minute");
+			expect(liveExpression.getCadence("پیشرفت_روز")).toBe("minute");
+			expect(liveExpression.getCadence("تایمر_روز")).toBe("minute");
+
+			// Day-level expressions
+			expect(liveExpression.getCadence("تاریخ")).toBe("day");
+			expect(liveExpression.getCadence("پیشرفت_سال")).toBe("day");
+			expect(liveExpression.getCadence("تا_نوروز")).toBe("day");
+			expect(liveExpression.getCadence("مناسبت")).toBe("day");
+			expect(liveExpression.getCadence("تاریخ شمسی جاری")).toBe("day");
+		});
+	});
+
+	describe("demand-driven timer scheduler", () => {
+		it("starts and stops second-cadence timer only while subscribed", () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2025-03-21T08:35:09Z"));
+
+			const { liveExpression } = createMockEnv();
+			const onTick = vi.fn();
+
+			expect(liveExpression.getActiveListenerCount()).toBe(0);
+			const unsubscribe = liveExpression.subscribe("second", onTick);
+			expect(liveExpression.getActiveListenerCount("second")).toBe(1);
+
+			vi.advanceTimersByTime(3000);
+			expect(onTick).toHaveBeenCalledTimes(3);
+
+			unsubscribe();
+			expect(liveExpression.getActiveListenerCount("second")).toBe(0);
+
+			vi.advanceTimersByTime(5000);
+			expect(onTick).toHaveBeenCalledTimes(3);
 		});
 
-		it("allows only the configured dashboard file when mode is 'dashboard'", () => {
-			const { liveExpression } = createMockEnv({
-				liveExpressionsMode: "dashboard",
-				liveExpressionsDashboardPath: "Notes/Dashboard.md",
-			});
+		it("aligns minute-cadence timer to minute boundary and stops on unsubscribe", () => {
+			vi.useFakeTimers();
+			// 12:05:45.000 Tehran -> 15 seconds until 12:06:00
+			vi.setSystemTime(new Date("2025-03-21T08:35:45Z"));
 
-			expect(liveExpression.isFileAllowed("Notes/Dashboard.md")).toBe(true);
-			expect(liveExpression.isFileAllowed("Notes/Other.md")).toBe(false);
-			expect(liveExpression.isFileAllowed(null)).toBe(false);
+			const { liveExpression } = createMockEnv();
+			const onTick = vi.fn();
+			const unsubscribe = liveExpression.subscribe("minute", onTick);
+
+			vi.advanceTimersByTime(14_000);
+			expect(onTick).toHaveBeenCalledTimes(0);
+
+			vi.advanceTimersByTime(1_000);
+			expect(onTick).toHaveBeenCalledTimes(1);
+
+			vi.advanceTimersByTime(60_000);
+			expect(onTick).toHaveBeenCalledTimes(2);
+
+			unsubscribe();
+			vi.advanceTimersByTime(120_000);
+			expect(onTick).toHaveBeenCalledTimes(2);
 		});
 
-		it("allows all files when mode is 'all'", () => {
-			const { liveExpression } = createMockEnv({
-				liveExpressionsMode: "all",
-			});
+		it("does not poll day-cadence listeners every second or minute", () => {
+			vi.useFakeTimers();
+			// 12:05:00 Tehran -> ~11h 55m until Tehran midnight
+			vi.setSystemTime(new Date("2025-03-21T08:35:00Z"));
 
-			expect(liveExpression.isFileAllowed("Notes/Dashboard.md")).toBe(true);
-			expect(liveExpression.isFileAllowed("Daily/1404-01-01.md")).toBe(true);
-			expect(liveExpression.isFileAllowed(null)).toBe(true);
+			const { liveExpression } = createMockEnv();
+			const onTick = vi.fn();
+			const unsubscribe = liveExpression.subscribe("day", onTick);
+
+			vi.advanceTimersByTime(60 * 60 * 1000); // 1 hour
+			expect(onTick).toHaveBeenCalledTimes(0);
+
+			unsubscribe();
+			liveExpression.destroy();
 		});
 	});
 
@@ -116,7 +176,6 @@ describe("LiveExpression service", () => {
 			vi.setSystemTime(new Date("2025-03-21T08:35:09Z"));
 
 			const { liveExpression } = createMockEnv({
-				liveExpressionsMode: "all",
 				dateFormat: "jalali",
 			});
 
@@ -177,70 +236,11 @@ describe("LiveExpression service", () => {
 		});
 	});
 
-	describe("handleEditorChange and Suggestion provider", () => {
-		it("replaces {#expression} with dynamic span when cursor is right after '}' in allowed file", () => {
-			vi.useFakeTimers();
-			vi.setSystemTime(new Date("2025-03-21T08:35:09Z"));
-
-			const { liveExpression, activeFile } = createMockEnv(
-				{
-					liveExpressionsMode: "dashboard",
-					liveExpressionsDashboardPath: "Dashboard.md",
-				},
-				"Dashboard.md",
-			);
-
-			const lineText = "ساعت فعلی: {#زمان_کوتاه}";
-			const replaceRange = vi.fn();
-			const mockEditor = {
-				getCursor: () => ({ line: 0, ch: lineText.length }),
-				getLine: () => lineText,
-				replaceRange,
-			} as unknown as Editor;
-
-			liveExpression.handleEditorChange(mockEditor, activeFile);
-
-			expect(replaceRange).toHaveBeenCalledWith(
-				`<span class="persian-dynamic-tag" data-key="زمان_کوتاه">12:05</span>`,
-				{ line: 0, ch: "ساعت فعلی: ".length },
-				{ line: 0, ch: lineText.length },
-			);
-		});
-
-		it("does not replace {#expression} when file is not the configured dashboard", () => {
-			const { liveExpression, activeFile } = createMockEnv(
-				{
-					liveExpressionsMode: "dashboard",
-					liveExpressionsDashboardPath: "Dashboard.md",
-				},
-				"OtherNote.md",
-			);
-
-			const lineText = "{#زمان_کوتاه}";
-			const replaceRange = vi.fn();
-			const mockEditor = {
-				getCursor: () => ({ line: 0, ch: lineText.length }),
-				getLine: () => lineText,
-				replaceRange,
-			} as unknown as Editor;
-
-			liveExpression.handleEditorChange(mockEditor, activeFile);
-			expect(replaceRange).not.toHaveBeenCalled();
-		});
-
-		it("provides autocomplete suggestions for {# when file is allowed", () => {
-			vi.useFakeTimers();
-			vi.setSystemTime(new Date("2025-03-21T08:35:09Z"));
-
-			const { liveExpression } = createMockEnv(
-				{
-					liveExpressionsMode: "dashboard",
-					liveExpressionsDashboardPath: "Dashboard.md",
-				},
-				"Dashboard.md",
-			);
-
+	describe("Suggestion provider (raw syntax without HTML span)", () => {
+		it("inserts raw {#expression} text instead of HTML span on select", () => {
+			const { liveExpression } = createMockEnv({}, "Dashboard.md");
 			const provider = liveExpression.toProvider();
+
 			expect("متن {#ساع".match(provider.trigger)?.[0]).toBe("{#ساع");
 			expect("متن {{#ساع".match(provider.trigger)).toBeNull();
 
@@ -248,34 +248,7 @@ describe("LiveExpression service", () => {
 			expect(suggestions).toContain("{#تا_نوروز}");
 
 			const selected = provider.onSelect("{#تا_نوروز}", {} as never);
-			expect(selected).toBe(`<span class="persian-dynamic-tag" data-key="تا_نوروز">0</span>`);
-		});
-	});
-
-	describe("refreshElement DOM updates", () => {
-		it("updates matching span.persian-dynamic-tag elements in allowed files", () => {
-			vi.useFakeTimers();
-			vi.setSystemTime(new Date("2025-03-21T08:35:09Z"));
-
-			const { liveExpression } = createMockEnv({
-				liveExpressionsMode: "dashboard",
-				liveExpressionsDashboardPath: "Dashboard.md",
-			});
-
-			const tag = {
-				dataset: { key: "زمان_کوتاه" },
-				textContent: "00:00",
-			} as unknown as HTMLElement;
-
-			const root = {
-				querySelectorAll: () => [tag],
-			} as unknown as ParentNode;
-
-			expect(liveExpression.refreshElement(root, "Other.md")).toBe(0);
-			expect(tag.textContent).toBe("00:00");
-
-			expect(liveExpression.refreshElement(root, "Dashboard.md")).toBe(1);
-			expect(tag.textContent).toBe("12:05");
+			expect(selected).toBe("{#تا_نوروز}");
 		});
 	});
 });
