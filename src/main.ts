@@ -17,6 +17,7 @@ import {
 	VaultEventService,
 	VersionChecker,
 } from "./services";
+import type { RawStoredSettings } from "./services/SettingsMigration";
 import CalendarView from "./templates/CalendarView";
 import CalendarSettingTab from "./templates/Setting";
 import type { TCustomEvent, TSetting } from "./types";
@@ -51,8 +52,6 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		// Load setting
 		await this.loadSetting();
-
-		setLocal(this.setting.language);
 
 		setAdapter(setDefaultEventAdapter());
 
@@ -126,7 +125,7 @@ export default class PersianCalendarPlugin extends Plugin {
 	}
 
 	public getAllCustomEvents(): TCustomEvent[] {
-		return [...(this.setting.customEvents ?? []), ...this.vaultEventService.getEvents()];
+		return this.vaultEventService.getEvents();
 	}
 
 	public refreshCalendarViews(): void {
@@ -190,10 +189,10 @@ export default class PersianCalendarPlugin extends Plugin {
 	}
 
 	async loadSetting() {
-		const data = (await this.loadData()) as Partial<TSetting> | null;
-		const merged = { ...DEFAULT_SETTING, ...(data || {}) };
+		const data = (await this.loadData()) as RawStoredSettings | null;
 
-		this.setting = applySettingsMigrations(data, merged);
+		this.setting = applySettingsMigrations(data);
+		setLocal(this.setting.language);
 
 		if (data?.legacyPathPatternsMigrated !== true) {
 			await this.saveSetting();
