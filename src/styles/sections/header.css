@@ -1,15 +1,17 @@
 .persian-calendar__header {
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: 4px;
 	padding: 5px;
 	width: 100%;
 }
 
-.persian-calendar__nav-container {
-	align-items: center;
+.persian-calendar__header-top {
+	align-items: flex-start;
 	display: flex;
-	gap: 5px;
+	gap: 8px;
+	justify-content: space-between;
+	width: 100%;
 }
 
 .persian-calendar__arrow {
@@ -17,7 +19,7 @@
 	cursor: pointer;
 	display: flex;
 	font-size: 16px;
-	opacity: 0.6;
+	opacity: 0.55;
 	transition: opacity var(--persian-calendar-duration);
 }
 .persian-calendar__arrow:hover {
@@ -25,26 +27,30 @@
 }
 
 .persian-calendar__go-current {
-	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 10%, transparent);
-	border: 1.5px solid var(--persian-calendar-color-primary);
-	border-radius: 10px;
-	box-shadow: 0 0 0 1px color-mix(in srgb, var(--persian-calendar-color-primary) 50%, transparent);
-	color: var(--persian-calendar-color-primary);
+	background-color: transparent;
+	border: 1px solid var(--persian-calendar-color-base-1);
+	border-radius: 6px;
+	color: var(--persian-calendar-color-base-2);
 	cursor: pointer;
-	font-weight: 700;
-	opacity: 1;
-	padding: 5px 12px;
-	transition-duration: var(--persian-calendar-duration);
-	transition-property: all;
+	flex-shrink: 0;
+	font-size: 11px;
+	font-weight: 500;
+	line-height: 1.2;
+	padding: 2px 8px;
+	transition:
+		background-color var(--persian-calendar-duration),
+		border-color var(--persian-calendar-duration),
+		color var(--persian-calendar-duration);
 }
 .persian-calendar__go-current:hover {
-	background-color: var(--persian-calendar-color-primary);
-	color: var(--persian-calendar-color-static);
+	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 12%, transparent);
+	border-color: var(--persian-calendar-color-primary);
+	color: var(--persian-calendar-color-primary);
 }
 
 .persian-calendar__jalali-state {
+	align-items: baseline;
 	display: flex;
-	flex-direction: row-reverse;
 	gap: 5px;
 }
 
@@ -72,7 +78,8 @@
 }
 
 .persian-calendar__additional-calendar-state {
-	text-align: center;
+	min-width: 0;
+	text-align: start;
 }
 
 .persian-calendar__jmonth:hover,
@@ -83,15 +90,16 @@
 .persian-calendar__gmonth-gyear,
 .persian-calendar__hmonth-hyear {
 	color: var(--persian-calendar-color-base-2);
-	flex-direction: row-reverse;
-	font-size: 14px;
+	font-size: 13px;
 	width: 100%;
 }
 
 .persian-calendar__state-control {
 	align-items: center;
 	display: flex;
-	justify-content: space-between;
+	gap: 6px;
+	justify-content: center;
+	padding: 2px 0;
 	width: 100%;
 }
 
