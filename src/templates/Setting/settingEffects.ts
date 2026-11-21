@@ -13,6 +13,7 @@ const SETTING_EFFECTS: Partial<Record<keyof TSetting, EffectKind>> = {
 	askForDeleteNote: "refresh-immediate",
 	openDailyNoteOnStartup: "refresh-immediate",
 	showSeasonalNotes: "refresh-immediate",
+	showGoToCurrent: "refresh-immediate",
 
 	dailyNotesPath: "refresh-debounced",
 	weeklyNotesPath: "refresh-debounced",
