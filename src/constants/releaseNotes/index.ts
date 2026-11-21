@@ -8,10 +8,14 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 			fa: [
 				"امکان تعریف مناسبت‌های سفارشی از طریق یادداشت‌های ابسیدین",
 				"تغییر در رفتار مسیردهی داینامیک پوشه‌ها",
+				"تغییر ظاهر نوار بالای تقویم",
+				"دکمه‌ی بازگشت به ماه کنونی را میتوان در تنظیمات غیرفعال کرد"
 			],
 			en: [
 				"Added support for custom events through Obsidian notes",
 				"Breaking change in dynamic folder path syntax",
+				"Update Calendar Header Appearance",
+				"The button to return to the current month can be disabled in settings",
 			],
 		},
 	},
