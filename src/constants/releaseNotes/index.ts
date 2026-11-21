@@ -7,13 +7,11 @@ export const RELEASE_NOTES: TReleaseNote[] = [
 		changes: {
 			fa: [
 				"امکان تعریف مناسبت‌های سفارشی از طریق یادداشت‌های ابسیدین",
-				"تغییر اساسی در رفتار مسیردهی داینامیک پوشه‌ها: از این پس نام‌های ساده مانند Daily به‌صورت ثابت در نظر گرفته می‌شوند و تنها عبارت‌های داخل براکت مانند [jYYYY] یا [D]aily به‌صورت پویا تفسیر می‌شوند",
-				"مهاجرت خودکار تنظیمات مسیر نسخه ۴ به ساختار جدید نسخه ۵ برای حفظ سازگاری و جلوگیری از اختلال در مسیرهای فعلی کاربران",
+				"تغییر در رفتار مسیردهی داینامیک پوشه‌ها",
 			],
 			en: [
 				"Added support for custom events through Obsidian notes",
-				"Breaking change in dynamic folder path syntax: plain text (such as Daily) is now treated literally by default, and only bracketed tokens (such as [jYYYY] or [D]aily) are dynamically evaluated",
-				"Automatic migration of v4 folder path settings to the new v5 bracketed syntax to ensure a smooth upgrade for existing users",
+				"Breaking change in dynamic folder path syntax",
 			],
 		},
 	},
