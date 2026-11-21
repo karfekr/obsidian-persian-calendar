@@ -26,32 +26,39 @@
 	opacity: 1;
 }
 
+.persian-calendar__header .persian-calendar__arrow > svg.svg-icon {
+	transform: none;
+}
+
 .persian-calendar__go-current {
-	background-color: transparent;
-	border: 1px solid var(--persian-calendar-color-base-1);
-	border-radius: 6px;
-	color: var(--persian-calendar-color-base-2);
+	align-items: center;
 	cursor: pointer;
+	display: flex;
 	flex-shrink: 0;
 	font-size: 11px;
 	font-weight: 500;
 	line-height: 1.2;
-	padding: 2px 8px;
-	transition:
-		background-color var(--persian-calendar-duration),
-		border-color var(--persian-calendar-duration),
-		color var(--persian-calendar-duration);
+	height: 24px;
+	justify-content: center;
+	padding: 2px;
+	width: 24px;
 }
-.persian-calendar__go-current:hover {
-	background-color: color-mix(in srgb, var(--persian-calendar-color-primary) 12%, transparent);
-	border-color: var(--persian-calendar-color-primary);
-	color: var(--persian-calendar-color-primary);
+.persian-calendar__go-current--hidden {
+	visibility: hidden;
+}
+
+.persian-calendar__header .persian-calendar__go-current > svg.svg-icon {
+	transform: scaleX(-1);
 }
 
 .persian-calendar__jalali-state {
-	align-items: baseline;
+	align-items: center;
 	display: flex;
-	gap: 5px;
+	gap: 6px;
+	grid-area: label;
+	min-width: 0;
+	justify-self: center;
+	max-width: 100%;
 }
 
 .persian-calendar__jmonth,
@@ -75,6 +82,10 @@
 
 .persian-calendar__jmonth {
 	color: var(--persian-calendar-color-primary);
+	overflow: hidden;
+	text-align: end;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .persian-calendar__additional-calendar-state {
@@ -96,11 +107,27 @@
 
 .persian-calendar__state-control {
 	align-items: center;
-	display: flex;
+	direction: rtl;
+	display: grid;
 	gap: 6px;
-	justify-content: center;
+	grid-template-areas: "previous label next";
+	grid-template-columns: max-content minmax(0, 1fr) max-content;
 	padding: 2px 0;
 	width: 100%;
+}
+
+.persian-calendar__nav-previous,
+.persian-calendar__nav-next {
+	display: flex;
+	gap: inherit;
+}
+
+.persian-calendar__nav-previous {
+	grid-area: previous;
+}
+
+.persian-calendar__nav-next {
+	grid-area: next;
 }
 
 .persian-calendar__season {
