@@ -59,6 +59,10 @@
 				"name": "Open Today's Daily Note on Startup",
 				"desc": "When enabled, Obsidian will automatically open today's daily note on launch."
 			},
+			"showGoToCurrent": {
+				"name": "Show Go to Current Button",
+				"desc": "Show a button to return to the current month when viewing another month."
+			},
 			"showSeasons": {
 				"name": "Show Seasons in Calendar",
 				"desc": "* This setting is ignored when the sidebar is too narrow."
