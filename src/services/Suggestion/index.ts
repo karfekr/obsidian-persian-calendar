@@ -40,7 +40,7 @@ export default class Suggestion extends EditorSuggest<string> {
 					ch: match.index ?? 0,
 				},
 				end: cursor,
-				query: match[0].replace(/^(@|\{\{)/, ""),
+				query: match[0].replace(/^(@|\{\{|\{#)/, ""),
 				editor,
 				file: activeFile,
 			};
@@ -77,6 +77,8 @@ export default class Suggestion extends EditorSuggest<string> {
 
 		if (after === "}}") {
 			end.ch += 2;
+		} else if (after.startsWith("}")) {
+			end.ch += 1;
 		}
 
 		const result = this.activeProvider.onSelect(value, ctx);

@@ -33,6 +33,31 @@ export class MarkdownView {
 	leaf: unknown = null;
 }
 
+export class MarkdownRenderChild {
+	containerEl: HTMLElement;
+	private cleanups: Array<() => void> = [];
+
+	constructor(containerEl: HTMLElement) {
+		this.containerEl = containerEl;
+	}
+
+	onload(): void {}
+
+	onunload(): void {
+		for (const fn of this.cleanups) {
+			fn();
+		}
+		this.cleanups = [];
+	}
+
+	register(cb: () => void): void {
+		this.cleanups.push(cb);
+	}
+}
+
+export const editorLivePreviewField = {};
+export const editorInfoField = {};
+
 export class View {}
 export class Plugin {}
 export class PluginSettingTab {}
