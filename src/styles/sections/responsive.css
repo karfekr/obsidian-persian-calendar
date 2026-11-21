@@ -28,10 +28,10 @@
 	}
 
 	.persian-calendar__jalali-state {
-		align-items: start;
+		align-items: baseline;
 		display: flex;
-		flex-direction: column-reverse;
-		padding-right: 0;
+		flex-direction: row;
+		gap: 4px;
 	}
 
 	.persian-calendar__jmonth,
@@ -39,12 +39,13 @@
 		font-size: 18px;
 	}
 
-	.persian-calendar__jmonth--en {
+	.persian-calendar__jmonth--en,
+	.persian-calendar__jyear--en {
 		font-size: 13px;
 	}
 
 	.persian-calendar__go-current {
-		font-size: 12px;
-		padding: 3px 8px;
+		font-size: 10px;
+		padding: 2px 6px;
 	}
 }
