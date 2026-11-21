@@ -76,6 +76,7 @@ export type THijriAnchor = TGregorian & THijri;
 export type TBoolSettingKeys = Extract<
 	keyof TSetting,
 	| "showSeasonalNotes"
+	| "showGoToCurrent"
 	| "showGeorgianDates"
 	| "showHijriDates"
 	| "showHolidays"
@@ -116,6 +117,7 @@ export type TSetting = {
 	dailyNoteFormat: string;
 	weekCalculation: TWeekCalculationMode;
 	showSeasonalNotes: boolean;
+	showGoToCurrent: boolean;
 	// show holidays
 	showHolidays: boolean;
 	weekendDays: TWeekDays;

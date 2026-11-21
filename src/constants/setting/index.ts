@@ -12,6 +12,7 @@ export const DEFAULT_SETTING: TSetting = {
 	askForDeleteNote: true,
 	openDailyNoteOnStartup: false,
 	showSeasonalNotes: true,
+	showGoToCurrent: true,
 	showHolidays: true,
 	weekendDays: {
 		saturday: false,
