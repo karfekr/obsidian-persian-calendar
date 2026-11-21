@@ -28,7 +28,7 @@ const modes: TWeekCalculationMode[] = [
 	"gregorian-first-week-start",
 ];
 
-function harness(mode: TWeekCalculationMode, weeklyNotesPath = "[Weekly]/[W]ww") {
+function harness(mode: TWeekCalculationMode, weeklyNotesPath = "Weekly/W[ww]") {
 	const files = new Map<string, TAbstractFile>();
 	const contents = new Map<string, string>();
 	const addFile = (path: string, content = "") => {
@@ -144,7 +144,7 @@ describe.each(modes)("weekly note formatting: %s", (mode) => {
 	});
 
 	it("preserves custom literals, separators and explicit unpadded w tokens", async () => {
-		const { plugin, vault } = harness(mode, "[Custom]/[week-]w/[padded-]ww");
+		const { plugin, vault } = harness(mode, "Custom/week-[w]/padded-[ww]");
 		await plugin.noteService.openOrCreateWeeklyNote(year, 2);
 		expect(vault.create).toHaveBeenCalledWith(`Custom/week-2/padded-02/${year}-W02.md`, "");
 		expect(formatPattern("[week:]w[ / ]ww", { week: 2 })).toBe("week:2 / 02");
@@ -170,7 +170,7 @@ it.each([
 		});
 		await plugin.noteService.openOrCreateWeeklyNote(year, week);
 		expect(vault.create).toHaveBeenCalledExactlyOnceWith(path, "");
-		plugin.setting.dailyNotesPath = "jYYYY/[W]ww";
+		plugin.setting.dailyNotesPath = "[jYYYY]/W[ww]";
 		if (mode === "jalali-first-day-of-year") {
 			expect(
 				new NotePathBuilder(plugin).buildDailyNotePath(parts[0], parts[1], parts[2]).filePath,

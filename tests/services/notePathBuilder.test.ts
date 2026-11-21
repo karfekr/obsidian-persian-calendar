@@ -51,67 +51,69 @@ describe("NotePathBuilder.buildEngineContext", () => {
 });
 
 describe("NotePathBuilder - mixed-calendar dynamic paths (regression)", () => {
-	it("resolves YYYY/jQQ for the yearly note path instead of throwing", () => {
-		const builder = createBuilder({ yearlyNotesPath: "YYYY/jQQ" });
+	it("resolves [YYYY]/[jQQ] for the yearly note path instead of throwing", () => {
+		const builder = createBuilder({ yearlyNotesPath: "[YYYY]/[jQQ]" });
 		expect(() => builder.buildYearlyNotePath(1403)).not.toThrow();
 	});
 
-	it("resolves jYYYY/jQQ for the yearly note path", () => {
-		const builder = createBuilder({ yearlyNotesPath: "jYYYY/jQQ" });
+	it("resolves [jYYYY]/[jQQ] for the yearly note path", () => {
+		const builder = createBuilder({ yearlyNotesPath: "[jYYYY]/[jQQ]" });
 		expect(() => builder.buildYearlyNotePath(1403)).not.toThrow();
 	});
 
-	it("resolves YYYY/jQQQQ for the yearly note path", () => {
-		const builder = createBuilder({ yearlyNotesPath: "YYYY/jQQQQ" });
+	it("resolves [YYYY]/[jQQQQ] for the yearly note path", () => {
+		const builder = createBuilder({ yearlyNotesPath: "[YYYY]/[jQQQQ]" });
 		expect(() => builder.buildYearlyNotePath(1403)).not.toThrow();
 	});
 
-	it("resolves YYYY/jMMMM for the yearly note path", () => {
-		const builder = createBuilder({ yearlyNotesPath: "YYYY/jMMMM" });
+	it("resolves [YYYY]/[jMMMM] for the yearly note path", () => {
+		const builder = createBuilder({ yearlyNotesPath: "[YYYY]/[jMMMM]" });
 		const { filePath } = builder.buildYearlyNotePath(1403);
 		expect(filePath).toContain("Farvardin");
 	});
 
-	it("resolves jYYYY/MM for the yearly note path", () => {
-		const builder = createBuilder({ yearlyNotesPath: "jYYYY/MM" });
+	it("resolves [jYYYY]/[MM] for the yearly note path", () => {
+		const builder = createBuilder({ yearlyNotesPath: "[jYYYY]/[MM]" });
 		expect(() => builder.buildYearlyNotePath(1403)).not.toThrow();
 	});
 
-	it("resolves YYYY/jMM for the yearly note path", () => {
-		const builder = createBuilder({ yearlyNotesPath: "YYYY/jMM" });
+	it("resolves [YYYY]/[jMM] for the yearly note path", () => {
+		const builder = createBuilder({ yearlyNotesPath: "[YYYY]/[jMM]" });
 		const { filePath } = builder.buildYearlyNotePath(1403);
 		expect(filePath).toMatch(/\d{4}\/01\//);
 	});
 
-	it("resolves YYYY/jQQ for the seasonal note path", () => {
-		const builder = createBuilder({ seasonalNotesPath: "YYYY/jQQ" });
+	it("resolves [YYYY]/[jQQ] for the seasonal note path", () => {
+		const builder = createBuilder({ seasonalNotesPath: "[YYYY]/[jQQ]" });
 		expect(() => builder.buildSeasonalNotePath(1403, 3)).not.toThrow();
 	});
 
-	it("resolves jYYYY/MM for the seasonal note path", () => {
-		const builder = createBuilder({ seasonalNotesPath: "jYYYY/MM" });
+	it("resolves [jYYYY]/[MM] for the seasonal note path", () => {
+		const builder = createBuilder({ seasonalNotesPath: "[jYYYY]/[MM]" });
 		expect(() => builder.buildSeasonalNotePath(1403, 3)).not.toThrow();
 	});
 
 	it("still resolves purely Gregorian yearly paths", () => {
-		const builder = createBuilder({ yearlyNotesPath: "YYYY/MM/DD" });
+		const builder = createBuilder({ yearlyNotesPath: "[YYYY]/[MM]/[DD]" });
 		expect(() => builder.buildYearlyNotePath(1403)).not.toThrow();
 	});
 
 	it("still resolves purely Jalali seasonal paths", () => {
-		const builder = createBuilder({ seasonalNotesPath: "jYYYY/jQQQQ" });
+		const builder = createBuilder({ seasonalNotesPath: "[jYYYY]/[jQQQQ]" });
 		expect(() => builder.buildSeasonalNotePath(1403, 1)).not.toThrow();
 	});
 
 	it("still resolves the default daily/weekly/monthly note paths", () => {
 		const builder = createBuilder();
-		expect(() => builder.buildDailyNotePath(1403, 1, 1)).not.toThrow();
-		expect(() => builder.buildWeeklyNotePath(1403, 1)).not.toThrow();
-		expect(() => builder.buildMonthlyNotePath(1403, 1)).not.toThrow();
+		expect(builder.buildDailyNotePath(1403, 1, 1).filePath).toBe(
+			"Journal/1403/Daily/2024-03-20.md",
+		);
+		expect(builder.buildWeeklyNotePath(1403, 1).filePath).toBe("Journal/1403/Weekly/1403-W01.md");
+		expect(builder.buildMonthlyNotePath(1403, 1).filePath).toBe("Journal/1403/Monthly/1403-01.md");
 	});
 
-	it("resolves mixed YYYY/jQQ for the monthly note path (full context already available)", () => {
-		const builder = createBuilder({ monthlyNotesPath: "YYYY/jQQ" });
+	it("resolves mixed [YYYY]/[jQQ] for the monthly note path (full context already available)", () => {
+		const builder = createBuilder({ monthlyNotesPath: "[YYYY]/[jQQ]" });
 		expect(() => builder.buildMonthlyNotePath(1403, 4)).not.toThrow();
 	});
 
@@ -120,5 +122,45 @@ describe("NotePathBuilder - mixed-calendar dynamic paths (regression)", () => {
 		expect(() => formatPattern("jMM", builder.buildEngineContext({ jy: 1403 }))).toThrow(
 			DatePatternFormatError,
 		);
+	});
+});
+
+describe("NotePathBuilder - v5 bracketed dynamic folder paths", () => {
+	it("treats unbracketed folder names like Daily and Monthly as literal text", () => {
+		const builder = createBuilder({
+			dailyNotesPath: "Journal/[jYYYY]/Daily",
+			monthlyNotesPath: "Journal/[jYYYY]/Monthly",
+		});
+
+		expect(builder.buildDailyNotePath(1403, 1, 1).filePath).toBe(
+			"Journal/1403/Daily/2024-03-20.md",
+		);
+		expect(builder.buildMonthlyNotePath(1403, 1).filePath).toBe("Journal/1403/Monthly/1403-01.md");
+	});
+
+	it("interprets bracketed tokens inside folder names such as [D]aily", () => {
+		const builder = createBuilder({ dailyNotesPath: "[D]aily" });
+		// 1403-01-01 is Gregorian 2024-03-20 (D = 20)
+		expect(builder.buildDailyNotePath(1403, 1, 1).filePath).toBe("20aily/2024-03-20.md");
+	});
+
+	it("builds a detection pattern that combines bracketed folder path with standard dailyNoteFormat", () => {
+		const builder = createBuilder({
+			dailyNotesPath: "03 - Diary/[jYYYY]/[jMM] - [jMMMM]/[jYYYY]-W[ww]",
+			dailyNoteFormat: "YYYY-MM-DD",
+		});
+
+		const detectionPattern = builder.buildDetectionPattern();
+		expect(detectionPattern).toBe("[03 - Diary/]jYYYY[/]jMM[ - ]jMMMM[/]jYYYY[-W]ww/YYYY-MM-DD.md");
+	});
+
+	it("safely escapes literal closing brackets in folder paths for buildDetectionPattern", () => {
+		const builder = createBuilder({
+			dailyNotesPath: "Notes]Archive/[jYYYY]/Daily",
+			dailyNoteFormat: "YYYY-MM-DD",
+		});
+
+		const detectionPattern = builder.buildDetectionPattern();
+		expect(detectionPattern).toBe("[Notes]][Archive/]jYYYY[/Daily]/YYYY-MM-DD.md");
 	});
 });

@@ -104,6 +104,7 @@ export type TWeekDays = {
 export type TSetting = {
 	lastSeenVersion?: string;
 	legacyPathPatternsMigrated?: boolean;
+	bracketedPathPatternsMigrated?: boolean;
 	language: TLocale;
 	versionUpdate: boolean;
 	askForCreateNote: boolean;
@@ -218,12 +219,15 @@ export type TTokenDefinition = {
 	parseValue: (raw: string) => number | null;
 };
 
+export type TPatternMode = "standard" | "bracketed";
+
 export type TPatternSegment =
 	| { type: "literal"; value: string; escaped?: boolean }
 	| { type: "token"; token: TTokenDefinition };
 
 export type TCompiledPattern = {
 	pattern: string;
+	mode: TPatternMode;
 	locale: TLocale;
 	segments: TPatternSegment[];
 	regex: RegExp;

@@ -3,7 +3,12 @@ export { default as CommandRegistry } from "./CommandRegistry";
 export { default as EventManager } from "./EventManager";
 export { default as NoteService } from "./NoteService";
 export { default as Placeholder } from "./Placeholder";
-export { applySettingsMigrations, migrateLegacyPathPatterns } from "./SettingsMigration";
+export {
+	applySettingsMigrations,
+	migrateLegacyPathPatterns,
+	migrateV4PathPatternsToV5,
+	migrateV4PathPatternToV5,
+} from "./SettingsMigration";
 export { default as SmartDateLinker } from "./SmartDateLinker";
 export { default as Suggestion } from "./Suggestion";
 export { default as VaultEventService } from "./VaultEventService";

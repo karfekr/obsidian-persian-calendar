@@ -81,10 +81,13 @@ weekly note's configured week calculation (Jalali or Gregorian, and the selected
 They are useful for weekly note paths and can also be used in daily note paths to place a daily note
 under the corresponding week.
 
-The brackets tell the path resolver to treat the content as a literal/static name:
+In folder paths, plain text is treated literally by default, and brackets (`[...]`) mark dynamic placeholders to be evaluated:
 
-- Daily → interpreted as D + aily
-- [Daily] → interpreted literally as Daily
+- `Daily` → interpreted literally as `Daily`
+- `[D]aily` → interpreted as `D` + `aily` (e.g., `9aily`)
+- `Journal/[jYYYY]/Daily` → interpreted as `Journal/1404/Daily`
+
+In the daily note naming format, tokens (such as `YYYY-MM-DD` or `jYYYY-jMM-jDD`) are evaluated directly, and brackets escape literal text (e.g., `[Daily] YYYY-MM-DD`).
 
 ## <a name="quick_reference"></a> Quick Reference to Calendar Notes
 

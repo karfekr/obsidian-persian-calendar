@@ -109,6 +109,25 @@ describe("edge cases - single-letter tokens colliding with plain English words",
 	});
 });
 
+describe("edge cases - bracketed mode cache isolation and behavior", () => {
+	it("keeps standard and bracketed compiled cache entries isolated for the same pattern", () => {
+		const std = compilePattern("Daily", "standard");
+		const brk = compilePattern("Daily", "bracketed");
+		expect(std).not.toBe(brk);
+		expect(formatPattern("Daily", { gd: 9 }, "standard")).toBe("9aily");
+		expect(formatPattern("Daily", { gd: 9 }, "bracketed")).toBe("Daily");
+		expect(formatPattern("[D]aily", { gd: 9 }, "standard")).toBe("Daily");
+		expect(formatPattern("[D]aily", { gd: 9 }, "bracketed")).toBe("9aily");
+	});
+
+	it("formats and parses bracketed paths round-trip", () => {
+		const pattern = "Journal/[jYYYY]/Daily";
+		const formatted = formatPattern(pattern, { jy: 1404 }, "bracketed");
+		expect(formatted).toBe("Journal/1404/Daily");
+		expect(parsePattern(pattern, formatted, "bracketed")).toEqual({ jy: 1404 });
+	});
+});
+
 function segmentSummaryFor(segments: ReturnType<typeof tokenize>) {
 	return segments.map((s) =>
 		s.type === "literal" ? { literal: s.value } : { token: s.token.token },

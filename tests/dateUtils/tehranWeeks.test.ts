@@ -192,7 +192,7 @@ describe.each(modes)("shared week identity: %s", (mode) => {
 	});
 
 	it("agrees across paths, mentions, calendar rows and daily/weekly placeholders", () => {
-		const plugin = makePlugin({ weekCalculation: mode, dailyNotesPath: "jYYYY/[W]ww" });
+		const plugin = makePlugin({ weekCalculation: mode, dailyNotesPath: "[jYYYY]/W[ww]" });
 		const paths = new NotePathBuilder(plugin);
 		const placeholders = new Placeholder(plugin);
 		const linker = new SmartDateLinker(plugin);
@@ -235,7 +235,7 @@ describe.each(modes)("shared week identity: %s", (mode) => {
 });
 
 it("reads week-mode changes without reconstructing consumers", async () => {
-	const plugin = makePlugin({ dailyNotesPath: "jYYYY/[W]ww" });
+	const plugin = makePlugin({ dailyNotesPath: "[jYYYY]/W[ww]" });
 	const paths = new NotePathBuilder(plugin);
 	const linker = new SmartDateLinker(plugin);
 	const placeholders = new Placeholder(plugin);

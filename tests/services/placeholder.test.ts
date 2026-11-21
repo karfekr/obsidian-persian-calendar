@@ -68,11 +68,11 @@ describe("Issue #97: Unresolved daily note placeholders for dates other than tod
 		const { placeholder } = createMockPlugin({
 			dateFormat: "jalali",
 			dailyNoteFormat: "jYYYY-jMM-jDD",
-			dailyNotesPath: "Journal/jYYYY/[Daily]",
+			dailyNotesPath: "Journal/[jYYYY]/Daily",
 		});
 
 		const noteFile = {
-			path: "Journal/1403/[Daily]/1403-08-15.md",
+			path: "Journal/1403/Daily/1403-08-15.md",
 			basename: "1403-08-15",
 		} as TFile;
 
@@ -174,7 +174,7 @@ describe("Issue #99: Gregorian filename (YYYY-MM-DD) with Jalali semantic calend
 		const { placeholder } = createMockPlugin({
 			dateFormat: "jalali",
 			dailyNoteFormat: "YYYY-MM-DD",
-			dailyNotesPath: "[03 - Diary]/jYYYY/jMM - jMMMM/jYYYY-[W]ww",
+			dailyNotesPath: "03 - Diary/[jYYYY]/[jMM] - [jMMMM]/[jYYYY]-W[ww]",
 		});
 
 		const noteFile = {
