@@ -15,6 +15,12 @@ export default class Suggestion extends EditorSuggest<string> {
 
 	renderSuggestion(value: string, el: HTMLElement): void {
 		const container = el.createDiv();
+		if (value.startsWith("{+")) {
+			const expression = container.createEl("bdi", { text: value });
+			expression.dir = "ltr";
+			return;
+		}
+
 		container.createDiv({
 			text: value,
 		});
@@ -40,7 +46,7 @@ export default class Suggestion extends EditorSuggest<string> {
 					ch: match.index ?? 0,
 				},
 				end: cursor,
-				query: match[0].replace(/^(@|\{\{|\{#)/, ""),
+				query: match[0].replace(/^(@|\{\{|\{\+)/, ""),
 				editor,
 				file: activeFile,
 			};

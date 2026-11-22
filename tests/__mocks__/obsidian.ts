@@ -55,6 +55,10 @@ export class MarkdownRenderChild {
 	}
 }
 
+export class EditorSuggest<_T> {
+	constructor(public app: unknown) {}
+}
+
 export const editorLivePreviewField = {};
 export const editorInfoField = {};
 

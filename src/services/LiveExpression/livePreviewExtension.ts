@@ -2,7 +2,7 @@ import type { Extension } from "@codemirror/state";
 import { RangeSetBuilder } from "@codemirror/state";
 import type { DecorationSet, EditorView, ViewUpdate } from "@codemirror/view";
 import { Decoration, ViewPlugin, WidgetType } from "@codemirror/view";
-import { editorInfoField, editorLivePreviewField } from "obsidian";
+import { editorLivePreviewField } from "obsidian";
 
 import type LiveExpression from "./index";
 import type { TLiveExpressionCadence } from "./index";
@@ -50,13 +50,12 @@ class LiveExpressionWidget extends WidgetType {
 		private readonly initialValue: string,
 		private readonly cadence: TLiveExpressionCadence,
 		private readonly liveExpression: LiveExpression,
-		private readonly filePath: string | null,
 	) {
 		super();
 	}
 
 	eq(other: LiveExpressionWidget): boolean {
-		return other.key === this.key && other.filePath === this.filePath;
+		return other.key === this.key;
 	}
 
 	toDOM(): HTMLElement {
@@ -66,8 +65,7 @@ class LiveExpressionWidget extends WidgetType {
 		span.textContent = this.initialValue;
 
 		const unsubscribe = this.liveExpression.subscribe(this.cadence, () => {
-			const file = this.liveExpression.resolveFile(this.filePath);
-			const nextValue = this.liveExpression.calculateValue(this.key, file);
+			const nextValue = this.liveExpression.calculateValue(this.key);
 			if (nextValue !== null && span.textContent !== String(nextValue)) {
 				span.textContent = String(nextValue);
 			}
@@ -106,9 +104,6 @@ export function createLiveExpressionEditorExtension(liveExpression: LiveExpressi
 					return Decoration.none;
 				}
 
-				const info = view.state.field(editorInfoField, false);
-				const file = info?.file ?? null;
-				const filePath = file?.path ?? null;
 				const builder = new RangeSetBuilder<Decoration>();
 				const selectionRanges = view.state.selection.ranges;
 
@@ -139,7 +134,9 @@ export function createLiveExpressionEditorExtension(liveExpression: LiveExpressi
 							continue;
 						}
 
-						if (inFencedCodeBlock || !line.text.includes("{#")) continue;
+						if (inFencedCodeBlock || !line.text.includes("{+")) {
+							continue;
+						}
 
 						const codeRanges = findInlineCodeRanges(line.text);
 						const regex = new RegExp(LIVE_EXPRESSION_PATTERN.source, "g");
@@ -159,7 +156,7 @@ export function createLiveExpressionEditorExtension(liveExpression: LiveExpressi
 							if (isCursorInside) continue;
 
 							const key = match[1];
-							const value = liveExpression.calculateValue(key, file);
+							const value = liveExpression.calculateValue(key);
 							if (value === null) continue;
 
 							const cadence = liveExpression.getCadence(key);
@@ -167,13 +164,7 @@ export function createLiveExpressionEditorExtension(liveExpression: LiveExpressi
 								absFrom,
 								absTo,
 								Decoration.replace({
-									widget: new LiveExpressionWidget(
-										key,
-										String(value),
-										cadence,
-										liveExpression,
-										filePath,
-									),
+									widget: new LiveExpressionWidget(key, String(value), cadence, liveExpression),
 								}),
 							);
 						}
