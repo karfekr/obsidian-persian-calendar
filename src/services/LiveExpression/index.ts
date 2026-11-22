@@ -449,7 +449,7 @@ export default class LiveExpression {
 			dateToEvents(currentDate, {
 				showEvents: this.plugin.setting,
 				hijriBase: this.plugin.setting.hijriBase,
-				customEvents: this.plugin.getAllCustomEvents?.() ?? this.plugin.setting.customEvents,
+				customEvents: this.plugin.getAllCustomEvents(),
 			});
 
 		const locale = this.plugin.setting.language ?? "fa";

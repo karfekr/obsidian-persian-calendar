@@ -46,7 +46,7 @@ function createMockEnv(
 	const plugin = {
 		app: mockApp,
 		setting: { ...DEFAULT_SETTING, ...settingOverrides },
-		getAllCustomEvents: () => settingOverrides.customEvents ?? [],
+		getAllCustomEvents: () => [],
 	} as unknown as PersianCalendarPlugin;
 
 	plugin.placeholder = new Placeholder(plugin);
