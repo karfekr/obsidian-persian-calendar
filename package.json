@@ -56,6 +56,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.6.7",
+		"@codemirror/state": "6.7.6",
+		"@codemirror/view": "6.43.13",
 		"@types/node": "^26.6.6",
 		"chokidar": "^6.0.0",
 		"cssnano": "^9.9.0",
