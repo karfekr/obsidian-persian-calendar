@@ -33,8 +33,9 @@ import {
 	dateToSeasonDash,
 	gregorianDashToCalendarDate,
 } from "src/utils/dashUtils";
-import { parsePattern } from "src/utils/dateEngine";
+import { formatPattern, parsePattern } from "src/utils/dateEngine";
 import {
+	addCalendarDays,
 	checkKabiseh,
 	checkValidJalali,
 	dateToDayOfMonth,
@@ -46,6 +47,7 @@ import {
 	dateToDaysRemainingSeason,
 	dateToEndDayOfJMonthCalendarDate,
 	dateToEndDayOfSeasonCalendarDate,
+	dateToGregorian,
 	dateToJalali,
 	dateToMonthName,
 	dateToSeasonName,
@@ -53,12 +55,61 @@ import {
 	dateToStartDayOfSeasonCalendarDate,
 	dateToWeekdayName,
 	getWeekStartCalculator,
+	gregorianToCalendarDate,
 	gregorianToJalali,
 	jalaliToCalendarDate,
 	todayTehran,
 } from "src/utils/dateUtils";
 import { dashToEvents, dateToEvents, eventsToString } from "src/utils/eventUtils";
-import { extractWeekFormat, extractYearFormat, toDayFormat } from "src/utils/formatters";
+import {
+	extractWeekFormat,
+	extractYearFormat,
+	isWeekFormat,
+	toDayFormat,
+} from "src/utils/formatters";
+
+const WEEKDAY_PLACEHOLDER_OFFSETS: Readonly<Record<string, number>> = {
+	saturday: 0,
+	sunday: 1,
+	monday: 2,
+	tuesday: 3,
+	wednesday: 4,
+	thursday: 5,
+	friday: 6,
+	شنبه: 0,
+	یکشنبه: 1,
+	دوشنبه: 2,
+	سهشنبه: 3,
+	چهارشنبه: 4,
+	پنجشنبه: 5,
+	جمعه: 6,
+};
+
+const WEEKDAY_PLACEHOLDER_SUGGESTIONS: readonly string[] = [
+	"{{saturday:jYYYY-jMM-jDD}}",
+	"{{sunday:jYYYY-jMM-jDD}}",
+	"{{monday:jYYYY-jMM-jDD}}",
+	"{{tuesday:jYYYY-jMM-jDD}}",
+	"{{wednesday:jYYYY-jMM-jDD}}",
+	"{{thursday:jYYYY-jMM-jDD}}",
+	"{{friday:jYYYY-jMM-jDD}}",
+	"{{شنبه}}",
+	"{{یکشنبه}}",
+	"{{دوشنبه}}",
+	"{{سه‌شنبه}}",
+	"{{چهارشنبه}}",
+	"{{پنج‌شنبه}}",
+	"{{جمعه}}",
+];
+
+const WEEKDAY_PLACEHOLDER_REGEX = /\{\{([^{}:]+?)(?::([^{}]+?))?\}\}/g;
+
+function normalizeWeekdayKey(raw: string): string {
+	return raw
+		.trim()
+		.toLowerCase()
+		.replace(/[\s\u200c]+/g, "");
+}
 
 export default class Placeholder {
 	plugin: PersianCalendarPlugin;
@@ -74,7 +125,10 @@ export default class Placeholder {
 			? this.buildContext(activeFile)
 			: { currentDate: todayTehran(), fileDate: null, fileName: "", baseDate: "" as TDateFormat };
 
-		return Array.from(this.getPlaceholderMap(context).keys());
+		return [
+			...Array.from(this.getPlaceholderMap(context).keys()),
+			...WEEKDAY_PLACEHOLDER_SUGGESTIONS,
+		];
 	}
 
 	public async getTemplateContent(templatePath: string, targetFile: TFile): Promise<string | null> {
@@ -121,7 +175,88 @@ export default class Placeholder {
 			result = result.replace(this.getOrCreatePattern(placeholder), String(value));
 		}
 
-		return result;
+		return this.processWeekdayPlaceholders(context, result);
+	}
+
+	private resolveWeekStartDate(context: TBuildContext): CalendarDate | null {
+		const calculator = getWeekStartCalculator(this.plugin.setting.weekCalculation);
+
+		if (context.fileDate) {
+			const { jy: weekYear, weekNumber } = calculator.getWeekNumber(context.fileDate, "sat");
+			const { gy, gm, gd } = calculator.getStartOfWeek(weekYear, weekNumber, "sat");
+			return gregorianToCalendarDate(gy, gm, gd);
+		}
+
+		if (isWeekFormat(context.fileName)) {
+			const weekProps = extractWeekFormat(context.fileName);
+			if (!weekProps || weekProps.week < 1 || weekProps.week > 53) return null;
+
+			const { gy, gm, gd } = calculator.getStartOfWeek(weekProps.year, weekProps.week, "sat");
+			return gregorianToCalendarDate(gy, gm, gd);
+		}
+
+		return null;
+	}
+
+	private formatWeekdayDate(
+		dayDate: CalendarDate,
+		pathBuilder: NotePathBuilder,
+		format?: string,
+	): string | null {
+		const targetFormat =
+			format ||
+			this.plugin.setting.dailyNoteFormat?.trim() ||
+			(this.plugin.setting.dateFormat === "jalali" ? "jYYYY-jMM-jDD" : "YYYY-MM-DD");
+
+		const { jy, jm, jd } = dateToJalali(dayDate);
+		const { gy, gm, gd } = dateToGregorian(dayDate);
+		const week = getWeekStartCalculator(this.plugin.setting.weekCalculation).getWeekNumber(
+			dayDate,
+			"sat",
+		).weekNumber;
+
+		const engineContext = pathBuilder.buildEngineContext({
+			jy,
+			jm,
+			jd,
+			gy,
+			gm,
+			gd,
+			week,
+		});
+
+		try {
+			return formatPattern(targetFormat, engineContext);
+		} catch {
+			return null;
+		}
+	}
+
+	private processWeekdayPlaceholders(context: TBuildContext, content: string): string {
+		if (!content.includes("{{")) return content;
+
+		const weekStartDate = this.resolveWeekStartDate(context);
+		if (!weekStartDate) return content;
+
+		const pathBuilder = new NotePathBuilder(this.plugin);
+
+		return content.replace(
+			WEEKDAY_PLACEHOLDER_REGEX,
+			(fullMatch, rawDay: string, rawFormat?: string) => {
+				const offset = WEEKDAY_PLACEHOLDER_OFFSETS[normalizeWeekdayKey(rawDay)];
+				if (offset === undefined) return fullMatch;
+
+				let format: string | undefined;
+				if (rawFormat !== undefined) {
+					format = rawFormat.trim();
+					if (!format) return fullMatch;
+				}
+
+				const targetDate = addCalendarDays(weekStartDate, offset);
+				const formatted = this.formatWeekdayDate(targetDate, pathBuilder, format);
+				return formatted ?? fullMatch;
+			},
+		);
 	}
 
 	private resolveJalaliFromContext(ctx: TDateEngineContext): TJalali | null {
@@ -408,10 +543,15 @@ export default class Placeholder {
 	public toProvider(): TSuggestProvider {
 		return {
 			trigger: /\{\{[^}]*$/,
-			getSuggestions: (query: string) =>
-				this.getAllPlaceholderKeys().filter((key) =>
-					key.replace(/^\{\{|\}\}$/g, "").includes(query),
-				),
+			getSuggestions: (query: string) => {
+				const normalizedQuery = query.toLowerCase();
+				return this.getAllPlaceholderKeys().filter((key) =>
+					key
+						.replace(/^\{\{|\}\}$/g, "")
+						.toLowerCase()
+						.includes(normalizedQuery),
+				);
+			},
 			onSelect: (value: string) => value,
 		};
 	}

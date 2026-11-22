@@ -448,3 +448,254 @@ describe("dashToCalendarDate calendar detection", () => {
 		expect(dashToCalendarDate("1403-07-31", "jalali")).toBeNull(); // Mehr has 30 days
 	});
 });
+
+describe("Issue #106: Weekday date placeholders for weekly and daily templates", () => {
+	it("resolves all 7 English weekday placeholders with Jalali format in a weekly note", async () => {
+		// 1404-W01 under jalali-first-week-start: Saturday 1404-01-02 (2025-03-22) .. Friday 1404-01-08 (2025-03-28)
+		const templatePath = "Templates/WeeklyTemplate.md";
+		const template = [
+			"![[{{saturday:jYYYY-jMM-jDD}}]]",
+			"![[{{sunday:jYYYY-jMM-jDD}}]]",
+			"![[{{monday:jYYYY-jMM-jDD}}]]",
+			"![[{{tuesday:jYYYY-jMM-jDD}}]]",
+			"![[{{wednesday:jYYYY-jMM-jDD}}]]",
+			"![[{{thursday:jYYYY-jMM-jDD}}]]",
+			"![[{{friday:jYYYY-jMM-jDD}}]]",
+		].join("\n");
+
+		const { placeholder } = createMockPlugin(
+			{
+				dateFormat: "jalali",
+				dailyNoteFormat: "jYYYY-jMM-jDD",
+				weekCalculation: "jalali-first-week-start",
+				weeklyTemplatePath: templatePath,
+			},
+			{ [templatePath]: template },
+		);
+
+		const weeklyFile = Object.assign(new TFile(), {
+			path: "Journal/1404/Weekly/1404-W01.md",
+			basename: "1404-W01",
+		});
+
+		const resolved = await placeholder.getTemplateContent(templatePath, weeklyFile);
+		expect(resolved).toBe(
+			[
+				"![[1404-01-02]]",
+				"![[1404-01-03]]",
+				"![[1404-01-04]]",
+				"![[1404-01-05]]",
+				"![[1404-01-06]]",
+				"![[1404-01-07]]",
+				"![[1404-01-08]]",
+			].join("\n"),
+		);
+	});
+
+	it("supports Gregorian, custom, and literal-escaped formats as well as case-insensitive weekday names", () => {
+		const { placeholder } = createMockPlugin({
+			weekCalculation: "jalali-first-week-start",
+		});
+
+		const weeklyFile = Object.assign(new TFile(), {
+			path: "1404-W01.md",
+			basename: "1404-W01",
+		});
+
+		const content = [
+			"{{Saturday:YYYY-MM-DD}}",
+			"{{SUNDAY:jYYYY/jMM/jDD}}",
+			"{{monday:[Daily] jDD jMMMM jYYYY}}",
+			"{{FRIDAY:YYYY-MM-DD (DDDD)}}",
+		].join("\n");
+
+		expect(placeholder.processPlaceholders(weeklyFile, content)).toBe(
+			["2025-03-22", "1404/01/03", "Daily 04 Farvardin 1404", "2025-03-28 (Friday)"].join("\n"),
+		);
+	});
+
+	it("supports Persian weekday names with and without ZWNJ and optional format", () => {
+		const { placeholder } = createMockPlugin({
+			dateFormat: "jalali",
+			dailyNoteFormat: "jYYYY-jMM-jDD",
+			weekCalculation: "jalali-first-week-start",
+		});
+
+		const weeklyFile = Object.assign(new TFile(), {
+			path: "1404-W01.md",
+			basename: "1404-W01",
+		});
+
+		const content = [
+			"{{شنبه}}",
+			"{{یکشنبه}}",
+			"{{یک‌شنبه:jYYYY/jMM/jDD}}",
+			"{{دوشنبه}}",
+			"{{سه‌شنبه}}",
+			"{{سه شنبه:YYYY-MM-DD}}",
+			"{{چهارشنبه}}",
+			"{{پنج‌شنبه}}",
+			"{{پنجشنبه:jYYYY/jMM/jDD}}",
+			"{{جمعه}}",
+		].join("\n");
+
+		expect(placeholder.processPlaceholders(weeklyFile, content)).toBe(
+			[
+				"1404-01-02",
+				"1404-01-03",
+				"1404/01/03",
+				"1404-01-04",
+				"1404-01-05",
+				"2025-03-25",
+				"1404-01-06",
+				"1404-01-07",
+				"1404/01/07",
+				"1404-01-08",
+			].join("\n"),
+		);
+	});
+
+	it("uses dailyNoteFormat when format is omitted and falls back to dateFormat when dailyNoteFormat is empty", () => {
+		const weeklyFile = Object.assign(new TFile(), {
+			path: "1404-W01.md",
+			basename: "1404-W01",
+		});
+
+		const { placeholder: withDailyFormat } = createMockPlugin({
+			dateFormat: "jalali",
+			dailyNoteFormat: "jYYYY.jMM.jDD",
+			weekCalculation: "jalali-first-week-start",
+		});
+		expect(withDailyFormat.processPlaceholders(weeklyFile, "{{saturday}} | {{friday}}")).toBe(
+			"1404.01.02 | 1404.01.08",
+		);
+
+		const { placeholder: fallbackJalali } = createMockPlugin({
+			dateFormat: "jalali",
+			dailyNoteFormat: "",
+			weekCalculation: "jalali-first-week-start",
+		});
+		expect(fallbackJalali.processPlaceholders(weeklyFile, "{{saturday}}")).toBe("1404-01-02");
+
+		const { placeholder: fallbackGregorian } = createMockPlugin({
+			dateFormat: "gregorian",
+			dailyNoteFormat: "",
+			weekCalculation: "jalali-first-week-start",
+		});
+		expect(fallbackGregorian.processPlaceholders(weeklyFile, "{{saturday}}")).toBe("2025-03-22");
+	});
+
+	it("handles Jalali year-boundary week under jalali-first-day-of-year", () => {
+		// 1404-01-01 is Friday (2025-03-21), so week 1 starts Saturday 1403-12-25 (2025-03-15)
+		const { placeholder } = createMockPlugin({
+			weekCalculation: "jalali-first-day-of-year",
+		});
+
+		const weeklyFile = Object.assign(new TFile(), {
+			path: "1404-W01.md",
+			basename: "1404-W01",
+		});
+
+		expect(
+			placeholder.processPlaceholders(
+				weeklyFile,
+				"{{saturday:jYYYY-jMM-jDD}} .. {{friday:jYYYY-jMM-jDD}}",
+			),
+		).toBe("1403-12-25 .. 1404-01-01");
+	});
+
+	it("handles Gregorian week calculation modes and formats Jalali dates accurately", () => {
+		// 2025-01-01 is Wednesday; first Saturday of 2025 is 2025-01-04 (1403-10-15)
+		const { placeholder: firstWeekStart } = createMockPlugin({
+			weekCalculation: "gregorian-first-week-start",
+		});
+		const gWeekly = Object.assign(new TFile(), {
+			path: "2025-W01.md",
+			basename: "2025-W01",
+		});
+		expect(
+			firstWeekStart.processPlaceholders(
+				gWeekly,
+				"{{saturday:YYYY-MM-DD}} ({{saturday:jYYYY-jMM-jDD}}) .. {{friday:YYYY-MM-DD}}",
+			),
+		).toBe("2025-01-04 (1403-10-15) .. 2025-01-10");
+
+		// Under gregorian-first-day-of-year, week containing 2025-01-01 starts Saturday 2024-12-28 (1403-10-08)
+		const { placeholder: firstDayOfYear } = createMockPlugin({
+			weekCalculation: "gregorian-first-day-of-year",
+		});
+		expect(
+			firstDayOfYear.processPlaceholders(
+				gWeekly,
+				"{{saturday:YYYY-MM-DD}} ({{saturday:jYYYY-jMM-jDD}}) .. {{friday:YYYY-MM-DD}}",
+			),
+		).toBe("2024-12-28 (1403-10-08) .. 2025-01-03");
+	});
+
+	it("resolves weekday placeholders inside daily notes relative to the daily note's week", () => {
+		// 1404-01-05 is Tuesday of 1404-W01 (Saturday 1404-01-02 .. Friday 1404-01-08)
+		const { placeholder } = createMockPlugin({
+			dateFormat: "jalali",
+			dailyNoteFormat: "jYYYY-jMM-jDD",
+			weekCalculation: "jalali-first-week-start",
+		});
+
+		const dailyFile = Object.assign(new TFile(), {
+			path: "1404-01-05.md",
+			basename: "1404-01-05",
+		});
+
+		expect(
+			placeholder.processPlaceholders(
+				dailyFile,
+				"{{saturday:jYYYY-jMM-jDD}} | {{tuesday:jYYYY-jMM-jDD}} | {{friday:jYYYY-jMM-jDD}}",
+			),
+		).toBe("1404-01-02 | 1404-01-05 | 1404-01-08");
+	});
+
+	it("leaves weekday placeholders untouched in non-dated/non-weekly notes and ignores unknown or empty formats", () => {
+		const { placeholder } = createMockPlugin({
+			weekCalculation: "jalali-first-week-start",
+		});
+
+		const regularFile = Object.assign(new TFile(), {
+			path: "Projects/MyProject.md",
+			basename: "MyProject",
+		});
+		expect(placeholder.processPlaceholders(regularFile, "{{saturday:jYYYY-jMM-jDD}}")).toBe(
+			"{{saturday:jYYYY-jMM-jDD}}",
+		);
+
+		const monthlyFile = Object.assign(new TFile(), {
+			path: "1404-01.md",
+			basename: "1404-01",
+		});
+		expect(placeholder.processPlaceholders(monthlyFile, "{{saturday:jYYYY-jMM-jDD}}")).toBe(
+			"{{saturday:jYYYY-jMM-jDD}}",
+		);
+
+		const weeklyFile = Object.assign(new TFile(), {
+			path: "1404-W01.md",
+			basename: "1404-W01",
+		});
+		expect(
+			placeholder.processPlaceholders(
+				weeklyFile,
+				"{{unknown:jYYYY-jMM-jDD}} | {{saturday:}} | {{saturday:   }}",
+			),
+		).toBe("{{unknown:jYYYY-jMM-jDD}} | {{saturday:}} | {{saturday:   }}");
+	});
+
+	it("exposes weekday placeholders in autocomplete suggestions", () => {
+		const { placeholder } = createMockPlugin();
+		const keys = placeholder.getAllPlaceholderKeys();
+
+		expect(keys).toContain("{{saturday:jYYYY-jMM-jDD}}");
+		expect(keys).toContain("{{friday:jYYYY-jMM-jDD}}");
+		expect(keys).toContain("{{شنبه}}");
+		expect(keys).toContain("{{جمعه}}");
+
+		expect(placeholder.toProvider().getSuggestions("Sat")).toEqual(["{{saturday:jYYYY-jMM-jDD}}"]);
+		expect(placeholder.toProvider().getSuggestions("جمعه")).toEqual(["{{جمعه}}"]);
+	});
+});

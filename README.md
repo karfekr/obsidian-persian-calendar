@@ -145,6 +145,7 @@ _Work in daily notes and weekly notes._
 | `{{شماره هفته یادداشت}}` | 9                               | Note's week number according to the week calculation setting |
 | `{{اول هفته}}`           | 2026-02-14                      | Start date of the week (Gregorian)                           |
 | `{{آخر هفته}}`           | 2026-02-20                      | End date of the week (Gregorian)                             |
+| `{{saturday:jYYYY-jMM-jDD}}` … `{{friday:jYYYY-jMM-jDD}}` | 1404-11-25 … 1404-12-01 | Date of each weekday in the week using any supported date format token (also works with Persian weekday names like `{{شنبه}}` or `{{شنبه:jYYYY-jMM-jDD}}`; omits `:format` to use the configured daily note format) |
 
 </div>
 
