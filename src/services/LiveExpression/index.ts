@@ -39,20 +39,7 @@ export const LIVE_EXPRESSION_PATTERN = /\{#([^{}#]+)\}/g;
 const SKIPPED_TAG_NAMES = new Set(["CODE", "PRE", "SCRIPT", "STYLE", "TEXTAREA", "INPUT"]);
 
 const SEASON_EMOJIS = ["🌸", "☀️", "🍂", "❄️"] as const;
-const MONTH_EMOJIS = [
-	"🌷",
-	"🌺",
-	"🌻",
-	"🌞",
-	"🍇",
-	"🍂",
-	"🍁",
-	"🌧️",
-	"❄️",
-	"⛄",
-	"🌨️",
-	"🌸",
-] as const;
+const MONTH_EMOJIS = ["🌷", "🌺", "🌻", "🌞", "🍇", "🍂", "🍁", "🌧️", "❄️", "⛄", "🌨️", "🌸"] as const;
 const DAY_EMOJIS = ["📅", "📆", "📋", "📊", "📈", "🎉", "🕌"] as const;
 
 const SECOND_CADENCE_KEYS = new Set<string>([
