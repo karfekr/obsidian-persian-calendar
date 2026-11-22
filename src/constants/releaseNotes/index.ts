@@ -3,6 +3,23 @@ import type { TReleaseNote } from "src/types";
 //! ترتیب مهمه - جدیدترین ورژن ابتدا قرار میگیره
 export const RELEASE_NOTES: TReleaseNote[] = [
 	{
+		version: "5.0.0",
+		changes: {
+			fa: [
+				"امکان تعریف مناسبت‌های سفارشی از طریق یادداشت‌های ابسیدین",
+				"تغییر در رفتار مسیردهی داینامیک پوشه‌ها",
+				"تغییر ظاهر نوار بالای تقویم",
+				"دکمه‌ی بازگشت به ماه کنونی را میتوان در تنظیمات غیرفعال کرد",
+			],
+			en: [
+				"Added support for custom events through Obsidian notes",
+				"Breaking change in dynamic folder path syntax",
+				"Update Calendar Header Appearance",
+				"The button to return to the current month can be disabled in settings",
+			],
+		},
+	},
+	{
 		version: "4.13.0",
 		changes: {
 			fa: ["امکان باز کردن یادداشت‌ها از طریق منوی راست‌کلیک"],

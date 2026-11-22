@@ -1,20 +1,20 @@
-import type { TCompiledPattern, TTokenField } from "src/types";
+import type { TCompiledPattern, TPatternMode, TTokenField } from "src/types";
 import { tokenize } from "./tokenizer";
 import { defaultTokenRegistry } from "./tokens";
 import { escapeRegex } from "./utils";
 
 const compiledPatternCache = new Map<string, TCompiledPattern>();
 
-function cacheKey(pattern: string): string {
-	return `"en"::${pattern}`;
+function cacheKey(pattern: string, mode: TPatternMode): string {
+	return `"en"::${mode}::${pattern}`;
 }
 
-export function compilePattern(pattern: string): TCompiledPattern {
-	const key = cacheKey(pattern);
+export function compilePattern(pattern: string, mode: TPatternMode = "standard"): TCompiledPattern {
+	const key = cacheKey(pattern, mode);
 	const cached = compiledPatternCache.get(key);
 	if (cached) return cached;
 
-	const segments = tokenize(pattern, defaultTokenRegistry);
+	const segments = tokenize(pattern, defaultTokenRegistry, mode);
 	const fields: TTokenField[] = [];
 	let regexSource = "";
 
@@ -29,6 +29,7 @@ export function compilePattern(pattern: string): TCompiledPattern {
 
 	const compiled: TCompiledPattern = {
 		pattern,
+		mode,
 		locale: "en",
 		segments,
 		regex: new RegExp(`^${regexSource}$`),

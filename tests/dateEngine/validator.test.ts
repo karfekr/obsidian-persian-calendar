@@ -75,3 +75,22 @@ describe("validatePattern - non-fatal warnings", () => {
 		expect(result.errors.some((e) => e.type === "duplicate-field")).toBe(false);
 	});
 });
+
+describe("validatePattern - bracketed mode", () => {
+	it("accepts plain literal folder paths without flagging them as unknown tokens", () => {
+		expect(validatePattern("Journal/[jYYYY]/Daily", "bracketed")).toEqual({
+			valid: true,
+			errors: [],
+		});
+		expect(validatePattern("Daily", "bracketed")).toEqual({
+			valid: true,
+			errors: [],
+		});
+	});
+
+	it("still flags unrecognized letters inside brackets as unknown tokens", () => {
+		const result = validatePattern("Journal/[XXXX]/Daily", "bracketed");
+		expect(result.valid).toBe(false);
+		expect(result.errors.some((e) => e.type === "unknown-token" && e.token === "XXXX")).toBe(true);
+	});
+});

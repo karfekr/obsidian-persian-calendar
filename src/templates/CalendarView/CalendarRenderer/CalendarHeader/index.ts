@@ -4,7 +4,7 @@ import type { NoteService } from "src/services";
 import type CalendarState from "src/templates/CalendarView/CalendarState";
 import type { TSetting } from "src/types";
 import { jalaliMonthToRangeDash } from "src/utils/dashUtils";
-import { jalaliMonthName } from "src/utils/dateUtils";
+import { dateToJalali, jalaliMonthName, todayTehran } from "src/utils/dateUtils";
 import { toFaNumber } from "src/utils/formatters";
 
 import type CalendarNavigation from "../CalendarNavigation";
@@ -24,8 +24,13 @@ export default class CalendarHeaderRender {
 		});
 
 		const { jYearState, jMonthState } = this.calendarState.getJState();
+		const isFa = this.setting.language === "fa";
 
-		const additionalCalendarStateEl = headerEl.createDiv({
+		const headerTopEl = headerEl.createDiv({
+			cls: "persian-calendar__header-top",
+		});
+
+		const additionalCalendarStateEl = headerTopEl.createDiv({
 			cls: "persian-calendar__additional-calendar-state",
 		});
 
@@ -54,31 +59,59 @@ export default class CalendarHeaderRender {
 			hijriMonthYearEl.textContent = hijriMonthRange;
 		}
 
+		if (this.setting.showGoToCurrent) {
+			const today = dateToJalali(todayTehran());
+			const displayedMonth = jYearState * 12 + jMonthState;
+			const currentMonth = today.jy * 12 + today.jm;
+			const currentButton = headerTopEl.createEl("button", {
+				cls: [
+					"persian-calendar__go-current",
+					...(displayedMonth === currentMonth ? ["persian-calendar__go-current--hidden"] : []),
+				],
+			});
+
+			if (displayedMonth !== currentMonth) {
+				setIcon(currentButton, displayedMonth < currentMonth ? "step-forward" : "step-back");
+			}
+			currentButton.addEventListener("click", () => {
+				void this.navigation.goToToday();
+			});
+		}
+
 		const stateControlEl = headerEl.createDiv({
 			cls: "persian-calendar__state-control",
 		});
 
+		const previousEl = stateControlEl.createDiv({
+			cls: "persian-calendar__nav-previous",
+		});
+		this.createNavArrow(previousEl, "chevrons-right", () => {
+			this.navigation.changeYear("prev");
+		});
+
+		this.createNavArrow(previousEl, "chevron-right", () => {
+			this.navigation.changeMonth("prev");
+		});
+
 		const jalaliStateEl = stateControlEl.createDiv({
 			cls: "persian-calendar__jalali-state",
+			attr: { dir: "auto" },
 		});
 
 		const monthEl = jalaliStateEl.createSpan({
+			text: jalaliMonthName(jMonthState, this.setting.language),
 			cls: [
 				"persian-calendar__jmonth",
-				this.setting.language === "fa"
-					? "persian-calendar__jmonth--fa"
-					: "persian-calendar__jmonth--en",
+				isFa ? "persian-calendar__jmonth--fa" : "persian-calendar__jmonth--en",
 			],
 		});
 
 		const yearEl = jalaliStateEl.createSpan({
 			cls: [
 				"persian-calendar__jyear",
-				this.setting.language === "fa"
-					? "persian-calendar__jyear--fa"
-					: "persian-calendar__jyear--en",
+				isFa ? "persian-calendar__jyear--fa" : "persian-calendar__jyear--en",
 			],
-			text: this.setting.language === "fa" ? toFaNumber(jYearState) : String(jYearState),
+			text: isFa ? toFaNumber(jYearState) : String(jYearState),
 		});
 
 		yearEl.addEventListener("click", (e) => {
@@ -92,9 +125,6 @@ export default class CalendarHeaderRender {
 			});
 		});
 
-		const monthName = jalaliMonthName(jMonthState, this.setting.language);
-		monthEl.textContent = monthName;
-
 		monthEl.addEventListener("click", (e) => {
 			e.stopPropagation();
 			void this.notesService.openOrCreateMonthlyNote(jYearState, jMonthState);
@@ -106,35 +136,24 @@ export default class CalendarHeaderRender {
 			});
 		});
 
-		const navContainerEl = stateControlEl.createDiv({
-			cls: "persian-calendar__nav-container",
+		const nextEl = stateControlEl.createDiv({
+			cls: "persian-calendar__nav-next",
 		});
-
-		const prevMonthArrow = navContainerEl.createSpan({
-			cls: "persian-calendar__arrow",
-		});
-		setIcon(prevMonthArrow, "square-chevron-right");
-
-		prevMonthArrow.addEventListener("click", () => {
-			this.navigation.changeMonth("prev");
-		});
-
-		const currentButton = navContainerEl.createSpan({
-			cls: "persian-calendar__go-current",
-			text: t("current"),
-		});
-
-		currentButton.addEventListener("click", () => {
-			void this.navigation.goToToday();
-		});
-
-		const nextMonthArrow = navContainerEl.createSpan({
-			cls: "persian-calendar__arrow",
-		});
-		setIcon(nextMonthArrow, "square-chevron-left");
-
-		nextMonthArrow.addEventListener("click", () => {
+		this.createNavArrow(nextEl, "chevron-left", () => {
 			this.navigation.changeMonth("next");
 		});
+
+		this.createNavArrow(nextEl, "chevrons-left", () => {
+			this.navigation.changeYear("next");
+		});
+	}
+
+	private createNavArrow(containerEl: HTMLElement, icon: string, onClick: () => void) {
+		const arrowEl = containerEl.createSpan({
+			cls: "persian-calendar__arrow",
+		});
+		setIcon(arrowEl, icon);
+		arrowEl.addEventListener("click", onClick);
+		return arrowEl;
 	}
 }

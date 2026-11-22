@@ -1,3 +1,4 @@
+import { DEFAULT_SETTING } from "src/constants/setting";
 import type { TSetting, TWeekDays } from "src/types";
 import { defaultTokenRegistry, tokenize } from "src/utils/dateEngine";
 
@@ -23,8 +24,10 @@ const LEGACY_PATH_KEYS = [
 	"yearlyNotesPath",
 ] as const satisfies readonly (keyof TSetting)[];
 
+type TPathKey = (typeof LEGACY_PATH_KEYS)[number];
+
 export function migrateLegacyPathPattern(pattern: string): string {
-	const segments = tokenize(pattern, defaultTokenRegistry);
+	const segments = tokenize(pattern, defaultTokenRegistry, "standard");
 
 	return segments
 		.map((segment) => {
@@ -39,11 +42,41 @@ export function migrateLegacyPathPattern(pattern: string): string {
 		.join("");
 }
 
-export function migrateLegacyPathPatterns(setting: TSetting): TSetting {
+export function migrateLegacyPathPatterns(
+	setting: TSetting,
+	keys: readonly TPathKey[] = LEGACY_PATH_KEYS,
+): TSetting {
 	const migrated = { ...setting };
 
-	for (const key of LEGACY_PATH_KEYS) {
+	for (const key of keys) {
 		migrated[key] = migrateLegacyPathPattern(migrated[key]);
+	}
+
+	return migrated;
+}
+
+export function migrateV4PathPatternToV5(pattern: string): string {
+	const segments = tokenize(pattern, defaultTokenRegistry, "standard");
+
+	return segments
+		.map((segment) => {
+			if (segment.type === "literal") {
+				return segment.value;
+			}
+
+			return `[${segment.token.token}]`;
+		})
+		.join("");
+}
+
+export function migrateV4PathPatternsToV5(
+	setting: TSetting,
+	keys: readonly TPathKey[] = LEGACY_PATH_KEYS,
+): TSetting {
+	const migrated = { ...setting };
+
+	for (const key of keys) {
+		migrated[key] = migrateV4PathPatternToV5(migrated[key]);
 	}
 
 	return migrated;
@@ -51,7 +84,7 @@ export function migrateLegacyPathPatterns(setting: TSetting): TSetting {
 
 type LegacyWeekendDays = "thursday-friday" | "friday" | "friday-saturday";
 
-type RawStoredSettings = Omit<Partial<TSetting>, "weekendDays"> & {
+export type RawStoredSettings = Omit<Partial<TSetting>, "weekendDays"> & {
 	weekendDays?: TWeekDays | LegacyWeekendDays;
 };
 
@@ -97,22 +130,37 @@ function migrateWeekendDays(rawStoredData: RawStoredSettings, merged: TSetting):
 	};
 }
 
-export function applySettingsMigrations(
-	rawStoredData: RawStoredSettings | null,
-	merged: TSetting,
-): TSetting {
-	let result = merged;
+export function applySettingsMigrations(rawStoredData: RawStoredSettings | null): TSetting {
+	const { weekendDays, ...stored } = rawStoredData ?? {};
+	let result = {
+		...DEFAULT_SETTING,
+		...stored,
+		...(typeof weekendDays === "object" ? { weekendDays } : {}),
+	};
 
-	if (rawStoredData?.legacyPathPatternsMigrated !== true) {
-		result = migrateLegacyPathPatterns(result);
+	if (rawStoredData === null) {
+		result.legacyPathPatternsMigrated = true;
+		result.bracketedPathPatternsMigrated = true;
+		return result;
+	}
+
+	const storedPathKeys = LEGACY_PATH_KEYS.filter((key) => rawStoredData[key] !== undefined);
+
+	if (rawStoredData.legacyPathPatternsMigrated !== true) {
+		result = migrateLegacyPathPatterns(result, storedPathKeys);
 		result.legacyPathPatternsMigrated = true;
 	}
 
-	if (rawStoredData && rawStoredData.dailyNoteFormat === undefined) {
+	if (rawStoredData.bracketedPathPatternsMigrated !== true) {
+		result = migrateV4PathPatternsToV5(result, storedPathKeys);
+		result.bracketedPathPatternsMigrated = true;
+	}
+
+	if (rawStoredData.dailyNoteFormat === undefined) {
 		result.dailyNoteFormat = result.dateFormat === "jalali" ? "jYYYY-jMM-jDD" : "YYYY-MM-DD";
 	}
 
-	result = migrateWeekendDays(rawStoredData ?? {}, result);
+	result = migrateWeekendDays(rawStoredData, result);
 
 	return result;
 }

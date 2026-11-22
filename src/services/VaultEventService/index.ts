@@ -1,87 +1,63 @@
-import { normalizePath, TFile } from "obsidian";
+import { normalizePath } from "obsidian";
 import type PersianCalendarPlugin from "src/main";
-import type { TCustomEvent, TVaultEventSource } from "src/types";
-import {
-	extractEventsFromFrontmatter,
-	matchesVaultSourcePath,
-	normalizeVaultPath,
-	parseVaultEventsNote,
-} from "src/utils/vaultEventUtils";
+import type { TCustomEvent } from "src/types";
+import { parseVaultEventsNote } from "src/utils/vaultEventUtils";
+
+function resolveNotePath(path: string): string {
+	const normalized = normalizePath(path.trim());
+	if (!normalized) return "";
+	return normalized.endsWith(".md") ? normalized : `${normalized}.md`;
+}
 
 export default class VaultEventService {
 	private cachedEvents: TCustomEvent[] = [];
+	private refreshVersion = 0;
 
 	constructor(private readonly plugin: PersianCalendarPlugin) {}
 
 	public getEvents(): TCustomEvent[] {
-		return this.cachedEvents;
+		return this.plugin.setting.showCustomEvents ? this.cachedEvents : [];
 	}
 
 	public isRelevantFile(filePath: string): boolean {
-		const sources = this.plugin.setting.vaultEventSources ?? [];
-		return sources.some((source) => {
-			if (!source.enabled) return false;
-			if (source.type === "frontmatter") {
-				return matchesVaultSourcePath(filePath, source.path);
-			}
-			const notePath = this.resolveNotePath(source.path);
-			return notePath !== "" && normalizeVaultPath(filePath) === notePath;
+		return this.plugin.setting.vaultEventSources.some(
+			(source) => source.enabled && resolveNotePath(source.path) === filePath,
+		);
+	}
+
+	public moveSources(oldPath: string, newPath: string, isFolder: boolean): boolean {
+		let moved = false;
+		const sources = this.plugin.setting.vaultEventSources.map((source) => {
+			const path = resolveNotePath(source.path);
+			const matches = isFolder ? path.startsWith(`${oldPath}/`) : path === oldPath;
+			if (!matches) return source;
+
+			moved = true;
+			return { ...source, path: newPath + path.slice(oldPath.length) };
 		});
-	}
-
-	private resolveNotePath(rawPath: string): string {
-		const normalized = normalizeVaultPath(rawPath);
-		if (!normalized) return "";
-		return normalized.endsWith(".md") ? normalized : `${normalized}.md`;
-	}
-
-	private getNoteFile(source: TVaultEventSource): TFile | null {
-		const notePath = this.resolveNotePath(source.path);
-		if (!notePath) return null;
-
-		const file = this.plugin.app.vault.getAbstractFileByPath(normalizePath(notePath));
-		return file instanceof TFile ? file : null;
+		if (moved) this.plugin.setting.vaultEventSources = sources;
+		return moved;
 	}
 
 	public async refresh(): Promise<void> {
-		const sources = (this.plugin.setting.vaultEventSources ?? []).filter(
-			(source) => source.enabled,
-		);
-		if (sources.length === 0) {
-			this.cachedEvents = [];
-			return;
-		}
-
-		const fallbackCalendar = this.plugin.setting.dateFormat;
-		const hasFrontmatterSources = sources.some((s) => s.type === "frontmatter");
-		const markdownFiles = hasFrontmatterSources ? this.plugin.app.vault.getMarkdownFiles() : [];
+		const version = ++this.refreshVersion;
+		const { vaultEventSources, hijriBase } = this.plugin.setting;
+		const { vault } = this.plugin.app;
 		const nextEvents: TCustomEvent[] = [];
 
-		for (const source of sources) {
-			if (source.type === "frontmatter") {
-				for (const file of markdownFiles) {
-					const frontmatter = this.plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-					if (!frontmatter) continue;
+		for (const source of vaultEventSources) {
+			if (!source.enabled) continue;
+			const file = vault.getFileByPath(resolveNotePath(source.path));
+			if (!file) continue;
 
-					nextEvents.push(
-						...extractEventsFromFrontmatter({
-							filePath: file.path,
-							fileBasename: file.basename,
-							frontmatter,
-							source,
-							fallbackCalendar,
-						}),
-					);
-				}
-			} else if (source.type === "note") {
-				const file = this.getNoteFile(source);
-				if (!file) continue;
-
-				const content = await this.plugin.app.vault.cachedRead(file);
-				nextEvents.push(...parseVaultEventsNote(content, source, fallbackCalendar));
+			try {
+				const content = await vault.cachedRead(file);
+				nextEvents.push(...parseVaultEventsNote(content, source, hijriBase));
+			} catch {
+				// A note can disappear during a read. Continue refreshing the other repositories.
 			}
 		}
 
-		this.cachedEvents = nextEvents;
+		if (version === this.refreshVersion) this.cachedEvents = nextEvents;
 	}
 }

@@ -46,6 +46,11 @@ export function getGeneralSettings(): SettingDefinitionItem[] {
 					control: { type: "toggle", key: "openDailyNoteOnStartup" },
 				},
 				{
+					name: t("setting.general.showGoToCurrent.name"),
+					desc: t("setting.general.showGoToCurrent.desc"),
+					control: { type: "toggle", key: "showGoToCurrent" },
+				},
+				{
 					name: t("setting.general.showSeasons.name"),
 					desc: t("setting.general.showSeasons.desc"),
 					control: { type: "toggle", key: "showSeasonalNotes" },

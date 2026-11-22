@@ -1,4 +1,10 @@
-import type { TPatternSegment, TTokenField, TValidationError, TValidationResult } from "src/types";
+import type {
+	TPatternMode,
+	TPatternSegment,
+	TTokenField,
+	TValidationError,
+	TValidationResult,
+} from "src/types";
 import { tokenize } from "./tokenizer";
 import { defaultTokenRegistry } from "./tokens";
 
@@ -7,7 +13,10 @@ function isNumericTokenSegment(segment: TPatternSegment): boolean {
 	return segment.token.regexFragment("en").startsWith("(\\d");
 }
 
-export function validatePattern(pattern: string): TValidationResult {
+export function validatePattern(
+	pattern: string,
+	mode: TPatternMode = "standard",
+): TValidationResult {
 	const errors: TValidationError[] = [];
 
 	if (!pattern || pattern.trim() === "") {
@@ -19,7 +28,7 @@ export function validatePattern(pattern: string): TValidationResult {
 		return { valid: false, errors };
 	}
 
-	const segments = tokenize(pattern, defaultTokenRegistry);
+	const segments = tokenize(pattern, defaultTokenRegistry, mode);
 
 	for (const segment of segments) {
 		if (segment.type !== "literal" || segment.escaped) continue;

@@ -6,6 +6,7 @@
 	.persian-calendar__hijri-day--corner,
 	.persian-calendar__hmonth-hyear,
 	.persian-calendar__seasons-row,
+	.persian-calendar__datepicker .persian-calendar__go-current,
 	.persian-calendar__week-numbers {
 		display: none;
 	}
@@ -27,24 +28,23 @@
 		grid-template-columns: 0 minmax(0, 1fr);
 	}
 
-	.persian-calendar__jalali-state {
-		align-items: start;
-		display: flex;
-		flex-direction: column-reverse;
-		padding-right: 0;
-	}
-
 	.persian-calendar__jmonth,
 	.persian-calendar__jyear {
 		font-size: 18px;
 	}
 
-	.persian-calendar__jmonth--en {
+	.persian-calendar__jmonth--en,
+	.persian-calendar__jyear--en {
 		font-size: 13px;
 	}
+}
 
-	.persian-calendar__go-current {
-		font-size: 12px;
-		padding: 3px 8px;
+@container persian-calendar (max-width: 200px) {
+	.persian-calendar__nav-previous {
+		flex-direction: column-reverse;
+	}
+
+	.persian-calendar__nav-next {
+		flex-direction: column;
 	}
 }

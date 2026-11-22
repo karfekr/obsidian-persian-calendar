@@ -25,7 +25,7 @@ describe("Weekly note path resolution", () => {
 		const { jy: weekYear, weekNumber } = calculator.getWeekNumber(
 			jalaliToCalendarDate(jalali.jy, jalali.jm, jalali.jd),
 		);
-		const start = new NotePathBuilder(makePlugin("YYYY/MMMM/jMM/ww")).buildWeeklyNotePath(
+		const start = new NotePathBuilder(makePlugin("[YYYY]/[MMMM]/[jMM]/[ww]")).buildWeeklyNotePath(
 			weekYear,
 			weekNumber,
 		);

@@ -39,6 +39,7 @@ files -`main.js`, `manifest.json` and `styles.css`- and move them to the followi
 - [Dynamic Paths](#dynamic_path)
 - [Quick Reference to Calendar Notes](#quick_reference)
 - [Placeholders](#placeholders)
+- [Custom Events](#custom_events)
 - [Using the Dedicated API](#api)
 - [Other Features](#other)
 
@@ -80,10 +81,13 @@ weekly note's configured week calculation (Jalali or Gregorian, and the selected
 They are useful for weekly note paths and can also be used in daily note paths to place a daily note
 under the corresponding week.
 
-The brackets tell the path resolver to treat the content as a literal/static name:
+In folder paths, plain text is treated literally by default, and brackets (`[...]`) mark dynamic placeholders to be evaluated:
 
-- Daily → interpreted as D + aily
-- [Daily] → interpreted literally as Daily
+- `Daily` → interpreted literally as `Daily`
+- `[D]aily` → interpreted as `D` + `aily` (e.g., `9aily`)
+- `Journal/[jYYYY]/Daily` → interpreted as `Journal/1404/Daily`
+
+In the daily note naming format, tokens (such as `YYYY-MM-DD` or `jYYYY-jMM-jDD`) are evaluated directly, and brackets escape literal text (e.g., `[Daily] YYYY-MM-DD`).
 
 ## <a name="quick_reference"></a> Quick Reference to Calendar Notes
 
@@ -229,6 +233,18 @@ today's date._
 | `{{روزهای باقیمانده ماه}}` | 2             | Days remaining until the end of the month     |
 
 </div>
+
+## <a name="custom_events"></a> Custom Event Repositories
+
+At the end of the **Event Display** section, click **Add Custom Events**. In the dialog that opens, select a note and save it.
+
+Define each event on a plain line using the format `Date | Title | Color | Holiday`. Dates must use ASCII digits and hyphens: `MM-DD` dates recur annually in the selected calendar, while `YYYY-MM-DD` dates appear only in the specified year.
+
+The color field is optional and determines the event's accent border color in the tooltip, based on the active Obsidian theme. Supported colors are `red`, `orange`, `yellow`, `green`, `cyan`, `blue`, `purple`, and `pink`. Omit it to use the default primary color; invalid colors are rejected.
+
+To mark an event as a holiday, enter `تعطیل` in the fourth field.
+
+To keep the default color while marking an event as a holiday, use the following format: `Date | Title | | تعطیل`.
 
 ## <a name="api"></a> Using the Dedicated API
 

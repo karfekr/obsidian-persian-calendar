@@ -41,6 +41,7 @@
 }
 
 .persian-calendar__tooltip-event--custom {
-	border-inline-start: 2px solid var(--persian-calendar-color-primary);
+	border-inline-start: 2px solid
+		var(--persian-calendar-tooltip-event-accent, var(--persian-calendar-color-primary));
 	padding-inline-start: 6px;
 }

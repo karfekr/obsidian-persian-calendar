@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-persian-calendar",
-	"version": "4.13.0",
+	"version": "5.0.0",
 	"description": "Persian/Jalali calendar integration featuring dynamic note paths, placeholders, API access, and event display.",
 	"license": "GPL-3.0-only",
 	"main": "main.js",
@@ -72,7 +72,7 @@
 	},
 	"packageManager": "pnpm@12.18.0+sha512.9d7882d5dc82147ecfc4e062aa34834e0ad0296710a1837a1115ae012127d36b7109e321ac1598a1dd0a65597681b1e99917e12ed0d749eae91187943363beb3",
 	"simple-git-hooks": {
-		"pre-commit": "pnpm run lint && git add -A",
+		"pre-commit": "pnpm run lint",
 		"pre-push": "pnpm run build && pnpm run test"
 	}
 }
