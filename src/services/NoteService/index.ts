@@ -315,15 +315,30 @@ export default class NoteService {
 		return file instanceof TFile ? file : null;
 	}
 
-	public async deleteDailyNote(jy: number, jm: number, jd: number) {
-		const file = this.getDailyNoteFile(jy, jm, jd);
-		if (!file) return;
+	public getMonthlyNoteFile(jy: number, jm: number): TFile | null {
+		const { filePath } = this.pathBuilder.buildMonthlyNotePath(jy, jm);
+		const file = this.app.vault.getAbstractFileByPath(filePath);
+		return file instanceof TFile ? file : null;
+	}
+
+	public getYearlyNoteFile(jy: number): TFile | null {
+		const { filePath } = this.pathBuilder.buildYearlyNotePath(jy);
+		const file = this.app.vault.getAbstractFileByPath(filePath);
+		return file instanceof TFile ? file : null;
+	}
+
+	private async deleteNoteWithConfirm(options: {
+		file: TFile;
+		confirmTitle: string;
+		confirmMessage: string;
+		errorNotice: string;
+	}) {
+		const { file, confirmTitle, confirmMessage, errorNotice } = options;
 
 		if (this.plugin.setting.askForDeleteNote) {
-			const { dateString } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
 			const confirmed = await createNoteModal(this.app, {
-				title: t("modal.deleteDailyNote.title"),
-				message: t("modal.deleteDailyNote.message").replace("{date}", dateString),
+				title: confirmTitle,
+				message: confirmMessage,
 			});
 
 			if (!confirmed) return;
@@ -333,8 +348,67 @@ export default class NoteService {
 			await this.app.fileManager.trashFile(file);
 			this.plugin.refreshViews();
 		} catch {
-			Notice(t("notice.error.dailyNoteDeleteFailed"));
+			Notice(errorNotice);
 		}
+	}
+
+	public async deleteDailyNote(jy: number, jm: number, jd: number) {
+		const file = this.getDailyNoteFile(jy, jm, jd);
+		if (!file) return;
+
+		const { dateString } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
+		await this.deleteNoteWithConfirm({
+			file,
+			confirmTitle: t("modal.deleteDailyNote.title"),
+			confirmMessage: t("modal.deleteDailyNote.message").replace("{date}", dateString),
+			errorNotice: t("notice.error.dailyNoteDeleteFailed"),
+		});
+	}
+
+	public async deleteWeeklyNote(jy: number, weekNumber: number) {
+		const file = this.getWeeklyNoteFile(jy, weekNumber);
+		if (!file) return;
+
+		const weekLabel = String(weekNumber).padStart(2, "0");
+		await this.deleteNoteWithConfirm({
+			file,
+			confirmTitle: t("modal.deleteWeeklyNote.title"),
+			confirmMessage: t("modal.deleteWeeklyNote.message")
+				.replace("{week}", weekLabel)
+				.replace("{year}", String(jy)),
+			errorNotice: t("notice.error.weeklyNoteDeleteFailed"),
+		});
+	}
+
+	public async deleteMonthlyNote(jy: number, jm: number) {
+		const file = this.getMonthlyNoteFile(jy, jm);
+		if (!file) return;
+
+		const { jMonthName } = this.pathBuilder.buildMonthlyNotePath(
+			jy,
+			jm,
+			this.plugin.setting.language,
+		);
+		await this.deleteNoteWithConfirm({
+			file,
+			confirmTitle: t("modal.deleteMonthlyNote.title"),
+			confirmMessage: t("modal.deleteMonthlyNote.message")
+				.replace("{month}", jMonthName)
+				.replace("{year}", String(jy)),
+			errorNotice: t("notice.error.monthlyNoteDeleteFailed"),
+		});
+	}
+
+	public async deleteYearlyNote(jy: number) {
+		const file = this.getYearlyNoteFile(jy);
+		if (!file) return;
+
+		await this.deleteNoteWithConfirm({
+			file,
+			confirmTitle: t("modal.deleteYearlyNote.title"),
+			confirmMessage: t("modal.deleteYearlyNote.message").replace("{year}", String(jy)),
+			errorNotice: t("notice.error.yearlyNoteDeleteFailed"),
+		});
 	}
 
 	public getDaysWithNotes(jy: number, jm: number): number[] {

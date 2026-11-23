@@ -47,8 +47,9 @@ export function openNoteContextMenu(
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item
-				.setTitle(t("calendarView.contextMenu.deleteDailyNote"))
+				.setTitle(t("calendarView.contextMenu.deleteNote"))
 				.setIcon("trash")
+				.setWarning(true)
 				.onClick(() => {
 					onDelete();
 				});

@@ -120,9 +120,18 @@ export default class CalendarHeaderRender {
 		});
 
 		yearEl.addEventListener("contextmenu", (e) => {
-			openNoteContextMenu(e, (openMode) => {
-				void this.notesService.openOrCreateYearlyNote(jYearState, openMode);
-			});
+			const file = this.notesService.getYearlyNoteFile(jYearState);
+			openNoteContextMenu(
+				e,
+				(openMode) => {
+					void this.notesService.openOrCreateYearlyNote(jYearState, openMode);
+				},
+				file
+					? () => {
+							void this.notesService.deleteYearlyNote(jYearState);
+						}
+					: undefined,
+			);
 		});
 
 		monthEl.addEventListener("click", (e) => {
@@ -131,9 +140,18 @@ export default class CalendarHeaderRender {
 		});
 
 		monthEl.addEventListener("contextmenu", (e) => {
-			openNoteContextMenu(e, (openMode) => {
-				void this.notesService.openOrCreateMonthlyNote(jYearState, jMonthState, openMode);
-			});
+			const file = this.notesService.getMonthlyNoteFile(jYearState, jMonthState);
+			openNoteContextMenu(
+				e,
+				(openMode) => {
+					void this.notesService.openOrCreateMonthlyNote(jYearState, jMonthState, openMode);
+				},
+				file
+					? () => {
+							void this.notesService.deleteMonthlyNote(jYearState, jMonthState);
+						}
+					: undefined,
+			);
 		});
 
 		const nextEl = stateControlEl.createDiv({

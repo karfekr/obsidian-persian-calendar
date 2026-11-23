@@ -256,6 +256,18 @@
 			"title": "Delete Daily Note",
 			"message": "Delete daily note for {date}?"
 		},
+		"deleteWeeklyNote": {
+			"title": "Delete Weekly Note",
+			"message": "Delete weekly note for week {week} of {year}?"
+		},
+		"deleteMonthlyNote": {
+			"title": "Delete Monthly Note",
+			"message": "Delete monthly note for {month} {year}?"
+		},
+		"deleteYearlyNote": {
+			"title": "Delete Yearly Note",
+			"message": "Delete yearly note for {year}?"
+		},
 		"datePicker": {
 			"tooltip": "Choose Jalali Date",
 			"jalali": "Jalali",
@@ -266,7 +278,10 @@
 		"error": {
 			"dailyNotesUnavailable": "Enable and configure Obsidian Daily Notes or the daily feature in Periodic Notes to use this integration.",
 			"dailyNoteCreationFailed": "Obsidian Daily Notes could not create the daily note. Check its folder and template settings.",
-			"dailyNoteDeleteFailed": "Failed to delete the daily note."
+			"dailyNoteDeleteFailed": "Failed to delete the daily note.",
+			"weeklyNoteDeleteFailed": "Failed to delete the weekly note.",
+			"monthlyNoteDeleteFailed": "Failed to delete the monthly note.",
+			"yearlyNoteDeleteFailed": "Failed to delete the yearly note."
 		},
 		"success": {
 			"placeholder": "Meaningful phrases replaced successfully",
@@ -278,7 +293,7 @@
 			"openInNewTab": "Open in new tab",
 			"openInHorizontalSplit": "Open in horizontal split view",
 			"openInVerticalSplit": "Open in vertical split view",
-			"deleteDailyNote": "Delete"
+			"deleteNote": "Delete"
 		},
 		"renderError": {
 			"title": "The calendar could not be displayed correctly",
