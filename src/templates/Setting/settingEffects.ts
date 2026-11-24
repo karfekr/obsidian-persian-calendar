@@ -117,13 +117,24 @@ export function createSettingChangeHandler(
 			debounceTimer = undefined;
 		}
 
+		const refreshLiveExpressionsImmediately =
+			settingKey === "liveExpressionNumeralLanguage" ||
+			settingKey === "liveExpressionOutputLanguage";
+		if (refreshLiveExpressionsImmediately) {
+			plugin.liveExpression?.refresh();
+		}
+
 		const refreshEvents =
 			settingKey === "vaultEventSources" || settingKey === "hijriBase"
 				? plugin.vaultEventService.refresh()
 				: undefined;
 		await Promise.all([plugin.saveSetting(), refreshEvents]);
 		plugin.refreshViews();
-		if (!refreshEvents && isLiveExpressionSetting(settingKey)) {
+		if (
+			!refreshEvents &&
+			!refreshLiveExpressionsImmediately &&
+			isLiveExpressionSetting(settingKey)
+		) {
 			plugin.liveExpression?.refresh();
 		}
 
