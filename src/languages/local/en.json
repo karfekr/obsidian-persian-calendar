@@ -305,5 +305,32 @@
 			"tokenLabel": "Unresolvable pattern:",
 			"hint": "Go to the plugin settings and check your note path patterns."
 		}
+	},
+	"noteNavigation": {
+		"previous": "Previous",
+		"next": "Next",
+		"daily": {
+			"label": "Daily Note",
+			"current": "Today"
+		},
+		"weekly": {
+			"label": "Weekly Note",
+			"current": "This Week",
+			"prev": "Prev Week",
+			"next": "Next Week"
+		},
+		"monthly": {
+			"label": "Monthly Note",
+			"current": "This Month"
+		},
+		"yearly": {
+			"label": "Yearly Note",
+			"current": "This Year",
+			"prev": "Prev Year",
+			"next": "Next Year",
+			"kicker": "Solar Hijri Year",
+			"leap": "Leap Year",
+			"days365": "365 days"
+		}
 	}
 }

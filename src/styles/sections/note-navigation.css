@@ -15,7 +15,7 @@
 
 	container-name: persian-calendar-note-nav;
 	container-type: inline-size;
-	direction: ltr;
+	direction: rtl;
 	flex: 0 0 auto;
 	padding: 10px 16px 6px;
 	width: 100%;
@@ -28,72 +28,39 @@
 	color: var(--pc-nav-text-primary);
 	display: flex;
 	flex-direction: column;
-	font-family: var(--pc-nav-font-sans);
-	gap: 14px;
-	padding: 14px 18px 16px;
+	gap: 12px;
+	padding: 12px 18px 14px;
 	user-select: none;
 	width: 100%;
+}
+
+.persian-calendar-note-nav[data-locale="fa"] .persian-calendar-note-nav__shell {
+	font-family: var(--pc-nav-font-fa);
+}
+
+.persian-calendar-note-nav[data-locale="en"] .persian-calendar-note-nav__shell {
+	font-family: var(--pc-nav-font-sans);
 }
 
 /* Top utility bar */
 .persian-calendar-note-nav__top-bar {
 	align-items: center;
 	border-bottom: 1px solid var(--pc-nav-border-subtle);
+	direction: rtl;
 	display: flex;
 	gap: 12px;
 	justify-content: space-between;
-	padding-bottom: 12px;
+	padding-bottom: 10px;
 }
 
-.persian-calendar-note-nav__mode-tabs {
-	align-items: center;
-	background: var(--pc-nav-bg-elevated);
-	border: 1px solid var(--pc-nav-border-subtle);
-	border-radius: 9px;
-	display: inline-flex;
-	gap: 2px;
-	padding: 3px;
+.persian-calendar-note-nav[data-locale="en"] .persian-calendar-note-nav__top-bar {
+	direction: ltr;
 }
 
-.persian-calendar-note-nav button.persian-calendar-note-nav__mode-tab {
-	align-items: center;
-	appearance: none;
-	background: transparent;
-	border: none;
-	border-radius: 6px;
-	box-shadow: none;
+.persian-calendar-note-nav__type-badge {
 	color: var(--pc-nav-text-secondary);
-	cursor: pointer;
-	display: inline-flex;
-	font-family: var(--pc-nav-font-sans);
 	font-size: 12px;
-	font-weight: 500;
-	gap: 6px;
-	height: auto;
-	line-height: 1.3;
-	margin: 0;
-	padding: 5px 11px;
-	transition:
-		background 0.16s ease,
-		color 0.16s ease;
-}
-
-.persian-calendar-note-nav button.persian-calendar-note-nav__mode-tab:hover {
-	background: var(--pc-nav-bg-hover);
-	color: var(--pc-nav-text-primary);
-}
-
-.persian-calendar-note-nav button.persian-calendar-note-nav__mode-tab.is-active {
-	background: var(--pc-nav-bg-active);
-	box-shadow: inset 0 0 0 1px var(--pc-nav-border-accent);
-	color: var(--pc-nav-accent-soft);
-	cursor: default;
-}
-
-.persian-calendar-note-nav__fa-label {
-	font-family: var(--pc-nav-font-fa);
-	font-size: 11.5px;
-	opacity: 0.78;
+	font-weight: 600;
 }
 
 .persian-calendar-note-nav__top-actions {
@@ -112,7 +79,7 @@
 	color: var(--pc-nav-text-secondary);
 	cursor: pointer;
 	display: inline-flex;
-	font-family: var(--pc-nav-font-sans);
+	font-family: inherit;
 	font-size: 12px;
 	font-weight: 500;
 	gap: 6px;
@@ -142,18 +109,35 @@
 	width: 6px;
 }
 
-.persian-calendar-note-nav__today-fa {
-	font-size: 11.5px;
-	opacity: 0.8;
-}
-
-/* Main 3-column navigation stage */
+/* Main 3-column navigation stage — ALWAYS RTL: Previous on Right, Next on Left */
 .persian-calendar-note-nav__stage {
 	align-items: center;
+	direction: rtl;
 	display: grid;
 	gap: 8px;
+	grid-template-areas: "prev-slot prev-btn center next-btn next-slot";
 	grid-template-columns: 1fr 32px minmax(220px, 1.35fr) 32px 1fr;
-	min-height: 88px;
+	min-height: 84px;
+}
+
+.persian-calendar-note-nav__area-prev-slot {
+	grid-area: prev-slot;
+}
+
+.persian-calendar-note-nav__area-prev-btn {
+	grid-area: prev-btn;
+}
+
+.persian-calendar-note-nav__area-center {
+	grid-area: center;
+}
+
+.persian-calendar-note-nav__area-next-btn {
+	grid-area: next-btn;
+}
+
+.persian-calendar-note-nav__area-next-slot {
+	grid-area: next-slot;
 }
 
 .persian-calendar-note-nav button.persian-calendar-note-nav__chevron-btn {
@@ -180,8 +164,10 @@
 	color: var(--pc-nav-text-primary);
 }
 
-.persian-calendar-note-nav button.persian-calendar-note-nav__chevron-btn svg {
+/* Prevent Obsidian's .mod-rtl from flipping our explicit directional chevrons */
+.persian-calendar-note-nav button.persian-calendar-note-nav__chevron-btn > svg.svg-icon {
 	height: 15px;
+	transform: none;
 	width: 15px;
 }
 
@@ -198,6 +184,10 @@
 	transition:
 		background 0.16s ease,
 		border-color 0.16s ease;
+}
+
+.persian-calendar-note-nav[data-locale="en"] .persian-calendar-note-nav__slot {
+	direction: ltr;
 }
 
 .persian-calendar-note-nav button.persian-calendar-note-nav__slot--side {
@@ -221,24 +211,14 @@
 	color: var(--pc-nav-text-muted);
 	font-size: 11px;
 	font-weight: 500;
-	letter-spacing: 0.01em;
 }
 
 .persian-calendar-note-nav__slot-main {
 	color: var(--pc-nav-text-secondary);
-	font-size: 20px;
+	font-size: 19px;
 	font-variant-numeric: tabular-nums;
 	font-weight: 600;
 	line-height: 1.25;
-}
-
-.persian-calendar-note-nav__slot-main--fa-primary {
-	font-size: 17px;
-}
-
-.persian-calendar-note-nav__slot-main-fa {
-	font-size: 15px;
-	font-weight: 500;
 }
 
 .persian-calendar-note-nav__slot-sub {
@@ -284,7 +264,6 @@
 	display: inline-flex;
 	font-size: 10.5px;
 	font-weight: 600;
-	gap: 4px;
 	padding: 1px 7px;
 }
 
@@ -297,36 +276,13 @@
 	margin: 2px 0;
 }
 
-.persian-calendar-note-nav__center-num {
+.persian-calendar-note-nav__center-title {
 	color: var(--pc-nav-text-primary);
-	font-size: 28px;
+	font-size: 24px;
 	font-variant-numeric: tabular-nums;
 	font-weight: 700;
-	letter-spacing: -0.02em;
-	line-height: 1.15;
-}
-
-.persian-calendar-note-nav__center-num--secondary {
-	color: var(--pc-nav-text-secondary);
-	font-size: 20px;
-	font-weight: 600;
-}
-
-.persian-calendar-note-nav__center-fa {
-	color: var(--pc-nav-text-primary);
-	direction: rtl;
-	font-family: var(--pc-nav-font-fa);
-	font-size: 18px;
-	font-weight: 600;
-	unicode-bidi: isolate;
-}
-
-.persian-calendar-note-nav__center-fa--week {
-	font-size: 19px;
-}
-
-.persian-calendar-note-nav__center-fa--month {
-	font-size: 22px;
+	letter-spacing: -0.01em;
+	line-height: 1.25;
 }
 
 .persian-calendar-note-nav__center-sub {
@@ -347,10 +303,11 @@
 	width: 3px;
 }
 
-/* Secondary contextual strip */
+/* Secondary contextual strip — ALWAYS RTL to match sidebar calendar */
 .persian-calendar-note-nav__sub-strip {
 	align-items: center;
 	border-top: 1px solid var(--pc-nav-border-subtle);
+	direction: rtl;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 4px;
@@ -368,7 +325,7 @@
 	color: var(--pc-nav-text-secondary);
 	cursor: pointer;
 	display: inline-flex;
-	font-family: var(--pc-nav-font-sans);
+	font-family: inherit;
 	font-size: 11.5px;
 	font-weight: 500;
 	gap: 5px;
@@ -377,6 +334,10 @@
 	margin: 0;
 	padding: 5px 10px;
 	transition: all 0.14s ease;
+}
+
+.persian-calendar-note-nav[data-locale="en"] button.persian-calendar-note-nav__strip-chip {
+	direction: ltr;
 }
 
 .persian-calendar-note-nav button.persian-calendar-note-nav__strip-chip:hover {
@@ -391,22 +352,10 @@
 	color: var(--pc-nav-accent-soft);
 }
 
-.persian-calendar-note-nav__strip-chip-fa {
-	font-family: var(--pc-nav-font-fa);
-	font-size: 11.5px;
-}
-
 .persian-calendar-note-nav__strip-chip-num {
-	font-family: var(--pc-nav-font-fa);
 	font-size: 11px;
 	font-variant-numeric: tabular-nums;
 	opacity: 0.72;
-}
-
-.persian-calendar-note-nav__fa-text {
-	direction: rtl;
-	font-family: var(--pc-nav-font-fa);
-	unicode-bidi: isolate;
 }
 
 @container persian-calendar-note-nav (max-width: 640px) {
@@ -415,6 +364,7 @@
 	}
 
 	.persian-calendar-note-nav__stage {
+		grid-template-areas: "prev-btn center next-btn";
 		grid-template-columns: 28px 1fr 28px;
 	}
 

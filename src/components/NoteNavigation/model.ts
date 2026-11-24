@@ -1,6 +1,17 @@
 import type { CalendarDate } from "@internationalized/date";
-import { JALALI_MONTHS_NAME, SEASONS_NAME, WEEKDAYS_NAME } from "src/constants";
-import type { TGregorian, TNoteNavMode, TPeriodicNoteInfo, TWeekCalculationMode } from "src/types";
+import {
+	GREGORIAN_MONTHS_NAME,
+	JALALI_MONTHS_NAME,
+	SEASONS_NAME,
+	WEEKDAYS_NAME,
+} from "src/constants";
+import type {
+	TGregorian,
+	TLocale,
+	TNoteNavMode,
+	TPeriodicNoteInfo,
+	TWeekCalculationMode,
+} from "src/types";
 import {
 	addCalendarDays,
 	checkKabiseh,
@@ -20,43 +31,36 @@ export type TNoteNavTarget =
 	| { mode: "yearly"; jy: number };
 
 export type TNoteNavSideSlot = {
-	kickerEn?: string;
-	kickerFa?: string;
-	mainEn?: string;
-	mainFa?: string;
-	mainIsFaPrimary?: boolean;
-	subEn?: string;
-	subFa?: string;
+	kicker?: string;
+	main: string;
+	sub?: string;
 	target: TNoteNavTarget;
 };
 
 export type TNoteNavCenterSlot = {
-	kickerEn: string;
-	kickerFa?: string;
-	currentPillEn?: string;
-	currentPillFa?: string;
-	mainNum?: string;
-	mainNumIsSecondary?: boolean;
-	mainFa?: string;
-	mainFaSize?: "default" | "week" | "month";
-	mainOrder?: "num-first" | "fa-first";
+	kicker: string;
+	currentPill?: string;
+	main: string;
 	subItems: string[];
 };
 
 export type TNoteNavStripChip = {
-	en?: string;
-	fa?: string;
+	label: string;
 	num?: string;
-	title?: string;
+	title: string;
 	active: boolean;
 	target: TNoteNavTarget;
 };
 
 export type TNoteNavModel = {
 	mode: TNoteNavMode;
+	locale: TLocale;
 	isCurrent: boolean;
+	noteTypeLabel: string;
+	currentButtonLabel: string;
+	prevLabel: string;
+	nextLabel: string;
 	todayTarget: TNoteNavTarget;
-	modeTargets: Record<TNoteNavMode, TNoteNavTarget>;
 	prev: TNoteNavSideSlot;
 	center: TNoteNavCenterSlot;
 	next: TNoteNavSideSlot;
@@ -98,18 +102,42 @@ const EN_G_MONTHS_SHORT = [
 	"Dec",
 ] as const;
 
-function formatGShort(g: TGregorian): string {
+function formatNum(value: number, locale: TLocale): string {
+	return locale === "fa" ? toFaNumber(value) : String(value);
+}
+
+function formatGDate(g: TGregorian, locale: TLocale): string {
+	if (locale === "fa") {
+		return `${toFaNumber(g.gd)} ${GREGORIAN_MONTHS_NAME.fa[g.gm]} ${toFaNumber(g.gy)}`;
+	}
 	return `${EN_G_MONTHS_SHORT[g.gm - 1]} ${g.gd}, ${g.gy}`;
+}
+
+function formatGRange(start: TGregorian, end: TGregorian, locale: TLocale): string {
+	if (locale === "fa") {
+		if (start.gm === end.gm) {
+			return `${toFaNumber(start.gd)} تا ${toFaNumber(end.gd)} ${GREGORIAN_MONTHS_NAME.fa[start.gm]}`;
+		}
+		return `${toFaNumber(start.gd)} ${GREGORIAN_MONTHS_NAME.fa[start.gm]} تا ${toFaNumber(end.gd)} ${GREGORIAN_MONTHS_NAME.fa[end.gm]}`;
+	}
+	if (start.gm === end.gm) {
+		return `${EN_G_MONTHS_SHORT[start.gm - 1]} ${start.gd}–${end.gd}`;
+	}
+	return `${EN_G_MONTHS_SHORT[start.gm - 1]} ${start.gd} – ${EN_G_MONTHS_SHORT[end.gm - 1]} ${end.gd}`;
 }
 
 export function buildNoteNavigationModel(
 	info: TPeriodicNoteInfo,
 	weekCalculation: TWeekCalculationMode,
 	today: CalendarDate,
+	locale: TLocale = "fa",
 ): TNoteNavModel {
 	const calculator = getWeekStartCalculator(weekCalculation);
 	const todayJalali = dateToJalali(today);
 	const todayWeek = calculator.getWeekNumber(today);
+	const isFa = locale === "fa";
+	const prevLabel = isFa ? "قبلی" : "Previous";
+	const nextLabel = isFa ? "بعدی" : "Next";
 
 	if (info.type === "daily") {
 		const { jy, jm, jd } = info;
@@ -130,43 +158,37 @@ export function buildNoteNavigationModel(
 
 		const wk = calculator.getWeekNumber(selectedDate);
 		const isCurrent = jy === todayJalali.jy && jm === todayJalali.jm && jd === todayJalali.jd;
+		const currentLabel = isFa ? "امروز" : "Today";
 
 		return {
 			mode: "daily",
+			locale,
 			isCurrent,
+			noteTypeLabel: isFa ? "روزنوشت" : "Daily Note",
+			currentButtonLabel: currentLabel,
+			prevLabel,
+			nextLabel,
 			todayTarget: { mode: "daily", ...todayJalali },
-			modeTargets: {
-				daily: { mode: "daily", jy, jm, jd },
-				weekly: { mode: "weekly", weekYear: wk.jy, weekNumber: wk.weekNumber },
-				monthly: { mode: "monthly", jy, jm },
-				yearly: { mode: "yearly", jy },
-			},
 			prev: {
-				kickerEn: EN_WEEKDAYS_SHORT[wdp],
-				kickerFa: WEEKDAYS_NAME.fa[wdp],
-				mainEn: String(jp.jd),
-				mainFa: toFaNumber(jp.jd),
-				subEn: JALALI_MONTHS_NAME.en[jp.jm],
-				subFa: JALALI_MONTHS_NAME.fa[jp.jm],
+				kicker: isFa ? WEEKDAYS_NAME.fa[wdp] : EN_WEEKDAYS_SHORT[wdp],
+				main: formatNum(jp.jd, locale),
+				sub: JALALI_MONTHS_NAME[locale][jp.jm],
 				target: { mode: "daily", jy: jp.jy, jm: jp.jm, jd: jp.jd },
 			},
 			center: {
-				kickerEn: EN_WEEKDAYS_SHORT[wd],
-				kickerFa: WEEKDAYS_NAME.fa[wd],
-				currentPillEn: isCurrent ? "Today" : undefined,
-				currentPillFa: isCurrent ? "امروز" : undefined,
-				mainNum: String(jd),
-				mainFa: `${toFaNumber(jd)} ${JALALI_MONTHS_NAME.fa[jm]}`,
-				mainOrder: "num-first",
-				subItems: [`${JALALI_MONTHS_NAME.en[jm]} ${jy}`, `W${wk.weekNumber}`, formatGShort(g)],
+				kicker: isFa ? WEEKDAYS_NAME.fa[wd] : EN_WEEKDAYS_SHORT[wd],
+				currentPill: isCurrent ? currentLabel : undefined,
+				main: `${formatNum(jd, locale)} ${JALALI_MONTHS_NAME[locale][jm]}`,
+				subItems: [
+					formatNum(jy, locale),
+					isFa ? `هفته ${toFaNumber(wk.weekNumber)}` : `W${wk.weekNumber}`,
+					formatGDate(g, locale),
+				],
 			},
 			next: {
-				kickerEn: EN_WEEKDAYS_SHORT[wdn],
-				kickerFa: WEEKDAYS_NAME.fa[wdn],
-				mainEn: String(jn.jd),
-				mainFa: toFaNumber(jn.jd),
-				subEn: JALALI_MONTHS_NAME.en[jn.jm],
-				subFa: JALALI_MONTHS_NAME.fa[jn.jm],
+				kicker: isFa ? WEEKDAYS_NAME.fa[wdn] : EN_WEEKDAYS_SHORT[wdn],
+				main: formatNum(jn.jd, locale),
+				sub: JALALI_MONTHS_NAME[locale][jn.jm],
 				target: { mode: "daily", jy: jn.jy, jm: jn.jm, jd: jn.jd },
 			},
 			stripChips: [],
@@ -183,21 +205,15 @@ export function buildNoteNavigationModel(
 		const nextWeek = calculator.getWeekNumber(addCalendarDays(weekStartDate, 7));
 
 		const isCurrent = weekYear === todayWeek.jy && weekNumber === todayWeek.weekNumber;
+		const currentLabel = isFa ? "این هفته" : "This Week";
 
-		const rangeEn =
-			weekStart.jm === weekEnd.jm
-				? `${weekStart.jd}–${weekEnd.jd} ${JALALI_MONTHS_NAME.en[weekStart.jm]} ${weekStart.jy}`
-				: `${weekStart.jd} ${JALALI_MONTHS_NAME.en[weekStart.jm]} – ${weekEnd.jd} ${JALALI_MONTHS_NAME.en[weekEnd.jm]}`;
-
-		const rangeG =
-			weekStart.gm === weekEnd.gm
-				? `${EN_G_MONTHS_SHORT[weekStart.gm - 1]} ${weekStart.gd}–${weekEnd.gd}`
-				: `${EN_G_MONTHS_SHORT[weekStart.gm - 1]} ${weekStart.gd} – ${EN_G_MONTHS_SHORT[weekEnd.gm - 1]} ${weekEnd.gd}`;
-
-		const mainFa =
-			weekStart.jm === weekEnd.jm
+		const main = isFa
+			? weekStart.jm === weekEnd.jm
 				? `${toFaNumber(weekStart.jd)} تا ${toFaNumber(weekEnd.jd)} ${JALALI_MONTHS_NAME.fa[weekEnd.jm]}`
-				: `${toFaNumber(weekStart.jd)} ${JALALI_MONTHS_NAME.fa[weekStart.jm]} تا ${toFaNumber(weekEnd.jd)} ${JALALI_MONTHS_NAME.fa[weekEnd.jm]}`;
+				: `${toFaNumber(weekStart.jd)} ${JALALI_MONTHS_NAME.fa[weekStart.jm]} تا ${toFaNumber(weekEnd.jd)} ${JALALI_MONTHS_NAME.fa[weekEnd.jm]}`
+			: weekStart.jm === weekEnd.jm
+				? `${weekStart.jd}–${weekEnd.jd} ${JALALI_MONTHS_NAME.en[weekStart.jm]}`
+				: `${weekStart.jd} ${JALALI_MONTHS_NAME.en[weekStart.jm]} – ${weekEnd.jd} ${JALALI_MONTHS_NAME.en[weekEnd.jm]}`;
 
 		const stripChips: TNoteNavStripChip[] = Array.from({ length: 7 }, (_, i) => {
 			const dDate = addCalendarDays(weekStartDate, i);
@@ -208,9 +224,11 @@ export function buildNoteNavigationModel(
 				dj.jy === todayJalali.jy && dj.jm === todayJalali.jm && dj.jd === todayJalali.jd;
 
 			return {
-				fa: FA_WEEKDAYS_SHORT[dWd],
-				num: toFaNumber(dj.jd),
-				title: `${EN_WEEKDAYS_SHORT[dWd]} ${dj.jd} ${JALALI_MONTHS_NAME.en[dj.jm]}`,
+				label: isFa ? FA_WEEKDAYS_SHORT[dWd] : EN_WEEKDAYS_SHORT[dWd],
+				num: formatNum(dj.jd, locale),
+				title: isFa
+					? `${WEEKDAYS_NAME.fa[dWd]} ${toFaNumber(dj.jd)} ${JALALI_MONTHS_NAME.fa[dj.jm]}`
+					: `${EN_WEEKDAYS_SHORT[dWd]} ${dj.jd} ${JALALI_MONTHS_NAME.en[dj.jm]}`,
 				active: isTodayChip,
 				target: { mode: "daily", jy: dj.jy, jm: dj.jm, jd: dj.jd },
 			};
@@ -218,41 +236,29 @@ export function buildNoteNavigationModel(
 
 		return {
 			mode: "weekly",
+			locale,
 			isCurrent,
+			noteTypeLabel: isFa ? "هفته‌نوشت" : "Weekly Note",
+			currentButtonLabel: currentLabel,
+			prevLabel,
+			nextLabel,
 			todayTarget: { mode: "weekly", weekYear: todayWeek.jy, weekNumber: todayWeek.weekNumber },
-			modeTargets: {
-				daily: isCurrent
-					? { mode: "daily", ...todayJalali }
-					: { mode: "daily", jy: weekStart.jy, jm: weekStart.jm, jd: weekStart.jd },
-				weekly: { mode: "weekly", weekYear, weekNumber },
-				monthly: isCurrent
-					? { mode: "monthly", jy: todayJalali.jy, jm: todayJalali.jm }
-					: { mode: "monthly", jy: weekStart.jy, jm: weekStart.jm },
-				yearly: isCurrent
-					? { mode: "yearly", jy: todayJalali.jy }
-					: { mode: "yearly", jy: weekStart.jy },
-			},
 			prev: {
-				kickerEn: "Prev Week",
-				kickerFa: "هفته قبل",
-				mainEn: `W${prevWeek.weekNumber}`,
-				subFa: `هفته ${toFaNumber(prevWeek.weekNumber)}`,
+				kicker: isFa ? "هفته قبل" : "Prev Week",
+				main: isFa ? `هفته ${toFaNumber(prevWeek.weekNumber)}` : `W${prevWeek.weekNumber}`,
+				sub: formatNum(prevWeek.jy, locale),
 				target: { mode: "weekly", weekYear: prevWeek.jy, weekNumber: prevWeek.weekNumber },
 			},
 			center: {
-				kickerEn: `Week ${weekNumber}`,
-				kickerFa: `هفته ${toFaNumber(weekNumber)}`,
-				currentPillEn: isCurrent ? "This Week" : undefined,
-				currentPillFa: isCurrent ? "این هفته" : undefined,
-				mainFa,
-				mainFaSize: "week",
-				subItems: [rangeEn, rangeG],
+				kicker: isFa ? `هفته ${toFaNumber(weekNumber)}` : `Week ${weekNumber}`,
+				currentPill: isCurrent ? currentLabel : undefined,
+				main,
+				subItems: [formatNum(weekStart.jy, locale), formatGRange(weekStart, weekEnd, locale)],
 			},
 			next: {
-				kickerEn: "Next Week",
-				kickerFa: "هفته بعد",
-				mainEn: `W${nextWeek.weekNumber}`,
-				subFa: `هفته ${toFaNumber(nextWeek.weekNumber)}`,
+				kicker: isFa ? "هفته بعد" : "Next Week",
+				main: isFa ? `هفته ${toFaNumber(nextWeek.weekNumber)}` : `W${nextWeek.weekNumber}`,
+				sub: formatNum(nextWeek.jy, locale),
 				target: { mode: "weekly", weekYear: nextWeek.jy, weekNumber: nextWeek.weekNumber },
 			},
 			stripChips,
@@ -269,16 +275,19 @@ export function buildNoteNavigationModel(
 		const daysInMonth = jalaliMonthLength(jy, jm);
 		const mStartG = jalaliToGregorian(jy, jm, 1);
 		const mEndG = jalaliToGregorian(jy, jm, daysInMonth);
-		const gSpan = `${EN_G_MONTHS_SHORT[mStartG.gm - 1]} – ${EN_G_MONTHS_SHORT[mEndG.gm - 1]} ${mEndG.gy}`;
+		const gSpan = isFa
+			? `${GREGORIAN_MONTHS_NAME.fa[mStartG.gm]} – ${GREGORIAN_MONTHS_NAME.fa[mEndG.gm]} ${toFaNumber(mEndG.gy)}`
+			: `${EN_G_MONTHS_SHORT[mStartG.gm - 1]} – ${EN_G_MONTHS_SHORT[mEndG.gm - 1]} ${mEndG.gy}`;
 
 		const isCurrent = jy === todayJalali.jy && jm === todayJalali.jm;
-		const firstDayWeek = calculator.getWeekNumber(jalaliToCalendarDate(jy, jm, 1));
+		const currentLabel = isFa ? "این ماه" : "This Month";
 
 		const stripChips: TNoteNavStripChip[] = Array.from({ length: 12 }, (_, idx) => {
 			const mNum = idx + 1;
+			const name = JALALI_MONTHS_NAME[locale][mNum];
 			return {
-				fa: JALALI_MONTHS_NAME.fa[mNum],
-				title: JALALI_MONTHS_NAME.en[mNum],
+				label: name,
+				title: name,
 				active: mNum === jm,
 				target: { mode: "monthly", jy, jm: mNum },
 			};
@@ -286,40 +295,27 @@ export function buildNoteNavigationModel(
 
 		return {
 			mode: "monthly",
+			locale,
 			isCurrent,
+			noteTypeLabel: isFa ? "ماه‌نوشت" : "Monthly Note",
+			currentButtonLabel: currentLabel,
+			prevLabel,
+			nextLabel,
 			todayTarget: { mode: "monthly", jy: todayJalali.jy, jm: todayJalali.jm },
-			modeTargets: {
-				daily: isCurrent ? { mode: "daily", ...todayJalali } : { mode: "daily", jy, jm, jd: 1 },
-				weekly: isCurrent
-					? { mode: "weekly", weekYear: todayWeek.jy, weekNumber: todayWeek.weekNumber }
-					: { mode: "weekly", weekYear: firstDayWeek.jy, weekNumber: firstDayWeek.weekNumber },
-				monthly: { mode: "monthly", jy, jm },
-				yearly: { mode: "yearly", jy },
-			},
 			prev: {
-				kickerEn: String(py),
-				mainFa: JALALI_MONTHS_NAME.fa[pm],
-				mainIsFaPrimary: true,
-				subEn: JALALI_MONTHS_NAME.en[pm],
+				kicker: formatNum(py, locale),
+				main: JALALI_MONTHS_NAME[locale][pm],
 				target: { mode: "monthly", jy: py, jm: pm },
 			},
 			center: {
-				kickerEn: `${jy} SH`,
-				kickerFa: toFaNumber(jy),
-				currentPillEn: isCurrent ? "This Month" : undefined,
-				currentPillFa: isCurrent ? "این ماه" : undefined,
-				mainFa: JALALI_MONTHS_NAME.fa[jm],
-				mainFaSize: "month",
-				mainNum: JALALI_MONTHS_NAME.en[jm],
-				mainNumIsSecondary: true,
-				mainOrder: "fa-first",
-				subItems: [`${daysInMonth} days`, gSpan],
+				kicker: isFa ? toFaNumber(jy) : `${jy} SH`,
+				currentPill: isCurrent ? currentLabel : undefined,
+				main: JALALI_MONTHS_NAME[locale][jm],
+				subItems: [isFa ? `${toFaNumber(daysInMonth)} روز` : `${daysInMonth} days`, gSpan],
 			},
 			next: {
-				kickerEn: String(ny),
-				mainFa: JALALI_MONTHS_NAME.fa[nm],
-				mainIsFaPrimary: true,
-				subEn: JALALI_MONTHS_NAME.en[nm],
+				kicker: formatNum(ny, locale),
+				main: JALALI_MONTHS_NAME[locale][nm],
 				target: { mode: "monthly", jy: ny, jm: nm },
 			},
 			stripChips,
@@ -334,51 +330,47 @@ export function buildNoteNavigationModel(
 	const yStartG = jalaliToGregorian(jy, 1, 1);
 	const yEndG = jalaliToGregorian(jy, 12, jalaliMonthLength(jy, 12));
 	const isCurrent = jy === todayJalali.jy;
-	const firstDayWeek = calculator.getWeekNumber(jalaliToCalendarDate(jy, 1, 1));
+	const currentLabel = isFa ? "امسال" : "This Year";
 	const currentSeason = Math.floor((todayJalali.jm - 1) / 3) + 1;
 
-	const stripChips: TNoteNavStripChip[] = [1, 2, 3, 4].map((seasonNum) => ({
-		en: SEASONS_NAME.en[seasonNum],
-		fa: SEASONS_NAME.fa[seasonNum],
-		active: isCurrent && seasonNum === currentSeason,
-		target: { mode: "monthly", jy, jm: (seasonNum - 1) * 3 + 1 },
-	}));
+	const stripChips: TNoteNavStripChip[] = [1, 2, 3, 4].map((seasonNum) => {
+		const name = SEASONS_NAME[locale][seasonNum];
+		return {
+			label: name,
+			title: name,
+			active: isCurrent && seasonNum === currentSeason,
+			target: { mode: "monthly", jy, jm: (seasonNum - 1) * 3 + 1 },
+		};
+	});
 
 	return {
 		mode: "yearly",
+		locale,
 		isCurrent,
+		noteTypeLabel: isFa ? "سال‌نوشت" : "Yearly Note",
+		currentButtonLabel: currentLabel,
+		prevLabel,
+		nextLabel,
 		todayTarget: { mode: "yearly", jy: todayJalali.jy },
-		modeTargets: {
-			daily: isCurrent ? { mode: "daily", ...todayJalali } : { mode: "daily", jy, jm: 1, jd: 1 },
-			weekly: isCurrent
-				? { mode: "weekly", weekYear: todayWeek.jy, weekNumber: todayWeek.weekNumber }
-				: { mode: "weekly", weekYear: firstDayWeek.jy, weekNumber: firstDayWeek.weekNumber },
-			monthly: isCurrent
-				? { mode: "monthly", jy: todayJalali.jy, jm: todayJalali.jm }
-				: { mode: "monthly", jy, jm: 1 },
-			yearly: { mode: "yearly", jy },
-		},
 		prev: {
-			kickerEn: "Prev Year",
-			mainEn: String(py),
-			mainFa: toFaNumber(py),
-			subEn: `${yStartG.gy - 1}–${yEndG.gy - 1}`,
+			kicker: isFa ? "سال قبل" : "Prev Year",
+			main: formatNum(py, locale),
+			sub: `${formatNum(yStartG.gy - 1, locale)}–${formatNum(yEndG.gy - 1, locale)}`,
 			target: { mode: "yearly", jy: py },
 		},
 		center: {
-			kickerEn: "Solar Hijri Year",
-			currentPillEn: isCurrent ? "This Year" : undefined,
-			currentPillFa: isCurrent ? "امسال" : undefined,
-			mainNum: String(jy),
-			mainFa: toFaNumber(jy),
-			mainOrder: "num-first",
-			subItems: [`${yStartG.gy} – ${yEndG.gy}`, isLeap ? "Leap · کبیسه" : "365 days"],
+			kicker: isFa ? "سال هجری شمسی" : "Solar Hijri Year",
+			currentPill: isCurrent ? currentLabel : undefined,
+			main: formatNum(jy, locale),
+			subItems: [
+				`${formatNum(yStartG.gy, locale)} – ${formatNum(yEndG.gy, locale)}`,
+				isLeap ? (isFa ? "کبیسه" : "Leap Year") : isFa ? "۳۶۵ روز" : "365 days",
+			],
 		},
 		next: {
-			kickerEn: "Next Year",
-			mainEn: String(ny),
-			mainFa: toFaNumber(ny),
-			subEn: `${yStartG.gy + 1}–${yEndG.gy + 1}`,
+			kicker: isFa ? "سال بعد" : "Next Year",
+			main: formatNum(ny, locale),
+			sub: `${formatNum(yStartG.gy + 1, locale)}–${formatNum(yEndG.gy + 1, locale)}`,
 			target: { mode: "yearly", jy: ny },
 		},
 		stripChips,

@@ -1,6 +1,6 @@
 import { MarkdownView, setIcon } from "obsidian";
 import type PersianCalendarPlugin from "src/main";
-import type { TNoteNavMode, TOpenNoteMode } from "src/types";
+import type { TOpenNoteMode } from "src/types";
 import { todayTehran } from "src/utils/dateUtils";
 import type {
 	TNoteNavCenterSlot,
@@ -12,13 +12,6 @@ import type {
 import { buildNoteNavigationModel } from "./model";
 
 const NAV_ROOT_CLASS = "persian-calendar-note-nav";
-
-const MODE_TABS: readonly { mode: TNoteNavMode; en: string; fa: string }[] = [
-	{ mode: "daily", en: "Daily", fa: "روزانه" },
-	{ mode: "weekly", en: "Weekly", fa: "هفتگی" },
-	{ mode: "monthly", en: "Monthly", fa: "ماهانه" },
-	{ mode: "yearly", en: "Yearly", fa: "سالانه" },
-];
 
 export default class NoteNavigation {
 	constructor(private readonly plugin: PersianCalendarPlugin) {}
@@ -51,6 +44,7 @@ export default class NoteNavigation {
 			info,
 			this.plugin.setting.weekCalculation,
 			todayTehran(),
+			this.plugin.setting.language,
 		);
 
 		let rootEl = existing;
@@ -120,6 +114,8 @@ export default class NoteNavigation {
 
 	private render(rootEl: HTMLElement, model: TNoteNavModel): void {
 		rootEl.empty();
+		rootEl.dataset.locale = model.locale;
+		rootEl.dataset.mode = model.mode;
 
 		const shell = rootEl.createDiv({ cls: "persian-calendar-note-nav__shell" });
 
@@ -131,40 +127,19 @@ export default class NoteNavigation {
 	private renderTopBar(shell: HTMLElement, model: TNoteNavModel): void {
 		const topBar = shell.createDiv({ cls: "persian-calendar-note-nav__top-bar" });
 
-		const modeTabs = topBar.createDiv({
-			cls: "persian-calendar-note-nav__mode-tabs",
-			attr: { role: "tablist", "aria-label": "Calendar granularity" },
+		topBar.createSpan({
+			cls: "persian-calendar-note-nav__type-badge",
+			text: model.noteTypeLabel,
 		});
-
-		for (const tab of MODE_TABS) {
-			const isActive = tab.mode === model.mode;
-			const tabBtn = modeTabs.createEl("button", {
-				cls: `persian-calendar-note-nav__mode-tab${isActive ? " is-active" : ""}`,
-				type: "button",
-				attr: {
-					role: "tab",
-					"aria-selected": String(isActive),
-					"data-mode": tab.mode,
-				},
-			});
-			tabBtn.createSpan({ text: tab.en });
-			tabBtn.createSpan({ cls: "persian-calendar-note-nav__fa-label", text: tab.fa });
-
-			this.bindNavigation(tabBtn, model.modeTargets[tab.mode], isActive);
-		}
 
 		const topActions = topBar.createDiv({ cls: "persian-calendar-note-nav__top-actions" });
 		const todayBtn = topActions.createEl("button", {
 			cls: `persian-calendar-note-nav__today-btn${model.isCurrent ? " is-today" : ""}`,
 			type: "button",
-			title: "Jump to Today (امروز)",
+			title: model.currentButtonLabel,
 		});
 		todayBtn.createSpan({ cls: "persian-calendar-note-nav__today-dot" });
-		todayBtn.createSpan({ text: "Today" });
-		todayBtn.createSpan({
-			cls: "persian-calendar-note-nav__fa-text persian-calendar-note-nav__today-fa",
-			text: "امروز",
-		});
+		todayBtn.createSpan({ text: model.currentButtonLabel });
 
 		this.bindNavigation(todayBtn, model.todayTarget, model.isCurrent);
 	}
@@ -173,136 +148,71 @@ export default class NoteNavigation {
 		const stage = shell.createDiv({ cls: "persian-calendar-note-nav__stage" });
 
 		const prevSlot = stage.createEl("button", {
-			cls: "persian-calendar-note-nav__slot persian-calendar-note-nav__slot--side",
+			cls: "persian-calendar-note-nav__slot persian-calendar-note-nav__slot--side persian-calendar-note-nav__area-prev-slot",
 			type: "button",
-			title: "Previous",
+			title: model.prevLabel,
 		});
 		this.renderSideSlotContent(prevSlot, model.prev);
 		this.bindNavigation(prevSlot, model.prev.target);
 
 		const prevBtn = stage.createEl("button", {
-			cls: "persian-calendar-note-nav__chevron-btn",
+			cls: "persian-calendar-note-nav__chevron-btn persian-calendar-note-nav__area-prev-btn",
 			type: "button",
-			attr: { "aria-label": "Previous" },
+			attr: { "aria-label": model.prevLabel },
+			title: model.prevLabel,
 		});
-		setIcon(prevBtn, "chevron-left");
+		setIcon(prevBtn, "chevron-right");
 		this.bindNavigation(prevBtn, model.prev.target);
 
 		const centerSlot = stage.createDiv({
-			cls: `persian-calendar-note-nav__slot persian-calendar-note-nav__slot--center${
+			cls: `persian-calendar-note-nav__slot persian-calendar-note-nav__slot--center persian-calendar-note-nav__area-center${
 				model.isCurrent ? " is-current" : ""
 			}`,
 		});
 		this.renderCenterSlotContent(centerSlot, model.center);
 
 		const nextBtn = stage.createEl("button", {
-			cls: "persian-calendar-note-nav__chevron-btn",
+			cls: "persian-calendar-note-nav__chevron-btn persian-calendar-note-nav__area-next-btn",
 			type: "button",
-			attr: { "aria-label": "Next" },
+			attr: { "aria-label": model.nextLabel },
+			title: model.nextLabel,
 		});
-		setIcon(nextBtn, "chevron-right");
+		setIcon(nextBtn, "chevron-left");
 		this.bindNavigation(nextBtn, model.next.target);
 
 		const nextSlot = stage.createEl("button", {
-			cls: "persian-calendar-note-nav__slot persian-calendar-note-nav__slot--side",
+			cls: "persian-calendar-note-nav__slot persian-calendar-note-nav__slot--side persian-calendar-note-nav__area-next-slot",
 			type: "button",
-			title: "Next",
+			title: model.nextLabel,
 		});
 		this.renderSideSlotContent(nextSlot, model.next);
 		this.bindNavigation(nextSlot, model.next.target);
 	}
 
 	private renderSideSlotContent(el: HTMLElement, slot: TNoteNavSideSlot): void {
-		if (slot.kickerEn || slot.kickerFa) {
-			const kicker = el.createSpan({ cls: "persian-calendar-note-nav__slot-kicker" });
-			if (slot.kickerEn) kicker.appendText(slot.kickerEn);
-			if (slot.kickerEn && slot.kickerFa) kicker.appendText(" · ");
-			if (slot.kickerFa) {
-				kicker.createSpan({ cls: "persian-calendar-note-nav__fa-text", text: slot.kickerFa });
-			}
+		if (slot.kicker) {
+			el.createSpan({ cls: "persian-calendar-note-nav__slot-kicker", text: slot.kicker });
 		}
 
-		const main = el.createSpan({
-			cls: `persian-calendar-note-nav__slot-main${
-				slot.mainIsFaPrimary
-					? " persian-calendar-note-nav__fa-text persian-calendar-note-nav__slot-main--fa-primary"
-					: ""
-			}`,
-		});
-		if (slot.mainIsFaPrimary) {
-			if (slot.mainFa) main.appendText(slot.mainFa);
-		} else {
-			if (slot.mainEn) main.appendText(slot.mainEn);
-			if (slot.mainEn && slot.mainFa) main.appendText(" ");
-			if (slot.mainFa) {
-				main.createSpan({
-					cls: "persian-calendar-note-nav__fa-text persian-calendar-note-nav__slot-main-fa",
-					text: slot.mainFa,
-				});
-			}
-		}
+		el.createSpan({ cls: "persian-calendar-note-nav__slot-main", text: slot.main });
 
-		if (slot.subEn || slot.subFa) {
-			const sub = el.createSpan({
-				cls: `persian-calendar-note-nav__slot-sub${
-					!slot.subEn && slot.subFa ? " persian-calendar-note-nav__fa-text" : ""
-				}`,
-			});
-			if (slot.subEn) sub.appendText(slot.subEn);
-			if (slot.subEn && slot.subFa) sub.appendText(" · ");
-			if (slot.subFa) {
-				if (slot.subEn) {
-					sub.createSpan({ cls: "persian-calendar-note-nav__fa-text", text: slot.subFa });
-				} else {
-					sub.appendText(slot.subFa);
-				}
-			}
+		if (slot.sub) {
+			el.createSpan({ cls: "persian-calendar-note-nav__slot-sub", text: slot.sub });
 		}
 	}
 
 	private renderCenterSlotContent(el: HTMLElement, center: TNoteNavCenterSlot): void {
 		const kicker = el.createSpan({ cls: "persian-calendar-note-nav__center-kicker" });
-		kicker.createSpan({ text: center.kickerEn });
-		if (center.kickerFa) {
-			kicker.createSpan({ cls: "persian-calendar-note-nav__fa-text", text: center.kickerFa });
-		}
-		if (center.currentPillEn && center.currentPillFa) {
-			const pill = kicker.createSpan({ cls: "persian-calendar-note-nav__current-pill" });
-			pill.appendText(`${center.currentPillEn} · `);
-			pill.createSpan({ cls: "persian-calendar-note-nav__fa-text", text: center.currentPillFa });
+		kicker.createSpan({ text: center.kicker });
+		if (center.currentPill) {
+			kicker.createSpan({
+				cls: "persian-calendar-note-nav__current-pill",
+				text: center.currentPill,
+			});
 		}
 
 		const main = el.createDiv({ cls: "persian-calendar-note-nav__center-main" });
-		const renderNum = () => {
-			if (!center.mainNum) return;
-			main.createSpan({
-				cls: `persian-calendar-note-nav__center-num${
-					center.mainNumIsSecondary ? " persian-calendar-note-nav__center-num--secondary" : ""
-				}`,
-				text: center.mainNum,
-			});
-		};
-		const renderFa = () => {
-			if (!center.mainFa) return;
-			const sizeClass =
-				center.mainFaSize === "week"
-					? " persian-calendar-note-nav__center-fa--week"
-					: center.mainFaSize === "month"
-						? " persian-calendar-note-nav__center-fa--month"
-						: "";
-			main.createSpan({
-				cls: `persian-calendar-note-nav__center-fa${sizeClass}`,
-				text: center.mainFa,
-			});
-		};
-
-		if (center.mainOrder === "fa-first") {
-			renderFa();
-			renderNum();
-		} else {
-			renderNum();
-			renderFa();
-		}
+		main.createSpan({ cls: "persian-calendar-note-nav__center-title", text: center.main });
 
 		const sub = el.createDiv({ cls: "persian-calendar-note-nav__center-sub" });
 		center.subItems.forEach((item, index) => {
@@ -321,14 +231,9 @@ export default class NoteNavigation {
 			const btn = strip.createEl("button", {
 				cls: `persian-calendar-note-nav__strip-chip${chip.active ? " is-active" : ""}`,
 				type: "button",
-				title: chip.title ?? "",
+				title: chip.title,
 			});
-			if (chip.en) {
-				btn.createSpan({ text: chip.en });
-			}
-			if (chip.fa) {
-				btn.createSpan({ cls: "persian-calendar-note-nav__strip-chip-fa", text: chip.fa });
-			}
+			btn.createSpan({ cls: "persian-calendar-note-nav__strip-chip-label", text: chip.label });
 			if (chip.num) {
 				btn.createSpan({ cls: "persian-calendar-note-nav__strip-chip-num", text: chip.num });
 			}
