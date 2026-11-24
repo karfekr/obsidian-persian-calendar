@@ -286,9 +286,26 @@ refresh after a committed custom-event cache update, when an event/display setti
 them changes, and when Obsidian returns from the background or sleep. This recalculates from the
 current time without polling or changing Markdown files.
 
-Only the exact `{+…}` syntax and the keys above are supported. Autocomplete is bidirectionally
+Autocomplete for named expressions is bidirectionally
 isolated, so Persian keys display as `{+کلید}` in both RTL and LTR interfaces while insertion
 preserves the exact Markdown text.
+
+### Live Countdowns
+
+Type a Jalali date with ASCII digits inside `{+…}`. Times use the 24-hour clock in Tehran.
+A date alone means midnight, and omitted seconds default to zero.
+
+| Use                       | One-time target          | Annual target       |
+| ------------------------- | ------------------------ | ------------------- |
+| Start of Nowruz           | `{+1405-01-01}`          | `{+01-01}`          |
+| Birthday lunch            | `{+1405-06-15 13:30}`    | `{+06-15 13:30}`    |
+| Anniversary to the second | `{+1405-09-10 18:45:30}` | `{+09-10 18:45:30}` |
+
+A one-time target shows time remaining, displays **Now** at the target second, then shows
+time elapsed. An annual target switches to its next occurrence when reached. For example,
+`{+12-30}` skips years without Esfand 30. Durations update every second as a compact clock:
+**6 days, 10:40:30 remaining** or, when days are zero, **02:15:08 remaining**. The Live
+Expressions language and numeral settings control the display. Invalid targets stay visible as typed.
 
 ## <a name="custom_events"></a> Custom Event Repositories
 
