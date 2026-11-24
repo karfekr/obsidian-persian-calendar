@@ -299,9 +299,7 @@ export default class NoteService {
 		const result: number[] = [];
 
 		for (let seasonNumber = 1; seasonNumber <= 4; seasonNumber++) {
-			const { filePath } = this.pathBuilder.buildSeasonalNotePath(jy, seasonNumber);
-			const file = this.app.vault.getAbstractFileByPath(filePath);
-			if (file instanceof TFile) {
+			if (this.getSeasonalNoteFile(jy, seasonNumber)) {
 				result.push(seasonNumber);
 			}
 		}
@@ -317,6 +315,12 @@ export default class NoteService {
 
 	public getMonthlyNoteFile(jy: number, jm: number): TFile | null {
 		const { filePath } = this.pathBuilder.buildMonthlyNotePath(jy, jm);
+		const file = this.app.vault.getAbstractFileByPath(filePath);
+		return file instanceof TFile ? file : null;
+	}
+
+	public getSeasonalNoteFile(jy: number, seasonNumber: number): TFile | null {
+		const { filePath } = this.pathBuilder.buildSeasonalNotePath(jy, seasonNumber);
 		const file = this.app.vault.getAbstractFileByPath(filePath);
 		return file instanceof TFile ? file : null;
 	}
@@ -396,6 +400,25 @@ export default class NoteService {
 				.replace("{month}", jMonthName)
 				.replace("{year}", String(jy)),
 			errorNotice: t("notice.error.monthlyNoteDeleteFailed"),
+		});
+	}
+
+	public async deleteSeasonalNote(jy: number, seasonNumber: number) {
+		const file = this.getSeasonalNoteFile(jy, seasonNumber);
+		if (!file) return;
+
+		const { seasonName } = this.pathBuilder.buildSeasonalNotePath(
+			jy,
+			seasonNumber,
+			this.plugin.setting.language,
+		);
+		await this.deleteNoteWithConfirm({
+			file,
+			confirmTitle: t("modal.deleteSeasonalNote.title"),
+			confirmMessage: t("modal.deleteSeasonalNote.message")
+				.replace("{season}", seasonName)
+				.replace("{year}", String(jy)),
+			errorNotice: t("notice.error.seasonalNoteDeleteFailed"),
 		});
 	}
 
