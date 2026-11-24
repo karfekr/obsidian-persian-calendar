@@ -275,6 +275,10 @@
 			"title": "حذف ماه‌نوشت",
 			"message": "ماه‌نوشت {month} {year} حذف شود؟"
 		},
+		"deleteSeasonalNote": {
+			"title": "حذف فصل‌نوشت",
+			"message": "فصل‌نوشت {season} {year} حذف شود؟"
+		},
 		"deleteYearlyNote": {
 			"title": "حذف سال‌نوشت",
 			"message": "سال‌نوشت {year} حذف شود؟"
@@ -292,6 +296,7 @@
 			"dailyNoteDeleteFailed": "حذف روزنوشت انجام نشد.",
 			"weeklyNoteDeleteFailed": "حذف هفته‌نوشت انجام نشد.",
 			"monthlyNoteDeleteFailed": "حذف ماه‌نوشت انجام نشد.",
+			"seasonalNoteDeleteFailed": "حذف فصل‌نوشت انجام نشد.",
 			"yearlyNoteDeleteFailed": "حذف سال‌نوشت انجام نشد."
 		},
 		"success": {

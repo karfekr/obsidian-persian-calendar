@@ -277,6 +277,10 @@
 			"title": "Delete Monthly Note",
 			"message": "Delete monthly note for {month} {year}?"
 		},
+		"deleteSeasonalNote": {
+			"title": "Delete Seasonal Note",
+			"message": "Delete seasonal note for {season} {year}?"
+		},
 		"deleteYearlyNote": {
 			"title": "Delete Yearly Note",
 			"message": "Delete yearly note for {year}?"
@@ -294,6 +298,7 @@
 			"dailyNoteDeleteFailed": "Failed to delete the daily note.",
 			"weeklyNoteDeleteFailed": "Failed to delete the weekly note.",
 			"monthlyNoteDeleteFailed": "Failed to delete the monthly note.",
+			"seasonalNoteDeleteFailed": "Failed to delete the seasonal note.",
 			"yearlyNoteDeleteFailed": "Failed to delete the yearly note."
 		},
 		"success": {
