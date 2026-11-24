@@ -257,4 +257,28 @@ describe("vault event repositories", () => {
 		await applySetting("liveExpressionNumeralLanguage", "fa");
 		expect(plugin.liveExpression.refresh).toHaveBeenCalledTimes(11);
 	});
+
+	it("refreshes live expressions before saving their output settings", async () => {
+		let finishSave: (() => void) | undefined;
+		const plugin = {
+			setting: { ...DEFAULT_SETTING },
+			liveExpression: { refresh: vi.fn() },
+			saveSetting: vi.fn(
+				() =>
+					new Promise<void>((resolve) => {
+						finishSave = resolve;
+					}),
+			),
+			refreshViews: vi.fn(),
+		} as unknown as PersianCalendarPlugin;
+		const applySetting = createSettingChangeHandler(plugin, vi.fn());
+
+		const change = applySetting("liveExpressionNumeralLanguage", "fa");
+		expect(plugin.liveExpression?.refresh).toHaveBeenCalledOnce();
+		expect(plugin.saveSetting).toHaveBeenCalledOnce();
+
+		if (!finishSave) throw new Error("save did not start");
+		finishSave();
+		await change;
+	});
 });

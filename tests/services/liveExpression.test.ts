@@ -128,6 +128,140 @@ describe("LiveExpression service", () => {
 		expect(liveExpression.getCadence(key)).toBe(cadence);
 	});
 
+	describe("live countdowns", () => {
+		beforeEach(() => {
+			vi.useFakeTimers();
+			// Midnight in Tehran at the start of 1404, with a fractional second.
+			vi.setSystemTime(new Date("2025-03-20T20:30:00.500Z"));
+		});
+
+		it.each([
+			["1404-01-01", "Now"],
+			["1404-01-02", "1 day, 00:00:00 remaining"],
+			["1404-01-02 01:02", "1 day, 01:02:00 remaining"],
+			["1404-01-02 01:02:03", "1 day, 01:02:03 remaining"],
+			["1403-12-30 23:59:59", "00:00:01 elapsed"],
+			["1403-12-29 22:59:00", "1 day, 01:01:00 elapsed"],
+			["01-02", "1 day, 00:00:00 remaining"],
+			["01-01 00:01", "00:01:00 remaining"],
+			["01-01 00:00:02", "00:00:02 remaining"],
+			["01-01", "365 days, 00:00:00 remaining"],
+			["12-30", "1825 days, 00:00:00 remaining"],
+		])("evaluates %s at second cadence", (key, expected) => {
+			const { liveExpression } = createMockEnv({ liveExpressionOutputLanguage: "en" });
+			expect(liveExpression.calculateValue(key)).toBe(expected);
+			expect(liveExpression.getCadence(key)).toBe("second");
+		});
+
+		it.each([
+			["1404-01-07 10:40:30", "6 روز و 10:40:30 مانده"],
+			["1403-12-24 13:19:30", "6 روز و 10:40:30 گذشته"],
+			["1404-01-01 02:15:08", "02:15:08 مانده"],
+		])("uses the compact Persian clock for %s", (key, expected) => {
+			expect(createMockEnv().liveExpression.calculateValue(key)).toBe(expected);
+		});
+
+		it.each([
+			["fa", "fa", "۶ روز و ۱۰:۴۰:۳۰ مانده"],
+			["fa", "en", "6 روز و 10:40:30 مانده"],
+			["en", "fa", "۶ days, ۱۰:۴۰:۳۰ remaining"],
+			["en", "en", "6 days, 10:40:30 remaining"],
+		] as const)(
+			"keeps countdown text %s and numerals %s independent",
+			(outputLanguage, numeralLanguage, expected) => {
+				const { liveExpression } = createMockEnv({
+					liveExpressionOutputLanguage: outputLanguage,
+					liveExpressionNumeralLanguage: numeralLanguage,
+				});
+				expect(liveExpression.calculateValue("1404-01-07 10:40:30")).toBe(expected);
+			},
+		);
+
+		it("resolves each target with the Tehran offset in effect on that date", () => {
+			const { liveExpression } = createMockEnv({ liveExpressionOutputLanguage: "en" });
+			vi.setSystemTime(new Date("2021-03-20T20:30:00Z")); // 1400-01-01 midnight
+			expect(liveExpression.calculateValue("1400-01-02 00:15")).toBeNull();
+			expect(liveExpression.calculateValue("1400-01-03")).toBe("1 day, 23:00:00 remaining");
+		});
+
+		it("counts down to Esfand 30 during a leap year and rolls over after its time", () => {
+			const { liveExpression } = createMockEnv({ liveExpressionOutputLanguage: "en" });
+			vi.setSystemTime(new Date("2025-03-19T20:29:59Z"));
+			expect(liveExpression.calculateValue("12-30")).toBe("00:00:01 remaining");
+			vi.advanceTimersByTime(2000);
+			expect(liveExpression.calculateValue("12-30")).toBe(
+				liveExpression.calculateValue("1408-12-30"),
+			);
+		});
+
+		it.each([
+			"0000-01-01",
+			"9999-01-01",
+			"1404-12-30",
+			"07-31",
+			"12-31",
+			"00-01",
+			"13-01",
+			"01-00",
+			"1404-1-01",
+			"1-01",
+			"01-1",
+			"۱۴۰۴-01-01",
+			"٠١-٠١",
+			"01-01 ۱۲:۰۰",
+			"01-01 24:00",
+			"01-01 23:60",
+			"01-01 23:59:60",
+			"01-01 1:00",
+			"01-01 12",
+			"01-01 12:00:0",
+			"01-01T12:00",
+			"01-01  12:00",
+			" 01-01",
+			"01-01 ",
+			"01-01\n",
+			"01-01 00:00Z",
+		])("leaves invalid target %j unresolved", (key) => {
+			expect(createMockEnv().liveExpression.calculateValue(key)).toBeNull();
+		});
+
+		it("updates both views through one timer and preserves invalid text", () => {
+			const { plugin, liveExpression } = createMockEnv();
+			const doc = new FakeDocument();
+			const root = new FakeElement(doc);
+			const key = "1404-01-01 00:00:01";
+			root.appendChild(new FakeText(`{+${key}} / {+1404-12-30}`));
+			liveExpression.handlePostProcess(
+				root as never,
+				{ addChild: (child: { onload(): void }) => child.onload() } as never,
+			);
+			const rendered = root.childNodes[0] as FakeElement;
+			expect(rendered.textContent).toBe("00:00:01 مانده");
+			expect((root.childNodes[1] as FakeText).nodeValue).toBe(" / {+1404-12-30}");
+			vi.stubGlobal("document", doc);
+			const widget = new LiveExpressionWidget(
+				key,
+				rendered.textContent,
+				liveExpression.getCadence(key),
+				liveExpression,
+			);
+			const preview = widget.toDOM();
+			expect(vi.getTimerCount()).toBe(1);
+			vi.advanceTimersByTime(1000);
+			expect(rendered.textContent).toBe("اکنون");
+			expect(preview.textContent).toBe("اکنون");
+			plugin.setting.liveExpressionNumeralLanguage = "fa";
+			vi.advanceTimersByTime(1000);
+			expect(rendered.textContent).toBe("۰۰:۰۰:۰۱ گذشته");
+			plugin.setting.liveExpressionOutputLanguage = "en";
+			liveExpression.refresh();
+			expect(preview.textContent).toBe("۰۰:۰۰:۰۱ elapsed");
+			widget.destroy(preview);
+			liveExpression.destroy();
+			expect(vi.getTimerCount()).toBe(0);
+		});
+	});
+
 	describe("demand-driven timer scheduler", () => {
 		it("starts and stops second-cadence timer only while subscribed", () => {
 			vi.useFakeTimers();
