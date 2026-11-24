@@ -44,7 +44,7 @@ function isInsideRanges(start: number, end: number, ranges: Array<[number, numbe
 	return ranges.some(([rStart, rEnd]) => start >= rStart && end <= rEnd);
 }
 
-class LiveExpressionWidget extends WidgetType {
+export class LiveExpressionWidget extends WidgetType {
 	constructor(
 		private readonly key: string,
 		private readonly initialValue: string,

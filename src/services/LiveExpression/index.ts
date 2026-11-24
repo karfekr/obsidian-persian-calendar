@@ -2,9 +2,9 @@ import type { Extension } from "@codemirror/state";
 import type { MarkdownPostProcessorContext } from "obsidian";
 import { MarkdownRenderChild } from "obsidian";
 import type PersianCalendarPlugin from "src/main";
-import type { TSuggestProvider } from "src/types";
+import type { TSetting, TSuggestProvider } from "src/types";
 import { nowTehran } from "src/utils/dateUtils";
-import { toEnNumber } from "src/utils/formatters";
+import { toEnNumber, toFaNumber } from "src/utils/formatters";
 
 import { createLiveExpressionEditorExtension } from "./livePreviewExtension";
 import type { TLiveExpressionCadence } from "./registry";
@@ -14,6 +14,25 @@ export type { TLiveExpressionCadence } from "./registry";
 export { LIVE_EXPRESSION_KEYS } from "./registry";
 
 export const LIVE_EXPRESSION_PATTERN = /\{\+([^{}+]+)\}/g;
+
+const LIVE_EXPRESSION_SETTING_KEYS = new Set<keyof TSetting>([
+	"liveExpressionNumeralLanguage",
+	"liveExpressionOutputLanguage",
+	"weekCalculation",
+	"hijriBase",
+	"showIROfficialEvents",
+	"showIRHistoricalEvents",
+	"showIRAncientEvents",
+	"showShiaEvents",
+	"showSunniEvents",
+	"showGlobalEvents",
+	"showCustomEvents",
+	"vaultEventSources",
+]);
+
+export function isLiveExpressionSetting(key: keyof TSetting): boolean {
+	return LIVE_EXPRESSION_SETTING_KEYS.has(key);
+}
 
 const SKIPPED_TAG_NAMES = new Set(["CODE", "PRE", "SCRIPT", "STYLE", "TEXTAREA", "INPUT"]);
 
@@ -68,9 +87,25 @@ export default class LiveExpression {
 	private minuteAlignTimeout: ReturnType<typeof globalThis.setTimeout> | null = null;
 	private minuteInterval: ReturnType<typeof globalThis.setInterval> | null = null;
 	private dayTimeout: ReturnType<typeof globalThis.setTimeout> | null = null;
+	private documentResumeListenerRegistered = false;
+	private windowResumeListenerRegistered = false;
+	private lastResumeAt = Number.NEGATIVE_INFINITY;
+
+	private readonly handleVisibilityChange = () => {
+		if (typeof document === "undefined" || document.visibilityState !== "hidden") {
+			this.refreshAfterResume();
+		}
+	};
+
+	private readonly handleWindowFocus = () => {
+		if (typeof document === "undefined" || document.visibilityState !== "hidden") {
+			this.refreshAfterResume();
+		}
+	};
 
 	constructor(plugin: PersianCalendarPlugin) {
 		this.plugin = plugin;
+		this.registerResumeListeners();
 	}
 
 	public getCadence(keyword: string): TLiveExpressionCadence {
@@ -99,8 +134,40 @@ export default class LiveExpression {
 	}
 
 	private notifyCadence(cadence: TLiveExpressionCadence): void {
-		for (const listener of this.listeners[cadence]) {
+		for (const listener of [...this.listeners[cadence]]) {
 			listener();
+		}
+	}
+
+	public refresh(): void {
+		this.notifyCadence("second");
+		this.notifyCadence("minute");
+		this.notifyCadence("day");
+	}
+
+	private registerResumeListeners(): void {
+		if (typeof document !== "undefined") {
+			document.addEventListener("visibilitychange", this.handleVisibilityChange);
+			this.documentResumeListenerRegistered = true;
+		}
+
+		if (typeof window !== "undefined") {
+			window.addEventListener("focus", this.handleWindowFocus);
+			this.windowResumeListenerRegistered = true;
+		}
+	}
+
+	private refreshAfterResume(): void {
+		const resumedAt = Date.now();
+		if (resumedAt - this.lastResumeAt < 100) return;
+		this.lastResumeAt = resumedAt;
+
+		this.refresh();
+
+		for (const cadence of ["second", "minute", "day"] as const) {
+			if (this.listeners[cadence].size === 0) continue;
+			this.stopCadenceTimer(cadence);
+			this.startCadenceTimer(cadence);
 		}
 	}
 
@@ -180,14 +247,26 @@ export default class LiveExpression {
 		this.listeners.second.clear();
 		this.listeners.minute.clear();
 		this.listeners.day.clear();
+
+		if (this.documentResumeListenerRegistered && typeof document !== "undefined") {
+			document.removeEventListener("visibilitychange", this.handleVisibilityChange);
+			this.documentResumeListenerRegistered = false;
+		}
+		if (this.windowResumeListenerRegistered && typeof window !== "undefined") {
+			window.removeEventListener("focus", this.handleWindowFocus);
+			this.windowResumeListenerRegistered = false;
+		}
 	}
 
-	public calculateValue(key: string): string | number | null {
+	public calculateValue(key: string): string | null {
 		const expression = findExpression(key);
 		if (!expression) return null;
 
 		const value = expression.evaluate(new ExpressionContext(this.plugin));
-		return typeof value === "string" ? toEnNumber(value) : value;
+		const normalized = toEnNumber(String(value));
+		return this.plugin.setting.liveExpressionNumeralLanguage === "fa"
+			? toFaNumber(normalized)
+			: normalized;
 	}
 
 	public handlePostProcess(element: HTMLElement, context: MarkdownPostProcessorContext): void {
