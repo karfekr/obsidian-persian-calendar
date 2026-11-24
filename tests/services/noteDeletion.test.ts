@@ -4,6 +4,7 @@ import { DEFAULT_SETTING } from "src/constants";
 import { setLocal } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
 import NoteService from "src/services/NoteService";
+import CalendarBodyRender from "src/templates/CalendarView/CalendarRenderer/CalendarBody";
 import { openNoteContextMenu } from "src/templates/CalendarView/CalendarRenderer/noteContextMenu";
 import type { TSetting } from "src/types";
 
@@ -108,6 +109,7 @@ function createHarness(settingOverrides: Partial<TSetting> = {}) {
 		dailyNotesPath: "Daily",
 		weeklyNotesPath: "Weekly",
 		monthlyNotesPath: "Monthly",
+		seasonalNotesPath: "Seasonal",
 		yearlyNotesPath: "Yearly",
 		...settingOverrides,
 	};
@@ -176,6 +178,23 @@ describe("NoteService periodic note deletion", () => {
 		expect(plugin.refreshViews).toHaveBeenCalledTimes(1);
 	});
 
+	it("finds and deletes a seasonal note after confirmation", async () => {
+		const { service, plugin, addFile, trashFile } = createHarness();
+		const file = addFile("Seasonal/1403-S2.md");
+		confirmModalMock.mockResolvedValue(true);
+
+		expect(service.getSeasonalNoteFile(1403, 2)).toBe(file);
+
+		await service.deleteSeasonalNote(1403, 2);
+
+		expect(confirmModalMock).toHaveBeenCalledWith(plugin.app, {
+			title: "Delete Seasonal Note",
+			message: "Delete seasonal note for Summer 1403?",
+		});
+		expect(trashFile).toHaveBeenCalledWith(file);
+		expect(plugin.refreshViews).toHaveBeenCalledTimes(1);
+	});
+
 	it("finds and deletes a yearly note after confirmation", async () => {
 		const { service, plugin, addFile, trashFile } = createHarness();
 		const file = addFile("Yearly/1403.md");
@@ -213,6 +232,51 @@ describe("NoteService periodic note deletion", () => {
 
 		expect(noticeMock).toHaveBeenCalledWith("Failed to delete the monthly note.");
 		expect(plugin.refreshViews).not.toHaveBeenCalled();
+	});
+});
+
+describe("seasonal note context menu", () => {
+	it("adds Delete only for an existing seasonal note", () => {
+		setLocal("en");
+		const handlers = new Map<string, (event: MouseEvent) => void>();
+		const seasonEls: Array<{ addClass: ReturnType<typeof vi.fn> }> = [];
+		const seasonsRow = {
+			createDiv: () => {
+				const index = seasonEls.length;
+				const seasonEl = {
+					addClass: vi.fn(),
+					addEventListener: (type: string, handler: (event: MouseEvent) => void) => {
+						handlers.set(`${index}:${type}`, handler);
+					},
+				};
+				seasonEls.push(seasonEl);
+				return seasonEl;
+			},
+		};
+		const notesService = {
+			getSeasonsWithNotes: () => [2],
+			getSeasonalNoteFile: (_year: number, season: number) => (season === 2 ? {} : null),
+			openOrCreateSeasonalNote: vi.fn(),
+			deleteSeasonalNote: vi.fn(),
+		};
+		const renderer = new CalendarBodyRender(
+			{ getJState: () => ({ jYearState: 1403, jMonthState: 1 }) } as never,
+			notesService as never,
+			DEFAULT_SETTING,
+			() => {},
+			{} as never,
+		);
+
+		renderer.renderSeasonalNotesRow({ createDiv: () => seasonsRow } as never, "en");
+		handlers.get("0:contextmenu")?.({ preventDefault: vi.fn(), stopPropagation: vi.fn() } as never);
+		expect(menuItems.every((item) => item.icon !== "trash")).toBe(true);
+
+		menuItems.length = 0;
+		handlers.get("1:contextmenu")?.({ preventDefault: vi.fn(), stopPropagation: vi.fn() } as never);
+
+		expect(menuItems.at(-1)).toMatchObject({ title: "Delete", icon: "trash", warning: true });
+		menuItems.at(-1)?.onClick?.();
+		expect(notesService.deleteSeasonalNote).toHaveBeenCalledWith(1403, 2);
 	});
 });
 
