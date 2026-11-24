@@ -1,14 +1,13 @@
 import { toCalendarDate } from "@internationalized/date";
 import {
+	GREGORIAN_MONTHS_NAME,
 	HIJRI_MONTHS_NAME,
 	JALALI_MONTHS_NAME,
 	SEASONS_NAME,
 	WEEKDAYS_NAME,
-	WEEKDAYS_SHORT_FA,
 } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
 import {
-	checkKabiseh,
 	dateToDaysPassedJYear,
 	dateToDaysPassedSeason,
 	dateToDaysRemainingSeason,
@@ -20,7 +19,6 @@ import {
 	jalaliMonthLength,
 	jalaliToSeason,
 	nowTehran,
-	TEHRAN_TZ,
 } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 
@@ -96,8 +94,8 @@ export class ExpressionContext {
 		});
 	}
 
-	get locale() {
-		return this.plugin.setting.language ?? "fa";
+	get outputLanguage() {
+		return this.plugin.setting.liveExpressionOutputLanguage;
 	}
 
 	get isHoliday() {
@@ -118,11 +116,16 @@ function expression(
 }
 
 const pad2 = (value: number) => String(value).padStart(2, "0");
-const yesNo = (condition: boolean) => (condition ? "بله" : "خیر");
-const gregorianMonthName = ({ now }: ExpressionContext) =>
-	now.toDate().toLocaleDateString("en-US", { timeZone: TEHRAN_TZ, month: "long" });
+const localizedText = {
+	fa: { yes: "بله", no: "خیر", noEvents: "بدون مناسبت" },
+	en: { yes: "Yes", no: "No", noEvents: "No events" },
+} as const;
+const yesNo = (condition: boolean, context: ExpressionContext) =>
+	localizedText[context.outputLanguage][condition ? "yes" : "no"];
+const gregorianMonthName = ({ now, outputLanguage }: ExpressionContext) =>
+	GREGORIAN_MONTHS_NAME[outputLanguage][now.month];
 const hijriMonthName = (context: ExpressionContext) =>
-	HIJRI_MONTHS_NAME.fa[context.hijri.hm].trim();
+	HIJRI_MONTHS_NAME[context.outputLanguage][context.hijri.hm].trim();
 
 const elapsedFractions = {
 	year: (context: ExpressionContext) => context.dayOfYear / context.daysInYear,
@@ -147,55 +150,51 @@ const canonicalExpressions = {
 
 	// Calendar components
 	"سال شمسی": expression(({ jalali }) => jalali.jy),
-	"نام ماه": expression(({ jalali }) => JALALI_MONTHS_NAME.fa[jalali.jm]),
-	"نام ماه انگلیسی": expression(({ jalali }) => JALALI_MONTHS_NAME.en[jalali.jm]),
-	"شماره ماه": expression(({ jalali }) => pad2(jalali.jm)),
-	"شماره روز": expression(({ jalali }) => pad2(jalali.jd)),
+	"نام ماه شمسی": expression(
+		({ jalali, outputLanguage }) => JALALI_MONTHS_NAME[outputLanguage][jalali.jm],
+	),
+	"شماره ماه شمسی": expression(({ jalali }) => pad2(jalali.jm)),
+	"روز ماه شمسی": expression(({ jalali }) => pad2(jalali.jd)),
 	"سال میلادی": expression(({ now }) => now.year),
 	"نام ماه میلادی": expression(gregorianMonthName),
 	"شماره ماه میلادی": expression(({ now }) => pad2(now.month)),
-	"شماره روز میلادی": expression(({ now }) => pad2(now.day)),
+	"روز ماه میلادی": expression(({ now }) => pad2(now.day)),
 	"سال قمری": expression(({ hijri }) => hijri.hy),
 	"نام ماه قمری": expression(hijriMonthName),
 	"شماره ماه قمری": expression(({ hijri }) => pad2(hijri.hm)),
-	"شماره روز قمری": expression(({ hijri }) => pad2(hijri.hd)),
-	"نام روز": expression(({ weekday }) => WEEKDAYS_NAME.fa[weekday]),
-	"نام روز کوتاه": expression(({ weekday }) => WEEKDAYS_SHORT_FA[weekday]),
-	"نام روز انگلیسی": expression(({ weekday }) => WEEKDAYS_NAME.en[weekday]),
+	"روز ماه قمری": expression(({ hijri }) => pad2(hijri.hd)),
+	"نام روز": expression(({ weekday, outputLanguage }) => WEEKDAYS_NAME[outputLanguage][weekday]),
 	"شماره روز هفته": expression(({ weekday }) => weekday),
 
 	// Calendar calculations
-	"سال کبیسه": expression(({ jalali }) => yesNo(checkKabiseh(jalali.jy))),
-	"سال کبیسه میلادی": expression(({ now: { year } }) =>
-		yesNo((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0),
-	),
-	"تعداد روز سال": expression(({ daysInYear }) => daysInYear),
-	"تعداد روز ماه": expression(({ daysInMonth }) => daysInMonth),
-	"روز سال": expression(({ dayOfYear }) => dayOfYear),
+	"تعداد روز سال شمسی": expression(({ daysInYear }) => daysInYear),
+	"تعداد روز ماه شمسی": expression(({ daysInMonth }) => daysInMonth),
+	"روز سال شمسی": expression(({ dayOfYear }) => dayOfYear),
 	"هفته سال": expression(({ weekNumber }) => weekNumber),
-	"هفته ماه": expression(({ jalali }) => Math.ceil(jalali.jd / 7)),
-	"آخر هفته": expression(({ weekday }) => yesNo(weekday >= 6)),
-	فصل: expression(({ season }) => SEASONS_NAME.fa[season]),
+	"هفته ماه شمسی": expression(({ jalali }) => Math.ceil(jalali.jd / 7)),
+	فصل: expression(({ season, outputLanguage }) => SEASONS_NAME[outputLanguage][season]),
 	"شماره فصل": expression(({ season }) => season),
 	"روز فصل": expression(({ date }) => dateToDaysPassedSeason(date)),
-	"روز باقی سال": expression(({ daysLeftInYear }) => daysLeftInYear),
-	"روز باقی ماه": expression(({ daysLeftInMonth }) => daysLeftInMonth),
+	"روز باقی سال شمسی": expression(({ daysLeftInYear }) => daysLeftInYear),
+	"روز باقی ماه شمسی": expression(({ daysLeftInMonth }) => daysLeftInMonth),
 	"روز باقی فصل": expression(({ date }) => dateToDaysRemainingSeason(date)),
 	"روز باقی هفته": expression(({ weekday }) => 7 - weekday),
 	"دقیقه مانده روز": expression(({ minutesLeft }) => minutesLeft, { cadence: "minute" }),
 	"دقیقه گذشته روز": expression(({ minutesElapsed }) => minutesElapsed, { cadence: "minute" }),
 
 	// Progress and events
-	"درصد سال": expression(percent(elapsedFractions.year)),
+	"درصد سال شمسی": expression(percent(elapsedFractions.year)),
 	"درصد فصل": expression(percent(elapsedFractions.season)),
-	"درصد ماه": expression(percent(elapsedFractions.month)),
+	"درصد ماه شمسی": expression(percent(elapsedFractions.month)),
 	"درصد هفته": expression(percent(elapsedFractions.week)),
 	"درصد روز": expression(percent(elapsedFractions.day), { cadence: "minute" }),
-	"مناسبت امروز": expression(
-		({ events, locale }) => events.map((event) => event.title[locale]).join(" | ") || "بدون مناسبت",
+	مناسبت: expression(
+		({ events, outputLanguage }) =>
+			events.map((event) => event.title[outputLanguage]).join(" | ") ||
+			localizedText[outputLanguage].noEvents,
 	),
 	"تعداد مناسبت": expression(({ events }) => events.length),
-	تعطیل: expression(({ isHoliday }) => yesNo(isHoliday)),
+	تعطیل: expression((context) => yesNo(context.isHoliday, context)),
 } satisfies Record<string, Expression>;
 
 export const LIVE_EXPRESSION_KEYS = Object.freeze(Object.keys(canonicalExpressions));

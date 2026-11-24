@@ -16,8 +16,12 @@ export default class Suggestion extends EditorSuggest<string> {
 	renderSuggestion(value: string, el: HTMLElement): void {
 		const container = el.createDiv();
 		if (value.startsWith("{+")) {
-			const expression = container.createEl("bdi", { text: value });
+			const expression = container.createEl("bdi");
 			expression.dir = "ltr";
+			expression.createEl("span", { text: "{" });
+			const key = expression.createEl("bdi", { text: value.slice(2, -1) });
+			key.dir = "auto";
+			expression.createEl("span", { text: "+}" });
 			return;
 		}
 
