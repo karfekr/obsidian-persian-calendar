@@ -1,10 +1,11 @@
 import { setAdapter } from "persian-holidays";
-import { DEFAULT_SETTING } from "src/constants";
+import { DEFAULT_SETTING, GREGORIAN_MONTHS_NAME } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
 import LiveExpression, {
 	LIVE_EXPRESSION_KEYS,
 	LIVE_EXPRESSION_PATTERN,
 } from "src/services/LiveExpression";
+import { LiveExpressionWidget } from "src/services/LiveExpression/livePreviewExtension";
 import type { TSetting } from "src/types";
 import { setDefaultEventAdapter } from "src/utils/eventUtils/eventAdapter";
 
@@ -100,12 +101,13 @@ class FakeDocument {
 describe("LiveExpression service", () => {
 	afterEach(() => {
 		vi.useRealTimers();
+		vi.unstubAllGlobals();
 	});
 
 	it("exposes one readable, alias-free canonical name for each expression", () => {
-		expect(LIVE_EXPRESSION_KEYS).toHaveLength(45);
+		expect(LIVE_EXPRESSION_KEYS).toHaveLength(39);
 		expect(LIVE_EXPRESSION_KEYS).toEqual(
-			expect.arrayContaining(["ساعت", "شماره ماه", "شماره روز", "مناسبت امروز"]),
+			expect.arrayContaining(["ساعت", "شماره ماه شمسی", "روز ماه شمسی", "مناسبت"]),
 		);
 		expect(LIVE_EXPRESSION_KEYS.every((key) => !key.includes("_") && !key.includes("۲رقم"))).toBe(
 			true,
@@ -120,7 +122,7 @@ describe("LiveExpression service", () => {
 		["دقیقه", "minute"],
 		["درصد روز", "minute"],
 		["سال شمسی", "day"],
-		["مناسبت امروز", "day"],
+		["مناسبت", "day"],
 	] as const)("refreshes %s at %s cadence", (key, cadence) => {
 		const { liveExpression } = createMockEnv();
 		expect(liveExpression.getCadence(key)).toBe(cadence);
@@ -169,7 +171,7 @@ describe("LiveExpression service", () => {
 			vi.setSystemTime(new Date("2025-03-21T20:29:58Z"));
 
 			const { liveExpression } = createMockEnv();
-			const day = "شماره روز";
+			const day = "روز ماه شمسی";
 			const onDay = vi.fn(() => liveExpression.calculateValue(day));
 			const unsubscribe = liveExpression.subscribe(liveExpression.getCadence(day), onDay);
 
@@ -177,6 +179,52 @@ describe("LiveExpression service", () => {
 			expect(onDay).toHaveReturnedWith("02");
 
 			unsubscribe();
+			expect(vi.getTimerCount()).toBe(0);
+		});
+
+		it("recalculates from the current Tehran time on resume and removes resume listeners", () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2025-03-20T20:29:58Z"));
+			const documentListeners = new Map<string, () => void>();
+			const windowListeners = new Map<string, () => void>();
+			vi.stubGlobal("document", {
+				visibilityState: "visible",
+				addEventListener: (name: string, listener: () => void) =>
+					documentListeners.set(name, listener),
+				removeEventListener: (name: string) => documentListeners.delete(name),
+			});
+			vi.stubGlobal("window", {
+				addEventListener: (name: string, listener: () => void) =>
+					windowListeners.set(name, listener),
+				removeEventListener: (name: string) => windowListeners.delete(name),
+			});
+
+			const { liveExpression } = createMockEnv();
+			const onSecond = vi.fn(() => liveExpression.calculateValue("ثانیه"));
+			const onMinute = vi.fn(() => liveExpression.calculateValue("دقیقه"));
+			const onDay = vi.fn(() => liveExpression.calculateValue("روز ماه شمسی"));
+			const unsubscribeSecond = liveExpression.subscribe("second", onSecond);
+			const unsubscribeMinute = liveExpression.subscribe("minute", onMinute);
+			const unsubscribeDay = liveExpression.subscribe("day", onDay);
+			vi.setSystemTime(new Date("2025-03-20T20:30:05Z"));
+			documentListeners.get("visibilitychange")?.();
+
+			expect(onSecond).toHaveReturnedWith("05");
+			expect(onMinute).toHaveReturnedWith("00");
+			expect(onDay).toHaveReturnedWith("01");
+			windowListeners.get("focus")?.();
+			expect(onSecond).toHaveBeenCalledOnce();
+			expect(onMinute).toHaveBeenCalledOnce();
+			expect(onDay).toHaveBeenCalledOnce();
+			expect(documentListeners).toHaveLength(1);
+			expect(windowListeners).toHaveLength(1);
+
+			unsubscribeSecond();
+			unsubscribeMinute();
+			unsubscribeDay();
+			liveExpression.destroy();
+			expect(documentListeners).toHaveLength(0);
+			expect(windowListeners).toHaveLength(0);
 			expect(vi.getTimerCount()).toBe(0);
 		});
 	});
@@ -188,7 +236,7 @@ describe("LiveExpression service", () => {
 			vi.setSystemTime(new Date("2025-03-21T08:35:09Z"));
 		});
 
-		it("uses padded ASCII date and time components", () => {
+		it("uses padded English date and time components by default", () => {
 			const { liveExpression } = createMockEnv();
 			const value = (key: string) => liveExpression.calculateValue(key);
 
@@ -200,12 +248,12 @@ describe("LiveExpression service", () => {
 			expect(value("ساعت")).toBe("12");
 			expect(value("دقیقه")).toBe("05");
 			expect(value("ثانیه")).toBe("09");
-			expect(value("شماره ماه")).toBe("01");
-			expect(value("شماره روز")).toBe("01");
+			expect(value("شماره ماه شمسی")).toBe("01");
+			expect(value("روز ماه شمسی")).toBe("01");
 			expect(value("شماره ماه میلادی")).toBe("03");
-			expect(value("شماره روز میلادی")).toBe("21");
+			expect(value("روز ماه میلادی")).toBe("21");
 			expect(value("شماره ماه قمری")).toMatch(/^\d{2}$/);
-			expect(value("شماره روز قمری")).toMatch(/^\d{2}$/);
+			expect(value("روز ماه قمری")).toMatch(/^\d{2}$/);
 		});
 
 		it("accepts only exact canonical names and has no placeholder fallback", () => {
@@ -231,24 +279,71 @@ describe("LiveExpression service", () => {
 			expect(liveExpression.calculateValue(" شماره ماه ")).toBeNull();
 		});
 
-		it.each(["fa", "en"] as const)("normalizes localized output with language %s", (language) => {
-			const { plugin, liveExpression } = createMockEnv({ language });
-			plugin.getAllCustomEvents = () => [
-				{
-					id: "mixed-digits",
-					title: "رویداد ۱۲٣",
-					calendar: "jalali",
-					month: 1,
-					day: 1,
-					enabled: true,
-					isHoliday: false,
-				},
-			];
+		it.each([
+			["fa", "fa", "فروردین", "مارس", "جمعه", "بله", "۱۴۰۴", "۱۲", "رویداد ۱۲۳"],
+			["fa", "en", "فروردین", "مارس", "جمعه", "بله", "1404", "12", "رویداد 123"],
+			["en", "fa", "Farvardin", "March", "Friday", "Yes", "۱۴۰۴", "۱۲", "رویداد ۱۲۳"],
+			["en", "en", "Farvardin", "March", "Friday", "Yes", "1404", "12", "رویداد 123"],
+		] as const)(
+			"keeps output text %s and numerals %s independent",
+			(outputLanguage, numeralLanguage, month, gregorianMonth, weekday, holiday, year, hour, eventTitle) => {
+				const { plugin, liveExpression } = createMockEnv({
+					liveExpressionOutputLanguage: outputLanguage,
+					liveExpressionNumeralLanguage: numeralLanguage,
+				});
+				plugin.getAllCustomEvents = () => [
+					{
+						id: "mixed-digits",
+						title: "رویداد ۱۲٣",
+						calendar: "jalali",
+						month: 1,
+						day: 1,
+						enabled: true,
+						isHoliday: false,
+					},
+				];
 
-			expect(liveExpression.calculateValue("مناسبت امروز")).toEqual(
-				expect.stringContaining("رویداد 123"),
-			);
-		});
+				expect(liveExpression.calculateValue("نام ماه شمسی")).toBe(month);
+				expect(liveExpression.calculateValue("نام ماه میلادی")).toBe(gregorianMonth);
+				expect(liveExpression.calculateValue("نام روز")).toBe(weekday);
+				expect(liveExpression.calculateValue("تعطیل")).toBe(holiday);
+				expect(liveExpression.calculateValue("سال شمسی")).toBe(year);
+				expect(liveExpression.calculateValue("ساعت")).toBe(hour);
+				expect(liveExpression.calculateValue("مناسبت")).toEqual(
+					expect.stringContaining(eventTitle),
+				);
+			},
+		);
+
+		it.each(["fa", "en"] as const)(
+			"resolves the Gregorian month name from the shared %s data",
+			(locale) => {
+				const { liveExpression } = createMockEnv({ liveExpressionOutputLanguage: locale });
+				expect(liveExpression.calculateValue("نام ماه میلادی")).toBe(
+					GREGORIAN_MONTHS_NAME[locale][3],
+				);
+			},
+		);
+
+		it.each([
+			["fa", "بدون مناسبت"],
+			["en", "No events"],
+		] as const)(
+			"localizes the empty event value in %s",
+			(liveExpressionOutputLanguage, expected) => {
+				const { liveExpression } = createMockEnv({
+					liveExpressionOutputLanguage,
+					showIROfficialEvents: false,
+					showIRHistoricalEvents: false,
+					showIRAncientEvents: false,
+					showShiaEvents: false,
+					showSunniEvents: false,
+					showGlobalEvents: false,
+				});
+
+				expect(liveExpression.calculateValue("مناسبت")).toBe(expected);
+			},
+		);
 	});
 
 	describe("syntax and suggestions", () => {
@@ -257,31 +352,91 @@ describe("LiveExpression service", () => {
 			expect(liveExpression.createEditorExtension()).toBeDefined();
 		});
 
-		it("renders only canonical new syntax in Reading View", () => {
+		it("refreshes a mounted Reading View expression without modifying Markdown", () => {
 			vi.useFakeTimers();
 			vi.setSystemTime(new Date("2025-03-21T08:35:09Z"));
 
-			const { liveExpression } = createMockEnv();
+			const { plugin, liveExpression } = createMockEnv({
+				showIROfficialEvents: false,
+				showIRHistoricalEvents: false,
+				showIRAncientEvents: false,
+				showShiaEvents: false,
+				showSunniEvents: false,
+				showGlobalEvents: false,
+			});
 			const document = new FakeDocument();
 			const root = new FakeElement(document);
-			root.appendChild(new FakeText("اکنون {+ساعت} / {#ساعت}"));
-			const addChild = vi.fn();
+			root.appendChild(new FakeText("اکنون {+مناسبت} / {#مناسبت}"));
+			const addChild = vi.fn((child) => child.onload());
 
 			liveExpression.handlePostProcess(root as never, { addChild } as never);
 
 			expect(root.childNodes).toHaveLength(3);
 			expect((root.childNodes[0] as FakeText).nodeValue).toBe("اکنون ");
-			expect((root.childNodes[1] as FakeElement).textContent).toBe("12");
-			expect((root.childNodes[2] as FakeText).nodeValue).toBe(" / {#ساعت}");
+			expect((root.childNodes[1] as FakeElement).textContent).toBe("بدون مناسبت");
+			expect((root.childNodes[2] as FakeText).nodeValue).toBe(" / {#مناسبت}");
 			expect(addChild).toHaveBeenCalledTimes(1);
+
+			plugin.getAllCustomEvents = () => [
+				{
+					id: "today",
+					title: "جلسه",
+					calendar: "jalali",
+					month: 1,
+					day: 1,
+					enabled: true,
+					isHoliday: false,
+				},
+			];
+			liveExpression.refresh();
+			expect((root.childNodes[1] as FakeElement).textContent).toBe("جلسه");
+		});
+
+		it("refreshes a mounted Live Preview widget and cleans up its subscription", () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date("2025-03-21T08:35:09Z"));
+			const { plugin, liveExpression } = createMockEnv({
+				showIROfficialEvents: false,
+				showIRHistoricalEvents: false,
+				showIRAncientEvents: false,
+				showShiaEvents: false,
+				showSunniEvents: false,
+				showGlobalEvents: false,
+			});
+			const span = { className: "", dataset: {}, textContent: "" } as unknown as HTMLElement;
+			vi.stubGlobal("document", { createElement: () => span });
+
+			const widget = new LiveExpressionWidget(
+				"مناسبت",
+				liveExpression.calculateValue("مناسبت") ?? "",
+				liveExpression.getCadence("مناسبت"),
+				liveExpression,
+			);
+			widget.toDOM();
+			plugin.getAllCustomEvents = () => [
+				{
+					id: "today",
+					title: "جلسه",
+					calendar: "jalali",
+					month: 1,
+					day: 1,
+					enabled: true,
+					isHoliday: false,
+				},
+			];
+			liveExpression.refresh();
+			expect(span.textContent).toBe("جلسه");
+
+			widget.destroy(span);
+			expect(liveExpression.getActiveListenerCount()).toBe(0);
 		});
 
 		it("matches only the new syntax with Unicode names", () => {
-			const source = "{+نام ماه} {+شماره ماه} {#نام_ماه}";
+			const source = "{+نام ماه شمسی} {+شماره ماه شمسی} {#نام_ماه}";
 			const pattern = new RegExp(LIVE_EXPRESSION_PATTERN.source, "g");
 			expect(Array.from(source.matchAll(pattern), (match) => match[1])).toEqual([
-				"نام ماه",
-				"شماره ماه",
+				"نام ماه شمسی",
+				"شماره ماه شمسی",
 			]);
 			expect("{#نام ماه}".match(new RegExp(LIVE_EXPRESSION_PATTERN.source))).toBeNull();
 		});
@@ -292,9 +447,9 @@ describe("LiveExpression service", () => {
 
 			expect("متن {+شماره".match(provider.trigger)?.[0]).toBe("{+شماره");
 			expect("متن {#شماره".match(provider.trigger)).toBeNull();
-			expect(provider.getSuggestions("شماره ماه")).toContain("{+شماره ماه}");
+			expect(provider.getSuggestions("شماره ماه شمسی")).toContain("{+شماره ماه شمسی}");
 			expect(provider.getSuggestions("نوروز")).toEqual([]);
-			expect(provider.onSelect("{+مناسبت امروز}", {} as never)).toBe("{+مناسبت امروز}");
+			expect(provider.onSelect("{+مناسبت}", {} as never)).toBe("{+مناسبت}");
 		});
 	});
 });

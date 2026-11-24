@@ -174,6 +174,7 @@ describe("vault event repositories", () => {
 		const listeners = new Map<string, (file: TAbstractFile, oldPath?: string) => unknown>();
 		const plugin = {
 			setting: settings,
+			liveExpression: { refresh: vi.fn() },
 			app: {
 				vault: {
 					on: (name: string, callback: (file: TAbstractFile, oldPath?: string) => unknown) =>
@@ -199,12 +200,14 @@ describe("vault event repositories", () => {
 		expect(service.getEvents().map((event) => event.calendar)).toEqual(["jalali", "gregorian"]);
 		expect(service.getEvents()[1]).toMatchObject({ color: "orange", isHoliday: true });
 		expect(plugin.app.vault.cachedRead).toHaveBeenCalledTimes(2);
+		expect(plugin.liveExpression.refresh).toHaveBeenCalledOnce();
 
 		content.set(family, "12-25 | Updated family | blue");
 		await listeners.get("modify")?.(family);
 		await vi.waitFor(() =>
 			expect(service.getEvents()[0]).toMatchObject({ title: "Updated family", color: "blue" }),
 		);
+		expect(plugin.liveExpression.refresh).toHaveBeenCalledTimes(2);
 
 		const folder = new TFolder();
 		folder.path = "Calendar";
@@ -230,8 +233,10 @@ describe("vault event repositories", () => {
 		const reads = plugin.app.vault.cachedRead.mock.calls.length;
 		await applySetting("showCustomEvents", false);
 		expect(service.getEvents()).toEqual([]);
+		expect(plugin.liveExpression.refresh).toHaveBeenCalledTimes(6);
 		await applySetting("showCustomEvents", true);
 		expect(service.getEvents().map((event) => event.id)).toEqual(ids);
+		expect(plugin.liveExpression.refresh).toHaveBeenCalledTimes(7);
 		expect(settings.vaultEventSources).toBe(repositories);
 		expect(repositories.map((entry) => entry.enabled)).toEqual([true, true, false]);
 		expect(plugin.app.vault.cachedRead).toHaveBeenCalledTimes(reads);
@@ -244,7 +249,12 @@ describe("vault event repositories", () => {
 			})),
 		);
 		expect(service.getEvents().map((event) => event.title)).toEqual(["Ramadan", "End of Sha'ban"]);
+		expect(plugin.liveExpression.refresh).toHaveBeenCalledTimes(8);
 		await applySetting("hijriBase", "umalqura");
 		expect(service.getEvents().map((event) => event.title)).toEqual(["Ramadan"]);
+		expect(plugin.liveExpression.refresh).toHaveBeenCalledTimes(9);
+		await applySetting("liveExpressionOutputLanguage", "en");
+		await applySetting("liveExpressionNumeralLanguage", "fa");
+		expect(plugin.liveExpression.refresh).toHaveBeenCalledTimes(11);
 	});
 });

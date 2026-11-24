@@ -47,7 +47,9 @@ describe("Suggestion", () => {
 		const token = menu.children[0].children[0];
 		expect(token.tagName).toBe("bdi");
 		expect(token.dir).toBe("ltr");
-		expect(token.textContent).toBe(value);
+		expect(token.children.map((child) => child.textContent).join("")).toBe(value);
+		expect(token.children[1].tagName).toBe("bdi");
+		expect(token.children[1].dir).toBe("auto");
 	});
 
 	it("uses the same text for the menu item, parser trigger, and insertion", () => {
