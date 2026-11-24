@@ -1,5 +1,6 @@
 export { default as createNoteModal } from "./ConfirmModal";
 export { default as DatePicker } from "./DatePicker";
+export { default as NoteNavigation } from "./NoteNavigation";
 export { default as Notice } from "./Notice";
 export { default as SocialLinks } from "./SocialLinks";
 export { default as UpdateModal } from "./UpdateModal";

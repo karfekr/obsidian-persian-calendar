@@ -1,7 +1,7 @@
 import type { App, PluginManifest, WorkspaceLeaf } from "obsidian";
 import { Plugin, setIcon } from "obsidian";
 import { setAdapter } from "persian-holidays";
-import { DatePicker } from "src/components";
+import { DatePicker, NoteNavigation } from "src/components";
 
 import { DEFAULT_SETTING } from "./constants";
 import { onLocalChange, setLocal, t } from "./languages";
@@ -29,6 +29,7 @@ export default class PersianCalendarPlugin extends Plugin {
 	// Core properties
 	setting: TSetting = DEFAULT_SETTING;
 	noteService!: NoteService;
+	noteNavigation!: NoteNavigation;
 	placeholder: Placeholder;
 	liveExpression: LiveExpression;
 	dateSuggester?: SmartDateLinker;
@@ -66,6 +67,7 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		// Initialize note service
 		this.noteService = new NoteService(this.app, this);
+		this.noteNavigation = new NoteNavigation(this);
 
 		// Register calendar view
 		this.registerView("persian-calendar", (leaf) => new CalendarView(leaf, this.app, this));
@@ -76,11 +78,28 @@ export default class PersianCalendarPlugin extends Plugin {
 			void this.vaultEventService.refresh().then(() => {
 				this.refreshCalendarViews();
 			});
+			this.noteNavigation.refreshAll();
 
 			if (this.app.workspace.getLeavesOfType("persian-calendar").length === 0) {
 				void this.activateView();
 			}
 		});
+
+		this.registerEvent(
+			this.app.workspace.on("file-open", () => {
+				this.noteNavigation.refreshAll();
+			}),
+		);
+		this.registerEvent(
+			this.app.workspace.on("active-leaf-change", () => {
+				this.noteNavigation.refreshAll();
+			}),
+		);
+		this.registerEvent(
+			this.app.workspace.on("layout-change", () => {
+				this.noteNavigation.refreshAll();
+			}),
+		);
 
 		// inject DatePicker button for Jalali
 		const observer = new MutationObserver(() => {
@@ -243,10 +262,12 @@ export default class PersianCalendarPlugin extends Plugin {
 				leaf.view.render();
 			}
 		});
+		this.noteNavigation?.refreshAll();
 	}
 
 	onunload() {
 		this.liveExpression.destroy();
+		this.noteNavigation?.destroy();
 		this.app.workspace.getLeavesOfType("persian-calendar").forEach((leaf) => {
 			leaf.detach();
 		});

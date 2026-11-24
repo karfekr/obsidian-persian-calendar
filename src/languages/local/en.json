@@ -10,7 +10,8 @@
 		"monthly": "Open Monthly Note",
 		"seasonal": "Open Seasonal Note",
 		"yearly": "Open Yearly Note",
-		"openCalendar": "Open Persian Calendar"
+		"openCalendar": "Open Persian Calendar",
+		"toggleInNoteNavigation": "Toggle In-Note Navigation"
 	},
 	"links": {
 		"github": "Plugin Documentation",
@@ -63,6 +64,10 @@
 			"showGoToCurrent": {
 				"name": "Show Go to Current Button",
 				"desc": "Show a button to return to the current month when viewing another month."
+			},
+			"showInNoteNavigation": {
+				"name": "Show In-Note Navigation",
+				"desc": "Display a Persian calendar navigation bar at the top of periodic notes."
 			},
 			"showSeasons": {
 				"name": "Show Seasons in Calendar",

@@ -15,6 +15,7 @@
 @import "./sections/update.css";
 @import "./sections/confirm-modal.css";
 @import "./sections/date-picker.css";
+@import "./sections/note-navigation.css";
 
 /* responsive */
 @import "./sections/responsive.css";

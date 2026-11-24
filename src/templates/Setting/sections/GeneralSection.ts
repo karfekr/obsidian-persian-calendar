@@ -51,6 +51,11 @@ export function getGeneralSettings(): SettingDefinitionItem[] {
 					control: { type: "toggle", key: "showGoToCurrent" },
 				},
 				{
+					name: t("setting.general.showInNoteNavigation.name"),
+					desc: t("setting.general.showInNoteNavigation.desc"),
+					control: { type: "toggle", key: "showInNoteNavigation" },
+				},
+				{
 					name: t("setting.general.showSeasons.name"),
 					desc: t("setting.general.showSeasons.desc"),
 					control: { type: "toggle", key: "showSeasonalNotes" },
