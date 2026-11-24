@@ -10,6 +10,7 @@ import {
 	applySettingsMigrations,
 	CommandRegistry,
 	EventManager,
+	LiveExpression,
 	NoteService,
 	Placeholder,
 	SmartDateLinker,
@@ -29,6 +30,7 @@ export default class PersianCalendarPlugin extends Plugin {
 	setting: TSetting = DEFAULT_SETTING;
 	noteService!: NoteService;
 	placeholder: Placeholder;
+	liveExpression: LiveExpression;
 	dateSuggester?: SmartDateLinker;
 	datePicker!: DatePicker;
 	api!: ReturnType<ApiService["build"]>;
@@ -44,6 +46,7 @@ export default class PersianCalendarPlugin extends Plugin {
 	constructor(app: App, manifest: PluginManifest) {
 		super(app, manifest);
 		this.placeholder = new Placeholder(this);
+		this.liveExpression = new LiveExpression(this);
 	}
 
 	async onload() {
@@ -99,8 +102,18 @@ export default class PersianCalendarPlugin extends Plugin {
 		// Register editor suggester
 		this.dateSuggester = new SmartDateLinker(this);
 		this.registerEditorSuggest(
-			new Suggestion(this.app, [this.dateSuggester.toProvider(), this.placeholder.toProvider()]),
+			new Suggestion(this.app, [
+				this.dateSuggester.toProvider(),
+				this.placeholder.toProvider(),
+				this.liveExpression.toProvider(),
+			]),
 		);
+
+		// Register live expressions (Reading View + Live Preview)
+		this.registerMarkdownPostProcessor((element, context) => {
+			this.liveExpression.handlePostProcess(element, context);
+		});
+		this.registerEditorExtension(this.liveExpression.createEditorExtension());
 
 		// Register events
 		this.eventManager.registerEvents();
@@ -233,6 +246,7 @@ export default class PersianCalendarPlugin extends Plugin {
 	}
 
 	onunload() {
+		this.liveExpression.destroy();
 		this.app.workspace.getLeavesOfType("persian-calendar").forEach((leaf) => {
 			leaf.detach();
 		});

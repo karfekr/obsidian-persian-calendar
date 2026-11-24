@@ -58,6 +58,9 @@ export default class VaultEventService {
 			}
 		}
 
-		if (version === this.refreshVersion) this.cachedEvents = nextEvents;
+		if (version !== this.refreshVersion) return;
+
+		this.cachedEvents = nextEvents;
+		this.plugin.liveExpression?.refresh();
 	}
 }

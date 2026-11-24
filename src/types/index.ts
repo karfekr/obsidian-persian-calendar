@@ -41,6 +41,7 @@ export type TDateFormat = "jalali" | "gregorian" | "hijri";
 export type THijriBase = "iran" | "umalqura";
 
 export type TDateFormatWithoutHijri = Exclude<TDateFormat, "hijri">;
+export type TLiveExpressionNumeralLanguage = "fa" | "en";
 
 export type TCustomEvent = {
 	id: string;
@@ -107,6 +108,8 @@ export type TSetting = {
 	legacyPathPatternsMigrated?: boolean;
 	bracketedPathPatternsMigrated?: boolean;
 	language: TLocale;
+	liveExpressionNumeralLanguage: TLiveExpressionNumeralLanguage;
+	liveExpressionOutputLanguage: TLocale;
 	versionUpdate: boolean;
 	askForCreateNote: boolean;
 	askForDeleteNote: boolean;

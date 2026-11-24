@@ -57,5 +57,35 @@ export function getGeneralSettings(): SettingDefinitionItem[] {
 				},
 			],
 		},
+		{
+			type: "group",
+			heading: t("setting.sections.liveExpressions"),
+			items: [
+				{
+					name: t("setting.liveExpressions.outputLanguage.name"),
+					desc: t("setting.liveExpressions.outputLanguage.desc"),
+					control: {
+						type: "dropdown",
+						key: "liveExpressionOutputLanguage",
+						options: {
+							fa: t("setting.liveExpressions.outputLanguage.options.fa"),
+							en: t("setting.liveExpressions.outputLanguage.options.en"),
+						},
+					},
+				},
+				{
+					name: t("setting.liveExpressions.numeralLanguage.name"),
+					desc: t("setting.liveExpressions.numeralLanguage.desc"),
+					control: {
+						type: "dropdown",
+						key: "liveExpressionNumeralLanguage",
+						options: {
+							fa: t("setting.liveExpressions.numeralLanguage.options.fa"),
+							en: t("setting.liveExpressions.numeralLanguage.options.en"),
+						},
+					},
+				},
+			],
+		},
 	];
 }

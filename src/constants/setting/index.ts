@@ -3,6 +3,8 @@ import type { TSetting } from "src/types";
 export const DEFAULT_SETTING: TSetting = {
 	versionUpdate: true,
 	language: "en",
+	liveExpressionNumeralLanguage: "en",
+	liveExpressionOutputLanguage: "fa",
 	dateFormat: "gregorian",
 	dailyNoteFormat: "YYYY-MM-DD",
 	monthlyNoteNaming: "jalali",

@@ -33,3 +33,7 @@
 	container-type: inline-size;
 	font-family: var(--persian-calendar-font);
 }
+
+.persian-live-expression {
+	unicode-bidi: plaintext;
+}

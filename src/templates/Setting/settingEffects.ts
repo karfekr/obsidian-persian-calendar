@@ -1,5 +1,6 @@
 import { setLocal } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
+import { isLiveExpressionSetting } from "src/services/LiveExpression";
 import type { TLocale, TSetting } from "src/types";
 
 const REFRESH_DEBOUNCE_MS = 400;
@@ -116,12 +117,26 @@ export function createSettingChangeHandler(
 			debounceTimer = undefined;
 		}
 
+		const refreshLiveExpressionsImmediately =
+			settingKey === "liveExpressionNumeralLanguage" ||
+			settingKey === "liveExpressionOutputLanguage";
+		if (refreshLiveExpressionsImmediately) {
+			plugin.liveExpression?.refresh();
+		}
+
 		const refreshEvents =
 			settingKey === "vaultEventSources" || settingKey === "hijriBase"
 				? plugin.vaultEventService.refresh()
 				: undefined;
 		await Promise.all([plugin.saveSetting(), refreshEvents]);
 		plugin.refreshViews();
+		if (
+			!refreshEvents &&
+			!refreshLiveExpressionsImmediately &&
+			isLiveExpressionSetting(settingKey)
+		) {
+			plugin.liveExpression?.refresh();
+		}
 
 		if (effect === "language") {
 			onLocaleChange();

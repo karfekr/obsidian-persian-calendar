@@ -24,6 +24,7 @@
 		},
 		"sections": {
 			"general": "General Settings",
+			"liveExpressions": "Live Expressions",
 			"paths": "Calendar Note Paths",
 			"names": "Calendar Note Names",
 			"templates": "Calendar Note Templates",
@@ -66,6 +67,18 @@
 			"showSeasons": {
 				"name": "Show Seasons in Calendar",
 				"desc": "* This setting is ignored when the sidebar is too narrow."
+			}
+		},
+		"liveExpressions": {
+			"outputLanguage": {
+				"name": "Output language",
+				"desc": "Controls generated labels such as month names, weekdays, and Yes/No values.",
+				"options": { "fa": "Persian", "en": "English" }
+			},
+			"numeralLanguage": {
+				"name": "Numerals",
+				"desc": "Controls digits in Live Expression output independently of the output language.",
+				"options": { "fa": "Persian", "en": "English" }
 			}
 		},
 		"paths": {
@@ -232,7 +245,7 @@
 				"edit": "Edit repository",
 				"delete": "Remove repository",
 				"notePathLabel": "Repository note",
-				"notePathDesc": "Use plain lines: MM-DD or YYYY-MM-DD | title | color | تعطیل. Dates use ASCII digits and hyphens. Color and holiday are optional; use | | تعطیل for a holiday with the default accent.",
+				"notePathDesc": "Use plain lines: YYYY-MM-DD | title | color | تعطیل",
 				"calendarLabel": "Calendar",
 				"saveBtn": "Save",
 				"cancelBtn": "Cancel",
