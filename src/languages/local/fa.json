@@ -54,7 +54,7 @@
 			},
 			"askBeforeDelete": {
 				"name": "تأیید پیش از حذف یادداشت",
-				"desc": "پیش از حذف روزنوشت پنجرهٔ تأیید نمایش داده می‌شود."
+				"desc": "پیش از حذف هر یادداشت پنجرهٔ تأیید نمایش داده می‌شود."
 			},
 			"openDailyOnStartup": {
 				"name": "باز کردن خودکار روزنوشت امروز هنگام اجرای برنامه",
@@ -267,6 +267,18 @@
 			"title": "حذف روزنوشت",
 			"message": "روزنوشت \u202A{date}\u202C حذف شود؟"
 		},
+		"deleteWeeklyNote": {
+			"title": "حذف هفته‌نوشت",
+			"message": "هفته‌نوشت هفته‌ی {week}ام سال {year} حذف شود؟"
+		},
+		"deleteMonthlyNote": {
+			"title": "حذف ماه‌نوشت",
+			"message": "ماه‌نوشت {month} {year} حذف شود؟"
+		},
+		"deleteYearlyNote": {
+			"title": "حذف سال‌نوشت",
+			"message": "سال‌نوشت {year} حذف شود؟"
+		},
 		"datePicker": {
 			"tooltip": "انتخاب تاریخ به هجری شمسی",
 			"jalali": "شمسی",
@@ -277,7 +289,10 @@
 		"error": {
 			"dailyNotesUnavailable": "برای استفاده از این قابلیت، روزنوشت ابسیدین یا قابلیت روزانهٔ افزونهٔ Periodic Notes را فعال و تنظیم کنید.",
 			"dailyNoteCreationFailed": "روزنوشت ابسیدین نتوانست یادداشت روزانه را ایجاد کند. تنظیمات پوشه و قالب آن را بررسی کنید.",
-			"dailyNoteDeleteFailed": "حذف روزنوشت انجام نشد."
+			"dailyNoteDeleteFailed": "حذف روزنوشت انجام نشد.",
+			"weeklyNoteDeleteFailed": "حذف هفته‌نوشت انجام نشد.",
+			"monthlyNoteDeleteFailed": "حذف ماه‌نوشت انجام نشد.",
+			"yearlyNoteDeleteFailed": "حذف سال‌نوشت انجام نشد."
 		},
 		"success": {
 			"placeholder": "عبارات معنادار با موفقیت جایگزین شد",
@@ -289,7 +304,7 @@
 			"openInNewTab": "باز کردن در تب جدید",
 			"openInHorizontalSplit": "باز کردن در نمای دوتایی افقی",
 			"openInVerticalSplit": "باز کردن در نمای دوتایی عمودی",
-			"deleteDailyNote": "حذف"
+			"deleteNote": "حذف"
 		},
 		"renderError": {
 			"title": "امکان نمایش درست تقویم وجود ندارد",

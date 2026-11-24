@@ -135,9 +135,18 @@ export default class CalendarBodyRender {
 			});
 
 			weekEl.addEventListener("contextmenu", (e) => {
-				openNoteContextMenu(e, (openMode) => {
-					void this.notesService.openOrCreateWeeklyNote(weekYear, weekNumber, openMode);
-				});
+				const file = this.notesService.getWeeklyNoteFile(weekYear, weekNumber);
+				openNoteContextMenu(
+					e,
+					(openMode) => {
+						void this.notesService.openOrCreateWeeklyNote(weekYear, weekNumber, openMode);
+					},
+					file
+						? () => {
+								void this.notesService.deleteWeeklyNote(weekYear, weekNumber);
+							}
+						: undefined,
+				);
 			});
 		}
 	}
