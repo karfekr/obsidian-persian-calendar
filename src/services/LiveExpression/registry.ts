@@ -22,6 +22,8 @@ import {
 } from "src/utils/dateUtils";
 import { dateToEvents } from "src/utils/eventUtils";
 
+import { parseCountdown } from "./countdown";
+
 export type TLiveExpressionCadence = "second" | "minute" | "day";
 
 export class ExpressionContext {
@@ -103,8 +105,8 @@ export class ExpressionContext {
 	}
 }
 
-type Expression = {
-	evaluate: (context: ExpressionContext) => string | number;
+export type Expression = {
+	evaluate: (context: ExpressionContext) => string | number | null;
 	cadence?: TLiveExpressionCadence;
 };
 
@@ -202,5 +204,5 @@ export const LIVE_EXPRESSION_KEYS = Object.freeze(Object.keys(canonicalExpressio
 const expressionsByKey = new Map<string, Expression>(Object.entries(canonicalExpressions));
 
 export function findExpression(key: string): Expression | undefined {
-	return expressionsByKey.get(key);
+	return expressionsByKey.get(key) ?? parseCountdown(key);
 }
