@@ -39,6 +39,7 @@ files -`main.js`, `manifest.json` and `styles.css`- and move them to the followi
 - [Dynamic Paths](#dynamic_path)
 - [Quick Reference to Calendar Notes](#quick_reference)
 - [Placeholders](#placeholders)
+- [Live Expressions](#live_expressions)
 - [Custom Events](#custom_events)
 - [Using the Dedicated API](#api)
 - [Other Features](#other)
@@ -233,6 +234,61 @@ today's date._
 | `{{روزهای باقیمانده ماه}}` | 2             | Days remaining until the end of the month     |
 
 </div>
+
+## <a name="live_expressions"></a> Live Expressions
+
+Type `{+` in a note and choose a key from autocomplete. It inserts the exact `{+key}` syntax;
+the Markdown source is never replaced. Reading View and Live Preview render the current Tehran
+value (move the cursor outside an expression in Live Preview to see it).
+
+Live Expressions differ from [placeholders](#placeholders), which write a static value when you
+run the replacement command or create a note. They also differ from Smart Date Links, which
+recognize date phrases and navigate to calendar notes. Live Expressions are display-only values
+that stay current in an open rendered note.
+
+```markdown
+**Date** · {+نام روز} {+روز ماه شمسی} {+نام ماه شمسی} {+سال شمسی}
+**Gregorian** · {+سال میلادی}-{+شماره ماه میلادی}-{+روز ماه میلادی}
+**Tehran time** · {+ساعت}:{+دقیقه}
+**Year elapsed** · {+درصد سال شمسی}%
+**Today's events** · {+مناسبت}
+```
+
+<div dir="ltr">
+
+| Use                       | Keys inside `{+…}`                                                                                              |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Clock                     | `ساعت`, `دقیقه`, `ثانیه`                                                                                        |
+| Jalali date               | `سال شمسی`, `نام ماه شمسی`, `شماره ماه شمسی`, `روز ماه شمسی`                                                    |
+| Gregorian date            | `سال میلادی`, `نام ماه میلادی`, `شماره ماه میلادی`, `روز ماه میلادی`                                                |
+| Lunar Hijri date          | `سال قمری`, `نام ماه قمری`, `شماره ماه قمری`, `روز ماه قمری`                                                    |
+| Weekday and period        | `نام روز`, `شماره روز هفته`, `هفته سال`, `هفته ماه شمسی`, `فصل`, `شماره فصل`                                    |
+| Length and position       | `تعداد روز سال شمسی`, `تعداد روز ماه شمسی`, `روز سال شمسی`, `روز فصل`                                           |
+| Elapsed or remaining time | `روز باقی سال شمسی`, `روز باقی ماه شمسی`, `روز باقی فصل`, `روز باقی هفته`, `دقیقه مانده روز`, `دقیقه گذشته روز` |
+| Numeric percentage        | `درصد سال شمسی`, `درصد فصل`, `درصد ماه شمسی`, `درصد هفته`, `درصد روز`                                           |
+| Events and holidays       | `مناسبت`, `تعداد مناسبت`, `تعطیل`                                                                               |
+
+</div>
+
+Weekday numbers run from Saturday (1) to Friday (7). The week-of-year key uses your configured
+week calculation; the week-of-month key counts days 1–7 as week 1, 8–14 as week 2, and so on.
+Hijri dates use the selected Hijri basis. `تعطیل` is true on Friday or when an enabled event marks
+the day as a holiday.
+
+Under **Live Expressions** in Settings, choose an output language (Persian or English) for
+generated names, event fallback text, and Yes/No values; choose Persian or English numerals
+separately. The default is Persian text with English numerals, so all four combinations are
+available. Custom-event titles remain authored text; only their rendered digits follow the numeral
+setting. Built-in event titles use the selected language when the event data provides it.
+
+Mounted expressions refresh on their normal second, minute, or Tehran-midnight cadence. They also
+refresh after a committed custom-event cache update, when an event/display setting that affects
+them changes, and when Obsidian returns from the background or sleep. This recalculates from the
+current time without polling or changing Markdown files.
+
+Only the exact `{+…}` syntax and the keys above are supported. Autocomplete is bidirectionally
+isolated, so Persian keys display as `{+کلید}` in both RTL and LTR interfaces while insertion
+preserves the exact Markdown text.
 
 ## <a name="custom_events"></a> Custom Event Repositories
 
