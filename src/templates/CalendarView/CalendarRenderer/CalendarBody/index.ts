@@ -67,9 +67,18 @@ export default class CalendarBodyRender {
 			});
 
 			seasonEl.addEventListener("contextmenu", (e) => {
-				openNoteContextMenu(e, (openMode) => {
-					void this.notesService.openOrCreateSeasonalNote(jYearState, seasonNumber, openMode);
-				});
+				const file = this.notesService.getSeasonalNoteFile(jYearState, seasonNumber);
+				openNoteContextMenu(
+					e,
+					(openMode) => {
+						void this.notesService.openOrCreateSeasonalNote(jYearState, seasonNumber, openMode);
+					},
+					file
+						? () => {
+								void this.notesService.deleteSeasonalNote(jYearState, seasonNumber);
+							}
+						: undefined,
+				);
 			});
 		}
 	}
