@@ -263,6 +263,7 @@ export default class LiveExpression {
 		if (!expression) return null;
 
 		const value = expression.evaluate(new ExpressionContext(this.plugin));
+		if (value === null) return null;
 		const normalized = toEnNumber(String(value));
 		return this.plugin.setting.liveExpressionNumeralLanguage === "fa"
 			? toFaNumber(normalized)
