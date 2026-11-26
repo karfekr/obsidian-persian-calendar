@@ -4,7 +4,13 @@ import { createNoteModal, Notice } from "src/components";
 import { t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
 import NotePathBuilder from "src/services/NotePathBuilder";
-import type { TDateEngineContext, TJalali, TOpenNoteMode, TPeriodicNoteInfo } from "src/types";
+import type {
+	TDateEngineContext,
+	TJalali,
+	TNoteNavTarget,
+	TOpenNoteMode,
+	TPeriodicNoteInfo,
+} from "src/types";
 import { parsePattern } from "src/utils/dateEngine";
 import {
 	dateToJalali,
@@ -53,7 +59,7 @@ export default class NoteService {
 		const monthly = this.getMonthlyNoteInfo(file);
 		if (monthly) return monthly;
 
-		return this.getYearlyNoteInfo(file);
+		return this.getSeasonalNoteInfo(file) ?? this.getYearlyNoteInfo(file);
 	}
 
 	private getWeeklyNoteInfo(file: TFile): Extract<TPeriodicNoteInfo, { type: "weekly" }> | null {
@@ -101,6 +107,18 @@ export default class NoteService {
 		if (file.path !== filePath) return null;
 
 		return { type: "monthly", jy, jm };
+	}
+
+	private getSeasonalNoteInfo(
+		file: TFile,
+	): Extract<TPeriodicNoteInfo, { type: "seasonal" }> | null {
+		const match = file.basename.match(/^(\d{4})-S([1-4])$/);
+		if (!match) return null;
+
+		const jy = Number(match[1]);
+		const seasonNumber = Number(match[2]);
+		const { filePath } = this.pathBuilder.buildSeasonalNotePath(jy, seasonNumber);
+		return file.path === filePath ? { type: "seasonal", jy, seasonNumber } : null;
 	}
 
 	private getYearlyNoteInfo(file: TFile): Extract<TPeriodicNoteInfo, { type: "yearly" }> | null {
@@ -361,21 +379,19 @@ export default class NoteService {
 
 	public getWeeklyNoteFile(jy: number, weekNumber: number): TFile | null {
 		const { filePath, fileName } = this.pathBuilder.buildWeeklyNotePath(jy, weekNumber);
-		const file = this.app.vault.getAbstractFileByPath(filePath);
-		if (file instanceof TFile) return file;
-		if (weekNumber >= 10) return null;
+		const file = this.getNoteFileAtPath(filePath);
+		if (file || weekNumber >= 10) return file;
 
 		// Reuse older unpadded filenames without renaming notes.
 		const legacyPath = `${filePath.slice(0, -fileName.length)}${jy}-W${weekNumber}.md`;
-		const legacy = this.app.vault.getAbstractFileByPath(legacyPath);
-		return legacy instanceof TFile ? legacy : null;
+		return this.getNoteFileAtPath(legacyPath);
 	}
 
 	public getSeasonsWithNotes(jy: number): number[] {
 		const result: number[] = [];
 
 		for (let seasonNumber = 1; seasonNumber <= 4; seasonNumber++) {
-			if (this.getSeasonalNoteFile(jy, seasonNumber)) {
+			if (this.getPeriodicNoteFile({ mode: "seasonal", jy, seasonNumber })) {
 				result.push(seasonNumber);
 			}
 		}
@@ -385,6 +401,29 @@ export default class NoteService {
 
 	public getDailyNoteFile(jy: number, jm: number, jd: number): TFile | null {
 		const { filePath } = this.pathBuilder.buildDailyNotePath(jy, jm, jd);
+		return this.getNoteFileAtPath(filePath);
+	}
+
+	public getPeriodicNoteFile(target: TNoteNavTarget): TFile | null {
+		switch (target.mode) {
+			case "daily":
+				return this.getDailyNoteFile(target.jy, target.jm, target.jd);
+			case "weekly":
+				return this.getWeeklyNoteFile(target.weekYear, target.weekNumber);
+			case "monthly":
+				return this.getNoteFileAtPath(
+					this.pathBuilder.buildMonthlyNotePath(target.jy, target.jm).filePath,
+				);
+			case "seasonal":
+				return this.getNoteFileAtPath(
+					this.pathBuilder.buildSeasonalNotePath(target.jy, target.seasonNumber).filePath,
+				);
+			case "yearly":
+				return this.getNoteFileAtPath(this.pathBuilder.buildYearlyNotePath(target.jy).filePath);
+		}
+	}
+
+	private getNoteFileAtPath(filePath: string): TFile | null {
 		const file = this.app.vault.getAbstractFileByPath(filePath);
 		return file instanceof TFile ? file : null;
 	}

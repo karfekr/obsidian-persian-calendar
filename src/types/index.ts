@@ -287,10 +287,16 @@ export type TToken =
 
 export type TOpenNoteMode = "current" | "tab" | "split-horizontal" | "split-vertical";
 
-export type TNoteNavMode = "daily" | "weekly" | "monthly" | "yearly";
+export type TNoteNavTarget =
+	| { mode: "daily"; jy: number; jm: number; jd: number }
+	| { mode: "weekly"; weekYear: number; weekNumber: number }
+	| { mode: "monthly"; jy: number; jm: number }
+	| { mode: "seasonal"; jy: number; seasonNumber: number }
+	| { mode: "yearly"; jy: number };
 
 export type TPeriodicNoteInfo =
 	| { type: "daily"; jy: number; jm: number; jd: number }
 	| { type: "weekly"; weekYear: number; weekNumber: number; anchor: TJalali }
 	| { type: "monthly"; jy: number; jm: number }
+	| { type: "seasonal"; jy: number; seasonNumber: number }
 	| { type: "yearly"; jy: number };

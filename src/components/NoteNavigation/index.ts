@@ -1,14 +1,9 @@
 import { MarkdownView, setIcon } from "obsidian";
+import { t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
-import type { TOpenNoteMode } from "src/types";
+import type { TNoteNavTarget, TOpenNoteMode } from "src/types";
 import { todayTehran } from "src/utils/dateUtils";
-import type {
-	TNoteNavCenterSlot,
-	TNoteNavModel,
-	TNoteNavSideSlot,
-	TNoteNavStripChip,
-	TNoteNavTarget,
-} from "./model";
+import type { TNoteNavModel, TNoteNavSideSlot } from "./model";
 import { buildNoteNavigationModel } from "./model";
 
 const NAV_ROOT_CLASS = "persian-calendar-note-nav";
@@ -91,15 +86,20 @@ export default class NoteNavigation {
 			case "monthly":
 				await this.plugin.noteService.openOrCreateMonthlyNote(target.jy, target.jm, openMode);
 				break;
+			case "seasonal":
+				await this.plugin.noteService.openOrCreateSeasonalNote(
+					target.jy,
+					target.seasonNumber,
+					openMode,
+				);
+				break;
 			case "yearly":
 				await this.plugin.noteService.openOrCreateYearlyNote(target.jy, openMode);
 				break;
 		}
 	}
 
-	private bindNavigation(el: HTMLElement, target: TNoteNavTarget, disabled = false): void {
-		if (disabled) return;
-
+	private bindNavigation(el: HTMLElement, target: TNoteNavTarget): void {
 		el.addEventListener("click", (event) => {
 			event.preventDefault();
 			void this.navigateTo(target, this.getOpenModeFromEvent(event));
@@ -114,6 +114,7 @@ export default class NoteNavigation {
 
 	private render(rootEl: HTMLElement, model: TNoteNavModel): void {
 		rootEl.empty();
+		rootEl.lang = model.locale;
 		rootEl.dataset.locale = model.locale;
 		rootEl.dataset.mode = model.mode;
 
@@ -121,7 +122,6 @@ export default class NoteNavigation {
 
 		this.renderTopBar(shell, model);
 		this.renderStage(shell, model);
-		this.renderSubStrip(shell, model.stripChips);
 	}
 
 	private renderTopBar(shell: HTMLElement, model: TNoteNavModel): void {
@@ -132,113 +132,67 @@ export default class NoteNavigation {
 			text: model.noteTypeLabel,
 		});
 
-		const topActions = topBar.createDiv({ cls: "persian-calendar-note-nav__top-actions" });
-		const todayBtn = topActions.createEl("button", {
-			cls: `persian-calendar-note-nav__today-btn${model.isCurrent ? " is-today" : ""}`,
-			type: "button",
-			title: model.currentButtonLabel,
-		});
-		todayBtn.createSpan({ cls: "persian-calendar-note-nav__today-dot" });
-		todayBtn.createSpan({ text: model.currentButtonLabel });
+		topBar.createSpan({ cls: "persian-calendar-note-nav__year", text: model.year });
 
-		this.bindNavigation(todayBtn, model.todayTarget, model.isCurrent);
+		const todayBtn = topBar.createEl("button", {
+			cls: "persian-calendar-note-nav__today-btn",
+			type: "button",
+			text: model.currentButtonLabel,
+		});
+
+		todayBtn.disabled = model.isCurrent;
+		if (!model.isCurrent) this.bindNavigation(todayBtn, model.todayTarget);
 	}
 
 	private renderStage(shell: HTMLElement, model: TNoteNavModel): void {
 		const stage = shell.createDiv({ cls: "persian-calendar-note-nav__stage" });
 
-		const prevSlot = stage.createEl("button", {
-			cls: "persian-calendar-note-nav__slot persian-calendar-note-nav__slot--side persian-calendar-note-nav__area-prev-slot",
-			type: "button",
-			title: model.prevLabel,
-		});
-		this.renderSideSlotContent(prevSlot, model.prev);
-		this.bindNavigation(prevSlot, model.prev.target);
-
-		const prevBtn = stage.createEl("button", {
-			cls: "persian-calendar-note-nav__chevron-btn persian-calendar-note-nav__area-prev-btn",
-			type: "button",
-			attr: { "aria-label": model.prevLabel },
-			title: model.prevLabel,
-		});
-		setIcon(prevBtn, "chevron-right");
-		this.bindNavigation(prevBtn, model.prev.target);
-
-		const centerSlot = stage.createDiv({
-			cls: `persian-calendar-note-nav__slot persian-calendar-note-nav__slot--center persian-calendar-note-nav__area-center${
-				model.isCurrent ? " is-current" : ""
-			}`,
-		});
-		this.renderCenterSlotContent(centerSlot, model.center);
-
-		const nextBtn = stage.createEl("button", {
-			cls: "persian-calendar-note-nav__chevron-btn persian-calendar-note-nav__area-next-btn",
-			type: "button",
-			attr: { "aria-label": model.nextLabel },
-			title: model.nextLabel,
-		});
-		setIcon(nextBtn, "chevron-left");
-		this.bindNavigation(nextBtn, model.next.target);
-
-		const nextSlot = stage.createEl("button", {
-			cls: "persian-calendar-note-nav__slot persian-calendar-note-nav__slot--side persian-calendar-note-nav__area-next-slot",
-			type: "button",
-			title: model.nextLabel,
-		});
-		this.renderSideSlotContent(nextSlot, model.next);
-		this.bindNavigation(nextSlot, model.next.target);
+		this.renderSideSlot(stage, model.prev, model.prevLabel, "prev");
+		if (model.center) {
+			const center = stage.createDiv({
+				cls: `persian-calendar-note-nav__slot persian-calendar-note-nav__slot--center${model.isCurrent ? " is-current" : ""}`,
+			});
+			if (model.center.kicker) {
+				center.createSpan({
+					cls: "persian-calendar-note-nav__center-kicker",
+					text: model.center.kicker,
+				});
+			}
+			center.createSpan({
+				cls: "persian-calendar-note-nav__center-title",
+				text: model.center.main,
+			});
+		}
+		this.renderSideSlot(stage, model.next, model.nextLabel, "next");
 	}
 
-	private renderSideSlotContent(el: HTMLElement, slot: TNoteNavSideSlot): void {
+	private renderSideSlot(
+		stage: HTMLElement,
+		slot: TNoteNavSideSlot,
+		directionLabel: string,
+		direction: "prev" | "next",
+	): void {
+		const { target } = slot;
+		const exists = this.plugin.noteService.getPeriodicNoteFile(target) !== null;
+		const action = t(exists ? "noteNavigation.openNote" : "noteNavigation.createNote");
+		const label = `${directionLabel}: ${slot.main} (${action})`;
+		const button = stage.createEl("button", {
+			cls: `persian-calendar-note-nav__slot persian-calendar-note-nav__slot--side persian-calendar-note-nav__slot--${direction}${exists ? "" : " is-missing"}`,
+			type: "button",
+			attr: { "aria-label": label },
+			title: label,
+		});
+		const text = button.createSpan({ cls: "persian-calendar-note-nav__side-text" });
 		if (slot.kicker) {
-			el.createSpan({ cls: "persian-calendar-note-nav__slot-kicker", text: slot.kicker });
+			text.createSpan({ cls: "persian-calendar-note-nav__slot-kicker", text: slot.kicker });
 		}
+		text.createSpan({ cls: "persian-calendar-note-nav__slot-main", text: slot.main });
 
-		el.createSpan({ cls: "persian-calendar-note-nav__slot-main", text: slot.main });
-
-		if (slot.sub) {
-			el.createSpan({ cls: "persian-calendar-note-nav__slot-sub", text: slot.sub });
-		}
-	}
-
-	private renderCenterSlotContent(el: HTMLElement, center: TNoteNavCenterSlot): void {
-		const kicker = el.createSpan({ cls: "persian-calendar-note-nav__center-kicker" });
-		kicker.createSpan({ text: center.kicker });
-		if (center.currentPill) {
-			kicker.createSpan({
-				cls: "persian-calendar-note-nav__current-pill",
-				text: center.currentPill,
-			});
-		}
-
-		const main = el.createDiv({ cls: "persian-calendar-note-nav__center-main" });
-		main.createSpan({ cls: "persian-calendar-note-nav__center-title", text: center.main });
-
-		const sub = el.createDiv({ cls: "persian-calendar-note-nav__center-sub" });
-		center.subItems.forEach((item, index) => {
-			if (index > 0) {
-				sub.createSpan({ cls: "persian-calendar-note-nav__sub-sep" });
-			}
-			sub.createSpan({ text: item });
+		const icon = button.createSpan({
+			cls: "persian-calendar-note-nav__side-icons",
+			attr: { "aria-hidden": "true" },
 		});
-	}
-
-	private renderSubStrip(shell: HTMLElement, chips: TNoteNavStripChip[]): void {
-		if (chips.length === 0) return;
-
-		const strip = shell.createDiv({ cls: "persian-calendar-note-nav__sub-strip" });
-		for (const chip of chips) {
-			const btn = strip.createEl("button", {
-				cls: `persian-calendar-note-nav__strip-chip${chip.active ? " is-active" : ""}`,
-				type: "button",
-				title: chip.title,
-			});
-			btn.createSpan({ cls: "persian-calendar-note-nav__strip-chip-label", text: chip.label });
-			if (chip.num) {
-				btn.createSpan({ cls: "persian-calendar-note-nav__strip-chip-num", text: chip.num });
-			}
-
-			this.bindNavigation(btn, chip.target);
-		}
+		setIcon(icon, direction === "prev" ? "chevron-right" : "chevron-left");
+		this.bindNavigation(button, target);
 	}
 }

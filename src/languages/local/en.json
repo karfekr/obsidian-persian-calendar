@@ -67,7 +67,7 @@
 			},
 			"showInNoteNavigation": {
 				"name": "Show In-Note Navigation",
-				"desc": "Display a Persian calendar navigation bar at the top of periodic notes."
+				"desc": "Show the Persian calendar navigation bar in daily, weekly, monthly, seasonal, and yearly notes."
 			},
 			"showSeasons": {
 				"name": "Show Seasons in Calendar",
@@ -329,6 +329,8 @@
 	"noteNavigation": {
 		"previous": "Previous",
 		"next": "Next",
+		"openNote": "Open note",
+		"createNote": "Create note",
 		"daily": {
 			"label": "Daily Note",
 			"current": "Today"
@@ -347,10 +349,7 @@
 			"label": "Yearly Note",
 			"current": "This Year",
 			"prev": "Prev Year",
-			"next": "Next Year",
-			"kicker": "Solar Hijri Year",
-			"leap": "Leap Year",
-			"days365": "365 days"
+			"next": "Next Year"
 		}
 	}
 }

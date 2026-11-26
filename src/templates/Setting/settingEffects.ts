@@ -5,7 +5,7 @@ import type { TLocale, TSetting } from "src/types";
 
 const REFRESH_DEBOUNCE_MS = 400;
 
-type EffectKind = "refresh-immediate" | "refresh-debounced" | "language";
+type EffectKind = "refresh-immediate" | "refresh-debounced" | "language" | "note-navigation";
 
 const SETTING_EFFECTS: Partial<Record<keyof TSetting, EffectKind>> = {
 	language: "language",
@@ -15,7 +15,7 @@ const SETTING_EFFECTS: Partial<Record<keyof TSetting, EffectKind>> = {
 	openDailyNoteOnStartup: "refresh-immediate",
 	showSeasonalNotes: "refresh-immediate",
 	showGoToCurrent: "refresh-immediate",
-	showInNoteNavigation: "refresh-immediate",
+	showInNoteNavigation: "note-navigation",
 
 	dailyNotesPath: "refresh-debounced",
 	weeklyNotesPath: "refresh-debounced",
@@ -96,6 +96,12 @@ export function createSettingChangeHandler(
 		}
 
 		const effect = SETTING_EFFECTS[settingKey] ?? "refresh-immediate";
+
+		if (effect === "note-navigation") {
+			plugin.noteNavigation?.refreshAll();
+			await plugin.saveSetting();
+			return;
+		}
 
 		if (effect === "refresh-debounced") {
 			if (debounceTimer) {

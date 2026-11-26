@@ -1,194 +1,186 @@
 import { buildNoteNavigationModel } from "src/components/NoteNavigation/model";
-import { getWeekStartCalculator, gregorianToCalendarDate } from "src/utils/dateUtils";
+import type { TWeekCalculationMode } from "src/types";
+import { getWeekStartCalculator, jalaliToCalendarDate } from "src/utils/dateUtils";
 import { describe, expect, it } from "vitest";
 
-// 2026-11-24 corresponds to 1405-09-03 (Azar 3, 1405, Tuesday)
-const TODAY = gregorianToCalendarDate(2026, 11, 24);
-const PERSIAN_CHARS = /[\u0600-\u06FF]/;
-const LATIN_CHARS = /[A-Za-z]/;
+const TODAY = jalaliToCalendarDate(1405, 9, 3);
+const WEEK_MODE = "jalali-first-week-start";
+
+function buildWeeklyModel(
+	weekYear: number,
+	weekNumber: number,
+	weekCalculation: TWeekCalculationMode = WEEK_MODE,
+	today = TODAY,
+) {
+	const { jy, jm, jd } = getWeekStartCalculator(weekCalculation).getStartOfWeek(
+		weekYear,
+		weekNumber,
+	);
+	return buildNoteNavigationModel(
+		{ type: "weekly", weekYear, weekNumber, anchor: { jy, jm, jd } },
+		weekCalculation,
+		today,
+	);
+}
 
 describe("buildNoteNavigationModel", () => {
-	it("builds daily mode in Persian without Latin text", () => {
-		const model = buildNoteNavigationModel(
-			{ type: "daily", jy: 1405, jm: 9, jd: 3 },
-			"jalali-first-week-start",
-			TODAY,
-			"fa",
-		);
+	it.each([
+		["fa", "۱۴۰۵", "روزنوشت", "امروز", "سه‌شنبه", "۳ آذر", "۲ آذر", "۴ آذر"],
+		["en", "1405", "Daily Note", "Today", "Tue", "3 Azar", "2 Azar", "4 Azar"],
+	] as const)(
+		"shows inline Jalali daily dates without a week strip in %s",
+		(locale, year, noteTypeLabel, currentButtonLabel, weekday, date, prev, next) => {
+			const model = buildNoteNavigationModel(
+				{ type: "daily", jy: 1405, jm: 9, jd: 3 },
+				WEEK_MODE,
+				TODAY,
+				locale,
+			);
 
-		expect(model.mode).toBe("daily");
-		expect(model.locale).toBe("fa");
-		expect(model.isCurrent).toBe(true);
-		expect(model.noteTypeLabel).toBe("روزنوشت");
-		expect(model.currentButtonLabel).toBe("امروز");
-		expect(model.center.currentPill).toBe("امروز");
-		expect(model.center.main).toBe("۳ آذر");
-		expect(model.center.subItems[0]).toBe("۱۴۰۵");
-		expect(model.center.subItems[2]).toBe("۲۴ نوامبر ۲۰۲۶");
+			expect(model).toMatchObject({
+				locale,
+				year,
+				isCurrent: true,
+				noteTypeLabel,
+				currentButtonLabel,
+			});
+			expect(model.center).toEqual({ kicker: weekday, main: date });
+			expect(model.prev.main).toBe(prev);
+			expect(model.next.main).toBe(next);
+		},
+	);
 
-		expect(model.prev.target).toEqual({ mode: "daily", jy: 1405, jm: 9, jd: 2 });
-		expect(model.next.target).toEqual({ mode: "daily", jy: 1405, jm: 9, jd: 4 });
-		expect(model.stripChips).toHaveLength(0);
-
-		const allText = [
-			model.noteTypeLabel,
-			model.currentButtonLabel,
-			model.prev.kicker,
-			model.prev.main,
-			model.prev.sub,
-			model.center.kicker,
-			model.center.currentPill,
-			model.center.main,
-			...model.center.subItems,
-			model.next.kicker,
-			model.next.main,
-			model.next.sub,
-		].join(" ");
-		expect(allText).not.toMatch(LATIN_CHARS);
-	});
-
-	it("builds daily mode in English without Persian text", () => {
-		const model = buildNoteNavigationModel(
-			{ type: "daily", jy: 1405, jm: 9, jd: 3 },
-			"jalali-first-week-start",
-			TODAY,
-			"en",
-		);
-
-		expect(model.locale).toBe("en");
-		expect(model.noteTypeLabel).toBe("Daily Note");
-		expect(model.currentButtonLabel).toBe("Today");
-		expect(model.center.currentPill).toBe("Today");
-		expect(model.center.main).toBe("3 Azar");
-		expect(model.center.subItems[0]).toBe("1405");
-		expect(model.center.subItems[2]).toBe("Nov 24, 2026");
-
-		const allText = [
-			model.noteTypeLabel,
-			model.currentButtonLabel,
-			model.prev.kicker,
-			model.prev.main,
-			model.prev.sub,
-			model.center.kicker,
-			model.center.currentPill,
-			model.center.main,
-			...model.center.subItems,
-			model.next.kicker,
-			model.next.main,
-			model.next.sub,
-		].join(" ");
-		expect(allText).not.toMatch(PERSIAN_CHARS);
-	});
-
-	it("handles Jalali month rollover in daily mode", () => {
-		const model = buildNoteNavigationModel(
-			{ type: "daily", jy: 1405, jm: 9, jd: 1 },
-			"jalali-first-week-start",
-			TODAY,
-			"en",
-		);
-
+	it.each([
+		[1405, 9, 1405, 8, 30],
+		[1404, 1, 1403, 12, 30],
+		[1405, 1, 1404, 12, 29],
+	])("steps back from day one of Jalali %i/%i", (jy, jm, prevYear, prevMonth, prevDay) => {
+		const model = buildNoteNavigationModel({ type: "daily", jy, jm, jd: 1 }, WEEK_MODE, TODAY);
 		expect(model.isCurrent).toBe(false);
-		expect(model.center.currentPill).toBeUndefined();
-		expect(model.prev.target).toEqual({ mode: "daily", jy: 1405, jm: 8, jd: 30 });
-		expect(model.next.target).toEqual({ mode: "daily", jy: 1405, jm: 9, jd: 2 });
-	});
-
-	it("builds weekly mode with 7 day chips and prev/next week targets", () => {
-		const calc = getWeekStartCalculator("jalali-first-week-start");
-		const { jy: weekYear, weekNumber } = calc.getWeekNumber(TODAY);
-		const start = calc.getStartOfWeek(weekYear, weekNumber);
-
-		const modelFa = buildNoteNavigationModel(
-			{
-				type: "weekly",
-				weekYear,
-				weekNumber,
-				anchor: { jy: start.jy, jm: start.jm, jd: start.jd },
-			},
-			"jalali-first-week-start",
-			TODAY,
-			"fa",
-		);
-
-		expect(modelFa.mode).toBe("weekly");
-		expect(modelFa.isCurrent).toBe(true);
-		expect(modelFa.noteTypeLabel).toBe("هفته‌نوشت");
-		expect(modelFa.center.currentPill).toBe("این هفته");
-		expect(modelFa.stripChips).toHaveLength(7);
-		expect(modelFa.stripChips.filter((c) => c.active)).toHaveLength(1);
-		expect(modelFa.stripChips.find((c) => c.active)?.target).toEqual({
+		expect(model.prev.target).toEqual({
 			mode: "daily",
-			jy: 1405,
-			jm: 9,
-			jd: 3,
+			jy: prevYear,
+			jm: prevMonth,
+			jd: prevDay,
 		});
-		expect(modelFa.prev.target).toEqual({ mode: "weekly", weekYear, weekNumber: weekNumber - 1 });
-		expect(modelFa.next.target).toEqual({ mode: "weekly", weekYear, weekNumber: weekNumber + 1 });
-
-		const modelEn = buildNoteNavigationModel(
-			{
-				type: "weekly",
-				weekYear,
-				weekNumber,
-				anchor: { jy: start.jy, jm: start.jm, jd: start.jd },
-			},
-			"jalali-first-week-start",
-			TODAY,
-			"en",
-		);
-		expect(modelEn.noteTypeLabel).toBe("Weekly Note");
-		expect(modelEn.center.currentPill).toBe("This Week");
-		expect(modelEn.stripChips.map((c) => c.label).join(" ")).not.toMatch(PERSIAN_CHARS);
+		expect(model.next.target).toEqual({ mode: "daily", jy, jm, jd: 2 });
 	});
 
-	it("builds monthly mode with 12 month chips and year wraparound", () => {
-		const model = buildNoteNavigationModel(
+	it("shows the weekly Jalali date range without a footer strip", () => {
+		const { jy: weekYear, weekNumber } = getWeekStartCalculator(WEEK_MODE).getWeekNumber(TODAY);
+		const model = buildWeeklyModel(weekYear, weekNumber);
+
+		expect(model).toMatchObject({
+			year: "۱۴۰۵",
+			isCurrent: true,
+			noteTypeLabel: "هفته‌نوشت",
+			currentButtonLabel: "این هفته",
+		});
+		expect(model.center).toEqual({ kicker: "هفته ۳۶", main: "۳۰ آبان تا ۶ آذر" });
+		expect(model.prev.target).toEqual({ mode: "weekly", weekYear, weekNumber: weekNumber - 1 });
+		expect(model.next.target).toEqual({ mode: "weekly", weekYear, weekNumber: weekNumber + 1 });
+		expect(model).not.toHaveProperty("stripChips");
+	});
+
+	it.each(["jalali-first-week-start", "jalali-first-day-of-year"] as const)(
+		"steps between Esfand and Farvardin weeks with %s",
+		(mode) => {
+			const firstWeek = buildWeeklyModel(1404, 1, mode);
+			const previous = firstWeek.prev.target;
+			expect(firstWeek.year).toBe("۱۴۰۴");
+			expect(previous).toMatchObject({ mode: "weekly", weekYear: 1403 });
+
+			if (previous.mode !== "weekly") throw new Error("Expected a weekly target");
+			const lastWeek = buildWeeklyModel(previous.weekYear, previous.weekNumber, mode);
+			expect(lastWeek.year).toBe("۱۴۰۳");
+			expect(lastWeek.next.target).toEqual({ mode: "weekly", weekYear: 1404, weekNumber: 1 });
+		},
+	);
+
+	it("keeps Gregorian-based weekly filenames as targets while displaying Jalali dates", () => {
+		const mode = "gregorian-first-week-start";
+		const { jy: weekYear, weekNumber } = getWeekStartCalculator(mode).getWeekNumber(TODAY);
+		const model = buildWeeklyModel(weekYear, weekNumber, mode);
+
+		expect(weekYear).toBe(2026);
+		expect(model.year).toBe("۱۴۰۵");
+		expect(model.center).toEqual({ kicker: undefined, main: "۳۰ آبان تا ۶ آذر" });
+		expect(model.prev).toEqual({
+			main: "هفته قبل",
+			target: { mode: "weekly", weekYear: 2026, weekNumber: weekNumber - 1 },
+		});
+		expect(model.todayTarget).toEqual({ mode: "weekly", weekYear, weekNumber });
+	});
+
+	it("keeps only the adjacent months and wraps across the Jalali year", () => {
+		const farvardin = buildNoteNavigationModel(
 			{ type: "monthly", jy: 1405, jm: 1 },
-			"jalali-first-week-start",
+			WEEK_MODE,
 			TODAY,
-			"fa",
+		);
+		const esfand = buildNoteNavigationModel(
+			{ type: "monthly", jy: 1405, jm: 12 },
+			WEEK_MODE,
+			TODAY,
 		);
 
-		expect(model.mode).toBe("monthly");
-		expect(model.isCurrent).toBe(false);
-		expect(model.noteTypeLabel).toBe("ماه‌نوشت");
-		expect(model.prev.target).toEqual({ mode: "monthly", jy: 1404, jm: 12 });
-		expect(model.next.target).toEqual({ mode: "monthly", jy: 1405, jm: 2 });
-		expect(model.stripChips).toHaveLength(12);
-		expect(model.stripChips[0].active).toBe(true);
-		expect(model.stripChips[0].label).toBe("فروردین");
-		expect(model.stripChips[8].target).toEqual({ mode: "monthly", jy: 1405, jm: 9 });
+		expect(farvardin.year).toBe("۱۴۰۵");
+		expect(farvardin.center).toEqual({ main: "فروردین" });
+		expect(farvardin.prev).toEqual({
+			main: "اسفند",
+			target: { mode: "monthly", jy: 1404, jm: 12 },
+		});
+		expect(esfand.next).toEqual({ main: "فروردین", target: { mode: "monthly", jy: 1406, jm: 1 } });
+		expect(farvardin.todayTarget).toEqual({ mode: "monthly", jy: 1405, jm: 9 });
 	});
 
-	it("builds yearly mode with 4 season chips and leap-year info", () => {
-		const modelFa = buildNoteNavigationModel(
-			{ type: "yearly", jy: 1405 },
-			"jalali-first-week-start",
+	it("shows Jalali seasons and wraps between winter and spring", () => {
+		const spring = buildNoteNavigationModel(
+			{ type: "seasonal", jy: 1405, seasonNumber: 1 },
+			WEEK_MODE,
 			TODAY,
-			"fa",
 		);
-
-		expect(modelFa.mode).toBe("yearly");
-		expect(modelFa.isCurrent).toBe(true);
-		expect(modelFa.noteTypeLabel).toBe("سال‌نوشت");
-		expect(modelFa.center.currentPill).toBe("امسال");
-		expect(modelFa.prev.target).toEqual({ mode: "yearly", jy: 1404 });
-		expect(modelFa.next.target).toEqual({ mode: "yearly", jy: 1406 });
-		expect(modelFa.stripChips).toHaveLength(4);
-		// Azar (month 9) is in Autumn (index 2)
-		expect(modelFa.stripChips[2].active).toBe(true);
-		expect(modelFa.stripChips[2].label).toBe("پاییز");
-		expect(modelFa.stripChips[2].target).toEqual({ mode: "monthly", jy: 1405, jm: 7 });
-
-		const modelEn = buildNoteNavigationModel(
-			{ type: "yearly", jy: 1405 },
-			"jalali-first-week-start",
+		const winter = buildNoteNavigationModel(
+			{ type: "seasonal", jy: 1404, seasonNumber: 4 },
+			WEEK_MODE,
 			TODAY,
 			"en",
 		);
-		expect(modelEn.noteTypeLabel).toBe("Yearly Note");
-		expect(modelEn.center.currentPill).toBe("This Year");
-		expect(modelEn.stripChips[2].label).toBe("Autumn");
+		expect(spring).toMatchObject({
+			year: "۱۴۰۵",
+			noteTypeLabel: "فصل‌نوشت",
+			currentButtonLabel: "این فصل",
+			isCurrent: false,
+			center: { main: "بهار" },
+			prev: { main: "زمستان", target: { mode: "seasonal", jy: 1404, seasonNumber: 4 } },
+			todayTarget: { mode: "seasonal", jy: 1405, seasonNumber: 3 },
+		});
+		expect(winter).toMatchObject({
+			year: "1404",
+			currentButtonLabel: "This Season",
+			center: { main: "Winter" },
+			next: { main: "Spring", target: { mode: "seasonal", jy: 1405, seasonNumber: 1 } },
+		});
+	});
+
+	it("matches the current season by Jalali year and season number", () => {
+		const current = { type: "seasonal", jy: 1405, seasonNumber: 3 } as const;
+		expect(buildNoteNavigationModel(current, WEEK_MODE, TODAY).isCurrent).toBe(true);
+		expect(buildNoteNavigationModel({ ...current, jy: 1404 }, WEEK_MODE, TODAY).isCurrent).toBe(
+			false,
+		);
+	});
+
+	it("shows the yearly number in the header and retains adjacent-year targets", () => {
+		const model = buildNoteNavigationModel({ type: "yearly", jy: 1405 }, WEEK_MODE, TODAY);
+
+		expect(model).toMatchObject({
+			year: "۱۴۰۵",
+			isCurrent: true,
+			currentButtonLabel: "امسال",
+			prev: { main: "۱۴۰۴", target: { mode: "yearly", jy: 1404 } },
+			next: { main: "۱۴۰۶", target: { mode: "yearly", jy: 1406 } },
+		});
+		expect(model.center).toBeUndefined();
 	});
 });

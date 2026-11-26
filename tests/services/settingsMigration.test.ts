@@ -66,6 +66,7 @@ describe("applySettingsMigrations", () => {
 		expect(result.monthlyNotesPath).toBe("Journal/[jYYYY]/Monthly");
 		expect(result.seasonalNotesPath).toBe("Journal/[jYYYY]/Seasonal");
 		expect(result.yearlyNotesPath).toBe("Journal/[jYYYY]");
+		expect(result.showInNoteNavigation).toBe(true);
 		expect(result.legacyPathPatternsMigrated).toBe(true);
 		expect(result.bracketedPathPatternsMigrated).toBe(true);
 	});
@@ -138,6 +139,13 @@ describe("applySettingsMigrations", () => {
 
 		expect(result.dailyNotesPath).toBe("Journal/[jYYYY]/Daily");
 		expect(result.weeklyNotesPath).toBe("Journal/[jYYYY]/Weekly");
+		expect(result.showInNoteNavigation).toBe(true);
+	});
+
+	it("preserves an explicit opt-out of in-note navigation", () => {
+		expect(applySettingsMigrations({ showInNoteNavigation: false }).showInNoteNavigation).toBe(
+			false,
+		);
 	});
 
 	it("migrateV4PathPatternsToV5 migrates all 5 path keys by default", () => {

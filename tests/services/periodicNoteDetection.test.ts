@@ -1,15 +1,18 @@
 import type { App } from "obsidian";
-import { TFile } from "obsidian";
+import { TFile, TFolder } from "obsidian";
 import { DEFAULT_SETTING } from "src/constants";
 import type PersianCalendarPlugin from "src/main";
 import NoteService from "src/services/NoteService";
-import type { TSetting } from "src/types";
+import type { TNoteNavTarget, TSetting } from "src/types";
 import { describe, expect, it } from "vitest";
 
-function createNoteService(overrides: Partial<TSetting> = {}) {
+function createNoteService(overrides: Partial<TSetting> = {}, entries: (TFile | TFolder)[] = []) {
 	const setting: TSetting = { ...DEFAULT_SETTING, ...overrides };
 	const plugin = { setting } as unknown as PersianCalendarPlugin;
-	const app = {} as unknown as App;
+	const files = new Map(entries.map((entry) => [entry.path, entry]));
+	const app = {
+		vault: { getAbstractFileByPath: (path: string) => files.get(path) ?? null },
+	} as unknown as App;
 	return new NoteService(app, plugin);
 }
 
@@ -110,6 +113,17 @@ describe("NoteService.getPeriodicNoteInfo", () => {
 		});
 	});
 
+	it("detects seasonal notes from the configured Jalali season path", () => {
+		const service = createNoteService({ seasonalNotesPath: "Seasons/[jYYYY]/[jQQ]" });
+		expect(service.getPeriodicNoteInfo(makeFile("Seasons/1405/04/1405-S4.md"))).toEqual({
+			type: "seasonal",
+			jy: 1405,
+			seasonNumber: 4,
+		});
+		expect(service.getPeriodicNoteInfo(makeFile("Seasons/1405/05/1405-S5.md"))).toBeNull();
+		expect(service.getPeriodicNoteInfo(makeFile("Archive/1405-S4.md"))).toBeNull();
+	});
+
 	it("returns null for non-periodic notes even with date-like basenames outside configured paths", () => {
 		const service = createNoteService();
 
@@ -118,5 +132,27 @@ describe("NoteService.getPeriodicNoteInfo", () => {
 		expect(service.getPeriodicNoteInfo(makeFile("Archive/1405-W05.md"))).toBeNull();
 		expect(service.getPeriodicNoteInfo(makeFile("Archive/1405-09.md"))).toBeNull();
 		expect(service.getPeriodicNoteInfo(makeFile("Archive/1405.md"))).toBeNull();
+	});
+});
+
+describe("NoteService.getPeriodicNoteFile", () => {
+	it.each<[TNoteNavTarget, string]>([
+		[{ mode: "daily", jy: 1405, jm: 9, jd: 3 }, "Journal/1405/Daily/2026-11-24.md"],
+		[{ mode: "weekly", weekYear: 1405, weekNumber: 5 }, "Journal/1405/Weekly/1405-W5.md"],
+		[{ mode: "monthly", jy: 1405, jm: 9 }, "Journal/1405/Monthly/2026-11.md"],
+		[{ mode: "seasonal", jy: 1405, seasonNumber: 4 }, "Journal/1405/Seasonal/1405-S4.md"],
+		[{ mode: "yearly", jy: 1405 }, "Journal/1405/2026.md"],
+	])("resolves the existing file for %o", (target, path) => {
+		const settings = { monthlyNoteNaming: "gregorian", yearlyNoteNaming: "gregorian" } as const;
+		const note = makeFile(path);
+		expect(createNoteService(settings, [note]).getPeriodicNoteFile(target)).toBe(note);
+		expect(createNoteService(settings).getPeriodicNoteFile(target)).toBeNull();
+	});
+
+	it("does not mark a folder at the note path as an existing note", () => {
+		const folder = new TFolder();
+		folder.path = "Journal/1405/Seasonal/1405-S4.md";
+		const service = createNoteService({}, [folder]);
+		expect(service.getPeriodicNoteFile({ mode: "seasonal", jy: 1405, seasonNumber: 4 })).toBeNull();
 	});
 });

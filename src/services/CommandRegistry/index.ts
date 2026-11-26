@@ -62,8 +62,8 @@ export default class CommandRegistry {
 			name: t("command.toggleInNoteNavigation"),
 			callback: async () => {
 				this.plugin.setting.showInNoteNavigation = !this.plugin.setting.showInNoteNavigation;
-				await this.plugin.saveSetting();
 				this.plugin.noteNavigation.refreshAll();
+				await this.plugin.saveSetting();
 			},
 		});
 	}

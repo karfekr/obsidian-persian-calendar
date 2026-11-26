@@ -7,6 +7,9 @@ export default class EventManager {
 	private debouncedRefresh = debounce(() => {
 		this.plugin.refreshCalendarViews();
 	}, 50);
+	private debouncedNavigationRefresh = debounce(() => {
+		this.plugin.noteNavigation?.refreshAll();
+	}, 50);
 	private debouncedVaultEventsRefresh = debounce(() => {
 		void this.plugin.vaultEventService.refresh().then(() => {
 			this.plugin.refreshCalendarViews();
@@ -35,12 +38,13 @@ export default class EventManager {
 					if (this.plugin.vaultEventService.isRelevantFile(file.path)) {
 						this.debouncedVaultEventsRefresh();
 					}
+					this.debouncedNavigationRefresh();
 					if (!this.isLayoutReady) return;
 
 					window.setTimeout(() => {
 						void this.plugin.placeholder.insertPersianDate(file);
 					}, 300);
-					this.handleFileUpdate();
+					this.debouncedRefresh();
 				}
 			}),
 		);
@@ -59,7 +63,7 @@ export default class EventManager {
 					if (this.plugin.vaultEventService.isRelevantFile(file.path)) {
 						this.debouncedVaultEventsRefresh();
 					}
-					this.handleFileUpdate();
+					this.debouncedRefresh();
 				}
 			}),
 		);
@@ -92,8 +96,8 @@ export default class EventManager {
 				}
 
 				if (moved) await this.plugin.saveSetting();
-				if (isMarkdown) {
-					this.plugin.noteNavigation?.refreshAll();
+				if (isFolder || isMarkdown || oldPath.endsWith(".md")) {
+					this.handleFileUpdate();
 				}
 			}),
 		);
@@ -101,5 +105,6 @@ export default class EventManager {
 
 	private handleFileUpdate() {
 		this.debouncedRefresh();
+		this.debouncedNavigationRefresh();
 	}
 }
