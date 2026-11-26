@@ -53,6 +53,19 @@ export default class CommandRegistry {
 		this.registerPeriodicNoteCommands();
 		this.registerInsertDatePicker();
 		this.registerOpenCalendarCommand();
+		this.registerToggleInNoteNavigationCommand();
+	}
+
+	private registerToggleInNoteNavigationCommand() {
+		this.register({
+			id: "toggle-in-note-navigation",
+			name: t("command.toggleInNoteNavigation"),
+			callback: async () => {
+				this.plugin.setting.showInNoteNavigation = !this.plugin.setting.showInNoteNavigation;
+				await this.plugin.saveSetting();
+				this.plugin.noteNavigation.refreshAll();
+			},
+		});
 	}
 
 	private registerOpenCalendarCommand() {

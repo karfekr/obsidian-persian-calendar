@@ -78,6 +78,7 @@ export type TBoolSettingKeys = Extract<
 	keyof TSetting,
 	| "showSeasonalNotes"
 	| "showGoToCurrent"
+	| "showInNoteNavigation"
 	| "showGeorgianDates"
 	| "showHijriDates"
 	| "showHolidays"
@@ -121,6 +122,7 @@ export type TSetting = {
 	weekCalculation: TWeekCalculationMode;
 	showSeasonalNotes: boolean;
 	showGoToCurrent: boolean;
+	showInNoteNavigation: boolean;
 	// show holidays
 	showHolidays: boolean;
 	weekendDays: TWeekDays;
@@ -284,3 +286,11 @@ export type TToken =
 	| "w";
 
 export type TOpenNoteMode = "current" | "tab" | "split-horizontal" | "split-vertical";
+
+export type TNoteNavMode = "daily" | "weekly" | "monthly" | "yearly";
+
+export type TPeriodicNoteInfo =
+	| { type: "daily"; jy: number; jm: number; jd: number }
+	| { type: "weekly"; weekYear: number; weekNumber: number; anchor: TJalali }
+	| { type: "monthly"; jy: number; jm: number }
+	| { type: "yearly"; jy: number };

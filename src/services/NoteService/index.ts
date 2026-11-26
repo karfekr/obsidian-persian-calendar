@@ -4,10 +4,11 @@ import { createNoteModal, Notice } from "src/components";
 import { t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
 import NotePathBuilder from "src/services/NotePathBuilder";
-import type { TDateEngineContext, TJalali, TOpenNoteMode } from "src/types";
+import type { TDateEngineContext, TJalali, TOpenNoteMode, TPeriodicNoteInfo } from "src/types";
 import { parsePattern } from "src/utils/dateEngine";
 import {
 	dateToJalali,
+	getWeekStartCalculator,
 	gregorianToJalali,
 	jalaliMonthLength,
 	jalaliToGregorian,
@@ -38,6 +39,81 @@ export default class NoteService {
 		if (filePath !== file.path) return null;
 
 		return date;
+	}
+
+	public getPeriodicNoteInfo(file: TFile): TPeriodicNoteInfo | null {
+		const daily = this.getDailyNoteDate(file);
+		if (daily) {
+			return { type: "daily", ...daily };
+		}
+
+		const weekly = this.getWeeklyNoteInfo(file);
+		if (weekly) return weekly;
+
+		const monthly = this.getMonthlyNoteInfo(file);
+		if (monthly) return monthly;
+
+		return this.getYearlyNoteInfo(file);
+	}
+
+	private getWeeklyNoteInfo(file: TFile): Extract<TPeriodicNoteInfo, { type: "weekly" }> | null {
+		const match = file.basename.match(/^(\d{4})-W(\d{1,2})$/);
+		if (!match) return null;
+
+		const weekYear = Number(match[1]);
+		const weekNumber = Number(match[2]);
+		if (weekNumber < 1 || weekNumber > 53) return null;
+
+		const { filePath, fileName } = this.pathBuilder.buildWeeklyNotePath(weekYear, weekNumber);
+		const legacyPath =
+			weekNumber < 10
+				? `${filePath.slice(0, -fileName.length)}${weekYear}-W${weekNumber}.md`
+				: null;
+
+		if (file.path !== filePath && file.path !== legacyPath) return null;
+
+		const start = getWeekStartCalculator(this.plugin.setting.weekCalculation).getStartOfWeek(
+			weekYear,
+			weekNumber,
+		);
+
+		return {
+			type: "weekly",
+			weekYear,
+			weekNumber,
+			anchor: { jy: start.jy, jm: start.jm, jd: start.jd },
+		};
+	}
+
+	private getMonthlyNoteInfo(file: TFile): Extract<TPeriodicNoteInfo, { type: "monthly" }> | null {
+		const match = file.basename.match(/^(\d{4})-(\d{2})$/);
+		if (!match) return null;
+
+		const rawYear = Number(match[1]);
+		const rawMonth = Number(match[2]);
+		if (rawMonth < 1 || rawMonth > 12) return null;
+
+		const isGregorian = this.plugin.setting.monthlyNoteNaming === "gregorian";
+		const jm = isGregorian ? (rawMonth >= 3 ? rawMonth - 2 : rawMonth + 10) : rawMonth;
+		const jy = isGregorian ? (rawMonth >= 3 ? rawYear - 621 : rawYear - 622) : rawYear;
+
+		const { filePath } = this.pathBuilder.buildMonthlyNotePath(jy, jm);
+		if (file.path !== filePath) return null;
+
+		return { type: "monthly", jy, jm };
+	}
+
+	private getYearlyNoteInfo(file: TFile): Extract<TPeriodicNoteInfo, { type: "yearly" }> | null {
+		const match = file.basename.match(/^(\d{4})$/);
+		if (!match) return null;
+
+		const rawYear = Number(match[1]);
+		const jy = this.plugin.setting.yearlyNoteNaming === "gregorian" ? rawYear - 621 : rawYear;
+
+		const { filePath } = this.pathBuilder.buildYearlyNotePath(jy);
+		if (file.path !== filePath) return null;
+
+		return { type: "yearly", jy };
 	}
 
 	public resolveJalaliFromContext(ctx: TDateEngineContext): TJalali | null {

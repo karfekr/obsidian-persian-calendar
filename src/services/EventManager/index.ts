@@ -92,6 +92,9 @@ export default class EventManager {
 				}
 
 				if (moved) await this.plugin.saveSetting();
+				if (isMarkdown) {
+					this.plugin.noteNavigation?.refreshAll();
+				}
 			}),
 		);
 	}
