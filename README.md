@@ -46,15 +46,21 @@ The Persian calendar adjusts to the sidebar width.
 
 Set folders in **Calendar Note Paths** and the daily filename format in **Calendar Note Names**. The examples below use 1 Azar 1405 (22 November 2026).
 
+<div align="center">
+
 | Setting                                       | Pattern                 | Result               |
 | --------------------------------------------- | ----------------------- | -------------------- |
 | Folder path · put date tokens in brackets     | `Journal/[jYYYY]/Daily` | `Journal/1405/Daily` |
 | Daily filename · use date tokens directly     | `jYYYY-jMM-jDD`         | `1405-09-01`         |
 | Daily filename · put literal text in brackets | `[Daily] YYYY-MM-DD`    | `Daily 2026-11-22`   |
 
+</div>
+
 Folder paths use square brackets around tokens; other text stays literal. Daily filenames use tokens directly and square brackets around literal text. Set paths for daily, weekly, monthly, seasonal, and yearly notes in **Calendar Note Paths**. The daily filename format is set in **Calendar Note Names**. Monthly and yearly note names can use Jalali or Gregorian years; week numbers follow the selected week calculation.
 
 The same date tokens are available in folder paths for all five note types and in the daily filename format. Weekly folder paths also have the week number. Name tokens follow the selected interface language.
+
+<div align="center">
 
 | Token                | Meaning                                     | Note types                             | Example for 1 Azar 1405 |
 | -------------------- | ------------------------------------------- | -------------------------------------- | ----------------------- |
@@ -69,6 +75,8 @@ The same date tokens are available in folder paths for all five note types and i
 | `DD`, `D`            | Gregorian day number (padded or unpadded)   | All paths; daily filename              | `22`                    |
 | `DDDD`               | Weekday name                                | All paths; daily filename              | `Sunday`                |
 | `ww`, `w`            | Configured week number (padded or unpadded) | Daily and weekly paths; daily filename | `36`                    |
+
+</div>
 
 ### <a name="quick_reference"></a> Quick reference to calendar notes
 
@@ -99,12 +107,16 @@ pc-links:
 
 </div>
 
+<div align="center">
+
 | Parent note | Allowed entries in `pc-auto-link`        |
 | ----------- | ---------------------------------------- |
 | Weekly      | `daily`                                  |
 | Monthly     | `daily`, `weekly`                        |
 | Seasonal    | `daily`, `weekly`, `monthly`             |
 | Yearly      | `daily`, `weekly`, `monthly`, `seasonal` |
+
+</div>
 
 A week that spans two Jalali months, seasons, or years can appear in both parent notes.
 
@@ -195,14 +207,20 @@ Type `{+` and choose a key to display dates, Tehran time, or events that update 
 
 Use a Jalali date with digits `0–9` and an optional 24-hour Tehran time. Omit the time to target midnight. One-time countdowns show elapsed time after the target. Annual countdowns move on to the next occurrence.
 
+<div align="center">
+
 | Example                  | One-time                 | Annual              |
 | ------------------------ | ------------------------ | ------------------- |
 | Nowruz                   | `{+1405-01-01}`          | `{+01-01}`          |
 | Birthday lunch           | `{+1405-06-15 13:30}`    | `{+06-15 13:30}`    |
 | Anniversary with seconds | `{+1405-09-10 18:45:30}` | `{+09-10 18:45:30}` |
 
+</div>
+
 <details>
 <summary>Live expression keys</summary>
+
+<div align="center">
 
 | Use                       | Keys inside <code dir="ltr">{+…}</code>                                                                         |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------- |
@@ -215,6 +233,8 @@ Use a Jalali date with digits `0–9` and an optional 24-hour Tehran time. Omit 
 | Time remaining or elapsed | `روز باقی سال شمسی`, `روز باقی ماه شمسی`, `روز باقی فصل`, `روز باقی هفته`, `دقیقه مانده روز`, `دقیقه گذشته روز` |
 | Percentage elapsed        | `درصد سال شمسی`, `درصد فصل`, `درصد ماه شمسی`, `درصد هفته`, `درصد روز`                                           |
 | Events and holidays       | `مناسبت`, `تعداد مناسبت`, `تعطیل`                                                                               |
+
+</div>
 
 </details>
 
@@ -263,7 +283,7 @@ The plugin bundles the [Sahel font](https://github.com/rastikerdar/sahel-font) a
 
 ### <a name="api"></a><a name="using-the-dedicated-api"></a> Plugin API
 
-Use the API from another plugin or a script such as DataviewJS or Templater. See the [full method list](docs/architecture.md#public-plugin-api-apiservice) for calendar conversions, number formatting, and event queries.
+Use the API from another plugin or a script such as DataviewJS or Templater.
 
 <div dir="ltr">
 
