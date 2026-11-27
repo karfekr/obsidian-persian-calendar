@@ -174,13 +174,9 @@ export default class NoteNavigation {
 	): void {
 		const { target } = slot;
 		const exists = this.plugin.noteService.getPeriodicNoteFile(target) !== null;
-		const action = t(exists ? "noteNavigation.openNote" : "noteNavigation.createNote");
-		const label = `${directionLabel}: ${slot.main} (${action})`;
 		const button = stage.createEl("button", {
 			cls: `persian-calendar-note-nav__slot persian-calendar-note-nav__slot--side persian-calendar-note-nav__slot--${direction}${exists ? "" : " is-missing"}`,
 			type: "button",
-			attr: { "aria-label": label },
-			title: label,
 		});
 		const text = button.createSpan({ cls: "persian-calendar-note-nav__side-text" });
 		if (slot.kicker) {

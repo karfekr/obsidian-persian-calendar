@@ -325,10 +325,6 @@
 		}
 	},
 	"noteNavigation": {
-		"previous": "قبلی",
-		"next": "بعدی",
-		"openNote": "باز کردن یادداشت",
-		"createNote": "ایجاد یادداشت",
 		"daily": {
 			"label": "روزنوشت",
 			"current": "امروز"

@@ -327,10 +327,6 @@
 		}
 	},
 	"noteNavigation": {
-		"previous": "Previous",
-		"next": "Next",
-		"openNote": "Open note",
-		"createNote": "Create note",
 		"daily": {
 			"label": "Daily Note",
 			"current": "Today"
