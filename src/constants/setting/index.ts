@@ -4,7 +4,7 @@ export const DEFAULT_SETTING: TSetting = {
 	versionUpdate: true,
 	language: "en",
 	liveExpressionNumeralLanguage: "en",
-	liveExpressionOutputLanguage: "fa",
+	liveExpressionOutputLanguage: "en",
 	dateFormat: "gregorian",
 	dailyNoteFormat: "YYYY-MM-DD",
 	monthlyNoteNaming: "jalali",
