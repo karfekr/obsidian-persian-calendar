@@ -8,9 +8,11 @@ Use the Solar Hijri (Jalali) calendar in [Obsidian](https://obsidian.md/) to ope
 
 [Installation](#installation-guide) · [Feature guide](#guid) · [Contributing](#collaboration)
 
-<p align="center">
-  <img src="Instructions/view.png" width="360" alt="Jalali sidebar calendar showing Gregorian and Lunar Hijri dates" />
-</p>
+<div align="center">
+
+<img src="Instructions/view.png" width="360" alt="Jalali sidebar calendar showing Gregorian and Lunar Hijri dates" />
+
+</div>
 
 ## Installation Guide
 
@@ -32,11 +34,19 @@ Download `main.js`, `manifest.json`, and `styles.css` from [GitHub Releases](htt
 
 Run **Open Persian Calendar** from the command palette. Select a day, week number, month, season, or year to open or create its note. Use **Additional Calendars** to show Gregorian or Lunar Hijri dates and choose the Lunar Hijri basis (Iran or Umm al-Qura).
 
+<div align="center">
+
 <img src="Instructions/responsive.webp" width="720" loading="lazy" alt="The calendar adjusts as the Obsidian sidebar narrows and widens" />
+
+</div>
 
 When you browse another month, use the **This Month** icon in the calendar header to return to the current month. Enable **Show In-Note Navigation** to move to the previous, next, or current period from a periodic note.
 
+<div align="center">
+
 <img src="Instructions/back%20to%20current.webp" width="720" loading="lazy" alt="The calendar header's This Month button returns the sidebar to the current Jalali month" />
+
+</div>
 
 ### <a name="dynamic_path"></a> Dynamic paths and naming
 
@@ -54,11 +64,17 @@ Use `w` or `ww` for the configured week number, for example in `Journal/[jYYYY]/
 
 Type `@` and pick a Persian date phrase such as `امروز` (today) or `این هفته` (this week) to insert a note link. Type `@/` to insert the resolved date or period as plain text. Suggestions cover days, weekdays, weeks, months, seasons, and years.
 
+<div align="center">
+
 <img src="Instructions/quick%20reference.webp" width="720" loading="lazy" alt="Date autocomplete inserts a note link with @ and a plain date with @/" />
+
+</div>
 
 ### <a name="auto_links"></a> Automatic links between periodic notes
 
 Add a list of note types to the parent note's `pc-auto-link` property. The plugin keeps `pc-links` up to date with matching notes already in your vault. For example, an Azar 1405 monthly note would have these properties if the two daily notes below were its only matches.
+
+<div dir="ltr">
 
 ```yaml
 ---
@@ -71,6 +87,8 @@ pc-links:
 ---
 ```
 
+</div>
+
 | Parent note | Allowed entries in `pc-auto-link`        |
 | ----------- | ---------------------------------------- |
 | Weekly      | `daily`                                  |
@@ -80,11 +98,17 @@ pc-links:
 
 A week that spans two Jalali months, seasons, or years can appear in both parent notes.
 
+<div align="center">
+
 <img src="Instructions/auto%20link.webp" width="720" loading="lazy" alt="Adding pc-auto-link to a weekly note fills pc-links and connects daily notes in Graph View" />
+
+</div>
 
 ### <a name="placeholders"></a> Placeholders
 
 Type `{{` for suggestions. Add placeholders to a template under **Calendar Note Templates** to insert fixed values when the plugin creates a note. In an existing note, run **Replace Placeholders** from the command palette.
+
+<div dir="ltr">
 
 ```text
 {{تاریخ شمسی یادداشت}}
@@ -92,7 +116,13 @@ Type `{{` for suggestions. Add placeholders to a template under **Calendar Note 
 {{مناسبت یادداشت}}
 ```
 
+</div>
+
+<div align="center">
+
 <img src="Instructions/placeholders.webp" width="720" loading="lazy" alt="Configuring a daily note template and filling its placeholders when a new note is created" />
+
+</div>
 
 <details>
 <summary>Placeholder reference</summary>
@@ -133,6 +163,8 @@ Choose keys for the note's date or period, or use the current-date keys to captu
 
 Type `{+` and choose a key to display dates, Tehran time, or events that update in Reading View and Live Preview. In Live Preview, move the cursor outside the expression to see its value. Choose the output language and numerals independently in **Live Expressions** settings.
 
+<div dir="ltr">
+
 ```markdown
 **Date** · {+نام روز} {+روز ماه شمسی} {+نام ماه شمسی} {+سال شمسی}
 **Gregorian** · {+سال میلادی}-{+شماره ماه میلادی}-{+روز ماه میلادی}
@@ -141,7 +173,13 @@ Type `{+` and choose a key to display dates, Tehran time, or events that update 
 **Today's events** · {+مناسبت}
 ```
 
+</div>
+
+<div align="center">
+
 <img src="Instructions/live%20expression.webp" width="720" loading="lazy" alt="Live expression autocomplete and a note displaying current dates, events, and progress" />
+
+</div>
 
 #### Live countdowns
 
@@ -176,45 +214,99 @@ The calendar can show official Iranian holidays and events, international observ
 
 Write one event per line in the note. The example below uses Jalali dates. Use `MM-DD` for annual events and `YYYY-MM-DD` for one-time events. Use digits `0–9` and hyphens in dates.
 
+<div dir="ltr">
+
 ```text
 06-15 | Birthday | purple
 1405-09-10 | Office closed | | تعطیل
 ```
 
+</div>
+
 For the optional color in the third field, use `red`, `orange`, `yellow`, `green`, `cyan`, `blue`, `purple`, or `pink`. Put `تعطیل` in the fourth field to mark a holiday. Leave the third field empty to use the default color.
 
+<div align="center">
+
 <img src="Instructions/custom%20events.webp" width="720" loading="lazy" alt="Adding a vault note as an event source and viewing a custom event in the calendar" />
+
+</div>
 
 ### Date picker
 
 Use the calendar icon beside an Obsidian `Date` property to choose a Jalali day. To insert or convert a date in the note body, run **Insert & Convert Date** from the command palette.
 
+<div align="center">
+
 <img src="Instructions/datepicker.webp" width="720" loading="lazy" alt="Choosing a Jalali date for a note property and inserting a date in note text" />
+
+</div>
 
 ### Persian font
 
 The plugin bundles the [Sahel font](https://github.com/rastikerdar/sahel-font) as **Persian Calendar**. To use it in your notes, open **Settings → Appearance → Text font**, select **Manage**, and add **Persian Calendar**.
 
+<div align="center">
+
 <img src="Instructions/font.webp" width="720" loading="lazy" alt="Selecting Persian Calendar as the Obsidian text font" />
+
+</div>
 
 ### <a name="api"></a><a name="using-the-dedicated-api"></a> Plugin API
 
 Use the API from another plugin or a script such as DataviewJS or Templater. See the [full method list](docs/architecture.md#public-plugin-api-apiservice) for calendar conversions, number formatting, and event queries.
 
+<div dir="ltr">
+
 ```javascript
 const pcApi = app.plugins.getPlugin("persian-calendar").api;
 
-pcApi.toEnNumber("۱۲۳"); // "123"
-pcApi.toFaNumber("123"); // "۱۲۳"
-pcApi.jalaliToGregorian(1405, 9, 13); // { gy: 2026, gm: 12, gd: 4 }
-pcApi.gregorianToJalali(2026, 12, 4); // { jy: 1405, jm: 9, jd: 13 }
-pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" });
-pcApi.checkHoliday(new Date());
-pcApi.dateToEvents(new Date());
+// Number conversion
+pcApi.toEnNumber("۱۲۳ تست test"); // "123 تست test"
+pcApi.toFaNumber("123 تست test"); // "۱۲۳ تست test"
+
+// Solar Hijri date conversion
+pcApi.jalaliToDate(1405, 9, 13); // Equivalent Gregorian date as Date object
+pcApi.jalaliToGregorian(1405, 9, 13); // {gy: 2026, gm: 12, gd: 4}
+pcApi.jalaliToHijri(1405, 9, 13); // (Iran basis) {hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" }); // (Umm al-Qura basis) {hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliMonthName(9); // آذر (Azar)
+pcApi.jalaliMonthName(9, "en"); // Azar
+pcApi.seasonName(3); // پاییز (Autumn)
+pcApi.seasonName(3, "en"); // Autumn
+
+// Gregorian date conversion
+pcApi.dateToGregorian(new Date()); // {gy, gm, gd}
+pcApi.gregorianToDate(2026, 12, 4); // Date object
+pcApi.gregorianToJalali(2026, 12, 4); // {jy: 1405, jm: 9, jd: 13}
+pcApi.gregorianToHijri(2026, 12, 4); // (Iran) {hy: 1448, hm: 6, hd: 24}
+pcApi.gregorianToHijri(2026, 12, 4, { base: "umalqura" }); // (Umm al-Qura basis) {hy: 1448, hm: 6, hd: 24}
+
+// Lunar Hijri date conversion (Iran basis)
+pcApi.hijriToDate(1448, 6, 24); // Date object
+pcApi.hijriToGregorian(1448, 6, 24); // {gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24); // {jy: 1405, jm: 9, jd: 13}
+
+// Lunar Hijri date conversion (Umm al-Qura basis)
+pcApi.hijriToDate(1448, 6, 24, { base: "umalqura" }); // Date object
+pcApi.hijriToGregorian(1448, 6, 24, { base: "umalqura" }); // {gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24, { base: "umalqura" }); // {jy: 1405, jm: 9, jd: 13}
+
+// Events
+pcApi.checkHoliday(new Date()); // Is it a holiday? true/false
+pcApi.dateToEvents(new Date()); // Array of {title(fa/en), categories, isHolidayInIran}
+pcApi.dateToEvents(new Date(), { base: "umalqura" }); // With Umm al-Qura basis
 ```
+
+</div>
 
 ## <a name="collaboration"></a><a name="collaboration-and-project-participation"></a> Contributing
 
 Read the [contribution guide](CONTRIBUTING.md) or [report a bug or suggest a feature](https://github.com/karfekr/obsidian-persian-calendar/issues). The plugin is licensed under [GPL-3.0](LICENSE).
 
-[Karfekr website](https://karfekr.ir) · [Karfekr Telegram channel](https://t.me/karfekr) · [Obsidian Farsi community](https://t.me/ObsidianFarsi)
+<div align="center">
+
+[![Website](https://img.shields.io/badge/Website-karfekr.ir-orange)](https://karfekr.ir)
+[![Telegram Channel](https://img.shields.io/endpoint?color=neon&label=Karfekr&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fkarfekr)](https://t.me/karfekr)
+[![Telegram Group](https://img.shields.io/endpoint?label=ObsidianFarsi&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FObsidianFarsi&color=blue)](https://t.me/ObsidianFarsi)
+
+</div>

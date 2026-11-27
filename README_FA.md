@@ -10,9 +10,11 @@
 
 [نصب](#راهنمای-نصب-افزونه) · [راهنمای امکانات](#guid) · [مشارکت](#collaboration)
 
-<p align="center">
-  <img src="Instructions/view.png" width="360" alt="تقویم هجری شمسی در نوار کناری، همراه با تاریخ‌های میلادی و هجری قمری" />
-</p>
+<div align="center">
+
+<img src="Instructions/view.png" width="360" alt="تقویم هجری شمسی در نوار کناری، همراه با تاریخ‌های میلادی و هجری قمری" />
+
+</div>
 
 ## راهنمای نصب افزونه
 
@@ -34,11 +36,19 @@
 
 فرمان **باز کردن تقویم فارسی** را از فهرست فرمان‌ها اجرا کنید. روی روز، شمارهٔ هفته، ماه، فصل یا سال بزنید تا یادداشت آن باز یا ساخته شود. در بخش **تقویم‌های مکمل** می‌توانید تاریخ میلادی یا قمری را نمایش دهید و مبنای تقویم قمری (استهلال ایران یا ام‌القری) را انتخاب کنید.
 
+<div align="center">
+
 <img src="Instructions/responsive.webp" width="720" loading="lazy" alt="نمای تقویم با کم و زیاد شدن عرض نوار کناری تغییر می‌کند" />
+
+</div>
 
 وقتی ماه دیگری را می‌بینید، با دکمهٔ **این ماه** در بالای تقویم به ماه جاری برگردید. با فعال کردن **نمایش ناوبری داخل یادداشت** می‌توانید از همان یادداشت دوره‌ای به دورهٔ قبل، بعد یا جاری بروید.
 
+<div align="center">
+
 <img src="Instructions/back%20to%20current.webp" width="720" loading="lazy" alt="بازگشت به ماه شمسی جاری با دکمهٔ این ماه در بالای تقویم" />
+
+</div>
 
 ### <a name="dynamic_path"></a><a name="مسیردهی-و-نام-پویا"></a> مسیر و نام‌گذاری پویا
 
@@ -56,7 +66,11 @@
 
 <code dir="ltr">@</code> را تایپ کنید و عبارتی مثل «امروز» یا «این هفته» را از پیشنهادها برگزینید تا پیوند یادداشت درج شود. با <code dir="ltr">@/</code> تاریخ یا شناسهٔ دوره به‌صورت متن ساده درج می‌شود. برای روزها، نام روزهای هفته، هفته‌ها، ماه‌ها، فصل‌ها و سال‌ها پیشنهادهایی در دسترس است.
 
+<div align="center">
+
 <img src="Instructions/quick%20reference.webp" width="720" loading="lazy" alt="درج پیوند یادداشت با @ و درج تاریخ به‌صورت متن ساده با @/" />
+
+</div>
 
 ### <a name="auto_links"></a> پیوند خودکار یادداشت‌های دوره‌ای
 
@@ -86,7 +100,11 @@ pc-links:
 
 اگر هفته‌ای در دو ماه، فصل یا سال شمسی قرار بگیرد، پیوند هفته‌نوشت می‌تواند در هر دو یادداشت مادر بیاید.
 
+<div align="center">
+
 <img src="Instructions/auto%20link.webp" width="720" loading="lazy" alt="افزودن pc-auto-link به هفته‌نوشت، پر شدن pc-links و نمایش پیوند روزنوشت‌ها در نمای گراف" />
+
+</div>
 
 ### <a name="placeholders"></a> عبارت‌های معنادار
 
@@ -102,7 +120,11 @@ pc-links:
 
 </div>
 
+<div align="center">
+
 <img src="Instructions/placeholders.webp" width="720" loading="lazy" alt="تنظیم قالب روزنوشت و جایگزینی عبارت‌های معنادار هنگام ساخت یک روزنوشت" />
+
+</div>
 
 <details>
 <summary>فهرست عبارت‌های معنادار</summary>
@@ -155,7 +177,11 @@ pc-links:
 
 </div>
 
+<div align="center">
+
 <img src="Instructions/live%20expression.webp" width="720" loading="lazy" alt="پیشنهادهای عبارت‌های زنده و نمایش تاریخ، مناسبت‌ها و درصد سپری‌شده در یادداشت" />
+
+</div>
 
 #### شمارش معکوس زنده
 
@@ -201,19 +227,31 @@ pc-links:
 
 در بخش سوم می‌توانید یکی از رنگ‌های `red`، `orange`، `yellow`، `green`، `cyan`، `blue`، `purple` یا `pink` را بنویسید. برای ثبت تعطیلی، در بخش چهارم `تعطیل` بنویسید. با خالی گذاشتن بخش سوم، رنگ پیش‌فرض به کار می‌رود.
 
+<div align="center">
+
 <img src="Instructions/custom%20events.webp" width="720" loading="lazy" alt="افزودن یک یادداشت به‌عنوان منبع مناسبت‌ها و نمایش مناسبت سفارشی در تقویم" />
+
+</div>
 
 ### <a name="date-picker"></a> انتخاب تاریخ
 
 برای انتخاب تاریخ شمسی، روی نماد تقویم کنار ویژگیِ نوع **Date** بزنید. برای درج یا تبدیل تاریخ در متن یادداشت، فرمان **درج و تبدیل تاریخ** را اجرا کنید.
 
+<div align="center">
+
 <img src="Instructions/datepicker.webp" width="720" loading="lazy" alt="انتخاب تاریخ شمسی برای یکی از ویژگی‌های یادداشت و درج تاریخ در متن یادداشت" />
+
+</div>
 
 ### <a name="persian-font"></a> قلم فارسی
 
 [قلم ساحل](https://github.com/rastikerdar/sahel-font) با نام <span dir="ltr">Persian Calendar</span> همراه افزونه ارائه می‌شود. برای استفاده در یادداشت‌ها، به <span dir="ltr">Settings → Appearance → Text font</span> بروید، روی **Manage** بزنید و قلم <span dir="ltr">Persian Calendar</span> را اضافه کنید.
 
+<div align="center">
+
 <img src="Instructions/font.webp" width="720" loading="lazy" alt="انتخاب قلم Persian Calendar به‌عنوان قلم متن در ابسیدین" />
+
+</div>
 
 ### <a name="api"></a><a name="استفاده-از-api-اختصاصی"></a> رابط برنامه‌نویسی افزونه
 
@@ -224,13 +262,41 @@ pc-links:
 ```javascript
 const pcApi = app.plugins.getPlugin("persian-calendar").api;
 
-pcApi.toEnNumber("۱۲۳"); // "123"
-pcApi.toFaNumber("123"); // "۱۲۳"
-pcApi.jalaliToGregorian(1405, 9, 13); // { gy: 2026, gm: 12, gd: 4 }
-pcApi.gregorianToJalali(2026, 12, 4); // { jy: 1405, jm: 9, jd: 13 }
-pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" });
-pcApi.checkHoliday(new Date());
-pcApi.dateToEvents(new Date());
+// تبدیل اعداد
+pcApi.toEnNumber("۱۲۳ تست test"); // "123 تست test"
+pcApi.toFaNumber("123 تست test"); // "۱۲۳ تست test"
+
+// تبدیل تاریخ شمسی
+pcApi.jalaliToDate(1405, 9, 13); // تاریخ میلادی معادل به‌صورت Date
+pcApi.jalaliToGregorian(1405, 9, 13); // {gy: 2026, gm: 12, gd: 4}
+pcApi.jalaliToHijri(1405, 9, 13); // (مبنای ایران) {hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" }); // (مبنای ام‌القری) {hy: 1448, hm: 6, hd: 24}
+pcApi.jalaliMonthName(9); // آذر
+pcApi.jalaliMonthName(9, "en"); // Azar
+pcApi.seasonName(3); // پاییز
+pcApi.seasonName(3, "en"); // Autumn
+
+// تبدیل تاریخ میلادی
+pcApi.dateToGregorian(new Date()); // {gy, gm, gd}
+pcApi.gregorianToDate(2026, 12, 4); // Date
+pcApi.gregorianToJalali(2026, 12, 4); // {jy: 1405, jm: 9, jd: 13}
+pcApi.gregorianToHijri(2026, 12, 4); // (ایران) {hy: 1448, hm: 6, hd: 24}
+pcApi.gregorianToHijri(2026, 12, 4, { base: "umalqura" }); // (ام‌القری) {hy: 1448, hm: 6, hd: 24}
+
+// تبدیل تاریخ قمری (مبنای ایران)
+pcApi.hijriToDate(1448, 6, 24); // Date
+pcApi.hijriToGregorian(1448, 6, 24); // {gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24); // {jy: 1405, jm: 9, jd: 13}
+
+// تبدیل تاریخ قمری (مبنای ام‌القری)
+pcApi.hijriToDate(1448, 6, 24, { base: "umalqura" }); // Date
+pcApi.hijriToGregorian(1448, 6, 24, { base: "umalqura" }); // {gy: 2026, gm: 12, gd: 4}
+pcApi.hijriToJalali(1448, 6, 24, { base: "umalqura" }); // {jy: 1405, jm: 9, jd: 13}
+
+// مناسبت‌ها
+pcApi.checkHoliday(new Date()); // آیا روز تعطیل است؟ true/false
+pcApi.dateToEvents(new Date()); // آرایه‌ای از {title(fa/en), categories, isHolidayInIran}
+pcApi.dateToEvents(new Date(), { base: "umalqura" }); // با مبنای ام‌القری
 ```
 
 </div>
@@ -239,6 +305,12 @@ pcApi.dateToEvents(new Date());
 
 برای همکاری، [راهنمای مشارکت](CONTRIBUTING_FA.md) را بخوانید. برای گزارش خطا یا پیشنهاد قابلیت، از [بخش Issues گیت‌هاب](https://github.com/karfekr/obsidian-persian-calendar/issues) استفاده کنید. افزونه با مجوز [GPL-3.0](LICENSE) منتشر می‌شود.
 
-[وب‌سایت کارفکر](https://karfekr.ir) · [کانال تلگرام کارفکر](https://t.me/karfekr) · [جامعهٔ فارسی ابسیدین](https://t.me/ObsidianFarsi)
+<div align="center">
+
+[![Website](https://img.shields.io/badge/Website-karfekr.ir-orange)](https://karfekr.ir)
+[![Telegram Channel](https://img.shields.io/endpoint?color=neon&label=Karfekr&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fkarfekr)](https://t.me/karfekr)
+[![Telegram Group](https://img.shields.io/endpoint?label=ObsidianFarsi&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FObsidianFarsi&color=blue)](https://t.me/ObsidianFarsi)
+
+</div>
 
 </div>
