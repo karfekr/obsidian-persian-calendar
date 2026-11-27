@@ -1,5 +1,4 @@
 import { MarkdownView, setIcon } from "obsidian";
-import { t } from "src/languages";
 import type PersianCalendarPlugin from "src/main";
 import type { TNoteNavTarget, TOpenNoteMode } from "src/types";
 import { todayTehran } from "src/utils/dateUtils";
@@ -169,7 +168,7 @@ export default class NoteNavigation {
 	private renderSideSlot(
 		stage: HTMLElement,
 		slot: TNoteNavSideSlot,
-		directionLabel: string,
+		_directionLabel: string,
 		direction: "prev" | "next",
 	): void {
 		const { target } = slot;
