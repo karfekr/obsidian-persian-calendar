@@ -46,29 +46,29 @@ The Persian calendar adjusts to the sidebar width.
 
 Set folders in **Calendar Note Paths** and the daily filename format in **Calendar Note Names**. The examples below use 1 Azar 1405 (22 November 2026).
 
-| Setting | Pattern | Result |
-| --- | --- | --- |
-| Folder path · put date tokens in brackets | `Journal/[jYYYY]/Daily` | `Journal/1405/Daily` |
-| Daily filename · use date tokens directly | `jYYYY-jMM-jDD` | `1405-09-01` |
-| Daily filename · put literal text in brackets | `[Daily] YYYY-MM-DD` | `Daily 2026-11-22` |
+| Setting                                       | Pattern                 | Result               |
+| --------------------------------------------- | ----------------------- | -------------------- |
+| Folder path · put date tokens in brackets     | `Journal/[jYYYY]/Daily` | `Journal/1405/Daily` |
+| Daily filename · use date tokens directly     | `jYYYY-jMM-jDD`         | `1405-09-01`         |
+| Daily filename · put literal text in brackets | `[Daily] YYYY-MM-DD`    | `Daily 2026-11-22`   |
 
 Folder paths use square brackets around tokens; other text stays literal. Daily filenames use tokens directly and square brackets around literal text. Set paths for daily, weekly, monthly, seasonal, and yearly notes in **Calendar Note Paths**. The daily filename format is set in **Calendar Note Names**. Monthly and yearly note names can use Jalali or Gregorian years; week numbers follow the selected week calculation.
 
 The same date tokens are available in folder paths for all five note types and in the daily filename format. Weekly folder paths also have the week number. Name tokens follow the selected interface language.
 
-| Token | Meaning | Note types | Example for 1 Azar 1405 |
-| --- | --- | --- | --- |
-| `jYYYY`, `jYY` | Jalali year (4 or 2 digits) | All paths; daily filename | `1405`, `05` |
-| `jMMMM`, `jMMM` | Jalali month name (full or abbreviated) | All paths; daily filename | آذر |
-| `jMM`, `jM` | Jalali month number (padded or unpadded) | All paths; daily filename | `09`, `9` |
-| `jDD`, `jD` | Jalali day number (padded or unpadded) | All paths; daily filename | `01`, `1` |
-| `jQQQQ`, `jQQ`, `jQ` | Jalali season name or number (2 or 1 digit) | All paths; daily filename | پاییز, `03`, `3` |
-| `YYYY`, `YY` | Gregorian year (4 or 2 digits) | All paths; daily filename | `2026`, `26` |
-| `MMMM`, `MMM` | Gregorian month name (full or abbreviated) | All paths; daily filename | `November`, `Nov` |
-| `MM`, `M` | Gregorian month number (padded or unpadded) | All paths; daily filename | `11` |
-| `DD`, `D` | Gregorian day number (padded or unpadded) | All paths; daily filename | `22` |
-| `DDDD` | Weekday name | All paths; daily filename | `Sunday` |
-| `ww`, `w` | Configured week number (padded or unpadded) | Daily and weekly paths; daily filename | `36` |
+| Token                | Meaning                                     | Note types                             | Example for 1 Azar 1405 |
+| -------------------- | ------------------------------------------- | -------------------------------------- | ----------------------- |
+| `jYYYY`, `jYY`       | Jalali year (4 or 2 digits)                 | All paths; daily filename              | `1405`, `05`            |
+| `jMMMM`, `jMMM`      | Jalali month name (full or abbreviated)     | All paths; daily filename              | آذر                     |
+| `jMM`, `jM`          | Jalali month number (padded or unpadded)    | All paths; daily filename              | `09`, `9`               |
+| `jDD`, `jD`          | Jalali day number (padded or unpadded)      | All paths; daily filename              | `01`, `1`               |
+| `jQQQQ`, `jQQ`, `jQ` | Jalali season name or number (2 or 1 digit) | All paths; daily filename              | پاییز, `03`, `3`        |
+| `YYYY`, `YY`         | Gregorian year (4 or 2 digits)              | All paths; daily filename              | `2026`, `26`            |
+| `MMMM`, `MMM`        | Gregorian month name (full or abbreviated)  | All paths; daily filename              | `November`, `Nov`       |
+| `MM`, `M`            | Gregorian month number (padded or unpadded) | All paths; daily filename              | `11`                    |
+| `DD`, `D`            | Gregorian day number (padded or unpadded)   | All paths; daily filename              | `22`                    |
+| `DDDD`               | Weekday name                                | All paths; daily filename              | `Sunday`                |
+| `ww`, `w`            | Configured week number (padded or unpadded) | Daily and weekly paths; daily filename | `36`                    |
 
 ### <a name="quick_reference"></a> Quick reference to calendar notes
 
@@ -314,6 +314,7 @@ pcApi.dateToEvents(new Date(), { base: "umalqura" }); // With Umm al-Qura basis
 This plugin has been developed with love, for non-commercial purposes.
 
 You can support our continued efforts in the following ways:
+
 - Contribute to the development of this plugin
 - Report bugs or suggest a feature for development via the Issues section on this GitHub page
 - Recommend installing and using this plugin to your friends
