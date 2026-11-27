@@ -15,7 +15,7 @@ This document covers the sidebar `CalendarView`, Settings tab, reusable componen
 | `CalendarRenderer/index.ts`                  | Orchestrates full re-renders of `containerEl` (`dir` set to `rtl`/`ltr`), wrapping header, seasonal notes row, and body in `safeRender()` error boundaries.                                                                                |
 | `CalendarRenderer/renderErrorBoundary.ts`    | `safeRender(container, section, fn)` catches render exceptions per section so one broken panel doesn't blank the entire view.                                                                                                              |
 | `CalendarRenderer/CalendarNavigation/`       | Month/year stepping (`prevMonth`, `nextMonth`, `goToToday`, etc.) that mutates `CalendarState` and triggers re-render.                                                                                                                     |
-| `CalendarRenderer/CalendarHeader/`           | Top bar: month/year display (clickable for monthly/yearly notes + context menus), navigation buttons, and optional "Go to current" button (`showGoToCurrent`).                                                                             |
+| `CalendarRenderer/CalendarHeader/`           | The top bar shows month and year links, navigation buttons, and a Return to Now button while viewing another month at sidebar widths of 300px or more.                                                                                     |
 | `CalendarRenderer/CalendarBody/`             | Renders the optional seasonal notes row (`showSeasonalNotes`), weekday headers, week number column, and day cells with note-existence dots, holiday/weekend styling, custom event color markers, and hover tooltips.                       |
 | `CalendarRenderer/CalendarBody/GridService/` | Builds the `TMonthGridCell[]` array (Jalali + Gregorian + Hijri dates, `isToday`, `isWeekend`, `isHolidayInIran`).                                                                                                                         |
 | `CalendarRenderer/CalendarBody/Tooltip/`     | Renders localized event/holiday tooltips for hovered/focused day cells.                                                                                                                                                                    |
@@ -29,7 +29,7 @@ This document covers the sidebar `CalendarView`, Settings tab, reusable componen
 
 ### Sections (`src/templates/Setting/sections/`)
 
-1. `GeneralSection.ts` — language, live expression numeral/output languages, startup daily note, confirm create/delete modals, seasonal row, go-to-current button, version update modal.
+1. `GeneralSection.ts` — language, live expression numeral/output languages, startup daily note, confirm create/delete modals, seasonal row, version update modal.
 2. `PathSection.ts` — folder paths for daily, weekly, monthly, seasonal, yearly notes (v5 `"bracketed"` pattern syntax).
 3. `NameSection.ts` — `dailyNoteFormat` (`"standard"` pattern syntax), `dateFormat`, `weekCalculation`, `monthlyNoteNaming`, `yearlyNoteNaming`.
 4. `TemplateSection.ts` — template file paths for each periodic note type.

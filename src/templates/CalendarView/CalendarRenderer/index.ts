@@ -42,12 +42,12 @@ export default class CalendarRenderer {
 	}
 
 	public render() {
-		const containerEl = this.containerEl;
-		containerEl.replaceChildren();
-
-		containerEl.classList.add("persian-calendar", "persian-calendar__calendar");
-
-		containerEl.setAttribute("dir", this.setting.language === "fa" ? "rtl" : "ltr");
+		this.containerEl.replaceChildren();
+		this.containerEl.classList.add("persian-calendar__sidebar");
+		const containerEl = this.containerEl.createDiv({
+			cls: "persian-calendar persian-calendar__calendar",
+			attr: { dir: this.setting.language === "fa" ? "rtl" : "ltr" },
+		});
 
 		safeRender(containerEl, "header", () => {
 			this.headerRenderer.render(containerEl);

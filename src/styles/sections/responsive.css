@@ -1,3 +1,9 @@
+@container persian-calendar-sidebar (width < 300px) {
+	.persian-calendar__header .persian-calendar__go-current {
+		display: none;
+	}
+}
+
 @container persian-calendar (max-width: 300px) {
 	.persian-calendar__gmonth-gyear,
 	.persian-calendar__gregorian-day--center,

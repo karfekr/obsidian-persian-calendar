@@ -1,7 +1,12 @@
+.persian-calendar__sidebar {
+	container: persian-calendar-sidebar / inline-size;
+}
+
 .persian-calendar__calendar {
 	direction: rtl;
 	display: flex;
 	flex-direction: column;
+	height: 100%;
 	margin: 0 auto;
 	max-width: 600px;
 	padding: 0 5px;

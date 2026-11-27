@@ -59,24 +59,24 @@ export default class CalendarHeaderRender {
 			hijriMonthYearEl.textContent = hijriMonthRange;
 		}
 
-		if (this.setting.showGoToCurrent) {
-			const today = dateToJalali(todayTehran());
-			const displayedMonth = jYearState * 12 + jMonthState;
-			const currentMonth = today.jy * 12 + today.jm;
-			const currentButton = headerTopEl.createEl("button", {
-				cls: [
-					"persian-calendar__go-current",
-					...(displayedMonth === currentMonth ? ["persian-calendar__go-current--hidden"] : []),
-				],
-			});
+		const today = dateToJalali(todayTehran());
+		const displayedMonth = jYearState * 12 + jMonthState;
+		const currentMonth = today.jy * 12 + today.jm;
+		const currentButton = headerTopEl.createEl("button", {
+			cls: [
+				"persian-calendar__go-current",
+				...(displayedMonth === currentMonth ? ["persian-calendar__go-current--hidden"] : []),
+			],
+			type: "button",
+			attr: { "aria-label": t("noteNavigation.monthly.current") },
+		});
 
-			if (displayedMonth !== currentMonth) {
-				setIcon(currentButton, displayedMonth < currentMonth ? "step-forward" : "step-back");
-			}
-			currentButton.addEventListener("click", () => {
-				void this.navigation.goToToday();
-			});
+		if (displayedMonth !== currentMonth) {
+			setIcon(currentButton, displayedMonth < currentMonth ? "step-forward" : "step-back");
 		}
+		currentButton.addEventListener("click", () => {
+			void this.navigation.goToToday();
+		});
 
 		const stateControlEl = headerEl.createDiv({
 			cls: "persian-calendar__state-control",

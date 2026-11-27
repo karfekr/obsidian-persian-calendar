@@ -46,11 +46,6 @@ export function getGeneralSettings(): SettingDefinitionItem[] {
 					control: { type: "toggle", key: "openDailyNoteOnStartup" },
 				},
 				{
-					name: t("setting.general.showGoToCurrent.name"),
-					desc: t("setting.general.showGoToCurrent.desc"),
-					control: { type: "toggle", key: "showGoToCurrent" },
-				},
-				{
 					name: t("setting.general.showInNoteNavigation.name"),
 					desc: t("setting.general.showInNoteNavigation.desc"),
 					control: { type: "toggle", key: "showInNoteNavigation" },
