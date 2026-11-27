@@ -174,8 +174,10 @@ describe("vault event repositories", () => {
 		const listeners = new Map<string, (file: TAbstractFile, oldPath?: string) => unknown>();
 		const plugin = {
 			setting: settings,
+			periodicLinks: { filesChanged: vi.fn() },
 			liveExpression: { refresh: vi.fn() },
 			app: {
+				metadataCache: { on: vi.fn() },
 				vault: {
 					on: (name: string, callback: (file: TAbstractFile, oldPath?: string) => unknown) =>
 						listeners.set(name, callback),

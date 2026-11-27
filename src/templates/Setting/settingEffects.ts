@@ -91,6 +91,22 @@ export function createSettingChangeHandler(
 
 		setNestedValue(plugin.setting, key, value);
 
+		if (
+			[
+				"dailyNotesPath",
+				"weeklyNotesPath",
+				"monthlyNotesPath",
+				"seasonalNotesPath",
+				"yearlyNotesPath",
+				"dailyNoteFormat",
+				"weekCalculation",
+				"monthlyNoteNaming",
+				"yearlyNoteNaming",
+			].includes(key)
+		) {
+			plugin.periodicLinks?.filesChanged();
+		}
+
 		if (settingKey === "language") {
 			setLocal(value as TLocale);
 		}

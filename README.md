@@ -38,6 +38,7 @@ files -`main.js`, `manifest.json` and `styles.css`- and move them to the followi
 
 - [Dynamic Paths](#dynamic_path)
 - [Quick Reference to Calendar Notes](#quick_reference)
+- [Automatic links between periodic notes](#auto_links)
 - [Placeholders](#placeholders)
 - [Live Expressions](#live_expressions)
 - [Custom Events](#custom_events)
@@ -109,6 +110,32 @@ executing the related command.
 	<img src="Instructions/quick_reference.webp" alt="preview" />
 	<div>Related to previous versions of the plugin</div>
 </div>
+
+## <a name="auto_links"></a> Automatic links between periodic notes
+
+Add `pc-auto-link` to the parent note’s frontmatter and list the types you want to include. For example, an Azar 1405 monthly note can request daily and weekly notes. If only these two daily notes exist, the plugin fills in `pc-links` as shown.
+
+```yaml
+---
+pc-auto-link:
+  - daily
+  - weekly
+pc-links:
+  - "[[1405-09-01]]"
+  - "[[1405-09-02]]"
+---
+```
+
+| Parent note | Allowed entries in `pc-auto-link`        |
+| ----------- | ---------------------------------------- |
+| Weekly      | `daily`                                  |
+| Monthly     | `daily`, `weekly`                        |
+| Seasonal    | `daily`, `weekly`, `monthly`             |
+| Yearly      | `daily`, `weekly`, `monthly`, `seasonal` |
+
+A weekly note that overlaps two Jalali months, seasons, or years can appear in both parents’ `pc-links`, according to the calendar’s configured week calculation.
+
+The plugin synchronizes links after notes are created, deleted, moved, renamed, or the selection changes. It includes only existing notes that match the calendar’s configured paths and names, and never creates a missing note.
 
 ## <a name="placeholders"></a> Placeholders
 

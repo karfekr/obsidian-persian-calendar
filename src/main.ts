@@ -12,6 +12,7 @@ import {
 	EventManager,
 	LiveExpression,
 	NoteService,
+	PeriodicNoteLinker,
 	Placeholder,
 	SmartDateLinker,
 	Suggestion,
@@ -29,6 +30,7 @@ export default class PersianCalendarPlugin extends Plugin {
 	// Core properties
 	setting: TSetting = DEFAULT_SETTING;
 	noteService!: NoteService;
+	periodicLinks!: PeriodicNoteLinker;
 	noteNavigation!: NoteNavigation;
 	placeholder: Placeholder;
 	liveExpression: LiveExpression;
@@ -67,6 +69,7 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		// Initialize note service
 		this.noteService = new NoteService(this.app, this);
+		this.periodicLinks = new PeriodicNoteLinker(this);
 		this.noteNavigation = new NoteNavigation(this);
 
 		// Register calendar view
@@ -74,6 +77,7 @@ export default class PersianCalendarPlugin extends Plugin {
 
 		// Activate view if not already active
 		this.app.workspace.onLayoutReady(() => {
+			this.periodicLinks.filesChanged();
 			void this.openDailyNoteOnStartup();
 			void this.vaultEventService.refresh().then(() => {
 				this.refreshCalendarViews();
@@ -266,6 +270,7 @@ export default class PersianCalendarPlugin extends Plugin {
 	}
 
 	onunload() {
+		this.periodicLinks?.stop();
 		this.liveExpression.destroy();
 		this.noteNavigation?.destroy();
 		this.app.workspace.getLeavesOfType("persian-calendar").forEach((leaf) => {

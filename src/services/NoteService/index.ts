@@ -13,6 +13,7 @@ import type {
 } from "src/types";
 import { parsePattern } from "src/utils/dateEngine";
 import {
+	checkValidJalali,
 	dateToJalali,
 	getWeekStartCalculator,
 	gregorianToJalali,
@@ -39,7 +40,7 @@ export default class NoteService {
 		if (!parsed) return null;
 
 		const date = this.resolveJalaliFromContext(parsed);
-		if (!date) return null;
+		if (!date || !checkValidJalali(date.jy, date.jm, date.jd)) return null;
 
 		const { filePath } = this.pathBuilder.buildDailyNotePath(date.jy, date.jm, date.jd);
 		if (filePath !== file.path) return null;

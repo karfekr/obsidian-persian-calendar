@@ -29,12 +29,21 @@ export default class EventManager {
 		this.registerFileModifyEvent();
 		this.registerFileDeleteEvent();
 		this.registerFileRenameEvent();
+		this.plugin.registerEvent(
+			this.plugin.app.metadataCache.on("changed", (file, _data, cache) => {
+				this.plugin.periodicLinks.metadataChanged(file, cache.frontmatter);
+			}),
+		);
+		this.plugin.registerEvent(
+			this.plugin.app.metadataCache.on("resolved", () => this.plugin.periodicLinks.cacheResolved()),
+		);
 	}
 
 	private registerFileCreateEvent() {
 		this.plugin.registerEvent(
 			this.plugin.app.vault.on("create", (file: TAbstractFile) => {
 				if (file instanceof TFile && file.path.endsWith(".md")) {
+					this.plugin.periodicLinks.filesChanged(file);
 					if (this.plugin.vaultEventService.isRelevantFile(file.path)) {
 						this.debouncedVaultEventsRefresh();
 					}
@@ -73,6 +82,7 @@ export default class EventManager {
 		this.plugin.registerEvent(
 			this.plugin.app.vault.on("delete", (file) => {
 				if ((file instanceof TFile && file.path.endsWith(".md")) || file instanceof TFolder) {
+					this.plugin.periodicLinks.filesChanged(file);
 					if (file instanceof TFolder || this.plugin.vaultEventService.isRelevantFile(file.path)) {
 						this.debouncedVaultEventsRefresh();
 					}
@@ -95,10 +105,11 @@ export default class EventManager {
 					this.debouncedVaultEventsRefresh();
 				}
 
-				if (moved) await this.plugin.saveSetting();
 				if (isFolder || isMarkdown || oldPath.endsWith(".md")) {
+					this.plugin.periodicLinks.filesChanged(file);
 					this.handleFileUpdate();
 				}
+				if (moved) await this.plugin.saveSetting();
 			}),
 		);
 	}
