@@ -1,119 +1,64 @@
-<div dir="ltr" align=center>
+<p align="center" dir="ltr">
+  <a href="README_FA.md">فارسی</a> · <strong><a href="README.md">English</a></strong>
+</p>
 
-[**فارسی**](README_FA.md) / [**English**](README.md)
+# <a name="persian-calendar-plugin-for-obsidian"></a> Persian Calendar for Obsidian
 
-</div>
+Use the Solar Hijri (Jalali) calendar in [Obsidian](https://obsidian.md/) to open periodic notes, view holidays, and work with dates. The interface is available in Persian and English.
 
-# "Persian Calendar" Plugin for Obsidian
+[Installation](#installation-guide) · [Feature guide](#guid) · [Contributing](#collaboration)
 
-<div align="center">
-	<img src="Instructions/view-en.png" alt="view" />
-</div>
-
-This plugin adds the Solar Hijri calendar alongside the Gregorian and Lunar Hijri calendars to
-[Obsidian](https://obsidian.md/), offering Iranian users a more pleasant journaling experience.
-
-- [Guide to the Essential Features](#guid)
-- [Collaboration and Project Participation](#collaboration)
-
-<div align="center">
-	<img src="Instructions/Obsidian.webp" alt="preview" />
-	<div>Related to previous versions of the plugin</div>
-</div>
+<p align="center">
+  <img src="Instructions/view.png" width="360" alt="Jalali sidebar calendar showing Gregorian and Lunar Hijri dates" />
+</p>
 
 ## Installation Guide
 
-### First method (recommended)
+### <a name="first-method-recommended"></a> Community plugins
 
-You can install this plugin by searching for `Persian Calendar` in Obsidian's `Community plugins`.
+In **Settings → Community plugins → Browse**, search for **Persian Calendar**, then select **Install** and **Enable**. [Obsidian plugin listing](https://community.obsidian.md/plugins/persian-calendar)
 
-### Second method
+### <a name="second-method"></a> Manual installation
 
-You can visit the Releases section of this GitHub page, download the plugin's executable
-files -`main.js`, `manifest.json` and `styles.css`- and move them to the following path:
+Download `main.js`, `manifest.json`, and `styles.css` from [GitHub Releases](https://github.com/karfekr/obsidian-persian-calendar/releases). Put them in `.obsidian/plugins/persian-calendar/` inside your vault, reload Obsidian, and enable **Persian Calendar** under **Community plugins**.
 
-`[Your Vault Address]/.obsidian/plugins/persian-calendar`
+## <a name="guid"></a><a name="guide-to-the-essential-features"></a> Feature guide
 
-# <a name="guid"></a> Guide to the Essential Features
+[Calendar](#other) · [Paths and naming](#dynamic_path) · [Quick date links](#quick_reference) · [Automatic links](#auto_links)<br />
+[Placeholders](#placeholders) · [Live expressions](#live_expressions) · [Custom events](#custom_events)<br />
+[Date picker](#date-picker) · [Persian font](#persian-font) · [API](#api)
 
-- [Dynamic Paths](#dynamic_path)
-- [Quick Reference to Calendar Notes](#quick_reference)
-- [Automatic links between periodic notes](#auto_links)
-- [Placeholders](#placeholders)
-- [Live Expressions](#live_expressions)
-- [Custom Events](#custom_events)
-- [Using the Dedicated API](#api)
-- [Other Features](#other)
+### <a name="other"></a><a name="other-features"></a> Calendar and navigation
 
-## <a name="dynamic_path"></a> Dynamic Paths and Naming
+Run **Open Persian Calendar** from the command palette. Select a day, week number, month, season, or year to open or create its note. Use **Additional Calendars** to show Gregorian or Lunar Hijri dates and choose the Lunar Hijri basis (Iran or Umm al-Qura).
 
-You can use dynamic placeholders to customize the paths and filenames of your calendar notes.
+<img src="Instructions/responsive.webp" width="720" loading="lazy" alt="The calendar adjusts as the Obsidian sidebar narrows and widens" />
 
-<div align="center">
+When you browse another month, use the **This Month** icon in the calendar header to return to the current month. Enable **Show In-Note Navigation** to move to the previous, next, or current period from a periodic note.
 
-| Placeholder | Example  | Description                          |
-| :---------- | :------- | :----------------------------------- |
-| `jYYYY`     | 1404     | Four-digit Jalali year               |
-| `jYY`       | 04       | Two-digit Jalali year                |
-| `YYYY`      | 2025     | Four-digit Gregorian year            |
-| `YY`        | 25       | Two-digit Gregorian year             |
-| `jQQQQ`     | Autumn   | Full Jalali season name              |
-| `jQQ`       | 03       | Two-digit Jalali season number       |
-| `jQ`        | 3        | Jalali season number                 |
-| `jMMMM`     | Azar     | Full Jalali month name               |
-| `jMMM`      | Aza      | Abbreviated Jalali month name        |
-| `jMM`       | 09       | Two-digit Jalali month number        |
-| `jM`        | 9        | Jalali month number                  |
-| `MMMM`      | November | Full Gregorian month name            |
-| `MMM`       | Nov      | Abbreviated Gregorian month name     |
-| `MM`        | 11       | Two-digit Gregorian month number     |
-| `M`         | 11       | Gregorian month number               |
-| `jDD`       | 05       | Two-digit Jalali day of the month    |
-| `jD`        | 5        | Jalali day of the month              |
-| `DDDD`      | Monday   | Day of the week                      |
-| `DD`        | 06       | Two-digit Gregorian day of the month |
-| `D`         | 6        | Gregorian day of the month           |
-| `ww`        | 49       | Two-digit week number                |
-| `w`         | 49       | Week number                          |
+<img src="Instructions/back%20to%20current.webp" width="720" loading="lazy" alt="The calendar header's This Month button returns the sidebar to the current Jalali month" />
 
-</div>
+### <a name="dynamic_path"></a> Dynamic paths and naming
 
-The `w` and `ww` placeholders are week-number placeholders. They are resolved according to the
-weekly note's configured week calculation (Jalali or Gregorian, and the selected week-start rule).
-They are useful for weekly note paths and can also be used in daily note paths to place a daily note
-under the corresponding week.
+Set folders in **Calendar Note Paths** and the daily filename format in **Calendar Note Names**. The examples below use 1 Azar 1405 (22 November 2026).
 
-In folder paths, plain text is treated literally by default, and brackets (`[...]`) mark dynamic placeholders to be evaluated:
+| Setting                                       | Pattern                 | Result               |
+| --------------------------------------------- | ----------------------- | -------------------- |
+| Folder path · put date tokens in brackets     | `Journal/[jYYYY]/Daily` | `Journal/1405/Daily` |
+| Daily filename · use date tokens directly     | `jYYYY-jMM-jDD`         | `1405-09-01`         |
+| Daily filename · put literal text in brackets | `[Daily] YYYY-MM-DD`    | `Daily 2026-11-22`   |
 
-- `Daily` → interpreted literally as `Daily`
-- `[D]aily` → interpreted as `D` + `aily` (e.g., `9aily`)
-- `Journal/[jYYYY]/Daily` → interpreted as `Journal/1404/Daily`
+Use `w` or `ww` for the configured week number, for example in `Journal/[jYYYY]/W[ww]`. **Calendar Note Names** also lets you choose Jalali or Gregorian week calculation and monthly and yearly naming. See the [date token reference](docs/date-engine.md#supported-token-registry-srcutilsdateenginetokens).
 
-In the daily note naming format, tokens (such as `YYYY-MM-DD` or `jYYYY-jMM-jDD`) are evaluated directly, and brackets escape literal text (e.g., `[Daily] YYYY-MM-DD`).
+### <a name="quick_reference"></a> Quick reference to calendar notes
 
-## <a name="quick_reference"></a> Quick Reference to Calendar Notes
+Type `@` and pick a Persian date phrase such as `امروز` (today) or `این هفته` (this week) to insert a note link. Type `@/` to insert the resolved date or period as plain text. Suggestions cover days, weekdays, weeks, months, seasons, and years.
 
-Use `@` to insert a link to a calendar note, or `@/` to insert the resolved date as plain text
-without creating a link.
+<img src="Instructions/quick%20reference.webp" width="720" loading="lazy" alt="Date autocomplete inserts a note link with @ and a plain date with @/" />
 
-- **Days:** `امروز`، `دیروز`، `فردا`، `پریروز`، `پس‌فردا`
-- **Days of the week:** (نام روز جاری)، `روز بعد`، `روز قبل`
-- **Weeks:** `این هفته`، `هفته قبل`، `هفته بعد`
-- **Months:** `این ماه`، `ماه قبل`، `ماه بعد`
-- **Seasons:** `این فصل`، `فصل قبل`، `فصل بعد`
-- **Years:** `امسال`، `سال قبل`، `سال بعد`
+### <a name="auto_links"></a> Automatic links between periodic notes
 
-You can also select the desired phrase in the text and link it to the corresponding note by
-executing the related command.
-
-<div align="center">
-	<img src="Instructions/quick_reference.webp" alt="preview" />
-	<div>Related to previous versions of the plugin</div>
-</div>
-
-## <a name="auto_links"></a> Automatic links between periodic notes
-
-Add `pc-auto-link` to the parent note’s frontmatter and list the types you want to include. For example, an Azar 1405 monthly note can request daily and weekly notes. If only these two daily notes exist, the plugin fills in `pc-links` as shown.
+Add a list of note types to the parent note's `pc-auto-link` property. The plugin keeps `pc-links` up to date with matching notes already in your vault. For example, an Azar 1405 monthly note would have these properties if the two daily notes below were its only matches.
 
 ```yaml
 ---
@@ -133,145 +78,60 @@ pc-links:
 | Seasonal    | `daily`, `weekly`, `monthly`             |
 | Yearly      | `daily`, `weekly`, `monthly`, `seasonal` |
 
-A weekly note that overlaps two Jalali months, seasons, or years can appear in both parents’ `pc-links`, according to the calendar’s configured week calculation.
+A week that spans two Jalali months, seasons, or years can appear in both parent notes.
 
-The plugin synchronizes links after notes are created, deleted, moved, renamed, or the selection changes. It includes only existing notes that match the calendar’s configured paths and names, and never creates a missing note.
+<img src="Instructions/auto%20link.webp" width="720" loading="lazy" alt="Adding pc-auto-link to a weekly note fills pc-links and connects daily notes in Graph View" />
 
-## <a name="placeholders"></a> Placeholders
+### <a name="placeholders"></a> Placeholders
 
-By inserting the following placeholders into your note templates, you can include your desired text
-in the final result.
+Type `{{` for suggestions. Add placeholders to a template under **Calendar Note Templates** to insert fixed values when the plugin creates a note. In an existing note, run **Replace Placeholders** from the command palette.
 
-By typing `{{}}` you can receive suggestions for choosing your placeholder.
+```text
+{{تاریخ شمسی یادداشت}}
+{{روز هفته یادداشت}}
+{{مناسبت یادداشت}}
+```
 
-### Daily Note Placeholders
+<img src="Instructions/placeholders.webp" width="720" loading="lazy" alt="Configuring a daily note template and filling its placeholders when a new note is created" />
 
-_Only replaced in daily notes._
+<details>
+<summary>Placeholder reference</summary>
 
-<div align="center">
+Choose keys for the note's date or period, or use the current-date keys to capture today's values when you replace them. Elapsed and remaining days use the note's date when it can be resolved and today's date otherwise.
 
-| Placeholder               | Sample Output      | Description                        |
-| :------------------------ | :----------------- | :--------------------------------- |
-| `{{تاریخ شمسی یادداشت}}`  | 1404-11-30         | Solar Hijri date of the daily note |
-| `{{تاریخ میلادی یادداشت}}` | 2026-02-19         | Gregorian date of the daily note   |
-| `{{تاریخ قمری یادداشت}}`  | 1447-09-01         | Lunar Hijri date of the daily note |
-| `{{روز هفته یادداشت}}`    | پنجشنبه (Thursday) | Name of the day of the week        |
-| `{{روز ماه یادداشت}}`     | 30                 | Day of the month                   |
-| `{{مناسبت یادداشت}}`      | Event text         | Events of the daily note's date    |
+#### Daily Note Placeholders
 
-</div>
+`{{تاریخ شمسی یادداشت}}`, `{{تاریخ میلادی یادداشت}}`, `{{تاریخ قمری یادداشت}}`, `{{روز هفته یادداشت}}`, `{{روز ماه یادداشت}}`, `{{مناسبت یادداشت}}`
 
-### Weekly Placeholders
+#### Weekly Placeholders
 
-_Work in daily notes and weekly notes._
+`{{هفته یادداشت}}`, `{{شماره هفته یادداشت}}`, `{{اول هفته}}`, `{{آخر هفته}}`
 
-<div align="center">
+#### Monthly Placeholders
 
-| Placeholder              | Sample Output                   | Description                                                  |
-| :----------------------- | :------------------------------ | :----------------------------------------------------------- |
-| `{{هفته یادداشت}}`       | <span dir="ltr">1404-W49</span> | Week identifier                                              |
-| `{{شماره هفته یادداشت}}` | 9                               | Note's week number according to the week calculation setting |
-| `{{اول هفته}}`           | 2026-02-14                      | Start date of the week (Gregorian)                           |
-| `{{آخر هفته}}`           | 2026-02-20                      | End date of the week (Gregorian)                             |
+`{{ماه یادداشت}}`, `{{نام ماه یادداشت}}`, `{{اول ماه}}`, `{{آخر ماه}}`
 
-</div>
+#### Seasonal Placeholders
 
-### Monthly Placeholders
+`{{فصل یادداشت}}`, `{{نام فصل یادداشت}}`, `{{اول فصل}}`, `{{آخر فصل}}`
 
-_Work in daily notes and monthly notes._
+#### Yearly Placeholders
 
-<div align="center">
+`{{سال یادداشت}}`, `{{اول سال}}`, `{{آخر سال}}`
 
-| Placeholder           | Sample Output | Description                         |
-| :-------------------- | :------------ | :---------------------------------- |
-| `{{ماه یادداشت}}`     | 1404-11       | Month identifier                    |
-| `{{نام ماه یادداشت}}` | بهمن (Bahman) | Name of the Solar Hijri month       |
-| `{{اول ماه}}`         | 2026-01-21    | Start date of the month (Gregorian) |
-| `{{آخر ماه}}`         | 2026-02-19    | End date of the month (Gregorian)   |
+#### Current Time Placeholders
 
-</div>
+`{{تاریخ شمسی جاری}}`, `{{تاریخ میلادی جاری}}`, `{{تاریخ قمری جاری}}`, `{{روز هفته جاری}}`, `{{روز ماه جاری}}`, `{{هفته جاری}}`, `{{شماره هفته جاری}}`, `{{نام ماه جاری}}`, `{{ماه جاری}}`, `{{نام فصل جاری}}`, `{{فصل جاری}}`, `{{سال جاری}}`, `{{مناسبت جاری}}`
 
-### Seasonal Placeholders
+#### Elapsed and Remaining Days
 
-_Work in daily notes, monthly notes, and seasonal notes._
+`{{روزهای گذشته سال}}`, `{{روزهای باقیمانده سال}}`, `{{روزهای گذشته فصل}}`, `{{روزهای باقیمانده فصل}}`, `{{روزهای گذشته ماه}}`, `{{روزهای باقیمانده ماه}}`
 
-<div align="center">
+</details>
 
-| Placeholder           | Sample Output                  | Description                          |
-| :-------------------- | :----------------------------- | :----------------------------------- |
-| `{{فصل یادداشت}}`     | <span dir="ltr">1404-S4</span> | Season identifier                    |
-| `{{نام فصل یادداشت}}` | زمستان (Winter)                | Name of the season                   |
-| `{{اول فصل}}`         | 2025-12-22                     | Start date of the season (Gregorian) |
-| `{{آخر فصل}}`         | 2026-03-21                     | End date of the season (Gregorian)   |
+### <a name="live_expressions"></a> Live expressions
 
-</div>
-
-### Yearly Placeholders
-
-_Work in daily, weekly, monthly, and yearly notes._
-
-<div align="center">
-
-| Placeholder       | Sample Output | Description                        |
-| :---------------- | :------------ | :--------------------------------- |
-| `{{سال یادداشت}}` | 1404          | Solar Hijri year                   |
-| `{{اول سال}}`     | 2025-03-21    | Start date of the year (Gregorian) |
-| `{{آخر سال}}`     | 2026-03-20    | End date of the year (Gregorian)   |
-
-</div>
-
-### Current Time Placeholders
-
-_These always return today's date, regardless of the note type._
-
-<div align="center">
-
-| Placeholder            | Sample Output                   | Description                                                   |
-| :--------------------- | :------------------------------ | :------------------------------------------------------------ |
-| `{{تاریخ شمسی جاری}}`  | 1404-11-26                      | Today's Solar Hijri date                                      |
-| `{{تاریخ میلادی جاری}}` | 2026-02-15                      | Today's Gregorian date                                        |
-| `{{تاریخ قمری جاری}}`  | 1447-08-26                      | Today's Lunar Hijri date                                      |
-| `{{روز هفته جاری}}`    | یکشنبه (Sunday)                 | Name of today's weekday                                       |
-| `{{روز ماه جاری}}`     | 26                              | Today's day of the month                                      |
-| `{{هفته جاری}}`        | <span dir="ltr">1404-W49</span> | Current week identifier                                       |
-| `{{شماره هفته جاری}}`  | 9                               | Current week number according to the week calculation setting |
-| `{{نام ماه جاری}}`     | بهمن (Bahman)                   | Name of the current month                                     |
-| `{{ماه جاری}}`         | 1404-11                         | Current month identifier                                      |
-| `{{نام فصل جاری}}`     | زمستان (Winter)                 | Name of the current season                                    |
-| `{{فصل جاری}}`         | <span dir="ltr">1404-S4</span>  | Current season identifier                                     |
-| `{{سال جاری}}`         | 1404                            | Current year                                                  |
-| `{{مناسبت جاری}}`      | Event text                      | Today's events                                                |
-
-</div>
-
-### Elapsed and Remaining Days
-
-_By default, calculated relative to the daily note's date; if placed in a non-daily note, they use
-today's date._
-
-<div align="center">
-
-| Placeholder                | Sample Output | Description                                   |
-| :------------------------- | :------------ | :-------------------------------------------- |
-| `{{روزهای گذشته سال}}`     | 334           | Days passed since the beginning of the year   |
-| `{{روزهای باقیمانده سال}}` | 31            | Days remaining until the end of the year      |
-| `{{روزهای گذشته فصل}}`     | 58            | Days passed since the beginning of the season |
-| `{{روزهای باقیمانده فصل}}` | 31            | Days remaining until the end of the season    |
-| `{{روزهای گذشته ماه}}`     | 28            | Days passed since the beginning of the month  |
-| `{{روزهای باقیمانده ماه}}` | 2             | Days remaining until the end of the month     |
-
-</div>
-
-## <a name="live_expressions"></a> Live Expressions
-
-Type `{+` in a note and choose a key from autocomplete. It inserts the exact `{+key}` syntax;
-the Markdown source is never replaced. Reading View and Live Preview render the current Tehran
-value (move the cursor outside an expression in Live Preview to see it).
-
-Live Expressions differ from [placeholders](#placeholders), which write a static value when you
-run the replacement command or create a note. They also differ from Smart Date Links, which
-recognize date phrases and navigate to calendar notes. Live Expressions are display-only values
-that stay current in an open rendered note.
+Type `{+` and choose a key to display dates, Tehran time, or events that update in Reading View and Live Preview. In Live Preview, move the cursor outside the expression to see its value. Choose the output language and numerals independently in **Live Expressions** settings.
 
 ```markdown
 **Date** · {+نام روز} {+روز ماه شمسی} {+نام ماه شمسی} {+سال شمسی}
@@ -281,162 +141,80 @@ that stay current in an open rendered note.
 **Today's events** · {+مناسبت}
 ```
 
-<div dir="ltr">
+<img src="Instructions/live%20expression.webp" width="720" loading="lazy" alt="Live expression autocomplete and a note displaying current dates, events, and progress" />
 
-| Use                       | Keys inside `{+…}`                                                                                              |
+#### Live countdowns
+
+Use a Jalali date with digits `0–9` and an optional 24-hour Tehran time. Omit the time to target midnight. One-time countdowns show elapsed time after the target. Annual countdowns move on to the next occurrence.
+
+| Example                  | One-time                 | Annual              |
+| ------------------------ | ------------------------ | ------------------- |
+| Nowruz                   | `{+1405-01-01}`          | `{+01-01}`          |
+| Birthday lunch           | `{+1405-06-15 13:30}`    | `{+06-15 13:30}`    |
+| Anniversary with seconds | `{+1405-09-10 18:45:30}` | `{+09-10 18:45:30}` |
+
+<details>
+<summary>Live expression keys</summary>
+
+| Use                       | Keys inside <code dir="ltr">{+…}</code>                                                                         |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | Clock                     | `ساعت`, `دقیقه`, `ثانیه`                                                                                        |
 | Jalali date               | `سال شمسی`, `نام ماه شمسی`, `شماره ماه شمسی`, `روز ماه شمسی`                                                    |
 | Gregorian date            | `سال میلادی`, `نام ماه میلادی`, `شماره ماه میلادی`, `روز ماه میلادی`                                                |
 | Lunar Hijri date          | `سال قمری`, `نام ماه قمری`, `شماره ماه قمری`, `روز ماه قمری`                                                    |
 | Weekday and period        | `نام روز`, `شماره روز هفته`, `هفته سال`, `هفته ماه شمسی`, `فصل`, `شماره فصل`                                    |
-| Length and position       | `تعداد روز سال شمسی`, `تعداد روز ماه شمسی`, `روز سال شمسی`, `روز فصل`                                           |
-| Elapsed or remaining time | `روز باقی سال شمسی`, `روز باقی ماه شمسی`, `روز باقی فصل`, `روز باقی هفته`, `دقیقه مانده روز`, `دقیقه گذشته روز` |
-| Numeric percentage        | `درصد سال شمسی`, `درصد فصل`, `درصد ماه شمسی`, `درصد هفته`, `درصد روز`                                           |
+| Day counts                | `تعداد روز سال شمسی`, `تعداد روز ماه شمسی`, `روز سال شمسی`, `روز فصل`                                           |
+| Time remaining or elapsed | `روز باقی سال شمسی`, `روز باقی ماه شمسی`, `روز باقی فصل`, `روز باقی هفته`, `دقیقه مانده روز`, `دقیقه گذشته روز` |
+| Percentage elapsed        | `درصد سال شمسی`, `درصد فصل`, `درصد ماه شمسی`, `درصد هفته`, `درصد روز`                                           |
 | Events and holidays       | `مناسبت`, `تعداد مناسبت`, `تعطیل`                                                                               |
 
-</div>
+</details>
 
-Weekday numbers run from Saturday (1) to Friday (7). The week-of-year key uses your configured
-week calculation; the week-of-month key counts days 1–7 as week 1, 8–14 as week 2, and so on.
-Hijri dates use the selected Hijri basis. `تعطیل` is true on Friday or when an enabled event marks
-the day as a holiday.
+### <a name="custom_events"></a><a name="custom-event-repositories"></a> Custom events
 
-Under **Live Expressions** in Settings, choose an output language (Persian or English) for
-generated names, event fallback text, and Yes/No values; choose Persian or English numerals
-separately. The default is Persian text with English numerals, so all four combinations are
-available. Custom-event titles remain authored text; only their rendered digits follow the numeral
-setting. Built-in event titles use the selected language when the event data provides it.
+The calendar can show official Iranian holidays and events, international observances, and your own events. In **Event Display**, enable **Show Custom Events**, then select **Add Custom Events**. Choose a vault note and the calendar its dates use (Jalali, Gregorian, or Lunar Hijri), then save.
 
-Mounted expressions refresh on their normal second, minute, or Tehran-midnight cadence. They also
-refresh after a committed custom-event cache update, when an event/display setting that affects
-them changes, and when Obsidian returns from the background or sleep. This recalculates from the
-current time without polling or changing Markdown files.
+Write one event per line in the note. The example below uses Jalali dates. Use `MM-DD` for annual events and `YYYY-MM-DD` for one-time events. Use digits `0–9` and hyphens in dates.
 
-Autocomplete for named expressions is bidirectionally
-isolated, so Persian keys display as `{+کلید}` in both RTL and LTR interfaces while insertion
-preserves the exact Markdown text.
+```text
+06-15 | Birthday | purple
+1405-09-10 | Office closed | | تعطیل
+```
 
-### Live Countdowns
+For the optional color in the third field, use `red`, `orange`, `yellow`, `green`, `cyan`, `blue`, `purple`, or `pink`. Put `تعطیل` in the fourth field to mark a holiday. Leave the third field empty to use the default color.
 
-Type a Jalali date with ASCII digits inside `{+…}`. Times use the 24-hour clock in Tehran.
-A date alone means midnight, and omitted seconds default to zero.
+<img src="Instructions/custom%20events.webp" width="720" loading="lazy" alt="Adding a vault note as an event source and viewing a custom event in the calendar" />
 
-| Use                       | One-time target          | Annual target       |
-| ------------------------- | ------------------------ | ------------------- |
-| Start of Nowruz           | `{+1405-01-01}`          | `{+01-01}`          |
-| Birthday lunch            | `{+1405-06-15 13:30}`    | `{+06-15 13:30}`    |
-| Anniversary to the second | `{+1405-09-10 18:45:30}` | `{+09-10 18:45:30}` |
+### Date picker
 
-A one-time target shows time remaining, displays **Now** at the target second, then shows
-time elapsed. An annual target switches to its next occurrence when reached. For example,
-`{+12-30}` skips years without Esfand 30. Durations update every second as a compact clock:
-**6 days, 10:40:30 remaining** or, when days are zero, **02:15:08 remaining**. The Live
-Expressions language and numeral settings control the display. Invalid targets stay visible as typed.
+Use the calendar icon beside an Obsidian `Date` property to choose a Jalali day. To insert or convert a date in the note body, run **Insert & Convert Date** from the command palette.
 
-## <a name="custom_events"></a> Custom Event Repositories
+<img src="Instructions/datepicker.webp" width="720" loading="lazy" alt="Choosing a Jalali date for a note property and inserting a date in note text" />
 
-At the end of the **Event Display** section, click **Add Custom Events**. In the dialog that opens, select a note and save it.
+### Persian font
 
-Define each event on a plain line using the format `Date | Title | Color | Holiday`. Dates must use ASCII digits and hyphens: `MM-DD` dates recur annually in the selected calendar, while `YYYY-MM-DD` dates appear only in the specified year.
+The plugin bundles the [Sahel font](https://github.com/rastikerdar/sahel-font) as **Persian Calendar**. To use it in your notes, open **Settings → Appearance → Text font**, select **Manage**, and add **Persian Calendar**.
 
-The color field is optional and determines the event's accent border color in the tooltip, based on the active Obsidian theme. Supported colors are `red`, `orange`, `yellow`, `green`, `cyan`, `blue`, `purple`, and `pink`. Omit it to use the default primary color; invalid colors are rejected.
+<img src="Instructions/font.webp" width="720" loading="lazy" alt="Selecting Persian Calendar as the Obsidian text font" />
 
-To mark an event as a holiday, enter `تعطیل` in the fourth field.
+### <a name="api"></a><a name="using-the-dedicated-api"></a> Plugin API
 
-To keep the default color while marking an event as a holiday, use the following format: `Date | Title | | تعطیل`.
-
-## <a name="api"></a> Using the Dedicated API
-
-This plugin provides a public API so you can use features like date and number conversion in other
-plugins and scripts (such as DataviewJS or Templater).
-
-<div dir="ltr">
+Use the API from another plugin or a script such as DataviewJS or Templater. See the [full method list](docs/architecture.md#public-plugin-api-apiservice) for calendar conversions, number formatting, and event queries.
 
 ```javascript
 const pcApi = app.plugins.getPlugin("persian-calendar").api;
 
-// Number conversion
-pcApi.toEnNumber("۱۲۳ تست test"); // "123 تست test"
-pcApi.toFaNumber("123 تست test"); // "۱۲۳ تست test"
-
-// Solar Hijri date conversion
-pcApi.jalaliToDate(1405, 9, 13); // Equivalent Gregorian date as Date object
-pcApi.jalaliToGregorian(1405, 9, 13); // {gy: 2026, gm: 12, gd: 4}
-pcApi.jalaliToHijri(1405, 9, 13); // (Iran basis) {hy: 1448, hm: 6, hd: 24}
-pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" }); // (Umm al-Qura basis) {hy: 1448, hm: 6, hd: 24}
-pcApi.jalaliMonthName(9); // آذر (Azar)
-pcApi.jalaliMonthName(9, "en"); // Azar
-pcApi.seasonName(3); // پاییز (Autumn)
-pcApi.seasonName(3, "en"); // Autumn
-
-// Gregorian date conversion
-pcApi.dateToGregorian(new Date()); // {gy, gm, gd}
-pcApi.gregorianToDate(2026, 12, 4); // Date object
-pcApi.gregorianToJalali(2026, 12, 4); // {jy: 1405, jm: 9, jd: 13}
-pcApi.gregorianToHijri(2026, 12, 4); // (Iran) {hy: 1448, hm: 6, hd: 24}
-pcApi.gregorianToHijri(2026, 12, 4, { base: "umalqura" }); // (Umm al-Qura basis) {hy: 1448, hm: 6, hd: 24}
-
-// Lunar Hijri date conversion (Iran basis)
-pcApi.hijriToDate(1448, 6, 24); // Date object
-pcApi.hijriToGregorian(1448, 6, 24); // {gy: 2026, gm: 12, gd: 4}
-pcApi.hijriToJalali(1448, 6, 24); // {jy: 1405, jm: 9, jd: 13}
-
-// Lunar Hijri date conversion (Umm al-Qura basis)
-pcApi.hijriToDate(1448, 6, 24, { base: "umalqura" }); // Date object
-pcApi.hijriToGregorian(1448, 6, 24, { base: "umalqura" }); // {gy: 2026, gm: 12, gd: 4}
-pcApi.hijriToJalali(1448, 6, 24, { base: "umalqura" }); // {jy: 1405, jm: 9, jd: 13}
-
-// Events
-pcApi.checkHoliday(new Date()); // Is it a holiday? true/false
-pcApi.dateToEvents(new Date()); // Array of {title(fa/en), categories, isHolidayInIran}
-pcApi.dateToEvents(new Date(), { base: "umalqura" }); // With Umm al-Qura basis
+pcApi.toEnNumber("۱۲۳"); // "123"
+pcApi.toFaNumber("123"); // "۱۲۳"
+pcApi.jalaliToGregorian(1405, 9, 13); // { gy: 2026, gm: 12, gd: 4 }
+pcApi.gregorianToJalali(2026, 12, 4); // { jy: 1405, jm: 9, jd: 13 }
+pcApi.jalaliToHijri(1405, 9, 13, { base: "umalqura" });
+pcApi.checkHoliday(new Date());
+pcApi.dateToEvents(new Date());
 ```
 
-</div>
+## <a name="collaboration"></a><a name="collaboration-and-project-participation"></a> Contributing
 
-## <a name="other"></a> Other Features
+Read the [contribution guide](CONTRIBUTING.md) or [report a bug or suggest a feature](https://github.com/karfekr/obsidian-persian-calendar/issues). The plugin is licensed under [GPL-3.0](LICENSE).
 
-<div align="center">
-	<img src="Instructions/responsive.webp" alt="view" width="350px" />
-</div>
-
-- scales responsively with the sidebar width
-- Display of official Iranian holidays on the calendar
-- Display of Iran's official calendar events and international observances
-- Option to "Open today's daily note on startup," user configurable
-- Customizable display of calendar events
-- Option to create and display seasonal notes, user configurable
-- Choose whether weekly notes use the Gregorian or Jalali week numbering system.
-- For better compatibility with other Gregorian calendar plugins, you can use Gregorian naming for Jalali monthly and yearly notes.
-- Confirmation dialog before creating calendar notes, user configurable
-- Option to set the user interface to Persian or English
-- Ability to configure calendar note templates
-- Ability to set the Lunar Hijri calendar based on **Iran's Crescent Committee** or **Saudi Arabia's
-  Umm al-Qura**
-- Option to display the Gregorian or Lunar Hijri calendar as supplementary calendars
-- Ability to use a dedicated date picker when setting a property with type `date`
-- Users can use this plugin's [default font](https://github.com/rastikerdar/sahel-font) named
-  "Persian Calendar"
-
-</div>
-
-## <a name="collaboration"></a> Collaboration and Project Participation
-
-This plugin has been developed with love, for non-commercial purposes, and under
-[this license](LICENSE).
-
-You can support our continued efforts in the following ways:
-
-- Contribute to the development of this plugin
-- Report bugs or suggest a feature for development via the Issues section on this GitHub page
-- Recommend installing and using this plugin to your friends
-- Follow our website and Telegram channel
-
-<div align=center>
-
-[![Website](https://img.shields.io/badge/Website-karfekr.ir-orange)](https://karfekr.ir)
-[![Telegram Channel](https://img.shields.io/endpoint?color=neon&label=Karfekr&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fkarfekr)](https://t.me/karfekr)
-[![Telegram Group](https://img.shields.io/endpoint?label=ObsidianFarsi&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FObsidianFarsi&color=blue)](https://t.me/ObsidianFarsi)
-
-</div>
+[Karfekr website](https://karfekr.ir) · [Karfekr Telegram channel](https://t.me/karfekr) · [Obsidian Farsi community](https://t.me/ObsidianFarsi)
