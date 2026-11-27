@@ -4,7 +4,7 @@
 
 # <a name="persian-calendar-plugin-for-obsidian"></a> Persian Calendar for Obsidian
 
-Use the Solar Hijri (Jalali) calendar in [Obsidian](https://obsidian.md/) to open periodic notes, view holidays, and work with dates. The interface is available in Persian and English.
+Use the Jalali calendar in [Obsidian](https://obsidian.md/) to open periodic notes, view holidays, and work with dates. The interface is available in Persian and English.
 
 [Installation](#installation-guide) · [Feature guide](#guid) · [Contributing](#collaboration)
 
@@ -18,7 +18,9 @@ Use the Solar Hijri (Jalali) calendar in [Obsidian](https://obsidian.md/) to ope
 
 ### <a name="first-method-recommended"></a> Community plugins
 
-In **Settings → Community plugins → Browse**, search for **Persian Calendar**, then select **Install** and **Enable**. [Obsidian plugin listing](https://community.obsidian.md/plugins/persian-calendar)
+In **Settings → Community plugins → Browse**, search for **Persian Calendar**, then select **Install** and **Enable**.
+
+[Obsidian plugin listing](https://community.obsidian.md/plugins/persian-calendar)
 
 ### <a name="second-method"></a> Manual installation
 
@@ -32,7 +34,7 @@ Download `main.js`, `manifest.json`, and `styles.css` from [GitHub Releases](htt
 
 ### <a name="other"></a><a name="other-features"></a> Calendar and navigation
 
-Run **Open Persian Calendar** from the command palette. Select a day, week number, month, season, or year to open or create its note. Use **Additional Calendars** to show Gregorian or Lunar Hijri dates and choose the Lunar Hijri basis (Iran or Umm al-Qura).
+The Persian calendar adjusts to the sidebar width.
 
 <div align="center">
 
@@ -40,25 +42,33 @@ Run **Open Persian Calendar** from the command palette. Select a day, week numbe
 
 </div>
 
-When you browse another month, use the **This Month** icon in the calendar header to return to the current month. Enable **Show In-Note Navigation** to move to the previous, next, or current period from a periodic note.
-
-<div align="center">
-
-<img src="Instructions/back%20to%20current.webp" width="720" loading="lazy" alt="The calendar header's This Month button returns the sidebar to the current Jalali month" />
-
-</div>
-
 ### <a name="dynamic_path"></a> Dynamic paths and naming
 
 Set folders in **Calendar Note Paths** and the daily filename format in **Calendar Note Names**. The examples below use 1 Azar 1405 (22 November 2026).
 
-| Setting                                       | Pattern                 | Result               |
-| --------------------------------------------- | ----------------------- | -------------------- |
-| Folder path · put date tokens in brackets     | `Journal/[jYYYY]/Daily` | `Journal/1405/Daily` |
-| Daily filename · use date tokens directly     | `jYYYY-jMM-jDD`         | `1405-09-01`         |
-| Daily filename · put literal text in brackets | `[Daily] YYYY-MM-DD`    | `Daily 2026-11-22`   |
+| Setting | Pattern | Result |
+| --- | --- | --- |
+| Folder path · put date tokens in brackets | `Journal/[jYYYY]/Daily` | `Journal/1405/Daily` |
+| Daily filename · use date tokens directly | `jYYYY-jMM-jDD` | `1405-09-01` |
+| Daily filename · put literal text in brackets | `[Daily] YYYY-MM-DD` | `Daily 2026-11-22` |
 
-Use `w` or `ww` for the configured week number, for example in `Journal/[jYYYY]/W[ww]`. **Calendar Note Names** also lets you choose Jalali or Gregorian week calculation and monthly and yearly naming. See the [date token reference](docs/date-engine.md#supported-token-registry-srcutilsdateenginetokens).
+Folder paths use square brackets around tokens; other text stays literal. Daily filenames use tokens directly and square brackets around literal text. Set paths for daily, weekly, monthly, seasonal, and yearly notes in **Calendar Note Paths**. The daily filename format is set in **Calendar Note Names**. Monthly and yearly note names can use Jalali or Gregorian years; week numbers follow the selected week calculation.
+
+The same date tokens are available in folder paths for all five note types and in the daily filename format. Weekly folder paths also have the week number. Name tokens follow the selected interface language.
+
+| Token | Meaning | Note types | Example for 1 Azar 1405 |
+| --- | --- | --- | --- |
+| `jYYYY`, `jYY` | Jalali year (4 or 2 digits) | All paths; daily filename | `1405`, `05` |
+| `jMMMM`, `jMMM` | Jalali month name (full or abbreviated) | All paths; daily filename | آذر |
+| `jMM`, `jM` | Jalali month number (padded or unpadded) | All paths; daily filename | `09`, `9` |
+| `jDD`, `jD` | Jalali day number (padded or unpadded) | All paths; daily filename | `01`, `1` |
+| `jQQQQ`, `jQQ`, `jQ` | Jalali season name or number (2 or 1 digit) | All paths; daily filename | پاییز, `03`, `3` |
+| `YYYY`, `YY` | Gregorian year (4 or 2 digits) | All paths; daily filename | `2026`, `26` |
+| `MMMM`, `MMM` | Gregorian month name (full or abbreviated) | All paths; daily filename | `November`, `Nov` |
+| `MM`, `M` | Gregorian month number (padded or unpadded) | All paths; daily filename | `11` |
+| `DD`, `D` | Gregorian day number (padded or unpadded) | All paths; daily filename | `22` |
+| `DDDD` | Weekday name | All paths; daily filename | `Sunday` |
+| `ww`, `w` | Configured week number (padded or unpadded) | Daily and weekly paths; daily filename | `36` |
 
 ### <a name="quick_reference"></a> Quick reference to calendar notes
 
@@ -264,7 +274,7 @@ const pcApi = app.plugins.getPlugin("persian-calendar").api;
 pcApi.toEnNumber("۱۲۳ تست test"); // "123 تست test"
 pcApi.toFaNumber("123 تست test"); // "۱۲۳ تست test"
 
-// Solar Hijri date conversion
+// Jalali date conversion
 pcApi.jalaliToDate(1405, 9, 13); // Equivalent Gregorian date as Date object
 pcApi.jalaliToGregorian(1405, 9, 13); // {gy: 2026, gm: 12, gd: 4}
 pcApi.jalaliToHijri(1405, 9, 13); // (Iran basis) {hy: 1448, hm: 6, hd: 24}
@@ -301,7 +311,13 @@ pcApi.dateToEvents(new Date(), { base: "umalqura" }); // With Umm al-Qura basis
 
 ## <a name="collaboration"></a><a name="collaboration-and-project-participation"></a> Contributing
 
-Read the [contribution guide](CONTRIBUTING.md) or [report a bug or suggest a feature](https://github.com/karfekr/obsidian-persian-calendar/issues). The plugin is licensed under [GPL-3.0](LICENSE).
+This plugin has been developed with love, for non-commercial purposes.
+
+You can support our continued efforts in the following ways:
+- Contribute to the development of this plugin
+- Report bugs or suggest a feature for development via the Issues section on this GitHub page
+- Recommend installing and using this plugin to your friends
+- Follow our website and Telegram channel
 
 <div align="center">
 

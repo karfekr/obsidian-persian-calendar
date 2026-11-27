@@ -20,33 +20,27 @@
 
 ### <a name="راه-اولپیشنهادی"></a> نصب از فهرست افزونه‌ها
 
-در بخش <span dir="ltr">Settings → Community plugins → Browse</span> نام <span dir="ltr">Persian Calendar</span> را جست‌وجو کنید و به‌ترتیب روی **Install** و **Enable** بزنید. [صفحهٔ افزونه در ابسیدین](https://community.obsidian.md/plugins/persian-calendar)
+در بخش <span dir="ltr">Settings → Community plugins → Browse</span> نام <span dir="ltr">Persian Calendar</span> را جست‌وجو کنید و به‌ترتیب روی **Install** و **Enable** بزنید.
+
+[صفحهٔ افزونه در ابسیدین](https://community.obsidian.md/plugins/persian-calendar)
 
 ### <a name="راه-دوم"></a> نصب دستی
 
-فایل‌های <code dir="ltr">main.js</code>، <code dir="ltr">manifest.json</code> و <code dir="ltr">styles.css</code> را از [بخش انتشارهای گیت‌هاب](https://github.com/karfekr/obsidian-persian-calendar/releases) دریافت کنید. آن‌ها را در پوشهٔ <code dir="ltr">.obsidian/plugins/persian-calendar/</code> در مخزن یادداشت‌هایتان قرار دهید، ابسیدین را دوباره باز کنید و افزونهٔ <span dir="ltr">Persian Calendar</span> را در **Community plugins** فعال کنید.
+فایل‌های <code dir="ltr">main.js</code>، <code dir="ltr">manifest.json</code> و <code dir="ltr">styles.css</code> را از [بخش انتشارهای گیت‌هاب](https://github.com/karfekr/obsidian-persian-calendar/releases) دریافت کنید. آن‌ها را در پوشهٔ <code dir="ltr">.obsidian/plugins/persian-calendar/</code> در مخزن یادداشت‌هایتان قرار دهید، ابسیدین را دوباره باز کنید و افزونهٔ <span dir="ltr">Persian Calendar</span> را فعال کنید.
 
 ## <a name="guid"></a><a name="راهنمای-امکانات-اساسی-این-افزونه"></a> راهنمای امکانات
 
 [تقویم](#other) · [مسیر و نام‌گذاری](#dynamic_path) · [ارجاع سریع](#quick_reference) · [پیوند خودکار](#auto_links)<br />
 [عبارت‌های معنادار](#placeholders) · [عبارت‌های زنده](#live_expressions) · [مناسبت‌های سفارشی](#custom_events)<br />
-[انتخاب تاریخ](#date-picker) · [قلم فارسی](#persian-font) · [رابط برنامه‌نویسی](#api)
+[انتخاب تاریخ](#date-picker) · [فونت فارسی](#persian-font) · [رابط برنامه‌نویسی](#api)
 
 ### <a name="other"></a><a name="دیگر-امکانات"></a> تقویم و جابه‌جایی میان یادداشت‌ها
 
-فرمان **باز کردن تقویم فارسی** را از فهرست فرمان‌ها اجرا کنید. روی روز، شمارهٔ هفته، ماه، فصل یا سال بزنید تا یادداشت آن باز یا ساخته شود. در بخش **تقویم‌های مکمل** می‌توانید تاریخ میلادی یا قمری را نمایش دهید و مبنای تقویم قمری (استهلال ایران یا ام‌القری) را انتخاب کنید.
+تقویم فارسی نسبت به عرض سایدبار واکنش‌گرا است.
 
 <div align="center">
 
 <img src="Instructions/responsive.webp" width="720" loading="lazy" alt="نمای تقویم با کم و زیاد شدن عرض نوار کناری تغییر می‌کند" />
-
-</div>
-
-وقتی ماه دیگری را می‌بینید، با دکمهٔ **این ماه** در بالای تقویم به ماه جاری برگردید. با فعال کردن **نمایش ناوبری داخل یادداشت** می‌توانید از همان یادداشت دوره‌ای به دورهٔ قبل، بعد یا جاری بروید.
-
-<div align="center">
-
-<img src="Instructions/back%20to%20current.webp" width="720" loading="lazy" alt="بازگشت به ماه شمسی جاری با دکمهٔ این ماه در بالای تقویم" />
 
 </div>
 
@@ -60,7 +54,23 @@
 | نام فایل روزنوشت · نشانه‌های تاریخ را مستقیم بنویسید | <code dir="ltr">jYYYY-jMM-jDD</code>         | <code dir="ltr">1405-09-01</code>         |
 | نام فایل روزنوشت · متن ثابت را داخل براکت بگذارید   | <code dir="ltr">[Daily] YYYY-MM-DD</code>    | <code dir="ltr">Daily 2026-11-22</code>   |
 
-برای درج شمارهٔ هفته طبق تنظیمات، از <code dir="ltr">w</code> یا <code dir="ltr">ww</code> استفاده کنید، مثل <code dir="ltr">Journal/[jYYYY]/W[ww]</code>. روش محاسبهٔ هفته و نام‌گذاری ماه‌نوشت و سال‌نوشت را هم می‌توانید در بخش **نام‌گذاری یادداشت‌های تقویم** روی شمسی یا میلادی بگذارید. [فهرست نشانه‌های تاریخ (انگلیسی)](docs/date-engine.md#supported-token-registry-srcutilsdateenginetokens)
+مسیر پوشه‌ها برای نشانه‌های تاریخ براکت می‌گیرد و متن‌های دیگر را همان‌طور نگه می‌دارد. در نام فایل روزنوشت، نشانه‌ها مستقیم نوشته می‌شوند و متن ثابت داخل براکت می‌آید. مسیر پنج نوع یادداشت روزانه، هفتگی، ماهانه، فصلی و سالانه را در **مسیر یادداشت‌های تقویم** و قالب نام فایل روزنوشت را در **نام‌گذاری یادداشت‌های تقویم** تنظیم کنید. نام ماه‌نوشت و سال‌نوشت می‌تواند شمسی یا میلادی باشد؛ شمارهٔ هفته از روش انتخاب‌شده پیروی می‌کند.
+
+نشانه‌های تاریخ در مسیر پوشهٔ هر پنج نوع یادداشت و در نام فایل روزنوشت در دسترس‌اند. مسیر یادداشت روزانه و هفتگی شمارهٔ هفته را هم دارد. نام‌های متنی با زبان انتخاب‌شدهٔ افزونه نمایش داده می‌شوند.
+
+| نشانه | معنی | نوع یادداشت | نمونه برای ۱ آذر ۱۴۰۵ |
+| --- | --- | --- | --- |
+| <code dir="ltr">jYYYY</code>، <code dir="ltr">jYY</code> | سال شمسی، چهار یا دو رقم | همهٔ مسیرها؛ نام روزنوشت | <code dir="ltr">1405</code>، <code dir="ltr">05</code> |
+| <code dir="ltr">jMMMM</code>، <code dir="ltr">jMMM</code> | نام کامل یا کوتاه ماه شمسی | همهٔ مسیرها؛ نام روزنوشت | آذر |
+| <code dir="ltr">jMM</code>، <code dir="ltr">jM</code> | شمارهٔ ماه شمسی، با صفر یا بدون صفر | همهٔ مسیرها؛ نام روزنوشت | <code dir="ltr">09</code>، <code dir="ltr">9</code> |
+| <code dir="ltr">jDD</code>، <code dir="ltr">jD</code> | شمارهٔ روز شمسی، با صفر یا بدون صفر | همهٔ مسیرها؛ نام روزنوشت | <code dir="ltr">01</code>، <code dir="ltr">1</code> |
+| <code dir="ltr">jQQQQ</code>، <code dir="ltr">jQQ</code>، <code dir="ltr">jQ</code> | نام فصل یا شمارهٔ فصل شمسی | همهٔ مسیرها؛ نام روزنوشت | پاییز، <code dir="ltr">03</code>، <code dir="ltr">3</code> |
+| <code dir="ltr">YYYY</code>، <code dir="ltr">YY</code> | سال میلادی، چهار یا دو رقم | همهٔ مسیرها؛ نام روزنوشت | <code dir="ltr">2026</code>، <code dir="ltr">26</code> |
+| <code dir="ltr">MMMM</code>، <code dir="ltr">MMM</code> | نام کامل یا کوتاه ماه میلادی | همهٔ مسیرها؛ نام روزنوشت | November، Nov |
+| <code dir="ltr">MM</code>، <code dir="ltr">M</code> | شمارهٔ ماه میلادی، با صفر یا بدون صفر | همهٔ مسیرها؛ نام روزنوشت | <code dir="ltr">11</code> |
+| <code dir="ltr">DD</code>، <code dir="ltr">D</code> | شمارهٔ روز میلادی، با صفر یا بدون صفر | همهٔ مسیرها؛ نام روزنوشت | <code dir="ltr">22</code> |
+| <code dir="ltr">DDDD</code> | نام روز هفته | همهٔ مسیرها؛ نام روزنوشت | Sunday |
+| <code dir="ltr">ww</code>، <code dir="ltr">w</code> | شمارهٔ هفته با صفر یا بدون صفر | مسیر روزانه و هفتگی؛ نام روزنوشت | <code dir="ltr">36</code> |
 
 ### <a name="quick_reference"></a> ارجاع سریع به یادداشت‌های تقویم
 
@@ -163,20 +173,6 @@ pc-links:
 
 ### <a name="live_expressions"></a> عبارت‌های زنده
 
-<code dir="ltr">{+</code> را تایپ کنید و یک کلید از پیشنهادها انتخاب کنید. تاریخ، ساعت تهران یا مناسبت‌ها در حالت خواندن و پیش‌نمایش زنده به‌روز می‌مانند. در پیش‌نمایش زنده، نشانگر را از روی عبارت بردارید تا مقدارش را ببینید. در تنظیمات **عبارت‌های زنده** می‌توانید زبان خروجی و نوع رقم‌ها را جداگانه تعیین کنید.
-
-<div dir="ltr">
-
-```markdown
-**تاریخ** · {+نام روز} {+روز ماه شمسی} {+نام ماه شمسی} {+سال شمسی}
-**تاریخ میلادی** · {+سال میلادی}-{+شماره ماه میلادی}-{+روز ماه میلادی}
-**ساعت تهران** · {+ساعت}:{+دقیقه}
-**درصد سپری‌شدهٔ سال** · {+درصد سال شمسی}%
-**مناسبت‌های امروز** · {+مناسبت}
-```
-
-</div>
-
 <div align="center">
 
 <img src="Instructions/live%20expression.webp" width="720" loading="lazy" alt="پیشنهادهای عبارت‌های زنده و نمایش تاریخ، مناسبت‌ها و درصد سپری‌شده در یادداشت" />
@@ -189,9 +185,9 @@ pc-links:
 
 | نمونه               | یک‌باره                                        | سالانه                                    |
 | ------------------- | --------------------------------------------- | ---------------------------------------- |
-| نوروز               | <code dir="ltr">{+1405-01-01}</code>          | <code dir="ltr">{+01-01}</code>          |
-| ناهار تولد          | <code dir="ltr">{+1405-06-15 13:30}</code>    | <code dir="ltr">{+06-15 13:30}</code>    |
-| سالگرد با دقت ثانیه | <code dir="ltr">{+1405-09-10 18:45:30}</code> | <code dir="ltr">{+09-10 18:45:30}</code> |
+| نوروز               | {+1405-01-01}          | {+01-01}          |
+| ناهار تولد          | {+1405-06-15 13:30}    | {+06-15 13:30}    |
+| سالگرد با دقت ثانیه | {+1405-09-10 18:45:30} | {+09-10 18:45:30} |
 
 <details>
 <summary>کلیدهای عبارت‌های زنده</summary>
@@ -220,7 +216,7 @@ pc-links:
 
 ```text
 06-15 | تولد | purple
-1405-09-10 | تعطیلی دفتر | | تعطیل
+1405-09-10 | تعطیلی دفتر || تعطیل
 ```
 
 </div>
@@ -243,13 +239,13 @@ pc-links:
 
 </div>
 
-### <a name="persian-font"></a> قلم فارسی
+### <a name="persian-font"></a> فونت فارسی
 
-[قلم ساحل](https://github.com/rastikerdar/sahel-font) با نام <span dir="ltr">Persian Calendar</span> همراه افزونه ارائه می‌شود. برای استفاده در یادداشت‌ها، به <span dir="ltr">Settings → Appearance → Text font</span> بروید، روی **Manage** بزنید و قلم <span dir="ltr">Persian Calendar</span> را اضافه کنید.
+[فونت ساحل](https://github.com/rastikerdar/sahel-font) با نام <span dir="ltr">Persian Calendar</span> همراه افزونه ارائه می‌شود. برای استفاده در یادداشت‌ها، به <span dir="ltr">Settings → Appearance → Text font</span> بروید، روی **Manage** بزنید و فونت <span dir="ltr">Persian Calendar</span> را اضافه کنید.
 
 <div align="center">
 
-<img src="Instructions/font.webp" width="720" loading="lazy" alt="انتخاب قلم Persian Calendar به‌عنوان قلم متن در ابسیدین" />
+<img src="Instructions/font.webp" width="720" loading="lazy" alt="انتخاب فونت Persian Calendar به‌عنوان فونت متن در ابسیدین" />
 
 </div>
 
@@ -302,8 +298,13 @@ pcApi.dateToEvents(new Date(), { base: "umalqura" }); // با مبنای ام‌
 </div>
 
 ## <a name="collaboration"></a><a name="همراهی-و-مشارکت-در-پروژه"></a> مشارکت
+این افزونه با عشق و با مقاصد غیرتجاری توسعه داده شده است.
 
-برای همکاری، [راهنمای مشارکت](CONTRIBUTING_FA.md) را بخوانید. برای گزارش خطا یا پیشنهاد قابلیت، از [بخش Issues گیت‌هاب](https://github.com/karfekr/obsidian-persian-calendar/issues) استفاده کنید. افزونه با مجوز [GPL-3.0](LICENSE) منتشر می‌شود.
+شما می‌توانید به شیوه‌های زیر از ادامه‌ی فعالیت‌های ما حمایت کنید:
+- مشارکت در توسعه‌ی این افزونه
+- گزارش خطا یا پیشنهاد یک ویژگی برای توسعه در Issues همین صفحه‌ی گیتهاب
+- پیشنهاد استفاده و نصب این پلاگین به دوستان خود
+- دنبال کردن سایت و کانال تلگرامی کارفکر
 
 <div align="center">
 
