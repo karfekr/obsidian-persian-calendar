@@ -104,6 +104,10 @@ describe("LiveExpression service", () => {
 		vi.unstubAllGlobals();
 	});
 
+	it("defaults Live Expression output to English", () => {
+		expect(DEFAULT_SETTING.liveExpressionOutputLanguage).toBe("en");
+	});
+
 	it("exposes one readable, alias-free canonical name for each expression", () => {
 		expect(LIVE_EXPRESSION_KEYS).toHaveLength(39);
 		expect(LIVE_EXPRESSION_KEYS).toEqual(
@@ -158,7 +162,8 @@ describe("LiveExpression service", () => {
 			["1403-12-24 13:19:30", "6 روز و 10:40:30 گذشته"],
 			["1404-01-01 02:15:08", "02:15:08 مانده"],
 		])("uses the compact Persian clock for %s", (key, expected) => {
-			expect(createMockEnv().liveExpression.calculateValue(key)).toBe(expected);
+			const { liveExpression } = createMockEnv({ liveExpressionOutputLanguage: "fa" });
+			expect(liveExpression.calculateValue(key)).toBe(expected);
 		});
 
 		it.each([
@@ -226,7 +231,7 @@ describe("LiveExpression service", () => {
 		});
 
 		it("updates both views through one timer and preserves invalid text", () => {
-			const { plugin, liveExpression } = createMockEnv();
+			const { plugin, liveExpression } = createMockEnv({ liveExpressionOutputLanguage: "fa" });
 			const doc = new FakeDocument();
 			const root = new FakeElement(doc);
 			const key = "1404-01-01 00:00:01";
@@ -491,6 +496,7 @@ describe("LiveExpression service", () => {
 			vi.setSystemTime(new Date("2025-03-21T08:35:09Z"));
 
 			const { plugin, liveExpression } = createMockEnv({
+				liveExpressionOutputLanguage: "fa",
 				showIROfficialEvents: false,
 				showIRHistoricalEvents: false,
 				showIRAncientEvents: false,
