@@ -65,10 +65,10 @@ The same date tokens are available in folder paths for all five note types and i
 | Token                | Meaning                                     | Note types                             | Example for 1 Azar 1405 |
 | -------------------- | ------------------------------------------- | -------------------------------------- | ----------------------- |
 | `jYYYY`, `jYY`       | Jalali year (4 or 2 digits)                 | All paths; daily filename              | `1405`, `05`            |
-| `jMMMM`, `jMMM`      | Jalali month name (full or abbreviated)     | All paths; daily filename              | آذر                     |
+| `jMMMM`, `jMMM`      | Jalali month name (full or abbreviated)     | All paths; daily filename              | Azar                     |
 | `jMM`, `jM`          | Jalali month number (padded or unpadded)    | All paths; daily filename              | `09`, `9`               |
 | `jDD`, `jD`          | Jalali day number (padded or unpadded)      | All paths; daily filename              | `01`, `1`               |
-| `jQQQQ`, `jQQ`, `jQ` | Jalali season name or number (2 or 1 digit) | All paths; daily filename              | پاییز, `03`, `3`        |
+| `jQQQQ`, `jQQ`, `jQ` | Jalali season name or number (2 or 1 digit) | All paths; daily filename              | Autumn, `03`, `3`        |
 | `YYYY`, `YY`         | Gregorian year (4 or 2 digits)              | All paths; daily filename              | `2026`, `26`            |
 | `MMMM`, `MMM`        | Gregorian month name (full or abbreviated)  | All paths; daily filename              | `November`, `Nov`       |
 | `MM`, `M`            | Gregorian month number (padded or unpadded) | All paths; daily filename              | `11`                    |
