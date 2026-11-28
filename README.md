@@ -188,11 +188,11 @@ Type `{+` and choose a key to display dates, Tehran time, or events that update 
 <div dir="ltr">
 
 ```markdown
-**Date** · {+نام روز} {+روز ماه شمسی} {+نام ماه شمسی} {+سال شمسی}
-**Gregorian** · {+سال میلادی}-{+شماره ماه میلادی}-{+روز ماه میلادی}
-**Tehran time** · {+ساعت}:{+دقیقه}
-**Year elapsed** · {+درصد سال شمسی}%
-**Today's events** · {+مناسبت}
+Date · {+نام روز} {+روز ماه شمسی} {+نام ماه شمسی} {+سال شمسی}
+Gregorian · {+سال میلادی}-{+شماره ماه میلادی}-{+روز ماه میلادی}
+Tehran time · {+ساعت}:{+دقیقه}
+Year elapsed · {+درصد سال شمسی}%
+Today's events · {+مناسبت}
 ```
 
 </div>
